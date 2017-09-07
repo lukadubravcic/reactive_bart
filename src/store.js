@@ -3,20 +3,31 @@ import { applyMiddleware, createStore } from 'redux';
 
 const defaultState = {
     appName: 'ReactiveBart',
-    user: null
+    userLoggedIn: false,
+    userName: 'Josko Lokazz',
+    userEmail: 'def',
+    userPassword: 'def',
+    auth: {}
 }
 
 const reducer = function (state = defaultState, action) {
     switch (action.type) {
         case 'GET_APP_NAME':
             return { ...state };
+        case 'REGISTER':
+            return { ...state, userName: action.username, userEmail: action.email };
+        case 'LOGIN':
+            return { ...state };
+        case 'UPDATE_FIELD_AUTH':
+            return { ...state, [action.key]: action.value };
+        default:
+            return state;
     }
-    return state;
 };
 
 // const middleware = applyMiddleware(promiseMiddleware);
 
 const store = createStore(reducer);
-window.store = store;
+window.store = store;  // available from console
 
 export default store;

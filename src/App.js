@@ -4,7 +4,7 @@ import Login from './components/login/Login';
 import Register from './components/register/Register';
 
 const mapStateToProps = state => ({
-  appName: state.appName
+  appName: state.common.appName
 });
 
 class App extends React.Component {

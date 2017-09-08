@@ -4,18 +4,17 @@ import { connect } from 'react-redux';
 const mapStateToProps = state => ({ ...state.auth });
 
 const mapDispatchToProps = dispatch => ({
-    onUsernameChange: (value) => {
-        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'name', value });
-    },
-    onEmailChange: (value) => {
-        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value });
-    },
-    onPasswordChange: (value) => {
-        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value });
-    },
-    onSubmit: (username, email, password) => {
+    onUsernameChange: value => 
+        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'username', value }),
+    onEmailChange: value => 
+        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value }),
+    onPasswordChange: value => 
+        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
+    onRePasswordChange: value => 
+        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'rePassword', value }),
+    onSubmit: (username, email, password) => {        
         // placeholder for API call, returns user data
-        dispatch({ type: 'REGISTER', username: username });
+        dispatch({ type: 'REGISTER' });
     }
 });
 
@@ -26,6 +25,7 @@ class Register extends React.Component {
         this.usernameChange = ev => this.props.onUsernameChange(ev.target.value);
         this.emailChange = ev => this.props.onEmailChange(ev.target.value);
         this.passwordChange = ev => this.props.onPasswordChange(ev.target.value);
+        this.rePasswordChange = ev => this.props.onRePasswordChange(ev.target.value);
         this.submitForm = (username, email, password) => ev => {
             ev.preventDefault();
             this.props.onSubmit(username, email, password);
@@ -33,9 +33,10 @@ class Register extends React.Component {
     }
 
     render() {
-        const email = this.props.email;
-        const password = this.props.password;
         const username = this.props.username;
+        const email = this.props.email;
+        const password = this.props.password;        
+        const rePassword = this.props.rePassword;
 
         return (
             <div className="auth-page">
@@ -76,11 +77,13 @@ class Register extends React.Component {
                                             className="form-control form-control-lg"
                                             type="password"
                                             placeholder="Repeat password"
-                                            value={this.props.password} />
+                                            value={this.props.rePassword}
+                                            onChange={this.rePasswordChange} />
                                     </fieldset>
                                     <button
                                         className="btn btn-lg btn-primary pull-xs-right"
-                                        type="submit">
+                                        type="submit"
+                                        disabled={!(password===rePassword)}>
                                         Register
                                     </button>
 

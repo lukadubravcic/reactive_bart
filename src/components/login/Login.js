@@ -1,14 +1,37 @@
 import { connect } from 'react-redux'
 import React from 'react';
 
-const mapStateToProps = state => ({
-    usrName: state.userName,
-    usrLoggedIn: state.usrLoggedIn
-})
+const mapStateToProps = state => ({ ...state.common });
+
+const mapDispatchToProps = dispatch => ({
+    onEmailChange: value =>
+        dispatch({ type: 'UPDATE_FIELD_LOGIN', key: 'email', value }),
+    onPasswordChange: value =>
+        dispatch({ type: 'UPDATE_FIELD_LOGIN', key: 'password', value }),
+    onSubmit: (email, password) => ev => {
+        console.log('mdasdadasmmdam');
+        // api call - response token i username
+        dispatch({ type: 'LOGIN', email, username: 'Josko', token: '1234' })
+    }
+});
 
 class Login extends React.Component {
+
+    constructor() {
+        super();
+        this.emailChange = event => this.props.onEmailChange(event.target.value);
+        this.passwordChange = event => this.props.onPasswordChange(event.target.value);
+        this.submitForm = (email, password) => ev => {
+            ev.preventDefault();
+            this.props.onSubmit(email, password);
+        }
+    }
+
     render() {
-        if (this.props.usrLoggedIn !== undefined) {
+        const email = this.props.email;
+        const password = this.props.password;
+
+        if (this.props.token === null) {
             return (
                 <div className="auth-page">
                     <div className="container page">
@@ -18,23 +41,27 @@ class Login extends React.Component {
                                 <p className="text-xs-center">
                                     <a>
                                         Need an account?
-                                </a>
+                                    ß</a>
                                 </p>
 
-                                <form>
+                                <form onSubmit={this.submitForm(email, password)}>
                                     <fieldset>
                                         <fieldset className="form-group">
                                             <input
                                                 className="form-control form-control-lg"
                                                 type="email"
-                                                placeholder="Email" />
+                                                placeholder="Email"
+                                                value={email}
+                                                onChange={this.emailChange} />
                                         </fieldset>
 
                                         <fieldset className="form-group">
                                             <input
                                                 className="form-control form-control-lg"
                                                 type="password"
-                                                placeholder="Password" />
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={this.passwordChange} />
                                         </fieldset>
                                         <button
                                             className="btn btn-lg btn-primary pull-xs-right"
@@ -51,10 +78,10 @@ class Login extends React.Component {
             );
         } else {
             return (
-                <h1>User {this.props.userName} logged in.</h1>
+                <h1>User {this.props.username} logged in.</h1>
             )
         }
     }
 }
 
-export default connect(mapStateToProps, () => ({}))(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

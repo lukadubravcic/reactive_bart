@@ -1,6 +1,6 @@
 const defaultState = {
     appName: 'reactive-bart',
-    token: null
+    token: null,
 }
 
 export default (state = defaultState, action) => {
@@ -10,10 +10,7 @@ export default (state = defaultState, action) => {
         case 'REGISTER':
             return { ...state };
         case 'LOGIN':
-        console.log(action);
-            return { ...state, email: action.email, username: action.username, token: action.token};
-        case 'UPDATE_FIELD_LOGIN':
-            return { ...state, [action.key]: action.value }
+            return { ...state, currentUser: action.currentUser, token: action.token };        
         default:
             return state;
     }

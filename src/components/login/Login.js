@@ -1,17 +1,18 @@
 import { connect } from 'react-redux'
 import React from 'react';
 
-const mapStateToProps = state => ({ ...state.common });
+const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
     onEmailChange: value =>
-        dispatch({ type: 'UPDATE_FIELD_LOGIN', key: 'email', value }),
+        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value }),
     onPasswordChange: value =>
-        dispatch({ type: 'UPDATE_FIELD_LOGIN', key: 'password', value }),
-    onSubmit: (email, password) => ev => {
-        console.log('mdasdadasmmdam');
+        dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
+    onSubmit: (email, password) => {
         // api call - response token i username
-        dispatch({ type: 'LOGIN', email, username: 'Josko', token: '1234' })
+        dispatch({ type: 'LOGIN', currentUser: { email: 'test@test.hr', username: 'test' }, token: 1234 })},
+    onShowRegisterForm: () => {
+        dispatch({ type: 'SHOW_REGISTER' });
     }
 });
 
@@ -25,13 +26,17 @@ class Login extends React.Component {
             ev.preventDefault();
             this.props.onSubmit(email, password);
         }
+        this.showRegisterForm = () => {
+            // hide login and show register form
+            this.props.onShowRegisterForm();
+        }
     }
 
     render() {
         const email = this.props.email;
         const password = this.props.password;
 
-        if (this.props.token === null) {
+        if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
             return (
                 <div className="auth-page">
                     <div className="container page">
@@ -39,9 +44,9 @@ class Login extends React.Component {
                             <div className="col-md-6 offset-md-3 col-xs-12">
                                 <h1 className="text-xs-center">Sign In</h1>
                                 <p className="text-xs-center">
-                                    <a>
-                                        Need an account?
-                                    ß</a>
+                                    <a onClick={this.showRegisterForm}>
+                                        Create account
+                                    </a>
                                 </p>
 
                                 <form onSubmit={this.submitForm(email, password)}>
@@ -77,9 +82,7 @@ class Login extends React.Component {
                 </div>
             );
         } else {
-            return (
-                <h1>User {this.props.username} logged in.</h1>
-            )
+            return null;
         }
     }
 }

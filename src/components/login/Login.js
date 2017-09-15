@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import React from 'react';
+import agent from '../../agent'
 
 const mapStateToProps = state => ({ ...state });
 
@@ -9,10 +10,19 @@ const mapDispatchToProps = dispatch => ({
     onPasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
     onSubmit: (email, password) => {
-        // api call - response token i username
-        dispatch({ type: 'LOGIN', currentUser: { email: 'test@test.hr', username: 'test' }, token: 1234 })},
+        agent.Auth.login(email, password).then((payload) => {
+            if (payload !== null) {
+                dispatch({ type: 'LOGIN', currentUser: { username: payload.username, email: email }, token: payload.token })
+            } else {
+                // TODO: alert - neispravan login
+            }
+        });
+    },
     onShowRegisterForm: () => {
-        dispatch({ type: 'SHOW_REGISTER' });
+        dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
+    },
+    onLogout: () => {
+        dispatch({ type: 'LOGOUT' });
     }
 });
 
@@ -33,8 +43,8 @@ class Login extends React.Component {
     }
 
     render() {
-        const email = this.props.email;
-        const password = this.props.password;
+        const email = this.props.auth.email;
+        const password = this.props.auth.password;
 
         if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
             return (
@@ -45,7 +55,7 @@ class Login extends React.Component {
                                 <h1 className="text-xs-center">Sign In</h1>
                                 <p className="text-xs-center">
                                     <a onClick={this.showRegisterForm}>
-                                        Create account
+                                        <u>Create account</u>
                                     </a>
                                 </p>
 
@@ -80,6 +90,18 @@ class Login extends React.Component {
                         </div>
                     </div>
                 </div>
+            );
+        } else if (this.props.common.token !== null && this.props.auth.shownForm === 'login') {
+            return (
+                <div className="container">
+                    <h1 className="text-xs-left">{this.props.common.currentUser.username}</h1>
+                    <button
+                        type="button"
+                        onClick={this.props.onLogout}>
+                        Logout
+                    </button>
+                </div>
+
             );
         } else {
             return null;

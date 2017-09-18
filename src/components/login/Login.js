@@ -55,7 +55,7 @@ class Login extends React.Component {
                                 <h1 className="text-xs-center">Sign In</h1>
                                 <p className="text-xs-center">
                                     <a onClick={this.showRegisterForm}>
-                                        <u>Create account</u>
+                                        <u className="a">Create account</u>
                                     </a>
                                 </p>
 
@@ -67,7 +67,8 @@ class Login extends React.Component {
                                                 type="email"
                                                 placeholder="Email"
                                                 value={email}
-                                                onChange={this.emailChange} />
+                                                onChange={this.emailChange}
+                                                required />
                                         </fieldset>
 
                                         <fieldset className="form-group">
@@ -76,7 +77,8 @@ class Login extends React.Component {
                                                 type="password"
                                                 placeholder="Password"
                                                 value={password}
-                                                onChange={this.passwordChange} />
+                                                onChange={this.passwordChange}
+                                                required />
                                         </fieldset>
                                         <button
                                             className="btn btn-lg btn-primary pull-xs-right"

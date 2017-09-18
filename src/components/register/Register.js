@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
-import request from 'superagent';
+// import request from 'superagent';
 
 const mapStateToProps = state => ({ ...state });
 
@@ -27,15 +27,9 @@ const mapDispatchToProps = dispatch => ({
                 dispatch({ type: 'ALERT_FAILED_REG' });
             }
         });
-
-        //console.log(payload);
-        /* request.post('http://localhost:8000/users/register')
-            .type('form')
-            .send({ name: username, email: email, password: password })
-            .end((err, res) => {
-                console.log(username);
-                console.log(res.body.id);
-            }); */
+    },
+    backToLogin: () => {
+        dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
     }
 });
 
@@ -64,8 +58,16 @@ class Register extends React.Component {
             return (
                 <div className="auth-page">
                     <div className="container page">
+                        <button
+                            className="btn btn-primary pull-xs-left"
+                            type="button"
+                            onClick={this.props.backToLogin}>
+                            Back to login
+                        </button>
                         <div className="row">
+
                             <div className="col-md-6 offset-md-3 col-xs-12">
+
                                 <h1 className="text-xs-center bottomMarginToTwenty">Register</h1>
 
                                 <form onSubmit={this.submitForm(username, email, password)}>

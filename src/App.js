@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
+import Game from './components/game/Game';
 import agent from './agent';
 
 
@@ -45,6 +46,7 @@ class App extends React.Component {
                 <hr />
                 <Register />
                 <div>TODO</div>
+                <Game />
             </div>
         );
     }

@@ -45,7 +45,6 @@ class App extends React.Component {
                 <Login />
                 <hr />
                 <Register />
-                <div>TODO</div>
                 <Game />
             </div>
         );

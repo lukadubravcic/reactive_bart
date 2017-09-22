@@ -11,7 +11,7 @@ const mapDispatchToProps = dispatch => ({
     boardDisabledStatus: (disabled) => {
         dispatch({ type: 'TOGGLE_BOARD_DISABLED_STATUS', disabled });
     },
-    boardStyleChangeWrongEntry: (status) => {
+    wrongBoardEntryWarning: (status) => {
         dispatch({ type: 'BOARD_WRONG_ENTRY', mistake: status });
     }
 });
@@ -26,29 +26,11 @@ class Board extends React.Component {
 
         this._startingText = 'Write ' + this.howManyTimes + 'x: ' + this.punishment;
         this._charCircularCounter = 0; // circural counter
-        this._wrongChar = 30;
+        this._wrongCharPlace = null;
 
         this.boardTextChange = (ev) => {
-
-            /*    ev.preventDefault();
-               let boardText = this.props.game.boardValue;
-               let transformedBoardText = '';
-   
-               if (inArray(ev.key, validKeys)) {
-   
-                   if (ev.key === 'Backspace') {
-   
-                       transformedBoardText = boardText.slice(0, -1);
-                       this._decrementCharCounter();
-   
-                   } else {
-                       transformedBoardText = boardText + ev.key;
-                       this._incrementCharCounter();
-                   }
-                   console.log('Entered char: ' + ev.key + "   Board: " + this.props.game.boardValue);
-                   this.props.onBoardTextChange(transformedBoardText);
-                   this.validateKey(ev.key);
-               } */
+            ev.preventDefault();
+            this.boardStateUpdate(ev.key);
         }
         this.addToStartingSentence = char => {
             this.props.onBoardTextChange(this.props.game.boardValue + char);
@@ -57,24 +39,25 @@ class Board extends React.Component {
         this.boardStateUpdate = this.boardStateUpdate.bind(this);
     }
 
-    boardStateUpdate(ev) {
-        ev.preventDefault();
+    boardStateUpdate(key) {
         let boardText = this.props.game.boardValue.slice();
         let transformedBoardText = '';
 
-        if (inArray(ev.key, validKeys)) {
+        if (inArray(key, validKeys)) {
 
-            if (ev.key === 'Backspace') {
+            if (key === 'Backspace') {
                 transformedBoardText = boardText.slice(0, -1);
+                this.validateKey(key, transformedBoardText);
                 this._decrementCharCounter();
 
             } else {
-                transformedBoardText = boardText + ev.key;
+                transformedBoardText = boardText + key;
+                this.validateKey(key, transformedBoardText);
                 this._incrementCharCounter();
             }
             // console.log('Entered char: ' + ev.key + "   Board: " + transformedBoardText);
             this.props.onBoardTextChange(transformedBoardText);
-            this.validateKey(ev.key, transformedBoardText);
+
         }
     }
 
@@ -98,56 +81,46 @@ class Board extends React.Component {
             this._charCircularCounter--;
         }
     }
-    // ovo je SOLID
+
     validateKey(char, boardText) {
-        //console.log("Char brojac: " + this._charCircularCounter + " | Uneseni char:" + boardText[boardText.length - 1]
-        //    + " --- " + "Ispravni char: " + this.punishment[this._charCircularCounter - 1]);
+
+        // ako postoji vec wrong char
+        if (this._wrongCharPlace !== null) {
+            // ako se trenutni char nalazi na poziciji greske
+            if (boardText.length === (this._wrongCharPlace)) {
+                this._wrongCharPlace = null;
+                this.props.wrongBoardEntryWarning(false);
+            }
+        }
+        // ako ne postoji wrong char
+        else {
+            // ako je neispravan char
+            console.log()
+            if (this.punishment[this._charCircularCounter] !== boardText[boardText.length - 1]) {
+                console.log('greska');
+                this._wrongCharPlace = boardText.length - 1;
+                this.props.wrongBoardEntryWarning(true);
+            }
+        }
+
         console.log('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+        console.log('Char: ' + char);
+        console.log('Wrong char place: ' + (this._wrongCharPlace === null ? null : this._wrongCharPlace));
         console.log('BoardText (duljna = ' + boardText.length + '): "' + boardText + '"');
         console.log('Punishment: "' + this.punishment + '"');
         console.log('CircularCounter: ' + this._charCircularCounter);
         console.log('Punishment [CircularCounter]: ' + this.punishment[this._charCircularCounter]);
         console.log('Punishment [CircularCounter - 1]: ' + this.punishment[this._charCircularCounter - 1]);
-        console.log('BoardText [duljina: ' + boardText.length + ' - 1]: ' + boardText[boardText.length - 1]);
-
-
-
-        if (/* (char === 'Backspace') && */ (this.punishment[this._charCircularCounter-1] === boardText[boardText.length - 1])) {
-            console.log("krivi char")
-            if ((boardText.length - 1) === this._wrongChar) {
-
-            }
-
-            /*  if (boardText.length-1 === this._wrongChar){
-                 this.props.boardStyleChangeWrongEntry(false);
-             } */
-        }
-        /* 
-                } else if (char !== this.punishment[this._charCircularCounter - 1]) {
-                    //console.log(char);
-                    // za prvu ruku, zacrveni text-area
-                    this.props.boardStyleChangeWrongEntry(true);
-                    this._wrongChar = this._wrongChar !== null ? this._wrongChar : boardText.length;
-                } else if (char === this.punishment[this._charCircularCounter - 1]) {
-                    //console.log(char);
-                    // normalan bcg color na text-area
-        
-                    if (boardText.length === this._wrongChar) {
-                        this.props.boardStyleChangeWrongEntry(false);
-                        this._wrongChar = null;
-                    }
-                    this._wrongChar ? this.props.boardStyleChangeWrongEntry(true) : this.props.boardStyleChangeWrongEntry(false);
-                } */
-        //console.log(boardText.length + "   " + this._wrongChar);
+        console.log('Zadnji unešeni char: ' + boardText[boardText.length - 1]);
     }
 
     writeStartingSentance(that) {
         (function write(i) {
-            if (that._startingText.length <= i) {
+            if (that.punishment.length <= i) {
                 that.props.boardDisabledStatus(false);
                 return;
             }
-            that.addToStartingSentence(that._startingText[i]);
+            that.addToStartingSentence(that.punishment[i]);
             i++;
             setTimeout(() => {
                 write(i);
@@ -163,12 +136,26 @@ class Board extends React.Component {
 
         return (
             <div className="container">
-                <textarea id="writing-board" rows="20" cols="100"
+                <textarea id="writing-board" rows="5" cols="100"
                     style={boardTextMistake ? { backgroundColor: '#f2cbcb' } : { backgroundColor: '' }}
                     value={this.props.game.boardValue}
                     disabled={this.props.game.boardDisabled}
-                    onKeyDown={this.boardStateUpdate}
+                    onKeyDown={this.boardTextChange}
                 />
+
+                <div id="textarea"
+                    style={{
+                        "border": "1px solid gray",
+                        "font": "medium -moz-fixed",
+                        "font": "-webkit-small-control",
+                        "height": "400px",
+                        "overflow": "auto",
+                        "padding": "2px",
+                        "width": "822px"
+                    }}
+                >Write xX: <u>{this.punishment}</u>{this.props.game.boardValue}</div>
+
+
                 <div id="progress-sponge">
                     <label>Sponge</label>
                 </div>

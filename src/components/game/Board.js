@@ -13,19 +13,21 @@ const mapDispatchToProps = dispatch => ({
     },
     wrongBoardEntryWarning: (status) => {
         dispatch({ type: 'BOARD_WRONG_ENTRY', mistake: status });
+    },
+    getPunishment: () => { 
     }
 });
 
 class Board extends React.Component {
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         // TODO: punishment bi trebalo bit dohvacen sa backenda i nalaziti se u store-u
-        this.punishment = 'Rečenica. ';
+        this.punishment = 'Rečenica.';                
         this.howManyTimes = 3;
+        this.punishmentExplanation = "Write " + this.howManyTimes + "x: " + this.punishment;
+        this.punishmentExample = '';
 
-        this._startingText = 'Write ' + this.howManyTimes + 'x: ' + this.punishment;
-        this._charCircularCounter = 0; // circural counter
         this._wrongCharPlace = null;
 
         this.boardTextChange = (ev) => {
@@ -33,7 +35,9 @@ class Board extends React.Component {
             this.boardStateUpdate(ev.key);
         }
         this.addToStartingSentence = char => {
-            this.props.onBoardTextChange(this.props.game.boardValue + char);
+            this.punishmentExample += char;
+            this.forceUpdate(); // forcing re-rendering because punishmentExample isn't in state
+            //this.props.onBoardTextChange(this.props.game.boardValue + char);
         }
         this.validateKey = this.validateKey.bind(this);
         this.boardStateUpdate = this.boardStateUpdate.bind(this);
@@ -46,16 +50,12 @@ class Board extends React.Component {
         if (inArray(key, validKeys)) {
 
             if (key === 'Backspace') {
-                transformedBoardText = boardText.slice(0, -1);
-                this.validateKey(key, transformedBoardText);
-                this._decrementCharCounter();
-
+                if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
             } else {
-                transformedBoardText = boardText + key;
-                this.validateKey(key, transformedBoardText);
-                this._incrementCharCounter();
+                if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
+                else transformedBoardText = boardText + key;
             }
-            // console.log('Entered char: ' + ev.key + "   Board: " + transformedBoardText);
+            this.validateKey(key, transformedBoardText);
             this.props.onBoardTextChange(transformedBoardText);
 
         }
@@ -66,61 +66,39 @@ class Board extends React.Component {
         this.writeStartingSentance(this);
     }
 
-    _incrementCharCounter() {
-        if (this._charCircularCounter === this.punishment.length - 1) {
-            this._charCircularCounter = 0;
-        } else {
-            this._charCircularCounter++;
-        }
-    }
-
-    _decrementCharCounter() {
-        if (this._charCircularCounter === 0) {
-            this._charCircularCounter = this.punishment.length - 1;
-        } else {
-            this._charCircularCounter--;
-        }
-    }
-
     validateKey(char, boardText) {
+        if (boardText.length > 0) {
+            let rightCharForCurrentPosition = (boardText.length % this.punishment.length) - 1 >= 0 ? (boardText.length % this.punishment.length) - 1 : this.punishment.length - 1;
 
-        // ako postoji vec wrong char
-        if (this._wrongCharPlace !== null) {
-            // ako se trenutni char nalazi na poziciji greske
-            if (boardText.length === (this._wrongCharPlace)) {
-                this._wrongCharPlace = null;
-                this.props.wrongBoardEntryWarning(false);
+            if (this._wrongCharPlace !== null) {
+                if (boardText.length - 1 < this._wrongCharPlace) {
+                    this._wrongCharPlace = null;
+                    this.props.wrongBoardEntryWarning(false);
+                }
+            } else {
+                if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
+                    this._wrongCharPlace = boardText.length - 1;
+                    this.props.wrongBoardEntryWarning(true);
+                }
             }
-        }
-        // ako ne postoji wrong char
-        else {
-            // ako je neispravan char
-            console.log()
-            if (this.punishment[this._charCircularCounter] !== boardText[boardText.length - 1]) {
-                console.log('greska');
-                this._wrongCharPlace = boardText.length - 1;
-                this.props.wrongBoardEntryWarning(true);
-            }
-        }
 
-        console.log('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-        console.log('Char: ' + char);
-        console.log('Wrong char place: ' + (this._wrongCharPlace === null ? null : this._wrongCharPlace));
-        console.log('BoardText (duljna = ' + boardText.length + '): "' + boardText + '"');
-        console.log('Punishment: "' + this.punishment + '"');
-        console.log('CircularCounter: ' + this._charCircularCounter);
-        console.log('Punishment [CircularCounter]: ' + this.punishment[this._charCircularCounter]);
-        console.log('Punishment [CircularCounter - 1]: ' + this.punishment[this._charCircularCounter - 1]);
-        console.log('Zadnji unešeni char: ' + boardText[boardText.length - 1]);
+            /* console.log('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+            console.log('Char: ' + char);
+            console.log('Wrong char place: ' + (this._wrongCharPlace === null ? null : this._wrongCharPlace));
+            console.log('BoardText (duljna = ' + boardText.length + '): "' + boardText + '"');
+            console.log('Punishment: "' + this.punishment + '"');
+            console.log('Punishment [trenutni char]: ' + this.punishment[rightCharForCurrentPosition]);
+            console.log('Zadnji unešeni char: ' + boardText[boardText.length - 1]); */
+        }
     }
 
     writeStartingSentance(that) {
         (function write(i) {
-            if (that.punishment.length <= i) {
+            if (that.punishmentExplanation.length <= i) {
                 that.props.boardDisabledStatus(false);
                 return;
             }
-            that.addToStartingSentence(that.punishment[i]);
+            that.addToStartingSentence(that.punishmentExplanation[i]);
             i++;
             setTimeout(() => {
                 write(i);
@@ -133,28 +111,20 @@ class Board extends React.Component {
         const boardText = this.props.game.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.game.boardTextMistake;
+        const bcgColor = boardTextMistake ? '#f2cbcb' : '';
 
         return (
             <div className="container">
-                <textarea id="writing-board" rows="5" cols="100"
-                    style={boardTextMistake ? { backgroundColor: '#f2cbcb' } : { backgroundColor: '' }}
-                    value={this.props.game.boardValue}
+                <textarea id="writing-board"
+                    style={{
+                        backgroundColor: bcgColor,
+                        width: "1024px",
+                        height: "400px"
+                    }}
+                    value={this.punishmentExample + boardText}
                     disabled={this.props.game.boardDisabled}
                     onKeyDown={this.boardTextChange}
                 />
-
-                <div id="textarea"
-                    style={{
-                        "border": "1px solid gray",
-                        "font": "medium -moz-fixed",
-                        "font": "-webkit-small-control",
-                        "height": "400px",
-                        "overflow": "auto",
-                        "padding": "2px",
-                        "width": "822px"
-                    }}
-                >Write xX: <u>{this.punishment}</u>{this.props.game.boardValue}</div>
-
 
                 <div id="progress-sponge">
                     <label>Sponge</label>

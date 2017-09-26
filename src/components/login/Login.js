@@ -2,6 +2,11 @@ import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../agent'
 
+/* 
+    TODO: 
+        - spremi id koji se dobije na loginu responsu
+*/
+
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
@@ -12,7 +17,7 @@ const mapDispatchToProps = dispatch => ({
     onSubmit: (email, password) => {
         agent.Auth.login(email, password).then((payload) => {
             if (payload !== null) {
-                dispatch({ type: 'LOGIN', currentUser: { username: payload.username, email: email }, token: payload.token })
+                dispatch({ type: 'LOGIN', currentUser: { username: payload.username, email: email, _id: payload._id }, token: payload.token })
             } else {
                 // TODO: alert - neispravan login
             }

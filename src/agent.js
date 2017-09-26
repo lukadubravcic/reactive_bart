@@ -41,6 +41,10 @@ const Auth = {
 	register: (name, email, password) => requests.post('/users/register', { name, email, password })
 };
 
+/* const Game = {
+	getPunishment: () => requests.get(/)
+} */
+
 export default {
 	Auth,
 	setToken: _token => { token = _token; }

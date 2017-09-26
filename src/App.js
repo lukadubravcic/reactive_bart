@@ -1,8 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import Login from './components/login/Login';
 import Register from './components/register/Register';
 import Game from './components/game/Game';
+import PunishmentCreator from './components/punishment/PunishmentCreator';
+
 import agent from './agent';
 
 
@@ -42,10 +45,12 @@ class App extends React.Component {
                         <h1 className="navbar-brand">{this.props.appName}</h1>
                     </div>
                 </nav>
-                <Login />
-                <hr />
+                <Login />                
                 <Register />
+                <hr />
                 <Game />
+                <hr />
+                <PunishmentCreator />
             </div>
         );
     }

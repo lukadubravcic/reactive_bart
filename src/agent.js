@@ -23,14 +23,12 @@ const requests = {
 			console.log('err GET THEN ');
 			return null;
 		}),
-	// post: (url, body) => superagent.post(`${API_ROOT}${url}`, body).use(tokenPlugin).then(responseBody),
 	post: (url, body) => superagent('POST', `${API_ROOT}${url}`)
 		.type('form')
 		.use(tokenPlugin)
 		.send(body)
 		.then(responseBody, (err) => {
-			console.log('ulaz: err POST then');
-			// console.log(err);
+			console.log('err POST then');
 			return null;
 		})
 };
@@ -45,7 +43,12 @@ const Auth = {
 	getPunishment: () => requests.get(/)
 } */
 
+const CreatePunishment = {
+	create: (punishmentData) => requests.post('/punishment/create', punishmentData)
+}
+
 export default {
 	Auth,
+	CreatePunishment,
 	setToken: _token => { token = _token; }
 }

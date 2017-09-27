@@ -45,11 +45,11 @@ class App extends React.Component {
                         <h1 className="navbar-brand">{this.props.appName}</h1>
                     </div>
                 </nav>
-                <Login />                
+                {/* <Login />                
                 <Register />
                 <hr />
                 <Game />
-                <hr />
+                <hr /> */}
                 <PunishmentCreator />
             </div>
         );

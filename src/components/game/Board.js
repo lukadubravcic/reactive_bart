@@ -2,6 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
+/* 
+TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
+*/
+
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({

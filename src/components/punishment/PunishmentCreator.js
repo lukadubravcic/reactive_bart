@@ -47,11 +47,9 @@ const mapDispatchToProps = dispatch => ({
         // agent magic
         agent.CreatePunishment.create(submitData).then((payload) => {
             console.log(payload);
-            // TODO: 
+            if (!payload.errorMsg) dispatch({ type: 'PUNISHMENT_CREATED', payload, msg: 'Request sent!' });
+            else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });
         });
-        dispatch({
-            type: 'PUNISHMENT_CREATED'
-        })
     }
 });
 
@@ -97,16 +95,13 @@ class PunishmentCreator extends React.Component {
 
         this.submitForm = (whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField) => ev => {
             ev.preventDefault();
-            // na submitu dodaj tocku na pusnihment rečenicu ako nije stavljena
+            // na submitu dodaj tocku na punishment rečenicu ako nije stavljena
             let submitData = {};
-
             validateEmail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
             submitData.deadlineDate = deadlineChecked ? deadlineDate : null;
             submitData.whatToWrite = whatToWriteField;
             submitData.why = whyField;
-
-            console.log(submitData)
             this.props.onSubmit(submitData);
         };
     }
@@ -175,6 +170,7 @@ class PunishmentCreator extends React.Component {
                         <fieldset className="form-group">
                             <label>Why</label>
                             <textarea
+                                rows="5" cols="100"
                                 type="text"
                                 placeholder="Feel free to explain your reasons."
                                 value={whyField}
@@ -186,6 +182,7 @@ class PunishmentCreator extends React.Component {
                         </button>
                     </fieldset>
                 </form>
+                <label><h1>{this.props.punishment._message !== null ? this.props.punishment._message : null}</h1></label>
             </div>
         );
     }

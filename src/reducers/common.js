@@ -18,10 +18,7 @@ export default (state = defaultState, action) => {
             localStorage.removeItem('token');
             return defaultState;
         case 'APP_LOAD':
-            console.log('token:')
-            console.log(action.user)
-
-            return { ...state, token: action.token || null, currentUser: action.user }  
+            return { ...state, token: action.token || null, currentUser: action.user }
         default:
             return state;
     }

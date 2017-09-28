@@ -5,6 +5,7 @@ import Login from './components/login/Login';
 import Register from './components/register/Register';
 import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
+import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 
 import agent from './agent';
 
@@ -19,8 +20,15 @@ const mapDispatchToProps = dispatch => ({
             agent.setToken(token);
             agent.Auth.current().then((payload) => {
                 if (payload !== null) {
-                    console.log(payload.name);
-                    dispatch({ type: 'APP_LOAD', token, user: { username: payload.name, email: payload.email } })
+                    dispatch({
+                        type: 'APP_LOAD',
+                        token,
+                        user: {
+                            _id: payload._id,
+                            email: payload.email,
+                            username: payload.username
+                        }
+                    });
                 }
             });
         }
@@ -45,12 +53,14 @@ class App extends React.Component {
                         <h1 className="navbar-brand">{this.props.appName}</h1>
                     </div>
                 </nav>
-                {/* <Login />                
+                <Login />
                 <Register />
                 <hr />
-                <Game />
-                <hr /> */}
+                {/* <Game />
+                <hr />  */}
                 <PunishmentCreator />
+                <hr />
+                <PunishmentSelectorTable />
             </div>
         );
     }

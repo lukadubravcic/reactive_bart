@@ -36,7 +36,7 @@ const requests = {
 const Auth = {
 	current: () => requests.get('/users'),
 	login: (email, password) => requests.post('/users/login', { email, password }),
-	register: (name, email, password) => requests.post('/users/register', { name, email, password })
+	register: (username, email, password) => requests.post('/users/register', { username, email, password })
 };
 
 /* const Game = {

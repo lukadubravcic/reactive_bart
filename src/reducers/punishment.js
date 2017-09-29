@@ -2,12 +2,13 @@ let currentDate = new Date();
 
 const defaultState = {
     whom: '',
-    howManyTimes: 22,
+    howManyTimes: 1,
     deadlineChecked: false,
     deadlineDate: currentDate.setDate(currentDate.getDate() + 1),
     whatToWrite: '',
     why: '',
-    _message: null
+    _message: null,
+    acceptedPunishments: {}
 };
 
 export default (state = defaultState, action) => {
@@ -22,6 +23,8 @@ export default (state = defaultState, action) => {
             return { ...state, _message: action.msg };
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _message: action.msg };
+        case 'ACCEPTED_PUNISHMENTS_LOADED':
+            return { ...state, acceptedPunishments: action.punishments };
         default:
             return state;
     }

@@ -43,12 +43,13 @@ const Auth = {
 	getPunishment: () => requests.get(/)
 } */
 
-const CreatePunishment = {
-	create: (punishmentData) => requests.post('/punishment/create', punishmentData)
+const Punishment = {
+	createPunishment: (punishmentData) => requests.post('/punishment/create', punishmentData),
+	getAccepted: () => requests.get('/punishment/accepted')
 }
 
 export default {
 	Auth,
-	CreatePunishment,
+	Punishment,
 	setToken: _token => { token = _token; }
 }

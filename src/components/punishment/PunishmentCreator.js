@@ -45,7 +45,7 @@ const mapDispatchToProps = dispatch => ({
     }),
     onSubmit: submitData => {
         // agent magic
-        agent.CreatePunishment.create(submitData).then((payload) => {
+        agent.Punishment.createPunishment(submitData).then((payload) => {
             console.log(payload);
             if (!payload.errorMsg) dispatch({ type: 'PUNISHMENT_CREATED', payload, msg: 'Request sent!' });
             else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });

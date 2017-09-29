@@ -2,32 +2,52 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
+import SelectedTab from './SelectedTab'
+
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
-
-})
-
+    onLoadedPunishments: (punishments) => {
+        dispatch({ type: 'ACCEPTED_PUNISHMENTS_LOADED', punishments })
+    }
+});
 
 class PunishmentSelectorTable extends React.Component {
+
     constructor() {
-        super()
+        super();
     }
 
-    onComponentMount() {
-
+    componentWillMount() {
+        // dohvat punishmenta
+        agent.Punishment.getAccepted().then((payload) => {
+            this.props.onLoadedPunishments(payload.punishments);
+        });
     }
 
     render() {
-        return (
-            <div className="container">
-                <h2>Table</h2>
-                {!this.props.articles}
 
-            </div>
-        )
+        const punishments = this.props.punishment.punishments;
+        let viewTab = null;
+
+        if (this.props.punishment.selectedTab === 'accepted') {
+            return (
+                <div className="container">
+                    <SelectedTab />
+                </div>
+            );
+        }
+
+        else if (this.props.punishment.selectedTab === 'past') { }
+        else if (this.props.punishment.selectedTab === 'ordered') { }
+        else {
+            return (
+                <h1 className="container">NO DATA</h1>
+            )
+
+        }
+
     }
-
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PunishmentSelectorTable)

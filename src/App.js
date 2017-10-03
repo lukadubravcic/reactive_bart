@@ -10,9 +10,7 @@ import PunishmentSelectorTable from './components/selector/PunishmentSelectorTab
 import agent from './agent';
 
 
-const mapStateToProps = state => ({
-    appName: state.common.appName
-});
+const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
     onLoad: (token) => {
@@ -50,7 +48,7 @@ class App extends React.Component {
             <div>
                 <nav className="navbar">
                     <div className="container">
-                        <h1 className="navbar-brand">{this.props.appName}</h1>
+                        <h1 className="navbar-brand">{this.props.common.appName}</h1>
                     </div>
                 </nav>
                 <Login />
@@ -58,9 +56,10 @@ class App extends React.Component {
                 <hr />
                 {/* <Game />
                 <hr />  */}
-                <PunishmentCreator />
-                <hr />
-                <PunishmentSelectorTable />
+                {/* <PunishmentCreator />
+                <hr /> */}
+                {/* Logged in part: */}
+               <PunishmentSelectorTable />
             </div>
         );
     }

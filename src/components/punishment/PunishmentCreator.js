@@ -80,7 +80,7 @@ class PunishmentCreator extends React.Component {
         }
         this.incrementHowManyTimes = ev => {
             ev.preventDefault();
-            if (this.props.punishment.howManyTimes < 999) this.props.onChangeHowManyTimes(parseInt(this.props.punishment.howManyTimes) + 1);
+            if (this.props.punishment.howManyTimes < 999) this.props.onChangeHowManyTimes(parseInt(this.props.punishment.howManyTimes) + 1, 10);
         }
         this.decrementHowManyTimes = ev => {
             ev.preventDefault();

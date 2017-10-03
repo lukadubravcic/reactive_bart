@@ -45,7 +45,8 @@ const Auth = {
 
 const Punishment = {
 	createPunishment: (punishmentData) => requests.post('/punishment/create', punishmentData),
-	getAccepted: () => requests.get('/punishment/accepted')
+	getAccepted: () => requests.get('/punishment/accepted'),
+	giveUp: (punishmentId) => requests.post('/punishment/giveup', punishmentId)
 }
 
 export default {

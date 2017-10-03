@@ -17,9 +17,11 @@ const mapDispatchToProps = dispatch => ({
     onSubmit: (email, password) => {
         agent.Auth.login(email, password).then((payload) => {
             if (payload !== null) {
+                console.log()
                 dispatch({ type: 'LOGIN', currentUser: { username: payload.username, email: email, _id: payload._id }, token: payload.token })
             } else {
                 // TODO: alert - neispravan login
+                console.log('Login payload === null')
             }
         });
     },

@@ -1,15 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import agent from '../../agent';
 
-import SelectedTab from './SelectedTab'
+import AcceptedTab from './AcceptedTab'
 
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
-    onLoadedPunishments: (punishments) => {
-        dispatch({ type: 'ACCEPTED_PUNISHMENTS_LOADED', punishments })
-    }
+
 });
 
 class PunishmentSelectorTable extends React.Component {
@@ -18,33 +15,32 @@ class PunishmentSelectorTable extends React.Component {
         super();
     }
 
-    componentWillMount() {
-        // dohvat punishmenta
-        agent.Punishment.getAccepted().then((payload) => {
-            this.props.onLoadedPunishments(payload.punishments);
-        });
-    }
-
     render() {
 
-        const punishments = this.props.punishment.punishments;
+        //const acceptedPunishments = this.props.punishment.acceptedPunishments;
         let viewTab = null;
 
-        if (this.props.punishment.selectedTab === 'accepted') {
-            return (
-                <div className="container">
-                    <SelectedTab />
-                </div>
-            );
+        let tableTabNamesElement =
+            <div className="container">
+                <label>ACCEPTED</label>
+                <label>PAST</label>
+                <label>ORDERED</label>
+            </div>;
+
+        if (this.props.common.currentUser._id) { // user logged in?
+            if (this.props.punishment.selectedTab === 'accepted') {
+                return (
+                    <div className="container">
+                        {tableTabNamesElement}
+                        <AcceptedTab />
+                    </div>
+                );
+            }
+            else if (this.props.punishment.selectedTab === 'past') { }
+            else if (this.props.punishment.selectedTab === 'ordered') { }
         }
-
-        else if (this.props.punishment.selectedTab === 'past') { }
-        else if (this.props.punishment.selectedTab === 'ordered') { }
-        else {
-            return (
-                <h1 className="container">NO DATA</h1>
-            )
-
+        else { // user not logged in
+            return null;
         }
 
     }

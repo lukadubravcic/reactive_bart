@@ -5,7 +5,10 @@ import AcceptedTabRow from './AcceptedTabRow';
 import agent from '../../agent';
 
 
-const mapStateToProps = state => ({ acceptedPunishments: state.punishment.acceptedPunishments });
+const mapStateToProps = state => ({
+    state: state,
+    acceptedPunishments: state.punishment.acceptedPunishments
+});
 
 const mapDispatchToProps = dispatch => ({
     onLoadedAcceptedPunishments: (punishments) => {
@@ -43,11 +46,7 @@ class SelectedTab extends React.Component {
     }
 
     componentDidMount() {
-        // dohvat punishmenta ako je user loggan
-        /* if (this.props.common.currentUser) */
         agent.Punishment.getAccepted().then((payload) => {
-            console.log('Accepted punishment payload');
-            console.log(payload);
             if (payload) this.props.onLoadedAcceptedPunishments(payload.acceptedPunishments);
         });
     }
@@ -60,7 +59,7 @@ class SelectedTab extends React.Component {
             "display": "inline-block"
         }
 
-        if (acceptedPunishments.length > 0) {
+        if (acceptedPunishments !== 'empty') {
             return (
                 <div className="container">
                     <div className="container">
@@ -77,11 +76,11 @@ class SelectedTab extends React.Component {
                     }
                 </div>
             )
-        } else if (acceptedPunishments.length === 0) {
-            return (<h3>No data</h3>);
+        } else if (acceptedPunishments === 'empty') {
+            return (<h3>Loading data...</h3>);
         }
         else {
-            return (<h3>Loading data...</h3>);
+            return (<h3>No data.</h3>);
         }
     }
 

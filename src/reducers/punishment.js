@@ -1,14 +1,6 @@
 let currentDate = new Date();
 
 const defaultState = {
-    createPunishment: {
-        whom: '',
-        howManyTimes: 1,
-        deadlineChecked: false,
-        deadlineDate: currentDate.setDate(currentDate.getDate() + 1),
-        whatToWrite: '',
-        why: ''
-    },
     activePunishment: {
         whom: '',
         howManyTimes: 1,
@@ -18,8 +10,8 @@ const defaultState = {
         why: ''
     },
     _message: null,
-    acceptedPunishments: [],
-    selectedTab: 'accepted'
+    acceptedPunishments: 'empty',
+    selectedTab: 'acceptedTab'
 };
 
 export default (state = defaultState, action) => {
@@ -35,10 +27,13 @@ export default (state = defaultState, action) => {
         case 'ACCEPTED_PUNISHMENTS_LOADED':
             return { ...state, acceptedPunishments: action.punishments };
         case 'SET_ACTIVE_PUNISHMENT':
+            // TODO : setira aktivnu kaznu na board
             return { ...state, activePunishment: action.punishment };
         case 'GIVE_UP_ON_PUNISHMENT':
-            console.log('GIVE_UP_ON_PUNISHMENT');
             return { ...state, acceptedPunishments: action.newAcceptedPunishments };
+        case 'SWITCH_SELECTED_PUNISHMENT_TAB':
+            // promjena taba u selector tableu
+            return { ...state, selectedTab: action.id };
         case 'LOGOUT':
             return defaultState;
         default:

@@ -1,7 +1,6 @@
 const defaultState = {
     appName: 'reactive-bart',
-    currentUser: {
-    },
+    currentUser: {},
     token: null,
 }
 
@@ -13,6 +12,7 @@ export default (state = defaultState, action) => {
             return { ...state };
         case 'LOGIN':
             localStorage.setItem('token', action.token);
+            console.log('settan token')
             return { ...state, currentUser: action.currentUser, token: action.token };
         case 'LOGOUT':
             localStorage.removeItem('token');

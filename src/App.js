@@ -35,7 +35,7 @@ const mapDispatchToProps = dispatch => ({
 
 class App extends React.Component {
 
-    componentWillMount() {
+    componentDidMount() {
         const token = window.localStorage.getItem('token');
         if (token) {
             this.props.onLoad(token);

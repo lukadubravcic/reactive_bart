@@ -1,6 +1,14 @@
 let currentDate = new Date();
 
 const defaultState = {
+    createPunishment: {
+        whom: '',
+        howManyTimes: 1,
+        deadlineChecked: false,
+        deadlineDate: currentDate.setDate(currentDate.getDate() + 1),
+        whatToWrite: '',
+        why: ''
+    },
     activePunishment: {
         whom: '',
         howManyTimes: 1,

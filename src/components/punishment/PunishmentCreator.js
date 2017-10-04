@@ -10,7 +10,9 @@ const PUNISHMENT_MAX_LENGTH = 100;
 const PUNISHMENT_WHY_LENGTH = 500;
 const MAX_HOW_MANY_TIMES_PUNISHMENT = 999;
 
-const mapStateToProps = state => ({ ...state });
+const mapStateToProps = state => ({
+    ...state.punishmentCreation
+});
 
 const mapDispatchToProps = dispatch => ({
     onChangeWhom: (value) => dispatch({
@@ -80,22 +82,21 @@ class PunishmentCreator extends React.Component {
         }
         this.incrementHowManyTimes = ev => {
             ev.preventDefault();
-            if (this.props.punishment.howManyTimes < 999) this.props.onChangeHowManyTimes(parseInt(this.props.punishment.howManyTimes) + 1, 10);
+            if (this.props.howManyTimes < MAX_HOW_MANY_TIMES_PUNISHMENT) this.props.onChangeHowManyTimes(parseInt(this.props.howManyTimes) + 1, 10);
         }
         this.decrementHowManyTimes = ev => {
             ev.preventDefault();
-            if (this.props.punishment.howManyTimes > 0) this.props.onChangeHowManyTimes(this.props.punishment.howManyTimes - 1);
+            if (this.props.howManyTimes > 0) this.props.onChangeHowManyTimes(this.props.howManyTimes - 1);
         }
         this.deadlineDateChange = date => {
             this.props.onDeadlineDateChange(moment(date).toDate().valueOf());
         }
         this.toggleDeadlineCheckbox = ev => {
-            this.props.onChangeDeadlineCheckbox(!this.props.punishment.deadlineChecked);
+            this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
         }
 
         this.submitForm = (whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField) => ev => {
             ev.preventDefault();
-            // na submitu dodaj tocku na punishment rečenicu ako nije stavljena
             let submitData = {};
             validateEmail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
@@ -107,13 +108,12 @@ class PunishmentCreator extends React.Component {
     }
 
     render() {
-
-        const whomField = this.props.punishment.whom;
-        const howManyTimesField = this.props.punishment.howManyTimes;
-        const whatToWriteField = this.props.punishment.whatToWrite;
-        const whyField = this.props.punishment.why;
-        const deadlineDate = this.props.punishment.deadlineDate;
-        const deadlineChecked = this.props.punishment.deadlineChecked;
+        const whomField = this.props.whom;
+        const howManyTimesField = this.props.howManyTimes;
+        const whatToWriteField = this.props.whatToWrite;
+        const whyField = this.props.why;
+        const deadlineDate = this.props.deadlineDate;
+        const deadlineChecked = this.props.deadlineChecked;
 
         return (
             <div className="container">
@@ -182,7 +182,7 @@ class PunishmentCreator extends React.Component {
                         </button>
                     </fieldset>
                 </form>
-                <label><h1>{this.props.punishment._message !== null ? this.props.punishment._message : null}</h1></label>
+                {this.props._message !== null ? <label><h1>{this.props._message}</h1></label> : null}
             </div>
         );
     }

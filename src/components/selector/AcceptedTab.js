@@ -34,6 +34,7 @@ class SelectedTab extends React.Component {
             resultPnsh ? this.props.setActivePunishment(resultPnsh) : null;
         }
         this.giveUpPunishment = id => {
+            // makni tu kaznu iz statea
             let filteredPunishments = this.props.acceptedPunishments.filter((punishment) => {
                 return punishment._id === id ? null : punishment;
             });
@@ -45,8 +46,9 @@ class SelectedTab extends React.Component {
         // dohvat punishmenta ako je user loggan
         /* if (this.props.common.currentUser) */
         agent.Punishment.getAccepted().then((payload) => {
+            console.log('Accepted punishment payload');
             console.log(payload);
-            this.props.onLoadedAcceptedPunishments(payload.acceptedPunishments);
+            if (payload) this.props.onLoadedAcceptedPunishments(payload.acceptedPunishments);
         });
     }
 
@@ -54,7 +56,6 @@ class SelectedTab extends React.Component {
 
         const acceptedPunishments = this.props.acceptedPunishments;
         const style = {
-            //paddingLeft: "5em",
             "width": "220px",
             "display": "inline-block"
         }

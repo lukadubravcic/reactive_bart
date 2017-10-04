@@ -20,15 +20,27 @@ class PunishmentSelectorTable extends React.Component {
         //const acceptedPunishments = this.props.punishment.acceptedPunishments;
         let viewTab = null;
 
+        const style = {
+            display: "inline-block",
+            fontWeight: "bold"
+        }
+        const selectedStyle = {
+            ...style, 
+            textDecoration: "underline"
+        }
+
         let tableTabNamesElement =
-            <div className="container">
-                <label>ACCEPTED</label>
-                <label>PAST</label>
-                <label>ORDERED</label>
+            <div style={{"margin": "auto", "width":"60%"}} >
+                <label style={selectedStyle} onClick={()=>{console.log('click')}}>ACCEPTED</label>
+                <label style={style}>PAST</label>
+                <label style={style}>ORDERED</label>
             </div>;
+
+
 
         if (this.props.common.currentUser._id) { // user logged in?
             if (this.props.punishment.selectedTab === 'accepted') {
+                
                 return (
                     <div className="container">
                         {tableTabNamesElement}

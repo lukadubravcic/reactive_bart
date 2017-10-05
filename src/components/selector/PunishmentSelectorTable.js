@@ -20,28 +20,26 @@ class PunishmentSelectorTable extends React.Component {
         super();
         this.selectTab = ev => {
             //console.log(ev.target.id);
-            /* if (ev.target.id !== this.props.punishment.selectedTab) { */ // ako se selektira razlicit tab od trenutnog
-
-            switch (ev.target.id) {
-                case 'acceptedTab':
-                    this.acceptedStyle = this.placeholderStyles.selectedStyle;
-                    this.pastStyle = this.orderedStyle = this.placeholderStyles.defaultStyle;
-                    break;
-                case 'pastTab':
-                    this.pastStyle = this.placeholderStyles.selectedStyle;
-                    this.acceptedStyle = this.orderedStyle = this.placeholderStyles.defaultStyle;
-                    break;
-                case 'orderedTab':
-                    this.orderedStyle = this.placeholderStyles.selectedStyle;
-                    this.acceptedStyle = this.pastStyle = this.placeholderStyles.defaultStyle;
-                    break;
+            if (ev.target.id !== this.props.punishment.selectedTab) { // ako se selektira razlicit tab od trenutnog
+                switch (ev.target.id) {
+                    case 'acceptedTab':
+                        this.acceptedStyle = this.placeholderStyles.selectedStyle;
+                        this.pastStyle = this.orderedStyle = this.placeholderStyles.defaultStyle;
+                        break;
+                    case 'pastTab':
+                        this.pastStyle = this.placeholderStyles.selectedStyle;
+                        this.acceptedStyle = this.orderedStyle = this.placeholderStyles.defaultStyle;
+                        break;
+                    case 'orderedTab':
+                        this.orderedStyle = this.placeholderStyles.selectedStyle;
+                        this.acceptedStyle = this.pastStyle = this.placeholderStyles.defaultStyle;
+                        break;
+                }
+                this.props.changeSelectedTab(ev.target.id);
             }
+        }
 
-            this.props.changeSelectedTab(ev.target.id);
-            /*  } */
-        };
-
-        this.placeholderStyles = {
+        this.placeholderStyles = { // jednostavan styling radi lakseg rada
             defaultStyle: {
                 margin: "5px 10px",
                 padding: "5px 10px",
@@ -105,5 +103,6 @@ class PunishmentSelectorTable extends React.Component {
 
     }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(PunishmentSelectorTable)

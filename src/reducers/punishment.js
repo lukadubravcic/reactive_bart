@@ -10,10 +10,16 @@ const defaultState = {
         why: ''
     },
     _message: null,
+
+    selectedTab: 'acceptedTab', // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
+
     acceptedPunishments: 'empty',
     shownAcceptedPunishments: 'empty',
-    selectedTab: 'acceptedTab', // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
-    currentAcceptedPage: 1
+    currentAcceptedPage: 1,
+
+    pastPunishments: 'empty',
+    shownPastPunishments: 'empty',
+    currentPastPage: 1,
 };
 
 export default (state = defaultState, action) => {
@@ -39,6 +45,13 @@ export default (state = defaultState, action) => {
         case 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS':
             //console.log(action.newPage);
             return { ...state, shownAcceptedPunishments: action.punishments, currentAcceptedPage: action.newPage }
+
+        case 'PAST_PUNISHMENTS_LOADED':
+            return { ...state, pastPunishments: action.punishments };
+        case 'UPDATE_SHOWN_PAST_PUNISHMENTS':
+            //console.log(action.newPage);
+            return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage }
+
         case 'LOGOUT':
             return defaultState;
         default:

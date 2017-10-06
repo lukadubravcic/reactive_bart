@@ -35,7 +35,6 @@ class SelectedTab extends React.Component {
 
     constructor() {
         super();
-        this.updateAction = 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS';
         this.goPunishment = id => { // dispatch akciju koja stavlja odabrani punihsment na trenutni
             let resultPnsh;
             this.props.acceptedPunishments.forEach(function (punishment) {

@@ -96,8 +96,7 @@ class PunishmentSelectorTable extends React.Component {
                     </div>
                 );
             }
-        }
-        else { // user not logged in
+        } else { // user not logged in
             return null;
         }
 

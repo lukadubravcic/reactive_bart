@@ -13,7 +13,7 @@ const defaultState = {
     acceptedPunishments: 'empty',
     shownAcceptedPunishments: 'empty',
     selectedTab: 'acceptedTab', // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
-    currentPage: 1
+    currentAcceptedPage: 1
 };
 
 export default (state = defaultState, action) => {
@@ -37,7 +37,8 @@ export default (state = defaultState, action) => {
             // promjena taba u selector tableu
             return { ...state, selectedTab: action.id };
         case 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS':
-            return { ...state, shownAcceptedPunishments: action.punishments, currentPage: action.newPage }
+            //console.log(action.newPage);
+            return { ...state, shownAcceptedPunishments: action.punishments, currentAcceptedPage: action.newPage }
         case 'LOGOUT':
             return defaultState;
         default:

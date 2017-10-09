@@ -5,7 +5,8 @@ import TableFooter from './TableFooter';
 
 import agent from '../../agent';
 
-const ITEMS_PER_PAGE = 3;
+import { ITEMS_PER_PAGE } from '../../constants/constants';
+
 
 const mapStateToProps = state => ({
     state: state,
@@ -106,7 +107,7 @@ class SelectedTab extends React.Component {
                             )
                         })
                     }
-                    <TableFooter currentPage={currentPage} punishments={this.props.acceptedPunishments} changeShownPunishments={this.props.changeShownPunishments}/>
+                    <TableFooter currentPage={currentPage} punishments={this.props.acceptedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
             )
         } else if (shownPunishments === 'empty') {

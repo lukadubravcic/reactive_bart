@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import AcceptedTab from './AcceptedTab'
-import PastTab from './pastTab/PastTab'
+import AcceptedTab from './AcceptedTab';
+import PastTab from './pastTab/PastTab';
+import OrderedTab from './orderedTab/OrderedTab';
 
 const mapStateToProps = state => ({
     ...state,
@@ -94,6 +95,7 @@ class PunishmentSelectorTable extends React.Component {
                 return (
                     <div className="container">
                         {tableTabNamesElement}
+                        <OrderedTab />
                     </div>
                 );
             }

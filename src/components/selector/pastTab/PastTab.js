@@ -5,7 +5,7 @@ import TableFooter from '../TableFooter';
 
 import agent from '../../../agent';
 
-const ITEMS_PER_PAGE = 3;
+import { ITEMS_PER_PAGE } from '../../../constants/constants';
 
 const mapStateToProps = state => ({
     state: state,
@@ -29,8 +29,10 @@ class PastTab extends React.Component {
         super();
         this.showFirstPage = () => {
             let firstPage = [];
-            for (let i = 0; i < ITEMS_PER_PAGE; i++) {
-                if (this.props.pastPunishments[i]) firstPage.push(this.props.pastPunishments[i]);
+            if (this.props.pastPunishments.length > 0) {
+                for (let i = 0; i < ITEMS_PER_PAGE; i++) {
+                    if (this.props.pastPunishments[i]) firstPage.push(this.props.pastPunishments[i]);
+                }
             }
             this.props.changeShownPunishments(firstPage, 1);
         };
@@ -40,10 +42,10 @@ class PastTab extends React.Component {
         };
     }
 
-    componentDidMount() { // dohvat accepted kazni sa backenda
-        agent.Punishment.getAccepted().then((payload) => {
+    componentDidMount() { // dohvat past kazni sa backenda
+        agent.Punishment.getPast().then((payload) => {
             if (payload) {
-                this.loadAndShowPastPunishments(payload.acceptedPunishments);
+                this.loadAndShowPastPunishments(payload.pastPunishments);
             } else {
                 console.log("error: past punishments payload wasn't received");
             }

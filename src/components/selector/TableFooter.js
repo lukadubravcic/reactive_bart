@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ITEMS_PER_PAGE = 3;
+import { ITEMS_PER_PAGE } from '../../constants/constants';
 
 class TableFooter extends React.Component {
 
@@ -78,7 +78,7 @@ function getCounterStartingValue(pageNumber, arrayLength, itemsPerPage) {
         if (pageNumber === 1) { // trazi se prva stranica
             return 0;
         } else if (pageNumber === -1) { // trazi se last page
-            if (remainder === 0) return arrayLength - itemsPerPage - 1;
+            if (remainder === 0) return arrayLength - itemsPerPage;
             else if (remainder > 0) return (maxPage - 1) * itemsPerPage;
         } else if (pageNumber > 0 && pageNumber < arrayLength) {
             return ((pageNumber - 1) * itemsPerPage);

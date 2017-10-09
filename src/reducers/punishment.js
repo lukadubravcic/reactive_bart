@@ -20,6 +20,10 @@ const defaultState = {
     pastPunishments: 'empty',
     shownPastPunishments: 'empty',
     currentPastPage: 1,
+
+    orderedPunishments: 'empty',
+    shownOrderedPunishments: 'empty',
+    currentOrderedPage: 1
 };
 
 export default (state = defaultState, action) => {
@@ -51,6 +55,12 @@ export default (state = defaultState, action) => {
         case 'UPDATE_SHOWN_PAST_PUNISHMENTS':
             //console.log(action.newPage);
             return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage }
+
+        case 'ORDERED_PUNISHMENTS_LOADED':
+            return { ...state, orderedPunishments: action.punishments };
+        case 'UPDATE_SHOWN_ORDERED_PUNISHMENTS':
+            //console.log(action.newPage);
+            return { ...state, shownOrderedPunishments: action.punishments, currentOrderedPage: action.newPage }
 
         case 'LOGOUT':
             return defaultState;

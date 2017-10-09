@@ -47,6 +47,7 @@ const Punishment = {
 	createPunishment: (punishmentData) => requests.post('/punishment/create', punishmentData),
 	getAccepted: () => requests.get('/punishment/accepted'),
 	getPast: () => requests.get('/punishment/past'),
+	getOrdered: () => requests.get('/punishment/ordered'),
 	giveUp: (punishmentId) => requests.post('/punishment/giveup', {punishmentId: punishmentId})
 }
 

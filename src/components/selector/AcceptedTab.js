@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import AcceptedTabRow from './AcceptedTabRow';
 import TableFooter from './TableFooter';
+import { sortPunishmentsByOrderedBy, sortPunishmentsByDeadline, sortPunishmentsByHowManyTimes } from '../../helpers/sortingPunishments';
 
 import agent from '../../agent';
 
@@ -66,6 +67,7 @@ class SelectedTab extends React.Component {
         agent.Punishment.getAccepted().then((payload) => {
             if (payload) {
                 this.loadAndShowAcceptedPunishments(payload.acceptedPunishments);
+                sortPunishmentsByHowManyTimes(payload.acceptedPunishments, 1);
             } else {
                 console.log("error: accepted punishments payload wasn't received")
             }

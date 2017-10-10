@@ -43,12 +43,10 @@ class OrderedTab extends React.Component {
 
         this.styles = {
             wideField: {
-                "margin": "5px",
                 "width": "220px",
                 "display": "inline-block"
             },
             narrowField: {
-                "margin": "5px",
                 "width": "100px",
                 "display": "inline-block"
             }

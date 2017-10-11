@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import AcceptedTab from './AcceptedTab';
+import AcceptedTab from './acceptedTab/AcceptedTab';
 import PastTab from './pastTab/PastTab';
 import OrderedTab from './orderedTab/OrderedTab';
 

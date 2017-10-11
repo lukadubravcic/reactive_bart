@@ -36,8 +36,6 @@ export default (state = defaultState, action) => {
             return { ...state, _message: action.msg };
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _message: action.msg };
-        case 'ACCEPTED_PUNISHMENTS_LOADED':
-            return { ...state, acceptedPunishments: action.punishments };
         case 'SET_ACTIVE_PUNISHMENT':
             // TODO : setira aktivnu kaznu na board
             return { ...state, activePunishment: action.punishment };
@@ -46,21 +44,25 @@ export default (state = defaultState, action) => {
         case 'SWITCH_SELECTED_PUNISHMENT_TAB':
             // promjena taba u selector tableu
             return { ...state, selectedTab: action.id };
+
+        case 'ACCEPTED_PUNISHMENTS_LOADED':
+            return { ...state, acceptedPunishments: action.punishments };
         case 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS':
-            //console.log(action.newPage);
-            return { ...state, shownAcceptedPunishments: action.punishments, currentAcceptedPage: action.newPage }
+            return { ...state, shownAcceptedPunishments: action.punishments, currentAcceptedPage: action.newPage };
+        case 'ACCEPTED_PUNISHMENTS_RESORTED':
+            return { ...state, acceptedPunishments: action.punishments };
 
         case 'PAST_PUNISHMENTS_LOADED':
             return { ...state, pastPunishments: action.punishments };
         case 'UPDATE_SHOWN_PAST_PUNISHMENTS':
-            //console.log(action.newPage);
-            return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage }
+            return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage };
 
         case 'ORDERED_PUNISHMENTS_LOADED':
             return { ...state, orderedPunishments: action.punishments };
         case 'UPDATE_SHOWN_ORDERED_PUNISHMENTS':
-            //console.log(action.newPage);
-            return { ...state, shownOrderedPunishments: action.punishments, currentOrderedPage: action.newPage }
+            return { ...state, shownOrderedPunishments: action.punishments, currentOrderedPage: action.newPage };
+
+
 
         case 'LOGOUT':
             return defaultState;

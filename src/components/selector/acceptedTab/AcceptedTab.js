@@ -1,12 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
 import AcceptedTabRow from './AcceptedTabRow';
-import TableFooter from './TableFooter';
-import { sortPunishmentsByOrderedBy, sortPunishmentsByDeadline, sortPunishmentsByHowManyTimes } from '../../helpers/sortingPunishments';
+import TableFooter from '../TableFooter';
+import TableHeader from '../TableHeader';
 
-import agent from '../../agent';
+import { sortPunishmentsByOrderedBy, sortPunishmentsByDeadline, sortPunishmentsByHowManyTimes } from '../../../helpers/sortingPunishments';
 
-import { ITEMS_PER_PAGE } from '../../constants/constants';
+import agent from '../../../agent';
+
+import { ITEMS_PER_PAGE } from '../../../constants/constants';
 
 
 const mapStateToProps = state => ({
@@ -19,6 +22,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     onLoadedAcceptedPunishments: (punishments) => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_LOADED', punishments })
+    },
+    onResorting: (punishments) => {
+        dispatch({ type: 'ACCEPTED_PUNISHMENTS_RESORTED', punishments })
     },
     setActivePunishment: (punishment) => {
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment })
@@ -33,7 +39,7 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
-class SelectedTab extends React.Component {
+class AcceptedTab extends React.Component {
 
     constructor() {
         super();
@@ -50,7 +56,7 @@ class SelectedTab extends React.Component {
             });
             this.props.giveUpPunishment(id, filteredPunishments);
         };
-        this.showFirstPage = () => {
+        this._showFirstPage = () => {
             let firstPage = [];
             for (let i = 0; i < ITEMS_PER_PAGE; i++) {
                 if (this.props.acceptedPunishments[i]) firstPage.push(this.props.acceptedPunishments[i]);
@@ -59,15 +65,81 @@ class SelectedTab extends React.Component {
         };
         this.loadAndShowAcceptedPunishments = (punishments) => { // poziv kada stigne payload sa accepted punishmentima
             this.props.onLoadedAcceptedPunishments(punishments);
-            this.showFirstPage();
+            this._showFirstPage();
         }
+        this.changeElement = () => {
+
+        }
+
+        this.reSortPunishments = (id) => {
+
+            let sortedPunishments = [];
+            switch (id) {
+                case 'orderedBy':
+                    sortedPunishments = sortPunishmentsByOrderedBy(this.props.acceptedPunishments, 1);
+                    if (sortedPunishments) {
+                        this.props.onResorting(sortedPunishments);
+                        setTimeout(() => {
+                            this._showFirstPage();
+                        }, 1);
+                        let element = getByValue(this.columns, id);
+                        element.sortOrder *= -1;
+                        this.changeElement();
+                        console.log(this.columns);
+
+                    }
+                    break;
+                case 'deadline':
+                    sortedPunishments = sortPunishmentsByDeadline(this.props.acceptedPunishments, 1);
+                    if (sortedPunishments) {
+                        this.props.onResorting(sortedPunishments);
+                        this._showFirstPage();
+                    }
+                    break;
+                case 'howManyTimes':
+                    sortedPunishments = sortPunishmentsByHowManyTimes(this.props.acceptedPunishments, 1);
+                    if (sortedPunishments) {
+                        this.props.onResorting(sortedPunishments);
+                        this._showFirstPage();
+                    }
+                    break;
+            }
+            //console.log(this.props.acceptedPunishments[0].user_ordering_punishment);
+            //for (let pun of this.props.acceptedPunishments) console.log(pun.user_ordering_punishment)
+
+        }
+
+        this.columns = [
+            {
+                name: 'ORDERED BY',
+                clickHandler: this.reSortPunishments,
+                id: 'orderedBy',
+                sortOrder: 1,
+            },
+            {
+                name: 'DEADLINE',
+                clickHandler: this.reSortPunishments,
+                id: 'deadline',
+                sortOrder: 1,
+            },
+            {
+                name: 'X',
+                clickHandler: this.reSortPunishments,
+                id: 'howManyTimes',
+                sortOrder: 1,
+            },
+            {
+                name: 'WHAT',
+                clickHandler: null,
+                id: 'whatToWrite'
+            }
+        ]
     }
 
     componentDidMount() { // dohvat accepted kazni sa backenda
         agent.Punishment.getAccepted().then((payload) => {
             if (payload) {
                 this.loadAndShowAcceptedPunishments(payload.acceptedPunishments);
-                sortPunishmentsByHowManyTimes(payload.acceptedPunishments, 1);
             } else {
                 console.log("error: accepted punishments payload wasn't received")
             }
@@ -82,25 +154,25 @@ class SelectedTab extends React.Component {
             "width": "220px",
             "display": "inline-block"
         };
-
         /* 
             TODO: tableHeader kao zasebna komponenta koja upravlja poredkom prikazivanja itema
         */
-        const tableHeader = (
-            <div className="container">
-                <hr />
-                <label style={style}>ORDERED BY</label>
-                <label style={style}>DEADLINE</label>
-                <label style={style}>X</label>
-                <label style={style}>WHAT</label>
-                <hr />
-            </div>
-        );
+        /*  const tableHeader = (
+             <div className="container">
+                 <hr />
+                 <label style={style}>ORDERED BY</label>
+                 <label style={style}>DEADLINE</label>
+                 <label style={style}>X</label>
+                 <label style={style}>WHAT</label>
+                 <hr />
+             </div>
+         ); */
 
         if (shownPunishments !== 'empty') {
             return (
                 <div className="container">
-                    {tableHeader}
+                    {/* {tableHeader} */}
+                    <TableHeader columns={this.columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
                             return (
@@ -125,5 +197,13 @@ class SelectedTab extends React.Component {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectedTab);
+export default connect(mapStateToProps, mapDispatchToProps)(AcceptedTab);
 
+
+function getByValue(arr, value) {
+
+    for (let i = 0, iLen = arr.length; i < iLen; i++) {
+        if (arr[i].id == value) return arr[i];
+    }
+    return null;
+}

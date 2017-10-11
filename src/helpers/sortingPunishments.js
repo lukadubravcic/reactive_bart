@@ -2,27 +2,27 @@ export const sortPunishmentsByOrderedBy = (punishments, order) => { // order = 1
     let tmpPun = JSON.parse(JSON.stringify(punishments));
 
     tmpPun.sort((a, b) => {
-        return a.user_ordering_punishment == b.user_ordering_punishment
-            ? 0 : +(a.user_ordering_punishment > b.user_ordering_punishment) || order;
+        return a.user_ordering_punishment.localeCompare(b.user_ordering_punishment) * order;
     });
 
-
-    console.log('---- BEFORE ----')
+    /* console.log('---- BEFORE ----')
+    console.log("order: " + order)
     for (let pun of punishments) {
         console.log(pun.user_ordering_punishment)
     }
     console.log('---- AFTER ----')
     for (let pun of tmpPun) {
         console.log(pun.user_ordering_punishment)
-    }
-}
+    } */
+    return tmpPun;
+};
 
 export const sortPunishmentsByDeadline = (punishments, order) => {
     let tmpPun = JSON.parse(JSON.stringify(punishments));
 
     tmpPun.sort((a, b) => {
-        if (a.deadline === null && order === 1) return 1;
-        else if (a.deadline === null && order === -1) return -1;
+        if (a.deadline === null && order === 1) return 1; // ASC order, kazne bez deadline-a idu na kraj
+        else if (a.deadline === null && order === -1) return -1; // DESC order, kazne bez deadline-a idu na pocetak
 
         let c = new Date(a.deadline).getTime();
         let d = new Date(b.deadline).getTime();
@@ -32,16 +32,16 @@ export const sortPunishmentsByDeadline = (punishments, order) => {
         else if (c < d) return order * -1;
     });
 
-
-    console.log('---- BEFORE ----')
+    /* console.log('---- BEFORE ----')
     for (let pun of punishments) {
         console.log(pun.deadline)
     }
     console.log('---- AFTER ----')
     for (let puna of tmpPun) {
         console.log(puna.deadline)
-    }
-}
+    } */
+    return tmpPun;
+};
 
 
 export const sortPunishmentsByHowManyTimes = (punishments, order) => {
@@ -50,20 +50,20 @@ export const sortPunishmentsByHowManyTimes = (punishments, order) => {
         console.log('')
         return null;} */
 
-    let tempPun = JSON.parse(JSON.stringify(punishments));
+    let tmpPun = JSON.parse(JSON.stringify(punishments));
 
-    tempPun.sort((a, b) => {
+    tmpPun.sort((a, b) => {
         return (a.how_many_times - b.how_many_times) * order;
     });
 
-
-    console.log('---- BEFORE ----')
+    /* console.log('---- BEFORE ----')
     for (let pun of punishments) {
         console.log(pun.how_many_times)
     }
     console.log('---- AFTER ----')
-    for (let pun of tempPun) {
+    for (let pun of tmpPun) {
         console.log(pun.how_many_times)
-    }
-}
+    } */
+    return tmpPun;
+};
 

@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import OrderedTabRow from './OrderedTabRow';
 import TableFooter from '../TableFooter';
+import TableHeader from '../TableHeader';
+
+import { sortPunishmentsByDate, sortPunishmentsByNumber, sortPunishmentsByString } from '../../../helpers/sortingPunishments';
 
 import agent from '../../../agent';
 
@@ -18,6 +21,9 @@ const mapDispatchToProps = dispatch => ({
     onLoadedOrderedPunishments: (punishments) => {
         dispatch({ type: 'ORDERED_PUNISHMENTS_LOADED', punishments })
     },
+    changeOrderedPunishments: (punishments) => {
+        dispatch({ type: 'ORDERED_PUNISHMENTS_CHANGED', punishments })
+    },
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_ORDERED_PUNISHMENTS', punishments, newPage })
     }
@@ -27,7 +33,7 @@ class OrderedTab extends React.Component {
 
     constructor() {
         super();
-        this.showFirstPage = () => {
+        this._showFirstPage = () => {
             let firstPage = [];
             if (this.props.orderedPunishments.length > 0) {
                 for (let i = 0; i < ITEMS_PER_PAGE; i++) {
@@ -36,10 +42,116 @@ class OrderedTab extends React.Component {
             }
             this.props.changeShownPunishments(firstPage, 1);
         };
+
         this.loadAndShowOrderedPunishments = (punishments) => { // poziv kada stigne payload sa past punishmentima
             this.props.onLoadedOrderedPunishments(punishments);
-            this.showFirstPage();
+            this._showFirstPage();
         };
+
+        this.changeElement = (element) => {
+            let ASC = ' (ʌ)';
+            let DESC = ' (v)';
+            let lastFourChars = element.name.substring(element.name.length - 4);
+
+            if ((lastFourChars === ASC) || (lastFourChars === DESC)) {
+                element.name = element.sortOrder === 1 ? element.name.substring(0, element.name.length - 4) + ASC : element.name.substring(0, element.name.length - 4) + DESC;
+            } else {
+                element.name = element.sortOrder === 1 ? element.name + ASC : element.name + DESC;
+            }
+            element.sortOrder *= -1;
+        };
+
+        this.updateAndShowOrderedPunishments = punishments => {
+            this.props.changeOrderedPunishments(punishments);
+            setTimeout(() => {
+                this._showFirstPage(punishments);
+            }, 1);
+        };
+
+        this.reSortPunishments = (id) => {
+
+            let sortedPunishments = [];
+            let element = getByValue(this.columns, id);
+
+            switch (id) {
+                case 'created':
+                    sortedPunishments = sortPunishmentsByDate(this.props.orderedPunishments, element.sortOrder, 'created');
+                    break;
+                case 'toWhom':
+                    sortedPunishments = sortPunishmentsByString(this.props.orderedPunishments, element.sortOrder, 'user_taking_punishment');
+                    break;
+                case 'deadline':
+                    sortedPunishments = sortPunishmentsByDate(this.props.orderedPunishments, element.sortOrder, 'deadline');
+                    break;
+                case 'howManyTimes':
+                    sortedPunishments = sortPunishmentsByNumber(this.props.orderedPunishments, element.sortOrder);
+                    break;
+                /* case 'status':
+                    sortedPunishments = sortPunishmentsByString(this.props.orderedPunishments, element.sortOrder), 'status';
+                    break; */
+                default:
+                    break;
+            }
+
+            if (sortedPunishments) {
+                this.updateAndShowOrderedPunishments(sortedPunishments);
+                this.changeElement(element);
+                this._resetElements(element, this.columns);
+            }
+        };
+
+        this._resetElements = (element, columns) => {
+            // default vrijednosti za sve elemente osim određenog (element)
+            for (let col of columns) {
+                if (element.id !== col.id) {
+                    col.name = col.defaultName;
+                    col.sortOrder = 1;
+                }
+            }
+        };
+
+        this.columns = [
+            {
+                name: 'WHEN',
+                defaultName: 'WHEN',
+                clickHandler: this.reSortPunishments,
+                id: 'created',
+                sortOrder: 1,
+            },
+            {
+                name: 'TO WHOM',
+                defaultName: 'TO WHOM',
+                clickHandler: this.reSortPunishments,
+                id: 'toWhom',
+                sortOrder: 1,
+            },
+            {
+                name: 'DEADLINE',
+                defaultName: 'DEADLINE',
+                clickHandler: this.reSortPunishments,
+                id: 'deadline',
+                sortOrder: 1,
+            },
+            {
+                name: 'X',
+                defaultName: 'X',
+                clickHandler: this.reSortPunishments,
+                id: 'howManyTimes',
+                sortOrder: 1,
+            },
+            {
+                name: 'WHAT',
+                defaultName: 'WHAT',
+                clickHandler: null,
+                id: 'whatToWrite'
+            },
+            {
+                name: 'STATUS',
+                defaultName: 'STATUS',
+                clickHandler: null,
+                id: 'status',
+            }
+        ];
 
         this.styles = {
             wideField: {
@@ -50,7 +162,7 @@ class OrderedTab extends React.Component {
                 "width": "100px",
                 "display": "inline-block"
             }
-        }
+        };
     }
 
     componentDidMount() { // dohvat past kazni sa backenda
@@ -67,28 +179,19 @@ class OrderedTab extends React.Component {
 
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownOrderedPunishments;
-
-        const tableHeader = (
-            <div className="container">
-                <hr />
-                <label style={this.styles.wideField}>WHEN</label>
-                <label style={this.styles.narrowField}>TO WHOM</label>
-                <label style={this.styles.wideField}>DEADLINE</label>
-                <label style={this.styles.narrowField}>X</label>
-                <label style={this.styles.wideField}>WHAT</label>
-                <label style={this.styles.narrowField}>STATUS</label>
-                <hr />
-            </div>
-        );
+        const style = {
+            "width": "220px",
+            "display": "inline-block"
+        };
 
         if (shownPunishments !== 'empty') {
             return (
                 <div className="container">
-                    {tableHeader}
+                    <TableHeader columns={this.columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
                             return (
-                                <OrderedTabRow punishment={punishment} styles={this.styles} key={punishment._id} id={punishment._id} />
+                                <OrderedTabRow punishment={punishment} style={style} key={punishment._id} id={punishment._id} />
                             )
                         })
                     }
@@ -110,3 +213,11 @@ class OrderedTab extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderedTab);
+
+function getByValue(arr, value) {
+
+    for (let i = 0, iLen = arr.length; i < iLen; i++) {
+        if (arr[i].id === value) return arr[i];
+    }
+    return null;
+}

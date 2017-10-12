@@ -12,7 +12,7 @@ const OrderedTabRow = props => {
                             style={props.style}
                             key={column.id}
                             id={column.id}
-                            onClick={() => column.clickHandler(column.id)}>
+                            onClick={() => (column.clickHandler) ? column.clickHandler(column.id): ()=>{}}>
                             {column.name}
                         </label>
                     )

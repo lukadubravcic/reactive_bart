@@ -24,12 +24,12 @@ const OrderedTabRow = props => {
     return (
         <div className="container">
             {/* stuktura tog reda u tablici */}
-            <span style={props.styles.wideField}>{props.punishment.created}</span>
-            <span style={props.styles.narrowField}>{props.punishment.user_taking_punishment}</span>
-            <span style={props.styles.wideField}>{props.punishment.deadline}</span>
-            <span style={props.styles.narrowField}>{props.punishment.how_many_times}</span>
-            <span style={props.styles.wideField}>{props.punishment.what_to_write}</span>
-            <span style={props.styles.narrowField}>{punishmentStatus}</span>
+            <span style={props.style}>{props.punishment.created}</span>
+            <span style={props.style}>{props.punishment.user_taking_punishment}</span>
+            <span style={props.style}>{props.punishment.deadline}</span>
+            <span style={props.style}>{props.punishment.how_many_times}</span>
+            <span style={props.style}>{props.punishment.what_to_write}</span>
+            <span style={props.style}>{punishmentStatus}</span>
         </div>
     )
 

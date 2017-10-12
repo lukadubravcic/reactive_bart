@@ -6,7 +6,7 @@ class TableFooter extends React.Component {
 
     constructor(props) {
         super(props);
-        this.changeShownPunishments = props.changeShownPunishments;
+        this.changeShownPunishments = this.props.changeShownPunishments;
         this.showPage = this.showPage.bind(this);
     }
 

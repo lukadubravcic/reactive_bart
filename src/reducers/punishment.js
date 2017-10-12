@@ -49,19 +49,22 @@ export default (state = defaultState, action) => {
             return { ...state, acceptedPunishments: action.punishments };
         case 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS':
             return { ...state, shownAcceptedPunishments: action.punishments, currentAcceptedPage: action.newPage };
-        case 'ACCEPTED_PUNISHMENTS_RESORTED':
+        case 'ACCEPTED_PUNISHMENTS_CHANGED':
             return { ...state, acceptedPunishments: action.punishments };
 
         case 'PAST_PUNISHMENTS_LOADED':
             return { ...state, pastPunishments: action.punishments };
         case 'UPDATE_SHOWN_PAST_PUNISHMENTS':
             return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage };
+        case 'PAST_PUNISHMENTS_CHANGED':
+            return { ...state, pastPunishments: action.punishments };
 
         case 'ORDERED_PUNISHMENTS_LOADED':
             return { ...state, orderedPunishments: action.punishments };
         case 'UPDATE_SHOWN_ORDERED_PUNISHMENTS':
             return { ...state, shownOrderedPunishments: action.punishments, currentOrderedPage: action.newPage };
-
+        case 'ORDERED_PUNISHMENTS_CHANGED':
+            return { ...state, orderedPunishments: action.punishments };
 
 
         case 'LOGOUT':

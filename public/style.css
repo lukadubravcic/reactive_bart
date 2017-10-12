@@ -352,9 +352,9 @@
     @media (min-width: 992px) {
       .container {
         max-width: 940px; } }
-    @media (min-width: 1200px) {
+    @media (min-width: 1500px) {
       .container {
-        max-width: 1140px; } }
+        max-width: 1490px; } }
   
   .container-fluid {
     margin-left: auto;

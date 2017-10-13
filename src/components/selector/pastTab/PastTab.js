@@ -14,7 +14,8 @@ const mapStateToProps = state => ({
     state: state,
     pastPunishments: state.punishment.pastPunishments,
     shownPastPunishments: state.punishment.shownPastPunishments,
-    currentPage: state.punishment.currentPastPage
+    currentPage: state.punishment.currentPastPage,
+    headerColumns: state.punishment.pastHeader
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -26,6 +27,9 @@ const mapDispatchToProps = dispatch => ({
     },
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_PAST_PUNISHMENTS', punishments, newPage })
+    },
+    changePastHeader: (columns) => {
+        dispatch({type: 'UPDATE_PAST_HEADER', columns})
     }
 });
 
@@ -33,11 +37,12 @@ class PastTab extends React.Component {
 
     constructor() {
         super();
-        this._showFirstPage = () => {
+
+        this._showFirstPage = (punishments = this.props.pastPunishments) => {
             let firstPage = [];
-            if (this.props.pastPunishments.length > 0) {
+            if (punishments.length > 0) {
                 for (let i = 0; i < ITEMS_PER_PAGE; i++) {
-                    if (this.props.pastPunishments[i]) firstPage.push(this.props.pastPunishments[i]);
+                    if (punishments[i]) firstPage.push(punishments[i]);
                 }
             }
             this.props.changeShownPunishments(firstPage, 1);
@@ -69,27 +74,25 @@ class PastTab extends React.Component {
         this.reSortPunishments = (id) => {
 
             let sortedPunishments = [];
+            let pastPunishments = this.props.pastPunishments;
             let element = getByValue(this.columns, id);
 
             switch (id) {
                 case 'created':
-                sortedPunishments = sortPunishmentsByDate(this.props.acceptedPunishments, element.sortOrder, 'created');
-                break;
-                case 'orderedBy':
-                    sortedPunishments = sortPunishmentsByString(this.props.acceptedPunishments, element.sortOrder, 'user_ordering_punishment');
+                    sortedPunishments = sortPunishmentsByDate(pastPunishments, element.sortOrder, element.fieldName);
                     break;
-                
-                case 'deadline':
-                    sortedPunishments = sortPunishmentsByDate(this.props.acceptedPunishments, element.sortOrder, 'deadline');
+                case 'userOrdering':
+                    sortedPunishments = sortPunishmentsByString(pastPunishments, element.sortOrder, element.fieldName);
                     break;
                 case 'howManyTimes':
-                    sortedPunishments = sortPunishmentsByNumber(this.props.acceptedPunishments, element.sortOrder, 'how_many_times');
+                    sortedPunishments = sortPunishmentsByDate(pastPunishments, element.sortOrder, element.fieldName);
                     break;
                 default:
+                    break;
             }
 
             if (sortedPunishments) {
-                this.updateAndShowAcceptedPunishments(sortedPunishments);
+                this.updateAndShowPastPunishments(sortedPunishments);
                 this.changeElement(element);
                 this._resetElements(element, this.columns);
             }
@@ -107,17 +110,19 @@ class PastTab extends React.Component {
 
         this.columns = [
             {
-                name: 'ORDERED BY',
-                defaultName: 'ORDERED BY',
+                name: 'ORDERED ON',
+                defaultName: 'ORDERED ON',
                 clickHandler: this.reSortPunishments,
-                id: 'orderedBy',
+                id: 'created',
+                fieldName: 'created',
                 sortOrder: 1,
             },
             {
-                name: 'DEADLINE',
-                defaultName: 'DEADLINE',
+                name: 'BY WHOM',
+                defaultName: 'BY WHOM',
                 clickHandler: this.reSortPunishments,
-                id: 'deadline',
+                id: 'userOrdering',
+                fieldName: 'user_ordering_punishment',
                 sortOrder: 1,
             },
             {
@@ -125,6 +130,7 @@ class PastTab extends React.Component {
                 defaultName: 'X',
                 clickHandler: this.reSortPunishments,
                 id: 'howManyTimes',
+                fieldName: 'how_many_times',
                 sortOrder: 1,
             },
             {
@@ -132,6 +138,12 @@ class PastTab extends React.Component {
                 defaultName: 'WHAT',
                 clickHandler: null,
                 id: 'whatToWrite'
+            },
+            {
+                name: 'STATUS',
+                defaultName: 'STATUS',
+                clickHandler: null,
+                id: 'status'
             }
         ];
     }
@@ -150,27 +162,16 @@ class PastTab extends React.Component {
 
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownPastPunishments;
+        const columns = this.columns;
         const style = {
             "width": "210px",
             "display": "inline-block"
         };
 
-        const tableHeader = (
-            <div className="container">
-                <hr />
-                <label style={style}>ORDERED ON</label>
-                <label style={style}>BY WHOM</label>
-                <label style={style}>X</label>
-                <label style={style}>WHAT</label>
-                <label style={style}>STATUS</label>
-                <hr />
-            </div>
-        );
-
         if (shownPunishments !== 'empty') {
             return (
                 <div className="container">
-                    {tableHeader}
+                    <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
                             return (
@@ -198,9 +199,9 @@ class PastTab extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(PastTab);
 
 function getByValue(arr, value) {
-    
-        for (let i = 0, iLen = arr.length; i < iLen; i++) {
-            if (arr[i].id === value) return arr[i];
-        }
-        return null;
+
+    for (let i = 0, iLen = arr.length; i < iLen; i++) {
+        if (arr[i].id === value) return arr[i];
     }
+    return null;
+}

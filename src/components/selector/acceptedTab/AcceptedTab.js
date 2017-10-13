@@ -93,17 +93,18 @@ class AcceptedTab extends React.Component {
         this.reSortPunishments = (id) => {
 
             let sortedPunishments = [];
+            let acceptedPunishments = this.props.acceptedPunishments;
             let element = getByValue(this.columns, id);
 
             switch (id) {
                 case 'orderedBy':
-                    sortedPunishments = sortPunishmentsByString(this.props.acceptedPunishments, element.sortOrder, 'user_ordering_punishment');
+                    sortedPunishments = sortPunishmentsByString(acceptedPunishments, element.sortOrder, element.fieldName);
                     break;
                 case 'deadline':
-                    sortedPunishments = sortPunishmentsByDate(this.props.acceptedPunishments, element.sortOrder, 'deadline');
+                    sortedPunishments = sortPunishmentsByDate(acceptedPunishments, element.sortOrder, element.fieldName);
                     break;
                 case 'howManyTimes':
-                    sortedPunishments = sortPunishmentsByNumber(this.props.acceptedPunishments, element.sortOrder, 'how_many_times');
+                    sortedPunishments = sortPunishmentsByNumber(acceptedPunishments, element.sortOrder, element.fieldName);
                     break;
                 default:
             }
@@ -131,6 +132,7 @@ class AcceptedTab extends React.Component {
                 defaultName: 'ORDERED BY',
                 clickHandler: this.reSortPunishments,
                 id: 'orderedBy',
+                fieldName: 'user_ordering_punishment',
                 sortOrder: 1,
             },
             {
@@ -138,6 +140,7 @@ class AcceptedTab extends React.Component {
                 defaultName: 'DEADLINE',
                 clickHandler: this.reSortPunishments,
                 id: 'deadline',
+                fieldName: 'deadline',
                 sortOrder: 1,
             },
             {
@@ -145,6 +148,7 @@ class AcceptedTab extends React.Component {
                 defaultName: 'X',
                 clickHandler: this.reSortPunishments,
                 id: 'howManyTimes',
+                fieldName: 'how_many_times',
                 sortOrder: 1,
             },
             {
@@ -170,6 +174,7 @@ class AcceptedTab extends React.Component {
 
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownAcceptedPunishments;
+        const columns = this.columns
         const style = {
             "width": "220px",
             "display": "inline-block"
@@ -178,7 +183,7 @@ class AcceptedTab extends React.Component {
         if (shownPunishments !== 'empty') {
             return (
                 <div className="container">
-                    <TableHeader columns={this.columns} style={style} />
+                    <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
                             return (

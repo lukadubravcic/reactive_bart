@@ -33,11 +33,12 @@ class OrderedTab extends React.Component {
 
     constructor() {
         super();
-        this._showFirstPage = () => {
+
+        this._showFirstPage = (punishments = this.props.orderedPunishments) => {
             let firstPage = [];
-            if (this.props.orderedPunishments.length > 0) {
+            if (punishments.length > 0) {
                 for (let i = 0; i < ITEMS_PER_PAGE; i++) {
-                    if (this.props.orderedPunishments[i]) firstPage.push(this.props.orderedPunishments[i]);
+                    if (punishments[i]) firstPage.push(punishments[i]);
                 }
             }
             this.props.changeShownPunishments(firstPage, 1);
@@ -63,28 +64,27 @@ class OrderedTab extends React.Component {
 
         this.updateAndShowOrderedPunishments = punishments => {
             this.props.changeOrderedPunishments(punishments);
-            setTimeout(() => {
-                this._showFirstPage(punishments);
-            }, 1);
+            this._showFirstPage(punishments);
         };
 
         this.reSortPunishments = (id) => {
 
             let sortedPunishments = [];
+            let orderedPunishments = this.props.orderedPunishments
             let element = getByValue(this.columns, id);
 
             switch (id) {
                 case 'created':
-                    sortedPunishments = sortPunishmentsByDate(this.props.orderedPunishments, element.sortOrder, 'created');
+                    sortedPunishments = sortPunishmentsByDate(orderedPunishments, element.sortOrder, element.fieldName);
                     break;
                 case 'toWhom':
-                    sortedPunishments = sortPunishmentsByString(this.props.orderedPunishments, element.sortOrder, 'user_taking_punishment');
+                    sortedPunishments = sortPunishmentsByString(orderedPunishments, element.sortOrder, element.fieldName);
                     break;
                 case 'deadline':
-                    sortedPunishments = sortPunishmentsByDate(this.props.orderedPunishments, element.sortOrder, 'deadline');
+                    sortedPunishments = sortPunishmentsByDate(orderedPunishments, element.sortOrder, element.fieldName);
                     break;
                 case 'howManyTimes':
-                    sortedPunishments = sortPunishmentsByNumber(this.props.orderedPunishments, element.sortOrder);
+                    sortedPunishments = sortPunishmentsByNumber(orderedPunishments, element.sortOrder, element.fieldName);
                     break;
                 /* case 'status':
                     sortedPunishments = sortPunishmentsByString(this.props.orderedPunishments, element.sortOrder), 'status';
@@ -116,6 +116,7 @@ class OrderedTab extends React.Component {
                 defaultName: 'WHEN',
                 clickHandler: this.reSortPunishments,
                 id: 'created',
+                fieldName: 'created',
                 sortOrder: 1,
             },
             {
@@ -123,6 +124,7 @@ class OrderedTab extends React.Component {
                 defaultName: 'TO WHOM',
                 clickHandler: this.reSortPunishments,
                 id: 'toWhom',
+                fieldName: 'user_taking_punishment',
                 sortOrder: 1,
             },
             {
@@ -130,6 +132,7 @@ class OrderedTab extends React.Component {
                 defaultName: 'DEADLINE',
                 clickHandler: this.reSortPunishments,
                 id: 'deadline',
+                fieldName: 'deadline',
                 sortOrder: 1,
             },
             {
@@ -137,6 +140,7 @@ class OrderedTab extends React.Component {
                 defaultName: 'X',
                 clickHandler: this.reSortPunishments,
                 id: 'howManyTimes',
+                fieldName: 'how_many_times',
                 sortOrder: 1,
             },
             {

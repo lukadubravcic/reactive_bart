@@ -23,10 +23,12 @@ const defaultState = {
 
     orderedPunishments: 'empty',
     shownOrderedPunishments: 'empty',
-    currentOrderedPage: 1
+    currentOrderedPage: 1,
+
 };
 
 export default (state = defaultState, action) => {
+    console.log(action.type)
     switch (action.type) {
         case 'UPDATE_FIELD_PUNISH_CREATE':
             return { ...state, [action.key]: action.value };
@@ -58,6 +60,8 @@ export default (state = defaultState, action) => {
             return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage };
         case 'PAST_PUNISHMENTS_CHANGED':
             return { ...state, pastPunishments: action.punishments };
+        case 'UPDATE_PAST_HEADER':
+            return {...state, pastHeader: action.columns}
 
         case 'ORDERED_PUNISHMENTS_LOADED':
             return { ...state, orderedPunishments: action.punishments };

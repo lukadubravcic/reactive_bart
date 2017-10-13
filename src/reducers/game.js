@@ -1,5 +1,6 @@
 const defaultState = {
-    boardValue: ''
+    boardValue: '',
+    activePunishment: {}
 };
 
 export default (state = defaultState, action) => {
@@ -10,6 +11,8 @@ export default (state = defaultState, action) => {
             return { ...state, boardDisabled: action.disabled }
         case 'BOARD_WRONG_ENTRY':
             return { ...state, boardTextMistake: action.mistake }
+        case 'SET_ACTIVE_PUNISHMENT':
+            return { ...state, activePunishment: action.punishment }
         default:
             return state;
     }

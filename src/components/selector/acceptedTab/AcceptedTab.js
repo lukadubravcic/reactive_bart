@@ -44,9 +44,9 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
 
-        this.goPunishment = id => { // dispatch akciju koja stavlja odabrani punihsment na trenutni
+        this.goPunishment = (id = this.props.acceptedPunishments[0]._id) => { // dispatch akciju koja stavlja odabrani punihsment na trenutni
             let resultPnsh;
-            this.props.acceptedPunishments.forEach(function (punishment) {
+            this.props.acceptedPunishments.forEach((punishment) => {
                 if (punishment._id === id) this.props.setActivePunishment(punishment) //resultPnsh = punishment;
             });
             resultPnsh ? this.props.setActivePunishment(resultPnsh) : null;
@@ -70,6 +70,8 @@ class AcceptedTab extends React.Component {
         this.loadAndShowAcceptedPunishments = (punishments) => { // poziv kada stigne payload sa accepted punishmentima
             this.props.onLoadedAcceptedPunishments(punishments);
             this._showFirstPage();
+            // stavi prvi punishment kao aktivan
+            if (punishments[0]) this.goPunishment();
         };
 
         this.changeElement = (element) => {

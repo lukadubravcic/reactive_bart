@@ -5,6 +5,7 @@ import TableFooter from '../TableFooter';
 import TableHeader from '../TableHeader'
 
 import { sortPunishmentsByDate, sortPunishmentsByNumber, sortPunishmentsByString } from '../../../helpers/sortingPunishments';
+import { getElementById } from '../../../helpers/helpers';
 
 import agent from '../../../agent';
 
@@ -29,7 +30,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_SHOWN_PAST_PUNISHMENTS', punishments, newPage })
     },
     changePastHeader: (columns) => {
-        dispatch({type: 'UPDATE_PAST_HEADER', columns})
+        dispatch({ type: 'UPDATE_PAST_HEADER', columns })
     }
 });
 
@@ -75,7 +76,7 @@ class PastTab extends React.Component {
 
             let sortedPunishments = [];
             let pastPunishments = this.props.pastPunishments;
-            let element = getByValue(this.columns, id);
+            let element = getElementById(this.columns, id);
 
             switch (id) {
                 case 'created':
@@ -198,10 +199,3 @@ class PastTab extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(PastTab);
 
-function getByValue(arr, value) {
-
-    for (let i = 0, iLen = arr.length; i < iLen; i++) {
-        if (arr[i].id === value) return arr[i];
-    }
-    return null;
-}

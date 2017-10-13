@@ -7,6 +7,8 @@ import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 
+import BarChart from './components/stats/BarChart'
+
 import agent from './agent';
 
 
@@ -54,12 +56,13 @@ class App extends React.Component {
                 <Login />
                 <Register />
                 <hr />
-                {/* <Game />
-                <hr />  */}
+                {<Game />}
+                <hr />
                 {/* <PunishmentCreator />
                 <hr /> */}
                 {/* Logged in part: */}
-               <PunishmentSelectorTable />
+                <PunishmentSelectorTable />
+                <BarChart />
             </div>
         );
     }

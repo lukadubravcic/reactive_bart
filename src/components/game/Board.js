@@ -6,7 +6,7 @@ import agent from '../../agent';
 TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
 */
 
-const mapStateToProps = state => ({ ...state });
+const mapStateToProps = state => ({ ...state.game });
 
 const mapDispatchToProps = dispatch => ({
     onBoardTextChange: (value) => {
@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
     wrongBoardEntryWarning: (status) => {
         dispatch({ type: 'BOARD_WRONG_ENTRY', mistake: status });
     },
-    getPunishment: () => { 
+    getPunishment: () => {
     }
 });
 
@@ -27,10 +27,10 @@ class Board extends React.Component {
     constructor() {
         super();
         // TODO: punishment bi trebalo bit dohvacen sa backenda i nalaziti se u store-u
-        this.punishment = 'Rečenica.';                
+        this.punishment = 'Rečenica.';
         this.howManyTimes = 3;
         this.punishmentExplanation = "Write " + this.howManyTimes + "x: " + this.punishment;
-        this.punishmentExample = '';
+        this.startingSentence = '';
 
         this._wrongCharPlace = null;
 
@@ -39,16 +39,15 @@ class Board extends React.Component {
             this.boardStateUpdate(ev.key);
         }
         this.addToStartingSentence = char => {
-            this.punishmentExample += char;
-            this.forceUpdate(); // forcing re-rendering because punishmentExample isn't in state
-            //this.props.onBoardTextChange(this.props.game.boardValue + char);
+            this.startingSentence += char;
+            this.forceUpdate(); // forcing re-rendering because startingSentence isn't in state
         }
         this.validateKey = this.validateKey.bind(this);
         this.boardStateUpdate = this.boardStateUpdate.bind(this);
     }
 
     boardStateUpdate(key) {
-        let boardText = this.props.game.boardValue.slice();
+        let boardText = this.props.boardValue.slice();
         let transformedBoardText = '';
 
         if (inArray(key, validKeys)) {
@@ -96,6 +95,7 @@ class Board extends React.Component {
         }
     }
 
+    // rekurzivno ispisvanje početne rečenice
     writeStartingSentance(that) {
         (function write(i) {
             if (that.punishmentExplanation.length <= i) {
@@ -112,29 +112,34 @@ class Board extends React.Component {
 
     render() {
 
-        const boardText = this.props.game.boardValue;
+        const boardText = this.props.boardValue;
         const progress = this.props.progress;
-        const boardTextMistake = this.props.game.boardTextMistake;
+        const boardTextMistake = this.props.boardTextMistake;
         const bcgColor = boardTextMistake ? '#f2cbcb' : '';
+        if (Object.keys(this.props.activePunishment).length) {
+            return (
+                <div className="container">
+                    <textarea id="writing-board"
+                        style={{
+                            backgroundColor: bcgColor,
+                            width: "1024px",
+                            height: "400px"
+                        }}
+                        value={this.startingSentence + boardText}
+                        disabled={this.props.boardDisabled}
+                        onKeyDown={this.boardTextChange}
+                    />
 
-        return (
-            <div className="container">
-                <textarea id="writing-board"
-                    style={{
-                        backgroundColor: bcgColor,
-                        width: "1024px",
-                        height: "400px"
-                    }}
-                    value={this.punishmentExample + boardText}
-                    disabled={this.props.game.boardDisabled}
-                    onKeyDown={this.boardTextChange}
-                />
-
-                <div id="progress-sponge">
-                    <label>Sponge</label>
-                </div>
-            </div >
-        )
+                    <div id="progress-sponge">
+                        <label>Sponge</label>
+                    </div>
+                </div >
+            )
+        } else {
+            return (
+                <h3>Punishment not selected.</h3>
+            )
+        }
     }
 }
 

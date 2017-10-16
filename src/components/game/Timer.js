@@ -6,14 +6,14 @@ const mapStateToProps = state => ({
     ...state.game
 });
 
-const mapDispatchToProps = dispatch =>({
-    stopTimer: () =>{}
+const mapDispatchToProps = dispatch => ({
+    stopTimer: () => { }
 })
 
 class Timer extends React.Component {
 
     constructor() {
-        super();        
+        super();
     }
 
     render() {

@@ -2,11 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
+import ProgressBar from './ProgressBar';
+
+import { randomPunishments } from '../../constants/constants';
+
 /* 
 TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
 */
 
-const mapStateToProps = state => ({ ...state.game });
+const mapStateToProps = state => ({
+    ...state.game,
+    activePunishment: state.game.activePunishment
+});
 
 const mapDispatchToProps = dispatch => ({
     onBoardTextChange: (value) => {
@@ -19,6 +26,12 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'BOARD_WRONG_ENTRY', mistake: status });
     },
     getPunishment: () => {
+    },
+    updatePunishmentProgress: (punishmentProgress) => {
+        dispatch({ type: 'UPDATE_PUNISHMENT_PROGRESS', punishmentProgress });
+    },
+    setActivePunishment: punishment => {
+        dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     }
 });
 
@@ -27,10 +40,7 @@ class Board extends React.Component {
     constructor() {
         super();
         // TODO: punishment bi trebalo bit dohvacen sa backenda i nalaziti se u store-u
-        this.punishment = 'Rečenica.';
-        this.howManyTimes = 3;
-        this.punishmentExplanation = "Write " + this.howManyTimes + "x: " + this.punishment;
-        this.startingSentence = '';
+
 
         this._wrongCharPlace = null;
 
@@ -44,6 +54,8 @@ class Board extends React.Component {
         }
         this.validateKey = this.validateKey.bind(this);
         this.boardStateUpdate = this.boardStateUpdate.bind(this);
+        this.calculateProgress = this.calculateProgress.bind(this);
+        this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
     }
 
     boardStateUpdate(key) {
@@ -61,15 +73,37 @@ class Board extends React.Component {
             this.validateKey(key, transformedBoardText);
             this.props.onBoardTextChange(transformedBoardText);
 
+            if (this._wrongCharPlace === null) {
+                this.punishmentProgress = this.calculateProgress(transformedBoardText, this.punishment, this.howManyTimes);
+                this.props.updatePunishmentProgress(this.punishmentProgress);
+                console.log(this.punishmentProgress)
+            }
         }
     }
 
+    componentWillMount() {
+        if (Object.keys(this.props.activePunishment).length) this.loadRandomPunishment();
+    }
+
     componentDidMount() {
+
+
+        console.log(this.props.activePunishment)
+        this.punishment = this.props.activePunishment.what_to_write;
+        this.howManyTimes = this.props.activePunishment.how_many_times;
+        this.punishmentExplanation = "Write " + this.howManyTimes + "x: " + this.punishment;
+        this.startingSentence = '';
+        this.sentenceProgress = 0;
         this.props.boardDisabledStatus(true);
         this.writeStartingSentance(this);
     }
 
+    calculateProgress(boardText, punishment, howManyTimes) {
+        return Math.floor((boardText.length / (punishment.length * howManyTimes)) * 100);
+    }
+
     validateKey(char, boardText) {
+
         if (boardText.length > 0) {
             let rightCharForCurrentPosition = (boardText.length % this.punishment.length) - 1 >= 0 ? (boardText.length % this.punishment.length) - 1 : this.punishment.length - 1;
 
@@ -84,14 +118,9 @@ class Board extends React.Component {
                     this.props.wrongBoardEntryWarning(true);
                 }
             }
-
-            /* console.log('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
-            console.log('Char: ' + char);
-            console.log('Wrong char place: ' + (this._wrongCharPlace === null ? null : this._wrongCharPlace));
-            console.log('BoardText (duljna = ' + boardText.length + '): "' + boardText + '"');
-            console.log('Punishment: "' + this.punishment + '"');
-            console.log('Punishment [trenutni char]: ' + this.punishment[rightCharForCurrentPosition]);
-            console.log('Zadnji unešeni char: ' + boardText[boardText.length - 1]); */
+        } else if (boardText.length === 0 && char === 'Backspace') {
+            this.props.wrongBoardEntryWarning(false);
+            this._wrongCharPlace = null;
         }
     }
 
@@ -110,28 +139,37 @@ class Board extends React.Component {
         })(0)
     }
 
+    loadRandomPunishment() {
+        let randomPunishment = randomPunishments[Math.floor(Math.random() * randomPunishments.length)];
+
+    }
+
     render() {
 
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
         const bcgColor = boardTextMistake ? '#f2cbcb' : '';
+
         if (Object.keys(this.props.activePunishment).length) {
             return (
                 <div className="container">
-                    <textarea id="writing-board"
-                        style={{
-                            backgroundColor: bcgColor,
-                            width: "1024px",
-                            height: "400px"
-                        }}
-                        value={this.startingSentence + boardText}
-                        disabled={this.props.boardDisabled}
-                        onKeyDown={this.boardTextChange}
-                    />
+                    <div style={{ width: "1024px" }}>
+                        <textarea id="writing-board"
+                            style={{
+                                backgroundColor: bcgColor,
+                                height: "400px",
+                                width: "100%"
+                            }}
+                            value={this.startingSentence + boardText}
+                            disabled={this.props.boardDisabled}
+                            onKeyDown={this.boardTextChange}
+                        />
 
-                    <div id="progress-sponge">
+                        {/* <div id="progress-sponge">
                         <label>Sponge</label>
+                        </div> */}
+                        <ProgressBar />
                     </div>
                 </div >
             )

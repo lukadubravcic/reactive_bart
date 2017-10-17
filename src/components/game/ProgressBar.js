@@ -25,7 +25,7 @@ class ProgressBar extends React.Component {
             marginLeft: leftMargin + "%",
             padding: "0px",
             width: spongeWidth + "%",
-            height: "20px",
+            height: "30px",
             backgroundColor: "yellow",
             border: "0.5px solid red"
         }

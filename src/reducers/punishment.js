@@ -39,7 +39,8 @@ export default (state = defaultState, action) => {
             return { ...state, _message: action.msg };
         case 'SET_ACTIVE_PUNISHMENT':
             // TODO : setira aktivnu kaznu na board
-            return { ...state, activePunishment: action.punishment };
+            //return { ...state, activePunishment: action.punishment };
+            return { ...state };
         case 'GIVE_UP_ON_PUNISHMENT':
             return { ...state, acceptedPunishments: action.newAcceptedPunishments };
         case 'SWITCH_SELECTED_PUNISHMENT_TAB':
@@ -60,7 +61,7 @@ export default (state = defaultState, action) => {
         case 'PAST_PUNISHMENTS_CHANGED':
             return { ...state, pastPunishments: action.punishments };
         case 'UPDATE_PAST_HEADER':
-            return {...state, pastHeader: action.columns}
+            return { ...state, pastHeader: action.columns }
 
         case 'ORDERED_PUNISHMENTS_LOADED':
             return { ...state, orderedPunishments: action.punishments };

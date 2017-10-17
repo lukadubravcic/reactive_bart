@@ -56,7 +56,7 @@ class App extends React.Component {
                 <Login />
                 <Register />
                 <hr />
-                {<Game />}
+                <Game />
                 <hr />
                 {/* <PunishmentCreator />
                 <hr /> */}

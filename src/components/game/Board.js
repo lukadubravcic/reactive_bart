@@ -11,6 +11,7 @@ TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
 */
 
 const mapStateToProps = state => ({
+    state: state,
     ...state.game,
     activePunishment: state.game.activePunishment
 });
@@ -50,79 +51,71 @@ class Board extends React.Component {
         }
         this.addToStartingSentence = char => {
             this.startingSentence += char;
-            this.forceUpdate(); // forcing re-rendering because startingSentence isn't in state
+            this.forceUpdate(); // force re-render -> startingSentence nije u stateu
         }
-        this.validateKey = this.validateKey.bind(this);
-        this.boardStateUpdate = this.boardStateUpdate.bind(this);
-        this.calculateProgress = this.calculateProgress.bind(this);
+        this.validateKey = (char, boardText) => {
+            
+                    if (boardText.length > 0) {
+                        let rightCharForCurrentPosition = (boardText.length % this.punishment.length) - 1 >= 0 ? (boardText.length % this.punishment.length) - 1 : this.punishment.length - 1;
+            
+                        if (this._wrongCharPlace !== null) {
+                            if (boardText.length - 1 < this._wrongCharPlace) {
+                                this._wrongCharPlace = null;
+                                this.props.wrongBoardEntryWarning(false);
+                            }
+                        } else {
+                            if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
+                                this._wrongCharPlace = boardText.length - 1;
+                                this.props.wrongBoardEntryWarning(true);
+                            }
+                        }
+                    } else if (boardText.length === 0 && char === 'Backspace') {
+                        this.props.wrongBoardEntryWarning(false);
+                        this._wrongCharPlace = null;
+                    }
+                }
+        this.boardStateUpdate = (key) => {
+            let boardText = this.props.boardValue.slice();
+            let transformedBoardText = '';
+    
+            if (inArray(key, validKeys)) {
+    
+                if (key === 'Backspace') {
+                    if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
+                } else {
+                    if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
+                    else transformedBoardText = boardText + key;
+                }
+                this.validateKey(key, transformedBoardText);
+                this.props.onBoardTextChange(transformedBoardText);
+    
+                if (this._wrongCharPlace === null) {
+                    this.punishmentProgress = this.calculateProgress(transformedBoardText, this.punishment, this.howManyTimes);
+                    this.props.updatePunishmentProgress(this.punishmentProgress);
+                }
+            }
+        }
+        this.calculateProgress = (boardText, punishment, howManyTimes) => {
+            return Math.floor((boardText.length / (punishment.length * howManyTimes)) * 100);
+        }
+
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
     }
 
-    boardStateUpdate(key) {
-        let boardText = this.props.boardValue.slice();
-        let transformedBoardText = '';
+    
 
-        if (inArray(key, validKeys)) {
-
-            if (key === 'Backspace') {
-                if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
-            } else {
-                if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
-                else transformedBoardText = boardText + key;
-            }
-            this.validateKey(key, transformedBoardText);
-            this.props.onBoardTextChange(transformedBoardText);
-
-            if (this._wrongCharPlace === null) {
-                this.punishmentProgress = this.calculateProgress(transformedBoardText, this.punishment, this.howManyTimes);
-                this.props.updatePunishmentProgress(this.punishmentProgress);
-                console.log(this.punishmentProgress)
-            }
+    componentDidUpdate() {
+        if (Object.keys(this.props.activePunishment).length && this.props.activePunishment._id !== this.punishmentId) {
+            this.punishment = this.props.activePunishment.what_to_write;
+            this.punishmentId = this.props.activePunishment._id;
+            this.howManyTimes = this.props.activePunishment.how_many_times;
+            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\": ";
+            this.startingSentence = '';
+            this.sentenceProgress = this.props.activePunishment.progress || 0;
+            this.props.boardDisabledStatus(true);
+            this.writeStartingSentance(this);
         }
-    }
-
-    componentWillMount() {
-        if (Object.keys(this.props.activePunishment).length) this.loadRandomPunishment();
-    }
-
-    componentDidMount() {
-
-
-        console.log(this.props.activePunishment)
-        this.punishment = this.props.activePunishment.what_to_write;
-        this.howManyTimes = this.props.activePunishment.how_many_times;
-        this.punishmentExplanation = "Write " + this.howManyTimes + "x: " + this.punishment;
-        this.startingSentence = '';
-        this.sentenceProgress = 0;
-        this.props.boardDisabledStatus(true);
-        this.writeStartingSentance(this);
-    }
-
-    calculateProgress(boardText, punishment, howManyTimes) {
-        return Math.floor((boardText.length / (punishment.length * howManyTimes)) * 100);
-    }
-
-    validateKey(char, boardText) {
-
-        if (boardText.length > 0) {
-            let rightCharForCurrentPosition = (boardText.length % this.punishment.length) - 1 >= 0 ? (boardText.length % this.punishment.length) - 1 : this.punishment.length - 1;
-
-            if (this._wrongCharPlace !== null) {
-                if (boardText.length - 1 < this._wrongCharPlace) {
-                    this._wrongCharPlace = null;
-                    this.props.wrongBoardEntryWarning(false);
-                }
-            } else {
-                if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
-                    this._wrongCharPlace = boardText.length - 1;
-                    this.props.wrongBoardEntryWarning(true);
-                }
-            }
-        } else if (boardText.length === 0 && char === 'Backspace') {
-            this.props.wrongBoardEntryWarning(false);
-            this._wrongCharPlace = null;
-        }
-    }
+    }    
 
     // rekurzivno ispisvanje početne rečenice
     writeStartingSentance(that) {

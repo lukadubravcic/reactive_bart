@@ -13,6 +13,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     changeSelectedTab: (id) => {
         dispatch({ type: 'SWITCH_SELECTED_PUNISHMENT_TAB', id })
+    },
+    test: () => {
+        console.log('invoked')
     }
 });
 

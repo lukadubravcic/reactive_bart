@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => ({
-    punishmentProgress: state.game.punishmentProgress
+    progress: state.game.activePunishment.progress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -17,7 +17,7 @@ class ProgressBar extends React.Component {
     render() {
         let width = 1024;
         const spongeWidth = 5;
-        const progress = this.props.punishmentProgress;
+        const progress = this.props.progress;
         const pxPerProgressPercent = (width - spongeWidth) / 100;
         const leftMargin = progress * 0.95;
 
@@ -32,7 +32,7 @@ class ProgressBar extends React.Component {
 
         return (
             <div className="container">
-                <label style={style}>{progress + "%"}</label>
+                <label style={style}>{progress + "%" }</label>
             </div>
         );
     }

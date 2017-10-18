@@ -1,7 +1,7 @@
 const defaultState = {
     boardValue: '',
     activePunishment: {},
-    punishmentProgress: 0, // progress in %
+
 };
 
 export default (state = defaultState, action) => {
@@ -15,9 +15,11 @@ export default (state = defaultState, action) => {
         case 'SET_ACTIVE_PUNISHMENT':
             return { ...state, activePunishment: action.punishment }
         case 'UPDATE_PUNISHMENT_PROGRESS':
-            return { ...state, punishmentProgress: action.punishmentProgress }
-        case 'ACTIVE_PUNISHMENT_SAVED':
-            return { ...state, boardValue: '', punishmentProgress: 0 }
+            return { ...state, activePunishment: { ...state.activePunishment, progress: action.updatedProgress } }
+        case 'SAVING_ACTIVE_PUNISHMENT':
+            return { ...state, boardValue: '' };
+        case 'PUNISHMENT_DONE':
+            return { ...state };
         default:
             return state;
     }

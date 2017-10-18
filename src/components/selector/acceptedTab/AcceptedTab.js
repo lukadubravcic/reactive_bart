@@ -17,7 +17,6 @@ const mapStateToProps = state => ({
     shownAcceptedPunishments: state.punishment.shownAcceptedPunishments,
     currentPage: state.punishment.currentAcceptedPage,
     activePunishment: state.game.activePunishment,
-    activeProgress: state.game.punishmentProgress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -37,12 +36,11 @@ const mapDispatchToProps = dispatch => ({
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS', punishments, newPage })
     },
-    savePunishment: (id, progress) => {
-        dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' })
-        agent.Punishment.saveProgress(id, progress).then(() => {
-            console.log('PUNISHMENT SAVED');            
-        })
-        // dispatch({ 'SAVE'});
+    savePunishmentProgress: (id, progress) => {
+        dispatch({ type: 'SAVING_ACTIVE_PUNISHMENT', id, progress })
+        agent.Punishment.saveProgress(id, progress).then(
+            dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' })
+        );
     }
 });
 
@@ -51,21 +49,32 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
 
-        this.goPunishment = (id) => { // dispatch akciju koja stavlja odabrani punishment na trenutni            
-
-            if (id) {
-                this.props.savePunishment(this.props.activePunishment._id, this.props.activeProgress);
+        this.goPunishment = (id) => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
+            if (id && id !== this.props.activePunishment._id) {
+                this.savePunishment(this.props.activePunishment._id, this.props.activePunishment.progress || 0);
                 for (let pun of this.props.acceptedPunishments) {
                     if (pun._id === id) {
-                        // spremi trenutnog ako postoji 
-                        
-                        // postavi odabranu kaznu kao aktivnu 
+                        if (!pun.progress) pun.progress = 0;
                         this.props.setActivePunishment(pun);
+                        break;
                     }
                 }
-            } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-                this.props.setActivePunishment(this.props.acceptedPunishments[0])
+                // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
+            } else this.props.setActivePunishment(this.props.acceptedPunishments[0]);
+        };
+
+        // promjeni acceptedPunishmente u stateu i u bazi (savePunishmentProgress())
+        this.savePunishment = (id, progress) => {
+            let accPunishments = JSON.parse(JSON.stringify(this.props.acceptedPunishments));
+
+            for (let pun of accPunishments) {
+                if (pun._id === id) {
+                    pun.progress = progress;
+                    break;
+                }
             }
+            this.props.savePunishmentProgress(id, progress);
+            this.props.changeAcceptedPunishments(accPunishments);
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea
@@ -87,7 +96,7 @@ class AcceptedTab extends React.Component {
             this.props.onLoadedAcceptedPunishments(punishments);
             this._showFirstPage();
             // stavi prvi punishment kao aktivan
-            if (this.props.acceptedPunishments[0]) this.goPunishment();
+            
         };
 
         this.changeElement = (element) => {
@@ -182,6 +191,7 @@ class AcceptedTab extends React.Component {
         agent.Punishment.getAccepted().then((payload) => {
             if (payload) {
                 this.loadAndShowAcceptedPunishments(payload.acceptedPunishments);
+                if (this.props.acceptedPunishments[0]) this.goPunishment();
             } else {
                 console.log("error: accepted punishments payload wasn't received")
             }
@@ -233,6 +243,14 @@ function getByValue(arr, value) {
 
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
         if (arr[i].id === value) return arr[i];
+    }
+    return null;
+}
+
+function getPunishmentById(arr, id) {
+
+    for (let i = 0, iLen = arr.length; i < iLen; i++) {
+        if (arr[i]._id === id) return arr[i];
     }
     return null;
 }

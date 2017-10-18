@@ -27,7 +27,7 @@ const requests = {
 		.use(tokenPlugin)
 		.send(body)
 		.then(responseBody, (err) => {
-			console.log('err POST then');
+			console.log(err);
 			return null;
 		})
 };

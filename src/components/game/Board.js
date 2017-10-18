@@ -13,7 +13,8 @@ TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
 const mapStateToProps = state => ({
     state: state,
     ...state.game,
-    activePunishment: state.game.activePunishment
+    activePunishment: state.game.activePunishment,
+    progress: state.game.activePunishment.progress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -28,11 +29,14 @@ const mapDispatchToProps = dispatch => ({
     },
     getPunishment: () => {
     },
-    updatePunishmentProgress: (punishmentProgress) => {
-        dispatch({ type: 'UPDATE_PUNISHMENT_PROGRESS', punishmentProgress });
+    updatePunishmentProgress: (updatedProgress) => {
+        dispatch({ type: 'UPDATE_PUNISHMENT_PROGRESS', updatedProgress });
     },
     setActivePunishment: punishment => {
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
+    },
+    setActivePunishmentDone: id => {
+        dispatch({ type: 'PUNISHMENT_DONE', id });
     }
 });
 
@@ -40,46 +44,47 @@ class Board extends React.Component {
 
     constructor() {
         super();
-        // TODO: punishment bi trebalo bit dohvacen sa backenda i nalaziti se u store-u
-
 
         this._wrongCharPlace = null;
 
         this.boardTextChange = (ev) => {
             ev.preventDefault();
             this.boardStateUpdate(ev.key);
-        }
+        };
+
         this.addToStartingSentence = char => {
             this.startingSentence += char;
             this.forceUpdate(); // force re-render -> startingSentence nije u stateu
-        }
+        };
+
         this.validateKey = (char, boardText) => {
-            
-                    if (boardText.length > 0) {
-                        let rightCharForCurrentPosition = (boardText.length % this.punishment.length) - 1 >= 0 ? (boardText.length % this.punishment.length) - 1 : this.punishment.length - 1;
-            
-                        if (this._wrongCharPlace !== null) {
-                            if (boardText.length - 1 < this._wrongCharPlace) {
-                                this._wrongCharPlace = null;
-                                this.props.wrongBoardEntryWarning(false);
-                            }
-                        } else {
-                            if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
-                                this._wrongCharPlace = boardText.length - 1;
-                                this.props.wrongBoardEntryWarning(true);
-                            }
-                        }
-                    } else if (boardText.length === 0 && char === 'Backspace') {
-                        this.props.wrongBoardEntryWarning(false);
+
+            if (boardText.length > 0) {
+                let rightCharForCurrentPosition = (boardText.length % this.punishment.length) - 1 >= 0 ? (boardText.length % this.punishment.length) - 1 : this.punishment.length - 1;
+
+                if (this._wrongCharPlace !== null) {
+                    if (boardText.length - 1 < this._wrongCharPlace) {
                         this._wrongCharPlace = null;
+                        this.props.wrongBoardEntryWarning(false);
+                    }
+                } else {
+                    if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
+                        this._wrongCharPlace = boardText.length - 1;
+                        this.props.wrongBoardEntryWarning(true);
                     }
                 }
+            } else if (boardText.length === 0 && char === 'Backspace') {
+                this.props.wrongBoardEntryWarning(false);
+                this._wrongCharPlace = null;
+            }
+        };
+
         this.boardStateUpdate = (key) => {
             let boardText = this.props.boardValue.slice();
             let transformedBoardText = '';
-    
+
             if (inArray(key, validKeys)) {
-    
+
                 if (key === 'Backspace') {
                     if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
                 } else {
@@ -88,21 +93,47 @@ class Board extends React.Component {
                 }
                 this.validateKey(key, transformedBoardText);
                 this.props.onBoardTextChange(transformedBoardText);
-    
-                if (this._wrongCharPlace === null) {
-                    this.punishmentProgress = this.calculateProgress(transformedBoardText, this.punishment, this.howManyTimes);
-                    this.props.updatePunishmentProgress(this.punishmentProgress);
+                this.updateProgress(transformedBoardText, this.punishment, this.howManyTimes)
+
+                if(this.props.progress === 100) {
+                    // punishment DONE
                 }
             }
-        }
+        };
+
+        this.updateProgress = (transformedBoardText, punishment, howManyTimes) => {
+            if (this._wrongCharPlace === null) {
+                let updatedProgress = this.calculateProgress(transformedBoardText, punishment, howManyTimes);
+                this.props.updatePunishmentProgress(updatedProgress);
+            }
+        };
+
+        // rekurzivno ispisvanje početne rečenice
+        this.writeStartingSentance = that => {
+            (function write(i) {
+                if (that.punishmentExplanation.length <= i) {
+                    that.props.boardDisabledStatus(false);
+                    return;
+                }
+                that.addToStartingSentence(that.punishmentExplanation[i]);
+                i++;
+                setTimeout(() => {
+                    write(i);
+                }, Math.floor(Math.random() * 150) + 30);
+            })(0)
+        };
+
         this.calculateProgress = (boardText, punishment, howManyTimes) => {
-            return Math.floor((boardText.length / (punishment.length * howManyTimes)) * 100);
-        }
+            let progress = Math.floor((boardText.length / (punishment.length * howManyTimes)) * 100);
+            if (progress > 100) return 100;
+            else if (progress < 0) return 0;
+            else return progress;
+        };
 
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
     }
 
-    
+
 
     componentDidUpdate() {
         if (Object.keys(this.props.activePunishment).length && this.props.activePunishment._id !== this.punishmentId) {
@@ -111,36 +142,18 @@ class Board extends React.Component {
             this.howManyTimes = this.props.activePunishment.how_many_times;
             this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\": ";
             this.startingSentence = '';
-            this.sentenceProgress = this.props.activePunishment.progress || 0;
             this.props.boardDisabledStatus(true);
             this.writeStartingSentance(this);
         }
-    }    
-
-    // rekurzivno ispisvanje početne rečenice
-    writeStartingSentance(that) {
-        (function write(i) {
-            if (that.punishmentExplanation.length <= i) {
-                that.props.boardDisabledStatus(false);
-                return;
-            }
-            that.addToStartingSentence(that.punishmentExplanation[i]);
-            i++;
-            setTimeout(() => {
-                write(i);
-            }, Math.floor(Math.random() * 150) + 30);
-        })(0)
     }
 
     loadRandomPunishment() {
         let randomPunishment = randomPunishments[Math.floor(Math.random() * randomPunishments.length)];
-
     }
 
     render() {
-
         const boardText = this.props.boardValue;
-        const progress = this.props.progress;
+        const progress = this.props.activePunishment.progress;
         const boardTextMistake = this.props.boardTextMistake;
         const bcgColor = boardTextMistake ? '#f2cbcb' : '';
 
@@ -157,18 +170,15 @@ class Board extends React.Component {
                             value={this.startingSentence + boardText}
                             disabled={this.props.boardDisabled}
                             onKeyDown={this.boardTextChange}
+                            onChange={() => { }}
                         />
-
-                        {/* <div id="progress-sponge">
-                        <label>Sponge</label>
-                        </div> */}
                         <ProgressBar />
                     </div>
                 </div >
             )
         } else {
             return (
-                <h3>Punishment not selected.</h3>
+                <h3>Loading...</h3>
             )
         }
     }

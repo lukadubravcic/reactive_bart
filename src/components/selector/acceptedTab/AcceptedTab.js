@@ -96,7 +96,7 @@ class AcceptedTab extends React.Component {
             this.props.onLoadedAcceptedPunishments(punishments);
             this._showFirstPage();
             // stavi prvi punishment kao aktivan
-            
+
         };
 
         this.changeElement = (element) => {
@@ -196,6 +196,10 @@ class AcceptedTab extends React.Component {
                 console.log("error: accepted punishments payload wasn't received")
             }
         });
+    }
+
+    componentDidUpdate() {
+        //if (this.props.activePunishment.progress === 100) this.forceUpdate();
     }
 
     render() {

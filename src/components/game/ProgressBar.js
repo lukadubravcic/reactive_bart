@@ -1,42 +1,27 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-const mapStateToProps = state => ({
-    progress: state.game.activePunishment.progress
-});
+const ProgressBar = props => {
 
-const mapDispatchToProps = dispatch => ({
+    let width = 1024;
+    const spongeWidth = 5;
+    const progress = props.progress;
+    const pxPerProgressPercent = (width - spongeWidth) / 100;
+    const leftMargin = progress * 0.95;
 
-});
-
-class ProgressBar extends React.Component {
-    constructor() {
-        super();
+    const style = {
+        marginLeft: leftMargin + "%",
+        padding: "0px",
+        width: spongeWidth + "%",
+        height: "30px",
+        backgroundColor: "yellow",
+        border: "0.5px solid red"
     }
 
-    render() {
-        let width = 1024;
-        const spongeWidth = 5;
-        const progress = this.props.progress;
-        const pxPerProgressPercent = (width - spongeWidth) / 100;
-        const leftMargin = progress * 0.95;
-
-        const style = {
-            marginLeft: leftMargin + "%",
-            padding: "0px",
-            width: spongeWidth + "%",
-            height: "30px",
-            backgroundColor: "yellow",
-            border: "0.5px solid red"
-        }
-
-        return (
-            <div className="container">
-                <label style={style}>{progress + "%" }</label>
-            </div>
-        );
-    }
+    return (
+        <div className="container">
+            <label style={style}>{progress + "%"}</label>
+        </div>
+    );
 }
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProgressBar)
+export default ProgressBar;

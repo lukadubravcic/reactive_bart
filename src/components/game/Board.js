@@ -11,14 +11,14 @@ TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
 */
 
 const mapStateToProps = state => ({
-    state: state,
     ...state.game,
+    acceptedPunishments: state.punishment.acceptedPunishments,
     activePunishment: state.game.activePunishment,
     progress: state.game.activePunishment.progress
 });
 
 const mapDispatchToProps = dispatch => ({
-    onBoardTextChange: (value) => {
+    updateBoardValue: (value) => {
         dispatch({ type: 'UPDATE_BOARD_VALUE', value });
     },
     boardDisabledStatus: (disabled) => {
@@ -36,7 +36,16 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     },
     setActivePunishmentDone: id => {
+        console.log('PUNISHMENT_DONE');
+        agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
+    },
+    saveCurrentProgressBeforeUnload: (id, progress) => {
+        dispatch({ type: 'SAVING_ACTIVE_PUNISHMENT', id, progress })
+        agent.Punishment.saveProgress(id, progress).then(dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' }));
+    },
+    updateActivePunishments: (punishments) => {
+        dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     }
 });
 
@@ -52,9 +61,28 @@ class Board extends React.Component {
             this.boardStateUpdate(ev.key);
         };
 
+        this.clearStartingSentence = () => {
+            this.startingSentence = '';
+            this.forceUpdate();
+        }
+
         this.addToStartingSentence = char => {
             this.startingSentence += char;
             this.forceUpdate(); // force re-render -> startingSentence nije u stateu
+        };
+
+        this.activePunishmentDone = () => {
+            // this.props.setActivePunishmentDone(this.props.activePunishment._id);
+            this.removeActivePunishmentFromAccepted();
+        }
+
+        this.removeActivePunishmentFromAccepted = () => {
+            let filteredAccPunishments = this.props.acceptedPunishments.filter((punishment) => {
+                return punishment._id === this.props.activePunishment._id ? null : punishment;
+            });
+
+            //this.props.updateActivePunishments(filteredAccPunishments);
+            
         };
 
         this.validateKey = (char, boardText) => {
@@ -82,6 +110,7 @@ class Board extends React.Component {
         this.boardStateUpdate = (key) => {
             let boardText = this.props.boardValue.slice();
             let transformedBoardText = '';
+            let progress = 0;
 
             if (inArray(key, validKeys)) {
 
@@ -92,11 +121,13 @@ class Board extends React.Component {
                     else transformedBoardText = boardText + key;
                 }
                 this.validateKey(key, transformedBoardText);
-                this.props.onBoardTextChange(transformedBoardText);
-                this.updateProgress(transformedBoardText, this.punishment, this.howManyTimes)
-
-                if(this.props.progress === 100) {
+                this.props.updateBoardValue(transformedBoardText);
+                progress = this.updateProgress(transformedBoardText, this.punishment, this.howManyTimes);
+                if (progress === 100) {
                     // punishment DONE
+                    this.activePunishmentDone();
+                    //this.props.setActivePunishmentDone(this.props.activePunishment._id);
+                    this.removeActivePunishmentFromAccepted();
                 }
             }
         };
@@ -105,13 +136,23 @@ class Board extends React.Component {
             if (this._wrongCharPlace === null) {
                 let updatedProgress = this.calculateProgress(transformedBoardText, punishment, howManyTimes);
                 this.props.updatePunishmentProgress(updatedProgress);
+                return updatedProgress;
             }
         };
 
-        // rekurzivno ispisvanje početne rečenice
+        // rekurzivno ispisvanje početne rečenice i dodavanje već napisanih znakova (ako ih ima)
         this.writeStartingSentance = that => {
+            that.clearStartingSentence();
+            that.props.updateBoardValue('');
+
             (function write(i) {
                 if (that.punishmentExplanation.length <= i) {
+                    let writtenCharsNum = Math.floor((that.props.progress / 100) * (that.howManyTimes * that.punishment.length)) + 1;
+                    let text = getWrittenText(that.punishment, writtenCharsNum);
+                    that.props.progress > 0
+                        ? that.props.updateBoardValue(text)
+                        : null;
+
                     that.props.boardDisabledStatus(false);
                     return;
                 }
@@ -130,16 +171,22 @@ class Board extends React.Component {
             else return progress;
         };
 
+        this.handleBeforeunload = () => {
+            this.props.saveCurrentProgressBeforeUnload(this.props.activePunishment._id, this.props.progress);
+        };
+
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
     }
-
-
+    componentDidMount() {
+        window.addEventListener("beforeunload", this.handleBeforeunload);
+    }
 
     componentDidUpdate() {
         if (Object.keys(this.props.activePunishment).length && this.props.activePunishment._id !== this.punishmentId) {
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.props.activePunishment.how_many_times;
+            //this.donePunishment = this.props.progress > 0 ? this.punishment.repeat(this.props.progress) : '';
             this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\": ";
             this.startingSentence = '';
             this.props.boardDisabledStatus(true);
@@ -172,7 +219,7 @@ class Board extends React.Component {
                             onKeyDown={this.boardTextChange}
                             onChange={() => { }}
                         />
-                        <ProgressBar />
+                        <ProgressBar progress={progress} />
                     </div>
                 </div >
             )
@@ -209,3 +256,9 @@ function inArray(target, array) {
     }
     return false;
 }
+
+function getWrittenText(punishment, charsWritten) {
+    let x = Math.ceil(charsWritten / punishment.length);
+    let tmpString = punishment.repeat(x);
+    return tmpString.slice(0, charsWritten);
+} 

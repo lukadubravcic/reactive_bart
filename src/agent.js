@@ -47,8 +47,9 @@ const Punishment = {
 	getAccepted: () => requests.get('/punishment/accepted'),
 	getPast: () => requests.get('/punishment/past'),
 	getOrdered: () => requests.get('/punishment/ordered'),
-	giveUp: (punishmentId) => requests.post('/punishment/giveup', {punishmentId: punishmentId}),
-	saveProgress: (id, progress) => requests.post('/punishment/save', {id: id, progress: progress})
+	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
+	saveProgress: (id, progress) => requests.post('/punishment/save', { id: id, progress: progress }),
+	done: id => requests.post('/punishment/done', { id: id })
 }
 
 export default {

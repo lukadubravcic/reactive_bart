@@ -76,6 +76,11 @@ class Board extends React.Component {
             this.removeActivePunishmentFromAccepted();
 
             setTimeout(() => {
+                // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu
+
+            /* 
+                TODO: odvojiti funkciju za ispis poruka preko textfielda (done/failed/...)
+            */
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 2000)
         };

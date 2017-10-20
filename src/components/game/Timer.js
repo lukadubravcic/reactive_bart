@@ -2,6 +2,8 @@ import React from 'react';
 import agent from '../../agent';
 import { connect } from 'react-redux';
 
+import stopwatchimg from '../../assets/stopwatch02.png';
+import clockimg from '../../assets/clock01.png';
 const mapStateToProps = state => ({
     ...state.game
 });
@@ -14,26 +16,95 @@ class Timer extends React.Component {
 
     constructor() {
         super();
+
+        this.clock = {
+            clockImageElement: (<img src={clockimg} width="50px" height="50px" />)
+        };
+
+        this.stopwatchElements = {
+            imageElement: (
+                <img src={stopwatchimg} width="60px" height="60px" />
+            ),
+            daysElement: (
+                <div style={{ width: "8ch", border: "solid black 1px" }}>
+                    <label><h2>17</h2></label>
+                    <br />
+                    <label>Days</label>
+                </div>
+            ),
+            hoursElement: (
+                <div style={{ width: "8ch", border: "solid black 1px" }}>
+                    <label><h2>20</h2></label>
+                    <br />
+                    <label>Hours</label>
+                </div>
+            ),
+            minutesElement: (
+                <div style={{ width: "8ch", border: "solid black 1px" }}>
+                    <label><h2>16</h2></label>
+                    <br />
+                    <label>Minutes</label>
+                </div>
+            ),
+            secondsElement: (
+                <div style={{ width: "8ch", border: "solid black 1px" }}>
+                    <label><h2>10</h2></label>
+                    <br />
+                    <label>Seconds</label>
+                </div>
+            ),
+        }
     }
 
     render() {
+
+        const stopwatchImage = this.stopwatchElements.imageElement;
+        const stopwatchDays = this.stopwatchElements.daysElement;
+        const stopwatchHours = this.stopwatchElements.hoursElement;
+        const stopwatchMinutes = this.stopwatchElements.minutesElement;
+        const stopwatchSeconds = this.stopwatchElements.secondsElement;
+
+        const style = {
+            width: "400px",
+            height: "50px",
+            marginBottom: "50px"
+        };
+
+        const flexContainer = {
+            padding: "0",
+            margin: "0",
+            
+            display: "-webkit-box",
+            display: "-moz-box",
+            display: "-ms-flexbox",
+            display: "-webkit-flex",
+            display: "flex",
+            
+            WebkitFlexFlow: "row wrap",
+            justifyContent: "center"
+        }
+
+        const flexItem = {
+            background: "tomato",
+            padding: "5px",
+            width: "200px",
+            height: "150px",
+            marginTop: "10px",
+            
+            lineHeight: "150px",
+            color: "white",
+            fontWeight: "bold",
+            textAlign: "center"
+        }
+
         return (
-            <div style={{
-                width: "125px",
-                height: "50px",
-                marginBottom: "20px"
-            }}>
-                <div style={{ float: "left" }}>
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 640 640">
-                        <g id="icomoon-ignore"></g>
-                        <path d="M320 25.6c-162.592 0-294.4 131.84-294.4 294.4 0 162.592 131.808 294.4 294.4 294.4s294.4-131.808 294.4-294.4c0-162.592-131.808-294.4-294.4-294.4zM320 550.4c-127.264 0-230.4-103.168-230.4-230.4s103.136-230.4 230.4-230.4 230.4 103.168 230.4 230.4-103.136 230.4-230.4 230.4zM342.4 153.6h-44.8v175.68l108.96 108.96 31.68-31.68-95.84-95.84z"></path>
-                    </svg>
-                </div>
-                <div style={{ float: "right" }}>
-                    <label>{}</label>:
-                    <label>{}</label>:
-                    <label>{}</label>:
-                    <label>{}</label>
+            <div style={style}>
+                <div style={flexContainer}>
+                    {stopwatchImage}
+                    {stopwatchDays}
+                    {stopwatchHours}
+                    {stopwatchMinutes}
+                    {stopwatchSeconds}
                 </div>
             </div >
         )

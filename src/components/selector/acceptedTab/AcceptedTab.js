@@ -225,19 +225,14 @@ class AcceptedTab extends React.Component {
             ...style,
             backgroundColor: "rgba(158, 234, 86, 0.75)"
         };
-        
+
 
         if (shownPunishments !== 'empty') {
-            console.log('new rend')
             return (
                 <div className="container">
                     <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
-                            console.log(punishment._id)
-                            console.log(activePunishment._id)
-                            console.log('--------------------------')
-                            
                             if (punishment._id === activePunishment._id) {
                                 return (
                                     <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment._id}

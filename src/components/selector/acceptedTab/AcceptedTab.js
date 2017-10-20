@@ -49,18 +49,28 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
 
-        this.goPunishment = (id) => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
-            if (id && id !== this.props.activePunishment._id) {
-                this.savePunishment(this.props.activePunishment._id, this.props.activePunishment.progress || 0);
+        this.setDefaultPunishment = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
+            this.props.setActivePunishment(this.props.acceptedPunishments[0]);
+        };
+
+        this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
+            ev.preventDefault();
+
+            if (id !== this.props.activePunishment._id) {
+                this.savePunishment(this.props.activePunishment._id, this.props.activePunishment.progress);
                 for (let pun of this.props.acceptedPunishments) {
                     if (pun._id === id) {
                         if (!pun.progress) pun.progress = 0;
                         this.props.setActivePunishment(pun);
-                        break;
+                        return;
                     }
                 }
-                // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-            } else this.props.setActivePunishment(this.props.acceptedPunishments[0]);
+            } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
+                return;
+            } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
+                console.log('test')
+                this.props.setDefaultPunishment();
+            }
         };
 
         // promjeni acceptedPunishmente u stateu i u bazi (savePunishmentProgress())
@@ -69,7 +79,7 @@ class AcceptedTab extends React.Component {
 
             for (let pun of accPunishments) {
                 if (pun._id === id) {
-                    pun.progress = progress;
+                    pun.progress = progress || 0;
                     break;
                 }
             }
@@ -95,8 +105,11 @@ class AcceptedTab extends React.Component {
         this.loadAndShowAcceptedPunishments = (punishments) => { // poziv kada stigne payload sa accepted punishmentima
             this.props.onLoadedAcceptedPunishments(punishments);
             this._showFirstPage();
-            // stavi prvi punishment kao aktivan
+        };
 
+        this.updateAndShowAcceptedPunishments = punishments => {
+            this.props.changeAcceptedPunishments(punishments);
+            this._showFirstPage(punishments);
         };
 
         this.changeElement = (element) => {
@@ -110,11 +123,6 @@ class AcceptedTab extends React.Component {
                 element.name = element.sortOrder === 1 ? element.name + ASC : element.name + DESC;
             }
             element.sortOrder *= -1;
-        };
-
-        this.updateAndShowAcceptedPunishments = punishments => {
-            this.props.changeAcceptedPunishments(punishments);
-            this._showFirstPage(punishments);
         };
 
         this.reSortPunishments = (id) => {
@@ -191,37 +199,57 @@ class AcceptedTab extends React.Component {
         agent.Punishment.getAccepted().then((payload) => {
             if (payload) {
                 this.loadAndShowAcceptedPunishments(payload.acceptedPunishments);
-                if (this.props.acceptedPunishments[0]) this.goPunishment();
+                if (this.props.acceptedPunishments[0] && !this.props.activePunishment._id) this.setDefaultPunishment();
             } else {
-                console.log("error: accepted punishments payload wasn't received")
+                console.log("error: accepted punishments payload wasn't received");
             }
         });
     }
 
-    componentDidUpdate() {
-        //if (this.props.activePunishment.progress === 100) this.forceUpdate();
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.acceptedPunishments.length !== this.props.acceptedPunishments.length) {
+            this.updateAndShowAcceptedPunishments(nextProps.acceptedPunishments);
+        }
     }
 
     render() {
-
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownAcceptedPunishments;
+        const activePunishment = this.props.activePunishment;
         const columns = this.columns;
         const style = {
             "width": "220px",
             "display": "inline-block"
         };
+        const selectedStyle = {
+            ...style,
+            backgroundColor: "rgba(158, 234, 86, 0.75)"
+        };
+        
 
         if (shownPunishments !== 'empty') {
+            console.log('new rend')
             return (
                 <div className="container">
                     <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
-                            return (
-                                <AcceptedTabRow punishment={punishment} style={style} key={punishment._id}
-                                    id={punishment._id} onGoClick={this.goPunishment} onGiveUpClick={this.giveUpPunishment} />
-                            )
+                            console.log(punishment._id)
+                            console.log(activePunishment._id)
+                            console.log('--------------------------')
+                            
+                            if (punishment._id === activePunishment._id) {
+                                return (
+                                    <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment._id}
+                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment} />
+                                )
+                            }
+                            else {
+                                return (
+                                    <AcceptedTabRow punishment={punishment} style={style} key={punishment._id}
+                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment} />
+                                )
+                            }
                         })
                     }
                     <TableFooter currentPage={currentPage} punishments={this.props.acceptedPunishments} changeShownPunishments={this.props.changeShownPunishments} />

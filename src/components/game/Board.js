@@ -36,11 +36,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     },
     setActivePunishmentDone: id => {
-        console.log('PUNISHMENT_DONE');
         agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
-    saveCurrentProgressBeforeUnload: (id, progress) => {
+    saveCurrentProgress: (id, progress) => {
         dispatch({ type: 'SAVING_ACTIVE_PUNISHMENT', id, progress })
         agent.Punishment.saveProgress(id, progress).then(dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' }));
     },
@@ -72,17 +71,20 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-            // this.props.setActivePunishmentDone(this.props.activePunishment._id);
+            this.props.saveCurrentProgress(this.props.activePunishment._id, 100);
+            this.props.setActivePunishmentDone(this.props.activePunishment._id);            
             this.removeActivePunishmentFromAccepted();
-        }
+
+            setTimeout(() => {
+                this.props.setActivePunishment(this.props.acceptedPunishments[0])
+            }, 2000)
+        };
 
         this.removeActivePunishmentFromAccepted = () => {
             let filteredAccPunishments = this.props.acceptedPunishments.filter((punishment) => {
                 return punishment._id === this.props.activePunishment._id ? null : punishment;
             });
-
-            //this.props.updateActivePunishments(filteredAccPunishments);
-            
+            this.props.updateActivePunishments(filteredAccPunishments);
         };
 
         this.validateKey = (char, boardText) => {
@@ -172,7 +174,7 @@ class Board extends React.Component {
         };
 
         this.handleBeforeunload = () => {
-            this.props.saveCurrentProgressBeforeUnload(this.props.activePunishment._id, this.props.progress);
+            this.props.saveCurrentProgress(this.props.activePunishment._id, this.props.progress);
         };
 
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
@@ -204,16 +206,18 @@ class Board extends React.Component {
         const boardTextMistake = this.props.boardTextMistake;
         const bcgColor = boardTextMistake ? '#f2cbcb' : '';
 
+        const style = {
+            backgroundColor: bcgColor,
+            height: "400px",
+            width: "100%"
+        };
+
         if (Object.keys(this.props.activePunishment).length) {
             return (
                 <div className="container">
                     <div style={{ width: "1024px" }}>
                         <textarea id="writing-board"
-                            style={{
-                                backgroundColor: bcgColor,
-                                height: "400px",
-                                width: "100%"
-                            }}
+                            style={{ ...style, ...this.doneClass }}
                             value={this.startingSentence + boardText}
                             disabled={this.props.boardDisabled}
                             onKeyDown={this.boardTextChange}

@@ -27,6 +27,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     },
     setActivePunishment: (punishment) => {
+        if (punishment.what_to_write[punishment.what_to_write.length - 1] !== ' ') punishment.what_to_write += ' ';
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment })
     },
     giveUpPunishment: (id, newAcceptedPunishments) => {
@@ -61,6 +62,7 @@ class AcceptedTab extends React.Component {
                 for (let pun of this.props.acceptedPunishments) {
                     if (pun._id === id) {
                         if (!pun.progress) pun.progress = 0;
+                        if (pun.what_to_write[pun.what_to_write.length - 1] !== ' ') pun.what_to_write += ' '; // dodaj razmak na kraju ako ga nema
                         this.props.setActivePunishment(pun);
                         return;
                     }
@@ -68,7 +70,6 @@ class AcceptedTab extends React.Component {
             } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
                 return;
             } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-                console.log('test')
                 this.props.setDefaultPunishment();
             }
         };

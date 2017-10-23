@@ -6,9 +6,8 @@ import ProgressBar from './ProgressBar';
 
 import { randomPunishments } from '../../constants/constants';
 
-/* 
-TODO: agent mora dobiti punishment, na koji se dodaje razmak na kraju
-*/
+import chalkboardImg from '../../assets/chalkboard.jpg';
+
 
 const mapStateToProps = state => ({
     ...state.game,
@@ -45,6 +44,19 @@ const mapDispatchToProps = dispatch => ({
     },
     updateActivePunishments: (punishments) => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
+    },
+    onBoardFocus: () => {
+        // štoperica krece, sve što slijedi se pribraja u sljedeći pokušaj (try)
+        dispatch({ type: 'GAME_BOARD_FOCUSED' });
+    },
+    onBoardLostFocus: () => {
+        dispatch({ type: 'GAME_BOARD_UNFOCUSED' });
+    },
+    onBoardHover: () => {        
+        dispatch({ type: 'GAME_BOARD_HOVER' });
+    },
+    onBoardHoverOut: () => {        
+        dispatch({type: 'GAME_BOARD_HOVER_OUT'});
     }
 });
 
@@ -70,17 +82,35 @@ class Board extends React.Component {
             this.forceUpdate(); // force re-render -> startingSentence nije u stateu
         };
 
+        this.boardFocused = ev => {
+            ev.preventDefault();
+            this.props.onBoardFocus();
+        };
+
+        this.boardLostFocus = ev => {
+            ev.preventDefault();
+            this.props.onBoardLostFocus();
+        };
+
+        this.boardHover = ev => {
+            this.props.onBoardHover();
+        };
+
+        this.boardHoverOut = ev => {
+            this.props.onBoardHoverOut();
+        };
+
         this.activePunishmentDone = () => {
             this.props.saveCurrentProgress(this.props.activePunishment._id, 100);
-            this.props.setActivePunishmentDone(this.props.activePunishment._id);            
+            this.props.setActivePunishmentDone(this.props.activePunishment._id);
             this.removeActivePunishmentFromAccepted();
 
             setTimeout(() => {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu
 
-            /* 
-                TODO: odvojiti funkciju za ispis poruka preko textfielda (done/failed/...)
-            */
+                /* 
+                    TODO: odvojiti funkciju za ispis poruka preko ploće (done/failed/...)
+                */
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 2000)
         };
@@ -133,7 +163,6 @@ class Board extends React.Component {
                 if (progress === 100) {
                     // punishment DONE
                     this.activePunishmentDone();
-                    //this.props.setActivePunishmentDone(this.props.activePunishment._id);
                     this.removeActivePunishmentFromAccepted();
                 }
             }
@@ -192,8 +221,7 @@ class Board extends React.Component {
         if (Object.keys(this.props.activePunishment).length && this.props.activePunishment._id !== this.punishmentId) {
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
-            this.howManyTimes = this.props.activePunishment.how_many_times;
-            //this.donePunishment = this.props.progress > 0 ? this.punishment.repeat(this.props.progress) : '';
+            this.howManyTimes = this.props.activePunishment.how_many_times; 
             this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\": ";
             this.startingSentence = '';
             this.props.boardDisabledStatus(true);
@@ -227,6 +255,10 @@ class Board extends React.Component {
                             disabled={this.props.boardDisabled}
                             onKeyDown={this.boardTextChange}
                             onChange={() => { }}
+                            onFocus={this.boardFocused}
+                            onBlur={this.boardLostFocus}
+                            onMouseOver={this.boardHover}
+                            onMouseOut={this.boardHoverOut}
                         />
                         <ProgressBar progress={progress} />
                     </div>

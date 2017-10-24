@@ -42,6 +42,10 @@ const mapDispatchToProps = dispatch => ({
         agent.Punishment.saveProgress(id, progress).then(
             dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' })
         );
+    },
+    logPunishmentTry: (id, startTime = 0) => {
+        let timeSpent = startTime ? Date.now() - startTime : 0;
+        agent.Punishment.logTry(id, timeSpent);
     }
 });
 
@@ -58,7 +62,8 @@ class AcceptedTab extends React.Component {
             ev.preventDefault();
 
             if (id !== this.props.activePunishment._id) {
-                this.savePunishment(this.props.activePunishment._id, this.props.activePunishment.progress);
+                //this.savePunishment(this.props.activePunishment._id, this.props.activePunishment.progress);
+                this.props.logPunishmentTry(this.props.activePunishment._id)
                 for (let pun of this.props.acceptedPunishments) {
                     if (pun._id === id) {
                         if (!pun.progress) pun.progress = 0;
@@ -237,13 +242,15 @@ class AcceptedTab extends React.Component {
                             if (punishment._id === activePunishment._id) {
                                 return (
                                     <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment._id}
-                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment} />
+                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                        disabledGo={true} />
                                 )
                             }
                             else {
                                 return (
                                     <AcceptedTabRow punishment={punishment} style={style} key={punishment._id}
-                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment} />
+                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                        disabledGo={false} />
                                 )
                             }
                         })

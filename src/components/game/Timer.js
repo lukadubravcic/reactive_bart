@@ -29,8 +29,6 @@ class Timer extends React.Component {
     constructor() {
         super();
 
-
-
         this.getDecimalNumber = num => {
 
             let decimals = num - Math.floor(num);
@@ -55,15 +53,12 @@ class Timer extends React.Component {
         };
 
         this.startStopwatch = deadline => {
-
-            this.getStopwatchValues(deadline);
-
             this.stopwatchInterval = setInterval(() => {
-                this.getStopwatchValues(deadline);
+                this.setStopwatchValues(deadline);
             }, 1000);
         };
 
-        this.getStopwatchValues = deadline => {
+        this.setStopwatchValues = deadline => {
             let deadlineTime = new Date(deadline).getTime();
 
             let now = Date.now();
@@ -121,18 +116,23 @@ class Timer extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.boardFocused && this.props.activePunishment.deadline) { // board fokusiran && deadline postoji, stoperica krece
-            if (!this.stopwatchInterval) {
+
+        if (this.props.activePunishment.deadline !== nextProps.activePunishment.deadline) { // setaj deadline (ako postoji) u state prilikom odabira druge kazne
+            if (nextProps.activePunishment.deadline) this.setStopwatchValues(nextProps.activePunishment.deadline);
+        } else if (nextProps.boardFocused && this.props.activePunishment.deadline) { // board fokusiran && deadline postoji, stoperica krece
+            if (!this.stopwatchInterval) {                
                 this.stopClock();
                 this.startStopwatch(this.props.activePunishment.deadline);
             }
         } else if (!nextProps.boardFocused) { // board unfocused -> zaustavi stopericu
             this.stopStopwatch();
         }
+
     }
 
     render() {
 
+        const timerValue = this.props.timerValue;
         const stopwatchDays = this.props.timerValue.timerDays;
         const stopwatchHours = this.props.timerValue.timerHours;
         const stopwatchMinutes = this.props.timerValue.timerMinutes;
@@ -173,32 +173,10 @@ class Timer extends React.Component {
             textAlign: "center"
         }
 
-        if (this.props.activePunishment.deadline && this.props.boardFocused) {
+        if ((this.props.activePunishment.deadline && this.props.boardFocused) || this.props.boardHovered) {
             return (
-                <div style={style}>
-                    <div style={flexContainer}>
-                        <img src={stopwatchimg} width="60px" height="60px" />
-                        <div style={{ width: "8ch", border: "solid black 1px" }}>
-                            <label><h2>{stopwatchDays}</h2></label>
-                            <br />
-                            <label>Days</label>
-                        </div>
-                        <div style={{ width: "8ch", border: "solid black 1px" }}>
-                            <label><h2>{stopwatchHours}</h2></label>
-                            <br />
-                            <label>Hours</label>
-                        </div>
-                        <div style={{ width: "8ch", border: "solid black 1px" }}>
-                            <label><h2>{stopwatchMinutes}</h2></label>
-                            <br />
-                            <label>Minutes</label>
-                        </div>
-                        <div style={{ width: "8ch", border: "solid black 1px" }}>
-                            <label><h2>{stopwatchSeconds}</h2></label>
-                            <br />
-                            <label>Seconds</label>
-                        </div>
-                    </div>
+                <div className="container">
+                    <Stopwatch style={style} flexContainer={flexContainer} stopwatchimg={stopwatchimg} timerValue={timerValue} />
                 </div>
             )
         } else if (!this.props.activePunishment.deadline || !this.props.boardFocused) {

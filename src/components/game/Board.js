@@ -52,11 +52,11 @@ const mapDispatchToProps = dispatch => ({
     onBoardLostFocus: () => {
         dispatch({ type: 'GAME_BOARD_UNFOCUSED' });
     },
-    onBoardHover: () => {        
+    onBoardHover: () => {
         dispatch({ type: 'GAME_BOARD_HOVER' });
     },
-    onBoardHoverOut: () => {        
-        dispatch({type: 'GAME_BOARD_HOVER_OUT'});
+    onBoardHoverOut: () => {
+        dispatch({ type: 'GAME_BOARD_HOVER_OUT' });
     }
 });
 
@@ -67,7 +67,19 @@ class Board extends React.Component {
 
         this._wrongCharPlace = null;
 
-        this.boardTextChange = (ev) => {
+        this.spongeHover = ev => {
+            // igra u tijeku -> pokazi tooltip
+            console.log('sponge hover');
+        };
+
+        this.spongeClick = ev => {
+            console.log('sponge click');
+            // reset sponge (position), log try, optionally send (trying) mail, 
+            // reset board, restart stopwatch
+            this.props.resetProgress();
+        };
+
+        this.boardTextChange = ev => {
             ev.preventDefault();
             this.boardStateUpdate(ev.key);
         };
@@ -79,11 +91,19 @@ class Board extends React.Component {
 
         this.addToStartingSentence = char => {
             this.startingSentence += char;
-            this.forceUpdate(); // force re-render -> startingSentence nije u stateu
+            this.forceUpdate(); // force re-render -> startingSentence nije u stateu (potencijalno ga staviti)
         };
 
         this.boardFocused = ev => {
             ev.preventDefault();
+
+            let writtenCharsNum = Math.floor((this.props.progress / 100) * (this.howManyTimes * this.punishment.length)) + 1;
+            let text = getWrittenText(this.punishment, writtenCharsNum);
+
+            this.clearStartingSentence();
+            if (this.props.progress > 0) {
+                this.props.updateBoardValue(text);
+            }
             this.props.onBoardFocus();
         };
 
@@ -101,7 +121,7 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-            this.props.saveCurrentProgress(this.props.activePunishment._id, 100);
+            // this.props.saveCurrentProgress(this.props.activePunishment._id, 100);
             this.props.setActivePunishmentDone(this.props.activePunishment._id);
             this.removeActivePunishmentFromAccepted();
 
@@ -183,11 +203,11 @@ class Board extends React.Component {
 
             (function write(i) {
                 if (that.punishmentExplanation.length <= i) {
-                    let writtenCharsNum = Math.floor((that.props.progress / 100) * (that.howManyTimes * that.punishment.length)) + 1;
+                    /* let writtenCharsNum = Math.floor((that.props.progress / 100) * (that.howManyTimes * that.punishment.length)) + 1;
                     let text = getWrittenText(that.punishment, writtenCharsNum);
                     that.props.progress > 0
                         ? that.props.updateBoardValue(text)
-                        : null;
+                        : null; */
 
                     that.props.boardDisabledStatus(false);
                     return;
@@ -221,8 +241,8 @@ class Board extends React.Component {
         if (Object.keys(this.props.activePunishment).length && this.props.activePunishment._id !== this.punishmentId) {
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
-            this.howManyTimes = this.props.activePunishment.how_many_times; 
-            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\": ";
+            this.howManyTimes = this.props.activePunishment.how_many_times;
+            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\"";
             this.startingSentence = '';
             this.props.boardDisabledStatus(true);
             this.writeStartingSentance(this);
@@ -260,7 +280,7 @@ class Board extends React.Component {
                             onMouseOver={this.boardHover}
                             onMouseOut={this.boardHoverOut}
                         />
-                        <ProgressBar progress={progress} />
+                        <ProgressBar progress={progress} spongeClick={this.spongeClick}  onHover={this.spongeHover} />
                     </div>
                 </div >
             )

@@ -33,14 +33,17 @@ export default (state = defaultState, action) => {
         case 'PUNISHMENT_DONE':
             return { ...state };
         case 'GAME_BOARD_FOCUSED':
-            return { ...state, boardFocused: true }
+            return { ...state, boardFocused: true };
         case 'GAME_BOARD_UNFOCUSED':
-        console.log('unfocused')
-            return { ...state, boardFocused: false }
+            return { ...state, boardFocused: false };
+        case 'GAME_BOARD_HOVER':
+            return { ...state, boardHovered: true };
+        case 'GAME_BOARD_HOVER_OUT':
+            return { ...state, boardHovered: false }
         case 'TIMER_VALUE_UPDATED':
             return { ...state, timerValue: action.newTimerValue };
-            case 'CLOCK_VALUE_UPDATED':
-            return {...state, clockValue: action.newClockValue }
+        case 'CLOCK_VALUE_UPDATED':
+            return { ...state, clockValue: action.newClockValue }
         default:
             return state;
     }

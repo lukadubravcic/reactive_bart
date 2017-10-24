@@ -19,7 +19,7 @@ const ProgressBar = props => {
 
     return (
         <div className="container">
-            <label style={style}>{progress + "%"}</label>
+            <label style={style} onClick={props.spongeClick} onMouseOver={props.onHover}>{progress + "%"}</label>
         </div>
     );
 }

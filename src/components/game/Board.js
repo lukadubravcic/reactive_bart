@@ -13,7 +13,7 @@ const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
     activePunishment: state.game.activePunishment,
-    progress: state.game.activePunishment.progress
+    progress: state.game.progress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -26,8 +26,6 @@ const mapDispatchToProps = dispatch => ({
     wrongBoardEntryWarning: (status) => {
         dispatch({ type: 'BOARD_WRONG_ENTRY', mistake: status });
     },
-    getPunishment: () => {
-    },
     updatePunishmentProgress: (updatedProgress) => {
         dispatch({ type: 'UPDATE_PUNISHMENT_PROGRESS', updatedProgress });
     },
@@ -37,10 +35,6 @@ const mapDispatchToProps = dispatch => ({
     setActivePunishmentDone: id => {
         agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
-    },
-    saveCurrentProgress: (id, progress) => {
-        dispatch({ type: 'SAVING_ACTIVE_PUNISHMENT', id, progress })
-        agent.Punishment.saveProgress(id, progress).then(dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' }));
     },
     updateActivePunishments: (punishments) => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
@@ -96,14 +90,7 @@ class Board extends React.Component {
 
         this.boardFocused = ev => {
             ev.preventDefault();
-
-            let writtenCharsNum = Math.floor((this.props.progress / 100) * (this.howManyTimes * this.punishment.length)) + 1;
-            let text = getWrittenText(this.punishment, writtenCharsNum);
-
             this.clearStartingSentence();
-            if (this.props.progress > 0) {
-                this.props.updateBoardValue(text);
-            }
             this.props.onBoardFocus();
         };
 
@@ -127,7 +114,7 @@ class Board extends React.Component {
 
             setTimeout(() => {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu
-
+                console.log('Punishment completed!');
                 /* 
                     TODO: odvojiti funkciju za ispis poruka preko ploće (done/failed/...)
                 */
@@ -203,13 +190,10 @@ class Board extends React.Component {
 
             (function write(i) {
                 if (that.punishmentExplanation.length <= i) {
-                    /* let writtenCharsNum = Math.floor((that.props.progress / 100) * (that.howManyTimes * that.punishment.length)) + 1;
-                    let text = getWrittenText(that.punishment, writtenCharsNum);
-                    that.props.progress > 0
-                        ? that.props.updateBoardValue(text)
-                        : null; */
-
-                    that.props.boardDisabledStatus(false);
+                    setTimeout(() => {
+                        that.addToStartingSentence("Click to start!");
+                        that.props.boardDisabledStatus(false);
+                    }, 100);
                     return;
                 }
                 that.addToStartingSentence(that.punishmentExplanation[i]);
@@ -242,7 +226,7 @@ class Board extends React.Component {
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.props.activePunishment.how_many_times;
-            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\"";
+            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\". ";
             this.startingSentence = '';
             this.props.boardDisabledStatus(true);
             this.writeStartingSentance(this);
@@ -255,7 +239,7 @@ class Board extends React.Component {
 
     render() {
         const boardText = this.props.boardValue;
-        const progress = this.props.activePunishment.progress;
+        const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
         const bcgColor = boardTextMistake ? '#f2cbcb' : '';
 
@@ -280,7 +264,7 @@ class Board extends React.Component {
                             onMouseOver={this.boardHover}
                             onMouseOut={this.boardHoverOut}
                         />
-                        <ProgressBar progress={progress} spongeClick={this.spongeClick}  onHover={this.spongeHover} />
+                        <ProgressBar progress={progress} spongeClick={this.spongeClick} onHover={this.spongeHover} />
                     </div>
                 </div >
             )

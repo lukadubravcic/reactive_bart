@@ -17,6 +17,8 @@ const mapStateToProps = state => ({
     shownAcceptedPunishments: state.punishment.shownAcceptedPunishments,
     currentPage: state.punishment.currentAcceptedPage,
     activePunishment: state.game.activePunishment,
+    timeSpent: state.game.timeSpent,
+    timer: state.game.timerValue
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -37,15 +39,9 @@ const mapDispatchToProps = dispatch => ({
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS', punishments, newPage })
     },
-    savePunishmentProgress: (id, progress) => {
-        dispatch({ type: 'SAVING_ACTIVE_PUNISHMENT', id, progress })
-        agent.Punishment.saveProgress(id, progress).then(
-            dispatch({ type: 'ACTIVE_PUNISHMENT_SAVED' })
-        );
-    },
-    logPunishmentTry: (id, startTime = 0) => {
-        let timeSpent = startTime ? Date.now() - startTime : 0;
+    logPunishmentTry: (id, timeSpent) => {
         agent.Punishment.logTry(id, timeSpent);
+        dispatch({type: 'PUNISHMENT_TRY_LOGGED'});        
     }
 });
 
@@ -60,13 +56,12 @@ class AcceptedTab extends React.Component {
 
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
-
             if (id !== this.props.activePunishment._id) {
-                //this.savePunishment(this.props.activePunishment._id, this.props.activePunishment.progress);
-                this.props.logPunishmentTry(this.props.activePunishment._id)
+                
+                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent)
+                console.log(this.props.timer)
                 for (let pun of this.props.acceptedPunishments) {
                     if (pun._id === id) {
-                        if (!pun.progress) pun.progress = 0;
                         if (pun.what_to_write[pun.what_to_write.length - 1] !== ' ') pun.what_to_write += ' '; // dodaj razmak na kraju ako ga nema
                         this.props.setActivePunishment(pun);
                         return;
@@ -75,22 +70,8 @@ class AcceptedTab extends React.Component {
             } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
                 return;
             } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-                this.props.setDefaultPunishment();
+                this.setDefaultPunishment();
             }
-        };
-
-        // promjeni acceptedPunishmente u stateu i u bazi (savePunishmentProgress())
-        this.savePunishment = (id, progress) => {
-            let accPunishments = JSON.parse(JSON.stringify(this.props.acceptedPunishments));
-
-            for (let pun of accPunishments) {
-                if (pun._id === id) {
-                    pun.progress = progress || 0;
-                    break;
-                }
-            }
-            this.props.savePunishmentProgress(id, progress);
-            this.props.changeAcceptedPunishments(accPunishments);
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea

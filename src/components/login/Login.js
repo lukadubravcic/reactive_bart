@@ -2,11 +2,6 @@ import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../agent'
 
-/* 
-    TODO: 
-        - spremi id koji se dobije na loginu responsu
-*/
-
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({

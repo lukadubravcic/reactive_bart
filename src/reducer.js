@@ -6,11 +6,13 @@ import auth from './reducers/auth';
 import game from './reducers/game';
 import punishment from './reducers/punishment';
 import punishmentCreation from './reducers/punishmentCreation';
+import prefs from './reducers/prefs';
 
 export default combineReducers({
     common,
     auth,
     game,
     punishment,
-    punishmentCreation
+    punishmentCreation,
+    prefs
 });

@@ -39,10 +39,6 @@ const mapDispatchToProps = dispatch => ({
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS', punishments, newPage })
     },
-    logPunishmentTry: (id, timeSpent) => {
-        agent.Punishment.logTry(id, timeSpent);
-        dispatch({type: 'PUNISHMENT_TRY_LOGGED'});        
-    }
 });
 
 class AcceptedTab extends React.Component {
@@ -56,16 +52,16 @@ class AcceptedTab extends React.Component {
 
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
+            let newActivePunishment = {};
+
             if (id !== this.props.activePunishment._id) {
-                
-                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent)
-                for (let pun of this.props.acceptedPunishments) {
-                    if (pun._id === id) {
-                        if (pun.what_to_write[pun.what_to_write.length - 1] !== ' ') pun.what_to_write += ' '; // dodaj razmak na kraju ako ga nema
-                        this.props.setActivePunishment(pun);
-                        return;
-                    }
+                newActivePunishment = getPunishmentById(id, this.props.acceptedPunishments);
+
+                if (newActivePunishment.what_to_write[newActivePunishment.what_to_write.length - 1] !== ' ') {
+                    newActivePunishment.what_to_write += ' ';  // dodaj razmak na kraju ako ga nema
                 }
+                this.props.setActivePunishment(newActivePunishment);
+
             } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
                 return;
             } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
@@ -255,7 +251,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(AcceptedTab);
 
 
 function getByValue(arr, value) {
-
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
         if (arr[i].id === value) return arr[i];
     }
@@ -263,9 +258,22 @@ function getByValue(arr, value) {
 }
 
 function getPunishmentById(arr, id) {
-
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
         if (arr[i]._id === id) return arr[i];
     }
     return null;
+}
+
+function getPunishmentById(id, punishments) {
+    if (punishments.length === 0) return {};
+
+    else if (punishments.length === 1) return punishments[0];
+
+    if (id) {
+        for (let pun of punishments) {
+            if (pun._id === id) {
+                return pun;
+            }
+        }
+    } else if (!id) console.log('getPunishmentById(): Theres no id');
 }

@@ -38,10 +38,6 @@ const Auth = {
 	register: (username, email, password) => requests.post('/users/register', { username, email, password })
 };
 
-/* const Game = {
-	getPunishment: () => requests.get(/)
-} */
-
 const Punishment = {
 	createPunishment: (punishmentData) => requests.post('/punishment/create', punishmentData),
 	getAccepted: () => requests.get('/punishment/accepted'),
@@ -50,11 +46,16 @@ const Punishment = {
 	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
 	saveProgress: (id, progress) => requests.post('/punishment/save', { id: id, progress: progress }),
 	done: id => requests.post('/punishment/done', { id: id }),
-	logTry: (id, timeSpent) => requests.post('/punishment/log', {id: id, timeSpent: timeSpent})
+	logTry: (id, timeSpent) => requests.post('/punishment/log', { id: id, timeSpent: timeSpent })
+};
+
+const Pref = {
+	updatePreferences: (prefs) => requests.post('/prefs/update', prefs) 
 }
 
 export default {
 	Auth,
 	Punishment,
+	Pref,
 	setToken: _token => { token = _token; }
 }

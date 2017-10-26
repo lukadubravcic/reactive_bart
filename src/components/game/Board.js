@@ -40,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     },
     onBoardFocus: () => {
-        // štoperica krece, sve što slijedi se pribraja u sljedeći pokušaj (try)
+        // štoperica krece, sve što slijedi se pribraja u sljedeći pokušaj (try) gameInProgress = true
         dispatch({ type: 'GAME_BOARD_FOCUSED' });
     },
     onBoardLostFocus: () => {
@@ -53,7 +53,11 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'GAME_BOARD_HOVER_OUT' });
     },
     resetProgress: () => {
-        dispatch({type: 'GAME_RESETED'})
+        dispatch({ type: 'GAME_RESETED' })
+    },
+    logPunishmentTry: (id, timeSpent) => {
+        agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
+        dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
     }
 });
 
@@ -73,6 +77,7 @@ class Board extends React.Component {
             console.log('sponge click');
             // reset sponge (position), log try, optionally send (trying) mail, 
             // reset board, restart stopwatch
+            this.activePunishmentChanged();
             this.props.resetProgress();
         };
 
@@ -111,7 +116,6 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-            // this.props.saveCurrentProgress(this.props.activePunishment._id, 100);
             this.props.setActivePunishmentDone(this.props.activePunishment._id);
             this.removeActivePunishmentFromAccepted();
 
@@ -119,7 +123,7 @@ class Board extends React.Component {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu
                 console.log('Punishment completed!');
                 /* 
-                    TODO: odvojiti funkciju za ispis poruka preko ploće (done/failed/...)
+                    TODO: odvojiti funkciju za ispis poruka preko ploce (done/failed/...)
                 */
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 2000)
@@ -173,7 +177,6 @@ class Board extends React.Component {
                 if (progress === 100) {
                     // punishment DONE
                     this.activePunishmentDone();
-                    this.removeActivePunishmentFromAccepted();
                 }
             }
         };
@@ -187,24 +190,25 @@ class Board extends React.Component {
         };
 
         // rekurzivno ispisvanje početne rečenice i dodavanje već napisanih znakova (ako ih ima)
-        this.writeStartingSentance = that => {
-            that.clearStartingSentence();
-            that.props.updateBoardValue('');
+        this.writeStartingSentance = () => {
+            this.clearStartingSentence();
+            this.props.updateBoardValue('');
 
-            (function write(i) {
-                if (that.punishmentExplanation.length <= i) {
-                    setTimeout(() => {
-                        that.addToStartingSentence("Click to start!");
-                        that.props.boardDisabledStatus(false);
+            const write = (i) => {
+                if (this.punishmentExplanation.length <= i) {
+                    this.activeWriteTimeout = setTimeout(() => {
+                        this.addToStartingSentence("Click to start!");
+                        this.props.boardDisabledStatus(false);
                     }, 100);
                     return;
                 }
-                that.addToStartingSentence(that.punishmentExplanation[i]);
+                this.addToStartingSentence(this.punishmentExplanation[i]);
                 i++;
-                setTimeout(() => {
+                this.activeWriteTimeout = setTimeout(() => {
                     write(i);
                 }, Math.floor(Math.random() * 150) + 30);
-            })(0)
+            }
+            write(0);
         };
 
         this.calculateProgress = (boardText, punishment, howManyTimes) => {
@@ -219,20 +223,34 @@ class Board extends React.Component {
         };
 
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
-    }
-    componentDidMount() {
-        window.addEventListener("beforeunload", this.handleBeforeunload);
-    }
 
-    componentDidUpdate() {
-        if (Object.keys(this.props.activePunishment).length && this.props.activePunishment._id !== this.punishmentId) {
+        this.activePunishmentChanged = () => { // potrebno loggirat kaznu
+            if (this.props.gameInProgress) { // ako je igra bila u tijeku, logiraj ju
+                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            }
+            // init nove aktivne kazne
+            this.newPunishmentInit();
+        };
+
+        this.newPunishmentInit = () => {
+            if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.props.activePunishment.how_many_times;
             this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\". ";
-            this.startingSentence = '';
+            this.clearStartingSentence();
             this.props.boardDisabledStatus(true);
-            this.writeStartingSentance(this);
+            this.writeStartingSentance();
+        };
+    }
+    componentDidMount() {
+        window.addEventListener("beforeunload", this.handleBeforeunload);
+        this.startingSentence = '';
+    }
+
+    componentDidUpdate() {   
+        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment._id !== this.punishmentId)) { // postavljena nova kazna
+            this.activePunishmentChanged();
         }
     }
 
@@ -252,7 +270,7 @@ class Board extends React.Component {
             width: "100%"
         };
 
-        if (Object.keys(this.props.activePunishment).length) {
+        if (Object.keys(this.props.activePunishment).length > 0) {
             return (
                 <div className="container">
                     <div style={{ width: "1024px" }}>

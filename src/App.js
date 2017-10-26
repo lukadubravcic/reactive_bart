@@ -6,6 +6,7 @@ import Register from './components/register/Register';
 import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
+import Prefs from './components/prefs/Prefs';
 
 import BarChart from './components/stats/BarChart'
 
@@ -44,7 +45,7 @@ class App extends React.Component {
         }
 
     }
-
+    
     render() {
         return (
             <div>
@@ -55,14 +56,14 @@ class App extends React.Component {
                 </nav>
                 <Login />
                 <Register />
-                <hr />
+                {/* <hr />
                 <Game />
                 <hr />
-                {/* <PunishmentCreator /> */}
+                <PunishmentCreator /> 
                 <hr />
-                {/* Logged in part: */}
                 <PunishmentSelectorTable />
-                <BarChart />
+                <BarChart /> */}
+                <Prefs />
             </div>
         );
     }

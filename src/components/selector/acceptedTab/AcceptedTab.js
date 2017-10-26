@@ -59,7 +59,6 @@ class AcceptedTab extends React.Component {
             if (id !== this.props.activePunishment._id) {
                 
                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent)
-                console.log(this.props.timer)
                 for (let pun of this.props.acceptedPunishments) {
                     if (pun._id === id) {
                         if (pun.what_to_write[pun.what_to_write.length - 1] !== ' ') pun.what_to_write += ' '; // dodaj razmak na kraju ako ga nema

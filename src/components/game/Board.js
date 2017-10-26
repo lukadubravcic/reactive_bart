@@ -51,6 +51,9 @@ const mapDispatchToProps = dispatch => ({
     },
     onBoardHoverOut: () => {
         dispatch({ type: 'GAME_BOARD_HOVER_OUT' });
+    },
+    resetProgress: () => {
+        dispatch({type: 'GAME_RESETED'})
     }
 });
 
@@ -63,7 +66,7 @@ class Board extends React.Component {
 
         this.spongeHover = ev => {
             // igra u tijeku -> pokazi tooltip
-            console.log('sponge hover');
+            if (this.props.gameInProgress) console.log('sponge hover');
         };
 
         this.spongeClick = ev => {

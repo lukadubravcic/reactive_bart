@@ -58,8 +58,8 @@ class App extends React.Component {
                 <hr />
                 <Game />
                 <hr />
-                {/* <PunishmentCreator />
-                <hr /> */}
+                {/* <PunishmentCreator /> */}
+                <hr />
                 {/* Logged in part: */}
                 <PunishmentSelectorTable />
                 <BarChart />

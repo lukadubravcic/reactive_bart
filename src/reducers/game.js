@@ -46,6 +46,8 @@ export default (state = defaultState, action) => {
             return { ...state, timerValue: action.newTimerValue, timeSpent: action.timeSpent };
         case 'CLOCK_VALUE_UPDATED':
             return { ...state, clockValue: action.newClockValue };
+        case 'GAME_RESETED':
+            return { ...state, progress: 0, boardValue: '', timeSpent: 0, timerValue: defaultState.timerValue };
         default:
             return state;
     }

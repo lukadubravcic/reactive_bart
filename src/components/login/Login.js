@@ -13,7 +13,12 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.login(email, password).then((payload) => {
             if (payload !== null) {
                 agent.setToken(payload.token);
-                dispatch({ type: 'LOGIN', currentUser: { username: payload.username, email: email, _id: payload._id }, token: payload.token })
+                dispatch({
+                    type: 'LOGIN',
+                    currentUser: { username: payload.username, email: email, _id: payload._id },
+                    token: payload.token,
+                    prefs: payload.prefs
+                });
             } else {
                 // TODO: alert - neispravan login
                 console.log('Login payload === null')
@@ -23,8 +28,9 @@ const mapDispatchToProps = dispatch => ({
     onShowRegisterForm: () => {
         dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
     },
-    onLogout: () => {
+    onLogout: () => {        
         dispatch({ type: 'LOGOUT' });
+        agent.setToken(0)
     }
 });
 

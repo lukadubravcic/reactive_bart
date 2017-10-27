@@ -7,7 +7,7 @@ import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PUNISHMENT_MAX_LENGTH = 100;
-const PUNISHMENT_WHY_LENGTH = 500;
+const PUNISHMENT_WHY_MAX_LENGTH = 500;
 const MAX_HOW_MANY_TIMES_PUNISHMENT = 999;
 
 const mapStateToProps = state => ({
@@ -59,26 +59,50 @@ class PunishmentCreator extends React.Component {
 
     constructor() {
         super();
-        this.changeWhom = ev => this.props.onChangeWhom(ev.target.value);
+
+        this.toWhomErrorText = null;
+        this.whatToWriteErrorText = null;
+        this.whyErrorText = null;
+
+        this.changeWhom = ev => {
+
+            this.validateToWhomValue(ev.target.value);
+            this.props.onChangeWhom(ev.target.value);
+
+        };
+
+        this.validateToWhomValue = value => {
+            if (!validateEmail(value)) {
+                if (value.length > 30)
+                    this.toWhomErrorText = 'Username can\'t be that long. Maximum 30 characters.';
+                else
+                    this.toWhomErrorText = null;
+            }
+        }
+
         this.changeHowManyTimes = ev => {
             if (ev.target.value > MAX_HOW_MANY_TIMES_PUNISHMENT) ev.target.value = MAX_HOW_MANY_TIMES_PUNISHMENT;
+            else if (ev.target.value < 1) ev.target.value = 1;
             this.props.onChangeHowManyTimes(ev.target.value);
         }
         this.changeWhatToWrite = ev => {
-            if (ev.target.value.length < PUNISHMENT_MAX_LENGTH) {
-                this.props.onChangeWhatToWrite(ev.target.value);
+            if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
+                this.whatToWriteErrorText = null;
             } else {
                 // warning da je  text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
                 console.log('TODO WARNING: PUNISHMENT (whatToWrite) FIELD TOO LONG');
+                this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.'
             }
+            this.props.onChangeWhatToWrite(ev.target.value);
         }
         this.changeWhy = ev => {
-            if (ev.target.value.length < PUNISHMENT_WHY_LENGTH) {
-                this.props.onChangeWhy(ev.target.value);
+            if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0) {
+                this.whyErrorText = null;
             } else {
                 console.log('TODO WARNING: WHY FIELD TOO LONG')
+                this.whyErrorText = 'Punishment explanation too long or empty. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.'
             }
-
+            this.props.onChangeWhy(ev.target.value);
         }
         this.incrementHowManyTimes = ev => {
             ev.preventDefault();
@@ -86,7 +110,7 @@ class PunishmentCreator extends React.Component {
         }
         this.decrementHowManyTimes = ev => {
             ev.preventDefault();
-            if (this.props.howManyTimes > 0) this.props.onChangeHowManyTimes(this.props.howManyTimes - 1);
+            if (this.props.howManyTimes > 1) this.props.onChangeHowManyTimes(this.props.howManyTimes - 1);
         }
         this.deadlineDateChange = date => {
             this.props.onDeadlineDateChange(moment(date).toDate().valueOf());
@@ -97,12 +121,14 @@ class PunishmentCreator extends React.Component {
 
         this.submitForm = (whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField) => ev => {
             ev.preventDefault();
+
             let submitData = {};
             validateEmail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
             submitData.deadlineDate = deadlineChecked ? deadlineDate : null;
             submitData.whatToWrite = whatToWriteField;
             submitData.why = whyField;
+
             this.props.onSubmit(submitData);
         };
     }
@@ -114,6 +140,7 @@ class PunishmentCreator extends React.Component {
         const whyField = this.props.why;
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
+
 
         return (
             <div className="container">
@@ -128,9 +155,10 @@ class PunishmentCreator extends React.Component {
                                 value={whomField}
                                 onChange={this.changeWhom}
                                 required />
+                            {this.toWhomErrorText ? <label>{this.toWhomErrorText}</label> : null}
                         </fieldset>
                         <fieldset className="form-group">
-                            <label>How many times</label>
+                            <label htmlFor="first_name">How many times</label>
                             <button
                                 type="button"
                                 onClick={this.incrementHowManyTimes}
@@ -166,6 +194,7 @@ class PunishmentCreator extends React.Component {
                                 placeholder="Desired punishment."
                                 value={whatToWriteField}
                                 onChange={this.changeWhatToWrite} />
+                            {this.whatToWriteErrorText ? <label>{this.whatToWriteErrorText}</label> : null}
                         </fieldset>
                         <fieldset className="form-group">
                             <label>Why</label>
@@ -175,14 +204,16 @@ class PunishmentCreator extends React.Component {
                                 placeholder="Feel free to explain your reasons."
                                 value={whyField}
                                 onChange={this.changeWhy} />
+                                {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
                         </fieldset>
                         <button
                             type="submit">
                             <b>PUNISH</b>
                         </button>
+                        {this.props._message !== null ? <label>{this.props._message}</label> : null}
                     </fieldset>
                 </form>
-                {this.props._message !== null ? <label><h1>{this.props._message}</h1></label> : null}
+                
             </div>
         );
     }

@@ -8,7 +8,7 @@ import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
 
-import BarChart from './components/stats/BarChart'
+import Stats from './components/stats/Stats'
 
 import agent from './agent';
 
@@ -56,13 +56,13 @@ class App extends React.Component {
                 </nav>
                 <Login />
                 <Register />
-                {/* <hr />
+                <hr />
                 <Game />
-                <hr /> */}
+                <hr /> 
                 <PunishmentCreator /> 
                 <hr />
-                {/* <PunishmentSelectorTable />
-                <BarChart /> */}
+                <PunishmentSelectorTable />
+                <Stats /> 
                 <Prefs />
             </div>
         );

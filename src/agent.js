@@ -50,7 +50,7 @@ const Punishment = {
 };
 
 const Pref = {
-	updatePreferences: (prefs) => requests.post('/prefs/update', prefs) 
+	updatePreferences: (prefs) => requests.post('/prefs/update', prefs)
 }
 
 export default {

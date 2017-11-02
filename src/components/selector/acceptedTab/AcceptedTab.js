@@ -175,21 +175,20 @@ class AcceptedTab extends React.Component {
         ];
     }
 
-    componentDidMount() { // dohvat accepted kazni sa backenda
-        agent.Punishment.getAccepted().then((payload) => {
-            if (payload) {
-                this.loadAndShowAcceptedPunishments(payload.acceptedPunishments);
-                if (this.props.acceptedPunishments[0] && !this.props.activePunishment._id) this.setDefaultPunishment();
-            } else {
-                console.log("error: accepted punishments payload wasn't received");
-            }
-        });
+    componentDidMount() {
+        if (this.props.acceptedPunishments !== 'empty' && this.props.acceptedPunishments.length > 0) {
+            this.updateAndShowAcceptedPunishments(this.props.acceptedPunishments);
+        }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.acceptedPunishments.length !== this.props.acceptedPunishments.length) {
             this.updateAndShowAcceptedPunishments(nextProps.acceptedPunishments);
         }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (Object.keys(prevProps.activePunishment).length === 0) this.setDefaultPunishment();
     }
 
     render() {

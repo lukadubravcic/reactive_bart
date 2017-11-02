@@ -16,7 +16,6 @@ const mapStateToProps = state => ({
     pastPunishments: state.punishment.pastPunishments,
     shownPastPunishments: state.punishment.shownPastPunishments,
     currentPage: state.punishment.currentPastPage,
-    headerColumns: state.punishment.pastHeader
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -28,9 +27,6 @@ const mapDispatchToProps = dispatch => ({
     },
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_PAST_PUNISHMENTS', punishments, newPage })
-    },
-    changePastHeader: (columns) => {
-        dispatch({ type: 'UPDATE_PAST_HEADER', columns })
     }
 });
 
@@ -149,14 +145,16 @@ class PastTab extends React.Component {
         ];
     }
 
-    componentDidMount() { // dohvat past kazni sa backenda
-        agent.Punishment.getPast().then((payload) => {
-            if (payload) {
-                this.loadAndShowPastPunishments(payload.pastPunishments);
-            } else {
-                console.log("error: past punishments payload wasn't received");
-            }
-        });
+    componentDidMount() {
+        if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) {
+            this.updateAndShowPastPunishments(this.props.pastPunishments);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
+            this.updateAndShowPastPunishments(nextProps.pastPunishments);
+        }
     }
 
     render() {

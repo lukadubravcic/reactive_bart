@@ -259,6 +259,7 @@ class Board extends React.Component {
     }
 
     render() {
+        const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
@@ -270,7 +271,7 @@ class Board extends React.Component {
             width: "100%"
         };
 
-        if (Object.keys(this.props.activePunishment).length > 0) {
+        if (activePunishmentSet) {
             return (
                 <div className="container">
                     <div style={{ width: "1024px" }}>

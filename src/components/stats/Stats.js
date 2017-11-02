@@ -8,8 +8,8 @@ import { select } from 'd3-selection'
 
 const mapStateToProps = state => ({
       acceptedPunishments: state.punishment.acceptedPunishments,
-      orderedPunishments: state.punishment.orderedPunishments,
       pastPunishments: state.punishment.pastPunishments,
+      orderedPunishments: state.punishment.orderedPunishments
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -32,27 +32,33 @@ class Stats extends React.Component {
 
             this.punishingOthers2 = [];
 
-            
 
-            this.getData = (punishments, condition) => {
+
+            this.clasifyPunishments = (punishments, condition) => {
 
                   let result = {
-                        numAccepted: 0,
-                        numRejected: 0,
-                        numIgnored: 0,
-                        numGivenUp: 0,
-                        numDone: 0,
-                        numFailed: 0
-                  }
+                        accepted: 0,
+                        rejected: 0,
+                        ignored: 0,
+                        givenUp: 0,
+                        done: 0,
+                        failed: 0
+                  };
+
+                  let punishmentClass = null;
 
                   for (let punishment of punishments) {
-                        if (punishment.accepted !== null) result.numAccepted++;// punishmentStatus = 'ACCEPTED';
-                        if (punishment.rejected !== null) result.numRejected++;// punishmentStatus = 'REJECTED';
-                        if (punishment.given_up !== null) result.numGivenUp++;// punishmentStatus = 'GIVEN UP';
-                        if (punishment.done) result.numDone++;// punishmentStatus = "DONE";
-                        if (punishment.failed) result.numFailed++;// punishmentStatus = "FAILED";
-                        if (checkIfIgnoredPunishment(punishment)) result.numIgnored++; 
 
+                        punishmentClass = null;
+
+                        if (punishment.accepted) punishmentClass = 'accepted';// punishmentStatus = 'ACCEPTED';
+                        if (punishment.rejected) punishmentClass = 'rejected';// punishmentStatus = 'REJECTED';
+                        if (punishment.given_up) punishmentClass = 'givenUp';// punishmentStatus = 'GIVEN UP';
+                        if (punishment.done) punishmentClass = 'done';// punishmentStatus = "DONE";
+                        if (punishment.failed) punishmentClass = 'failed';// punishmentStatus = "FAILED";
+                        if (checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';
+
+                        if (punishmentClass) result[punishmentClass]++;
                   }
 
                   return result;
@@ -60,9 +66,17 @@ class Stats extends React.Component {
       }
 
       componentWillReceiveProps(nextProps) {
-            this.punishingOthersData1 = this.getData(this.props.orderedPunishments)
+
+            /*  if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) {
+                   console.log(this.getPunishmentTypes(this.props.pastPunishments));
+             } */
+
+            if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
+                  console.log(this.clasifyPunishments(nextProps.orderedPunishments));
+            }
+            /* this.punishingOthersData1 = this.getData(this.props.orderedPunishments)
             console.log(this.props.acceptedPunishments.length, this.props.pastPunishments.length, this.props.orderedPunishments.length)
-          
+           */
       }
 
       render() {

@@ -169,14 +169,17 @@ class OrderedTab extends React.Component {
         };
     }
 
-    componentDidMount() { // dohvat past kazni sa backenda
-        agent.Punishment.getOrdered().then((payload) => {
-            if (payload) {
-                this.loadAndShowOrderedPunishments(payload.orderedPunishments);
-            } else {
-                console.log("error: past punishments payload wasn't received");
-            }
-        });
+    componentDidMount() {
+        if (this.props.orderedPunishments !== 'empty' && this.props.orderedPunishments.length > 0) {
+            this.updateAndShowOrderedPunishments(this.props.orderedPunishments);
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log('dada')
+        if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
+            this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
+        }
     }
 
     render() {

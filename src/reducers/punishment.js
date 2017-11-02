@@ -1,14 +1,7 @@
 let currentDate = new Date();
 
 const defaultState = {
-    activePunishment: {
-        whom: '',
-        howManyTimes: 1,
-        deadlineChecked: false,
-        deadlineDate: currentDate.setDate(currentDate.getDate() + 1),
-        whatToWrite: '',
-        why: ''
-    },
+    activePunishment: {},
     _message: null,
 
     selectedTab: 'acceptedTab', // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
@@ -60,8 +53,6 @@ export default (state = defaultState, action) => {
             return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage };
         case 'PAST_PUNISHMENTS_CHANGED':
             return { ...state, pastPunishments: action.punishments };
-        case 'UPDATE_PAST_HEADER':
-            return { ...state, pastHeader: action.columns };
 
         case 'ORDERED_PUNISHMENTS_LOADED':
             return { ...state, orderedPunishments: action.punishments };

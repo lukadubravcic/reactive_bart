@@ -17,8 +17,6 @@ const mapStateToProps = state => ({
     shownAcceptedPunishments: state.punishment.shownAcceptedPunishments,
     currentPage: state.punishment.currentAcceptedPage,
     activePunishment: state.game.activePunishment,
-    timeSpent: state.game.timeSpent,
-    timer: state.game.timerValue
 });
 
 const mapDispatchToProps = dispatch => ({

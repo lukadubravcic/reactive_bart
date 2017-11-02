@@ -89,7 +89,7 @@ class PunishmentCreator extends React.Component {
             if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
                 this.whatToWriteErrorText = null;
             } else {
-                // warning da je  text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
+                // warning da je text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
                 console.log('TODO WARNING: PUNISHMENT (whatToWrite) FIELD TOO LONG');
                 this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.'
             }

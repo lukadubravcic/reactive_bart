@@ -1,5 +1,7 @@
 export const ITEMS_PER_PAGE = 4;
 
+export const IGNORED_TIME = 30; // 30 days
+
 export const randomPunishments = [
     {
         whom: '',

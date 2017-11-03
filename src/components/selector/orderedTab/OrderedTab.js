@@ -176,7 +176,7 @@ class OrderedTab extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log('dada')
+        
         if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
         }

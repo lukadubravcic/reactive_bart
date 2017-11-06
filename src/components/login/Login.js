@@ -1,8 +1,14 @@
 import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../agent'
+import SetUsername from './SetUsername';
 
-const mapStateToProps = state => ({ ...state });
+const mapStateToProps = state => ({
+    ...state,
+    username: state.common.currentUser.username,
+    email: state.common.currentUser.email
+
+});
 
 const mapDispatchToProps = dispatch => ({
     onEmailChange: value =>
@@ -28,9 +34,12 @@ const mapDispatchToProps = dispatch => ({
     onShowRegisterForm: () => {
         dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
     },
-    onLogout: () => {        
+    onLogout: () => {
         dispatch({ type: 'LOGOUT' });
         agent.setToken(0)
+    },
+    onSetUsername: () => {
+
     }
 });
 
@@ -47,6 +56,9 @@ class Login extends React.Component {
         this.showRegisterForm = () => {
             // hide login and show register form
             this.props.onShowRegisterForm();
+        }
+        this.handleSetUsername = ev => {
+
         }
     }
 
@@ -104,13 +116,15 @@ class Login extends React.Component {
         } else if (this.props.common.token !== null && this.props.auth.shownForm === 'login') {
             return (
                 <div className="container">
-                    <h1 className="text-xs-left">{this.props.common.currentUser.username}</h1>
+                    {this.props.username ?
+                        <h1 className="text-xs-left">{this.props.common.currentUser.username}</h1>
+                        : <SetUsername />}
                     <button
                         type="button"
                         onClick={this.props.onLogout}>
                         Logout
                     </button>
-                </div>
+                </div >
 
             );
         } else {

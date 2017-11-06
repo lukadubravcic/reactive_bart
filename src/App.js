@@ -8,7 +8,7 @@ import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
 
-import Stats from './components/stats/Stats'
+import Stats from './components/stats/Stats';
 
 import agent from './agent';
 

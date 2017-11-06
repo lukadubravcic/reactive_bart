@@ -2,18 +2,40 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PieChart from 'react-minimal-pie-chart';
 // import './App.css'
-import { scaleLinear } from 'd3-scale'
+/* import { scaleLinear } from 'd3-scale'
 import { max } from 'd3-array'
-import { select } from 'd3-selection'
+import { select } from 'd3-selection' */
+
+const colors = {
+      accepted: 'rgba(185, 214, 0, 0.8)',
+      rejected: 'rgba(198, 51, 51, 0.8)',
+      ignored: 'rgba(131, 64, 214, 0.8)',
+      completed: 'rgba(185, 214, 0, 0.8)',
+      givenUp: 'rgba(198, 51, 51, 0.8)',
+      failed: 'rgba(131, 64, 214, 0.8'
+};
+
+const acceptedColor = 'rgba(185, 214, 0, 0.8)';
+const rejectedColor = 'rgba(198, 51, 51, 0.8)';
+const ignoredColor = 'rgba(131, 64, 214, 0.8)';
 
 const mapStateToProps = state => ({
       acceptedPunishments: state.punishment.acceptedPunishments,
       pastPunishments: state.punishment.pastPunishments,
-      orderedPunishments: state.punishment.orderedPunishments
+      orderedPunishments: state.punishment.orderedPunishments,
+      firstGraph: state.graphData.firstGraph,
+      secondGraph: state.graphData.secondGraph,
+      thirdGraph: state.graphData.thirdGraph,
+      fourthGraph: state.graphData.fourthGraph
 });
 
 const mapDispatchToProps = dispatch => ({
-
+      updateOrderedGraphState: (data) => {
+            dispatch({ type: 'UPDATE_ORDERED_GRAPH_DATA', data });
+      },
+      updateReceivedGraphState: (data) => {
+            dispatch({ type: 'UPDATE_RECEIVED_GRAPH_DATA', data });
+      }
 });
 
 class Stats extends React.Component {
@@ -21,18 +43,7 @@ class Stats extends React.Component {
       constructor() {
             super();
 
-            this.punishingOthersData1 = {
-                  numAccepted: 0,
-                  numRejected: 0,
-                  numIgnored: 0,
-                  numGivenUp: 0,
-                  numDone: 0,
-                  numFailed: 0
-            }; // accepted, rejected, ignored
-
-            this.punishingOthers2 = [];
-
-            this.clasifyPunishments = (punishments, condition) => {
+            this.clasifyPunishments = punishments => {
 
                   let result = {
                         accepted: 0,
@@ -49,12 +60,12 @@ class Stats extends React.Component {
 
                         punishmentClass = null;
 
-                        if (punishment.accepted) punishmentClass = 'accepted';// punishmentStatus = 'ACCEPTED';
-                        if (punishment.rejected) punishmentClass = 'rejected';// punishmentStatus = 'REJECTED';
-                        if (punishment.given_up) punishmentClass = 'givenUp';// punishmentStatus = 'GIVEN UP';
-                        if (punishment.done) punishmentClass = 'done';// punishmentStatus = "DONE";
-                        if (punishment.failed) punishmentClass = 'failed';// punishmentStatus = "FAILED";
-                        if (checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';
+                        if (punishment.accepted) punishmentClass = 'accepted'; // punishmentStatus = 'ACCEPTED';                        
+                        if (punishment.given_up) punishmentClass = 'givenUp'; // punishmentStatus = 'GIVEN UP';
+                        if (punishment.done) punishmentClass = 'done'; // punishmentStatus = "DONE";
+                        if (punishment.failed) punishmentClass = 'failed'; // punishmentStatus = "FAILED";
+                        if (!punishment.accepted && checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';
+                        if (punishment.rejected) punishmentClass = 'rejected'; // punishmentStatus = 'REJECTED';
 
                         if (punishmentClass) result[punishmentClass]++;
                   }
@@ -74,70 +85,178 @@ class Stats extends React.Component {
                         }
                         return false;
                   }
-                  return false;
+            };
+
+            this.getGraphData = (classificationResults, neededProperties) => {
+
+                  let graphData = [];
+
+                  const data = getGraphProperties(classificationResults, neededProperties);
+
+                  Object.keys(data).map((prop, index) => {
+
+                        if (data[prop] > 0) {
+                              graphData.push({
+                                    value: data[prop],
+                                    key: index,
+                                    color: colors[prop]
+                              });
+                        }
+                  });
+
+                  return graphData;
             };
       }
 
       componentWillReceiveProps(nextProps) {
 
-            if (this.didPunishmentsChange(this.props.acceptedPunishments, nextProps.acceptedPunishments)) { // odlucuje o triggeru klasifikacije
+            /* if (this.didPunishmentsChange(this.props.acceptedPunishments, nextProps.acceptedPunishments)) { // odlucuje o triggeru klasifikacije
                   console.log('test')
-            }
+            } */
+
             if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishment
-                  //console.log(this.clasifyPunishments(nextProps.pastPunishments));
+                  if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments)) { // odlucuje o triggeru klasifikacije
+
+                        let graphData1 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['accepted', 'rejected', 'ignored']);
+                        let graphData2 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['completed', 'givenUp', 'failed']);
+
+                        this.props.updateOrderedGraphState({ graphData1, graphData2 });
+                  }
             }
 
             if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
-                  //console.log(this.clasifyPunishments(nextProps.orderedPunishments));
+                  if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
+
+                        let graphData3 = this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['accepted', 'rejected', 'ignored']);
+                        let graphData4 = this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['completed', 'givenUp', 'failed']);
+
+                        this.props.updateReceivedGraphState({ graphData3, graphData4 });
+                  }
             }
 
-            if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
+            /* if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
                   //console.log('test')
-            }
+            } */
       }
 
       render() {
 
-            const acceptedPunishmentsLen = this.props.acceptedPunishments.length;
-            const orderedPunishmentsLen = this.props.orderedPunishments.length;
-            const pastPunishmentsLen = this.props.pastPunishments.length;
-
             return (
-                  <div className="container">
-                        <div style={{ float: "left", width: "200px", margin: "50px" }}>
-                              <PieChart
-                                    data={[
-                                          { value: 24, key: 1, color: 'rgba(185, 214, 0, 0.9)' },
-                                          { value: 15, key: 2, color: 'rgba(198, 51, 51, 0.95)' },
-                                          { value: 20, key: 3, color: 'rgba(131, 64, 214, 0.9)' },
-                                    ]}
-                                    lineWidth={35}
-                                    paddingAngle={2}
-                                    animate={true}
-                                    animationDuration={3500} />
+                  <div>
+                        <div className="container">
+                              {this.props.firstGraph ?
+                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                          <PieChart
+                                                data={this.props.firstGraph}
+                                                lineWidth={80}
+                                                paddingAngle={5}
+                                                animate={true}
+                                                animationDuration={3500} />
+
+                                          <br />
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
+                                                <label>&nbsp;Accepted</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
+                                                <label>&nbsp;Rejected</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
+                                                <label>&nbsp;Ignored</label>
+                                          </div>
+                                    </div>
+                                    : null}
+                              {this.props.secondGraph ?
+                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                          <PieChart
+                                                data={this.props.secondGraph}
+                                                lineWidth={80}
+                                                paddingAngle={1}
+                                                animate={true}
+                                                animationDuration={3500} />
+
+                                          <br />
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
+                                                <label>&nbsp;Completed</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
+                                                <label>&nbsp;Given up</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
+                                                <label>&nbsp;Failed</label>
+                                          </div>
+                                    </div>
+                                    : null}
+                              <br style={{ clear: "left" }} />
                         </div>
-                        <div style={{ float: "left", width: "200px", margin: "50px" }}>
-                              <PieChart
-                                    data={[
-                                          { value: 24, key: 1, color: 'green' },
-                                          { value: 15, key: 2, color: 'tomato' },
-                                          { value: 20, key: 3, color: 'yellow' },
-                                    ]} />
+
+                        <div className="container">
+                              {this.props.thirdGraph ?
+                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                          <PieChart
+                                                data={this.props.thirdGraph}
+                                                lineWidth={80}
+                                                paddingAngle={1}
+                                                animate={true}
+                                                animationDuration={3500} />
+
+                                          <br />
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
+                                                <label>&nbsp;Accepted</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
+                                                <label>&nbsp;Rejected</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
+                                                <label>&nbsp;Ignored</label>
+                                          </div>
+                                    </div>
+                                    : null}
+                              {this.props.fourthGraph ?
+                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                          <PieChart
+                                                data={this.props.fourthGraph}
+                                                lineWidth={80}
+                                                paddingAngle={1}
+                                                animate={true}
+                                                animationDuration={3500} />
+
+                                          <br />
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
+                                                <label>&nbsp;Completed</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
+                                                <label>&nbsp;Given up</label>
+                                          </div>
+                                          <div className="graph-legend-container">
+                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
+                                                <label>&nbsp;Failed</label>
+                                          </div>
+                                    </div>
+                                    : null}
+                              <br style={{ clear: "left" }} />
                         </div>
-                        <div style={{ float: "left", width: "200px", margin: "50px" }}>
-                              <PieChart
-                                    data={[
-                                          { value: 34, key: 1, color: 'green' },
-                                          { value: 15, key: 2, color: 'tomato' },
-                                          { value: 20, key: 3, color: 'yellow' },
-                                    ]} />
-                        </div>
-                        <br style={{ clear: "left" }} />
                   </div>
             )
       }
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(Stats);
+
 
 function checkIfIgnoredPunishment(punishment) {
 
@@ -145,7 +264,7 @@ function checkIfIgnoredPunishment(punishment) {
 
       if ((createdPlus30Days - Date.now() < 0) && (punishment.accepted === null)) return true // IGNORED
 
-      return false;
+      return false; // NOT IGNORED
 }
 
 function comparePunishments(pun1, pun2) {
@@ -153,7 +272,14 @@ function comparePunishments(pun1, pun2) {
       for (let prop in pun1) {
 
             if (pun1[prop] !== pun2[prop]) return false;
-
       }
       return true;
 };
+
+function getGraphProperties(classificationResults, neededProperties) {
+
+      return Object.assign({}, ...Object.keys(classificationResults).map(property => {
+
+            if (neededProperties.indexOf(property) > -1) return { [property]: classificationResults[property] };
+      }));
+}

@@ -7,6 +7,7 @@ import game from './reducers/game';
 import punishment from './reducers/punishment';
 import punishmentCreation from './reducers/punishmentCreation';
 import prefs from './reducers/prefs';
+import graphData from './reducers/graphData';
 
 export default combineReducers({
     common,
@@ -14,5 +15,6 @@ export default combineReducers({
     game,
     punishment,
     punishmentCreation,
-    prefs
+    prefs,
+    graphData
 });

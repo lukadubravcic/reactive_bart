@@ -4,7 +4,6 @@ const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case 'UPDATE_ORDERED_GRAPH_DATA':
-            console.log(action.data)
             return {
                 ...state,
                 firstGraph: action.data.graphData1.length > 0 ? action.data.graphData1 : state.grapData1 ? state.grapData1 : null,

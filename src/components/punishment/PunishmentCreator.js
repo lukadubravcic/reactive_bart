@@ -134,13 +134,13 @@ class PunishmentCreator extends React.Component {
     }
 
     render() {
+
         const whomField = this.props.whom;
         const howManyTimesField = this.props.howManyTimes;
         const whatToWriteField = this.props.whatToWrite;
         const whyField = this.props.why;
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
-
 
         return (
             <div className="container">
@@ -193,7 +193,8 @@ class PunishmentCreator extends React.Component {
                                 type="text"
                                 placeholder="Desired punishment."
                                 value={whatToWriteField}
-                                onChange={this.changeWhatToWrite} />
+                                onChange={this.changeWhatToWrite}
+                                required />
                             {this.whatToWriteErrorText ? <label>{this.whatToWriteErrorText}</label> : null}
                         </fieldset>
                         <fieldset className="form-group">
@@ -203,7 +204,8 @@ class PunishmentCreator extends React.Component {
                                 type="text"
                                 placeholder="Feel free to explain your reasons."
                                 value={whyField}
-                                onChange={this.changeWhy} />
+                                onChange={this.changeWhy}
+                                required />
                                 {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
                         </fieldset>
                         <button

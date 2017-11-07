@@ -15,10 +15,6 @@ const colors = {
       failed: 'rgba(131, 64, 214, 0.8'
 };
 
-const acceptedColor = 'rgba(185, 214, 0, 0.8)';
-const rejectedColor = 'rgba(198, 51, 51, 0.8)';
-const ignoredColor = 'rgba(131, 64, 214, 0.8)';
-
 const mapStateToProps = state => ({
       acceptedPunishments: state.punishment.acceptedPunishments,
       pastPunishments: state.punishment.pastPunishments,

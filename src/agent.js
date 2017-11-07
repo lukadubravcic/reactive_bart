@@ -35,7 +35,8 @@ const requests = {
 const Auth = {
 	current: () => requests.get('/users'),
 	login: (email, password) => requests.post('/users/login', { email, password }),
-	register: (username, email, password) => requests.post('/users/register', { username, email, password })
+	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
+	setUsername: username => requests.post('/users/username', { username })
 };
 
 const Punishment = {

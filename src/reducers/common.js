@@ -2,6 +2,7 @@ const defaultState = {
     appName: 'reactive-bart',
     currentUser: {},
     token: null,
+    usernameSet: ''
 }
 
 export default (state = defaultState, action) => {
@@ -14,10 +15,14 @@ export default (state = defaultState, action) => {
             localStorage.setItem('token', action.token);
             return { ...state, currentUser: action.currentUser, token: action.token };
         case 'LOGOUT':
-            localStorage.removeItem('token');
+            //localStorage.removeItem('token');
             return defaultState;
         case 'APP_LOAD':
-            return { ...state, token: action.token || null, currentUser: action.user }
+            return { ...state, token: action.token || null, currentUser: action.user };
+        case 'UPDATE_SET_USERNAME_FIELD':
+            return { ...state, usernameSet: action.value };
+        case 'USERNAME_SET':
+            return { ...state, currentUser: action.user };
         default:
             return state;
     }

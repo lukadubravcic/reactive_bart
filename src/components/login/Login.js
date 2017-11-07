@@ -36,6 +36,7 @@ const mapDispatchToProps = dispatch => ({
     },
     onLogout: () => {
         dispatch({ type: 'LOGOUT' });
+        localStorage.removeItem('token');
         agent.setToken(0)
     },
     onSetUsername: () => {

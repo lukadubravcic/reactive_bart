@@ -7,8 +7,8 @@ import PastTab from './pastTab/PastTab';
 import OrderedTab from './orderedTab/OrderedTab';
 
 const mapStateToProps = state => ({
-    ...state,
-    tabStyles: state.punishment.tabStyles,
+    ...state.punishment,
+    user: state.common.currentUser,
     acceptedPunishments: state.punishment.acceptedPunishments,
 });
 
@@ -25,6 +25,15 @@ const mapDispatchToProps = dispatch => ({
     onLoadedPastPunishments: (punishments) => {
         dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments })
     },
+    setAcceptedHeaderVisibility: value => {
+        dispatch({ type: 'ACCEPTED_TAB_HEADER_VISIBILITY_CHANGED', value });
+    },
+    setPastHeaderVisibility: value => {
+        dispatch({ type: 'PAST_TAB_HEADER_VISIBILITY_CHANGED', value });
+    },
+    setOrderedHeaderVisibility: value => {
+        dispatch({ type: 'ORDERED_TAB_HEADER_VISIBILITY_CHANGED', value });
+    },
 });
 
 class PunishmentSelectorTable extends React.Component {
@@ -32,13 +41,16 @@ class PunishmentSelectorTable extends React.Component {
     constructor() {
         super();
 
+        this.showAcceptedTabHeader = false;
+        this.showPastTabHeader = false;
+        this.showOrderedTabHeader = false;
+
         this.onChangeTab = ev => {
-            //console.log(ev.target.id);
             this.selectTab(ev.target.id);
         }
 
         this.selectTab = tab => {
-            if (tab !== this.props.punishment.selectedTab) { // ako se selektira razlicit tab od trenutnog
+            if (tab !== this.props.selectedTab) { // ako se selektira razlicit tab od trenutnog
                 switch (tab) {
                     case 'acceptedTab':
                         this.acceptedStyle = this.placeholderStyles.selectedStyle;
@@ -77,125 +89,166 @@ class PunishmentSelectorTable extends React.Component {
         this.pastStyle = this.placeholderStyles.defaultStyle;
         this.orderedStyle = this.placeholderStyles.defaultStyle;
 
-        this.showAcceptedTab = false;
-        this.showPastTab = false;
-        this.showOrderedTab = false;
-
         this._handleAcceptedPunFromAgent = (payload) => {
-            if (payload) {
+
+            if (payload.acceptedPunishments) {
+
                 this.props.onLoadedAcceptedPunishments(payload.acceptedPunishments);
+
                 if (payload.acceptedPunishments.length > 0) {
-                    this.showAcceptedTab = true;
-                    this.acceptedStyle = this.placeholderStyles.selectedStyle;
+
+                    this.props.setAcceptedHeaderVisibility(true);
+                    // this.showAcceptedTabHeader = true;
+                    this.selectTab('acceptedTab');
                 }
                 // if (this.props.acceptedPunishments[0] && !this.props.activePunishment._id) this.setDefaultPunishment();
             } else {
+
                 console.log("error: accepted punishments payload wasn't received");
+                // this.showAcceptedTabHeader = false;
+                this.props.onLoadedAcceptedPunishments([]);
             }
         };
 
         this._handlePastPunFromAgent = (payload) => {
-            if (payload) {
+
+            if (payload.pastPunishments) {
+
                 this.props.onLoadedPastPunishments(payload.pastPunishments);
+
                 if (payload.pastPunishments.length > 0) {
-                    this.showPastTab = true;
-                    if (this.acceptedStyle !== this.placeholderStyles.selectedStyle) {
-                        this.pastStyle = this.placeholderStyles.selectedStyle;
+
+                    this.props.setPastHeaderVisibility(true);
+                    // this.showPastTabHeader = true;
+
+                    if (!this.props.selectedTab) {
                         this.selectTab('pastTab')
                     }
                 }
             } else {
+
                 console.log("error: past punishments payload wasn't received");
+                // this.showPastTabHeader = false;
+                this.props.onLoadedPastPunishments([]);
             }
         };
 
         this._handleOrderedPunFromAgent = (payload) => {
-            if (payload) {
+
+            if (payload.orderedPunishments) {
+
                 this.props.onLoadedOrderedPunishments(payload.orderedPunishments);
+
                 if (payload.orderedPunishments.length > 0) {
-                    this.showOrderedTab = true;
-                    if (this.acceptedStyle !== this.placeholderStyles.selectedStyle && this.pastStyle !== this.placeholderStyles.selectedStyle) {
-                        this.orderedStyle = this.placeholderStyles.selectedStyle;
+
+                    this.props.setOrderedHeaderVisibility(true);
+                    // this.showOrderedTabHeader = true;
+
+                    if (!this.props.selectedTab) {
+
                         this.selectTab('orderedTab');
                     }
                     // if (this.props.acceptedPunishments[0] && !this.props.activePunishment._id) this.setDefaultPunishment();
-                } else {
-                    console.log("error: ordered punishments payload wasn't received");
                 }
+            } else {
+
+                console.log("error: ordered punishments payload wasn't received");
+                //this.showOrderedTabHeader = false; // potencijalno maknuti
+                this.props.onLoadedOrderedPunishments([]);
             }
         };
 
     }
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.common.currentUser._id && this.props.common.currentUser._id) { // dohvacen userdata
+
+        if (!prevProps.user._id && this.props.user._id) { // dohvacen userdata
+
             agent.Punishment.getAccepted().then((payload) => {
+                // console.log('accepted answer')
                 this._handleAcceptedPunFromAgent(payload);
+            });
 
-                agent.Punishment.getPast().then((payload) => {
-                    this._handlePastPunFromAgent(payload);
+            agent.Punishment.getPast().then((payload) => {
+                // console.log('past answer')
+                this._handlePastPunFromAgent(payload);
+            });
 
-                    agent.Punishment.getOrdered().then((payload) => {
-                        this._handleOrderedPunFromAgent(payload);
-                    });
-                });
+            agent.Punishment.getOrdered().then((payload) => {
+                // console.log('ordered answer')
+                this._handleOrderedPunFromAgent(payload);
             });
         }
+
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.punishment.acceptedPunishments.length === 0) this.showAcceptedTab = false;
-        if (nextProps.punishment.orderedPunishments.length === 0) this.showOrderedTab = false;
-        if (nextProps.punishment.pastPunishments.length === 0) this.showPastTab = false;
+        if (nextProps.acceptedPunishments.length === 0) this.props.setAcceptedHeaderVisibility(false);;
+        if (nextProps.orderedPunishments.length === 0) this.props.setOrderedHeaderVisibility(false);
+        if (nextProps.pastPunishments.length === 0) this.props.setPastHeaderVisibility(false);
 
     }
 
     render() {
 
+        const userLoggedIn = this.props.user._id;
         let shownTab = null;
-        const userLoggedIn = this.props.common.currentUser._id;
 
-        const acceptedTabHeader = this.showAcceptedTab ? (<label id="acceptedTab" style={this.acceptedStyle} onClick={this.onChangeTab}>ACCEPTED</label>) : null;
-        const pastTabHeader = this.showPastTab ? (<label id="pastTab" style={this.pastStyle} onClick={this.onChangeTab}>PAST</label>) : null;
-        const orderedTabHeader = this.showOrderedTab ? (<label id="orderedTab" style={this.orderedStyle} onClick={this.onChangeTab}>ORDERED</label>) : null;
-
-        let tableTabNamesElement = (
-            <div style={{ display: "flex", alignItems: "center" }}>
-                {acceptedTabHeader}
-                {pastTabHeader}
-                {orderedTabHeader}
-            </div>
-        );
-
-        if (this.props.punishment.selectedTab === 'acceptedTab' && this.showAcceptedTab) {
-            shownTab = (
-                <div className="container">
-                    <AcceptedTab />
-                </div>
-            );
-        } else if (this.props.punishment.selectedTab === 'pastTab' && this.showPastTab) {
-            shownTab = (
-                <div className="container">
-                    <PastTab />
-                </div>
-            );
-        } else if (this.props.punishment.selectedTab === 'orderedTab' && this.showOrderedTab) {
-            shownTab = (
-                <div className="container">
-                    <OrderedTab />
-                </div>
-            ); 
-        }
 
         if (userLoggedIn) {
+
+            const acceptedTabHeader = this.props.showAcceptedTab ? (<label id="acceptedTab" style={this.acceptedStyle} onClick={this.onChangeTab}>ACCEPTED</label>) : null;
+            const pastTabHeader = this.props.showPastTab ? (<label id="pastTab" style={this.pastStyle} onClick={this.onChangeTab}>PAST</label>) : null;
+            const orderedTabHeader = this.props.showOrderedTab ? (<label id="orderedTab" style={this.orderedStyle} onClick={this.onChangeTab}>ORDERED</label>) : null;
+
+
+            let tableTabNamesElement = (
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    {acceptedTabHeader}
+                    {pastTabHeader}
+                    {orderedTabHeader}
+                </div>
+            );
+
+            switch (this.props.selectedTab) {
+                case 'acceptedTab':
+                    this.props.showAcceptedTab ? shownTab = (
+
+                        <div className="container">
+                            <AcceptedTab />
+                        </div>
+
+                    ) : null;
+                    break;
+
+                case 'pastTab':
+                    this.props.showPastTab ? shownTab = (
+
+                        <div className="container">
+                            <PastTab />
+                        </div>
+
+                    ) : null;
+                    break;
+
+                case 'orderedTab':
+                    this.props.showOrderedTab ? shownTab = (
+
+                        <div className="container">
+                            <OrderedTab />
+                        </div>
+
+                    ) : null;
+                    break;
+            }
 
             return (
                 <div className="container">
                     {tableTabNamesElement}
                     {shownTab}
                 </div>
-
             )
+
         } else return null // no data
     }
 }

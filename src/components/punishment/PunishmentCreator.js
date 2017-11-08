@@ -11,7 +11,8 @@ const PUNISHMENT_WHY_MAX_LENGTH = 500;
 const MAX_HOW_MANY_TIMES_PUNISHMENT = 999;
 
 const mapStateToProps = state => ({
-    ...state.punishmentCreation
+    ...state.punishmentCreation,
+    orderedPunishments: state.punishment.orderedPunishments
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -45,11 +46,16 @@ const mapDispatchToProps = dispatch => ({
         key: 'deadlineDate',
         value
     }),
-    onSubmit: submitData => {
+    onSubmit: (submitData, orderedPunishments)=> {
         // agent magic
         agent.Punishment.createPunishment(submitData).then((payload) => {
+            let newOrderedPunishments = orderedPunishments.length > 0 ? JSON.parse(JSON.stringify(orderedPunishments)) : [];
+            newOrderedPunishments.unshift(payload);
             console.log(payload);
-            if (!payload.errorMsg) dispatch({ type: 'PUNISHMENT_CREATED', payload, msg: 'Request sent!' });
+
+            if (!payload.errorMsg) {
+                dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg: 'Request sent!' });
+            }
             else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });
         });
     }
@@ -129,7 +135,7 @@ class PunishmentCreator extends React.Component {
             submitData.whatToWrite = whatToWriteField;
             submitData.why = whyField;
 
-            this.props.onSubmit(submitData);
+            this.props.onSubmit(submitData, this.props.orderedPunishments);
         };
     }
 
@@ -206,7 +212,7 @@ class PunishmentCreator extends React.Component {
                                 value={whyField}
                                 onChange={this.changeWhy}
                                 required />
-                                {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
+                            {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
                         </fieldset>
                         <button
                             type="submit">
@@ -215,7 +221,7 @@ class PunishmentCreator extends React.Component {
                         {this.props._message !== null ? <label>{this.props._message}</label> : null}
                     </fieldset>
                 </form>
-                
+
             </div>
         );
     }

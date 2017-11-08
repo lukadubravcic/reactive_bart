@@ -12,7 +12,6 @@ export default (state = defaultState, action) => {
         case 'REGISTER':
             return { ...state };
         case 'LOGIN':
-            localStorage.setItem('token', action.token);
             return { ...state, currentUser: action.currentUser, token: action.token };
         case 'LOGOUT':
             //localStorage.removeItem('token');

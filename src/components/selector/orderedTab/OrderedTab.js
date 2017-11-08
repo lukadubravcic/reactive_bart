@@ -176,10 +176,13 @@ class OrderedTab extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        
+
         if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
+        } else if (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length) {
+            this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
         }
+
     }
 
     render() {

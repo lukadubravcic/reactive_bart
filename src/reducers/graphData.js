@@ -15,6 +15,8 @@ export default (state = defaultState, action) => {
                 thirdGraph: action.data.graphData3.length > 0 ? action.data.graphData3 : state.grapData3 ? state.grapData3 : null,
                 fourthGraph: action.data.graphData4.length > 0 ? action.data.graphData4 : state.grapData4 ? state.grapData4 : null
             }
+        case 'LOGOUT':
+            return defaultState;
         default:
             return { ...state };
     }

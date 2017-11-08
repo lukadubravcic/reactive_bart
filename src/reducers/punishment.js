@@ -1,10 +1,8 @@
-let currentDate = new Date();
-
 const defaultState = {
     activePunishment: {},
     _message: null,
 
-    selectedTab: 'acceptedTab', // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
+    selectedTab: null, // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
 
     acceptedPunishments: 'empty',
     shownAcceptedPunishments: 'empty',
@@ -18,6 +16,10 @@ const defaultState = {
     shownOrderedPunishments: 'empty',
     currentOrderedPage: 1,
 
+    showAcceptedTab: false,
+    showPastTab: false,
+    showOrderedTab: false
+
 };
 
 export default (state = defaultState, action) => {
@@ -27,7 +29,7 @@ export default (state = defaultState, action) => {
         case 'TOGGLE_PUNISHMENT_DEADLINE_CKECKBOX':
             return { ...state, deadlineChecked: !state.activePunishment.deadlineChecked };
         case 'PUNISHMENT_CREATED':
-            return { ...state, _message: action.msg };
+            return { ...state, _message: action.msg, orderedPunishments: action.newOrderedPunishments };
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _message: action.msg };
         case 'SET_ACTIVE_PUNISHMENT':
@@ -61,6 +63,12 @@ export default (state = defaultState, action) => {
         case 'ORDERED_PUNISHMENTS_CHANGED':
             return { ...state, orderedPunishments: action.punishments };
 
+        case 'ACCEPTED_TAB_HEADER_VISIBILITY_CHANGED':
+            return { ...state, showAcceptedTab: action.value };
+        case 'PAST_TAB_HEADER_VISIBILITY_CHANGED':
+            return { ...state, showPastTab: action.value };
+        case 'ORDERED_TAB_HEADER_VISIBILITY_CHANGED':
+            return { ...state, showOrderedTab: action.value };
 
         case 'LOGOUT':
             return defaultState;

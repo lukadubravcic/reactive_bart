@@ -18,10 +18,13 @@ const mapDispatchToProps = dispatch => ({
     onSubmit: (email, password) => {
         agent.Auth.login(email, password).then((payload) => {
             if (payload !== null) {
+
                 agent.setToken(payload.token);
+                localStorage.setItem('token', payload.token);
+
                 dispatch({
                     type: 'LOGIN',
-                    currentUser: { username: payload.username, email: email, _id: payload._id },
+                    currentUser: { username: payload.username, email: payload.email, _id: payload._id },
                     token: payload.token,
                     prefs: payload.prefs
                 });

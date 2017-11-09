@@ -49,9 +49,9 @@ const mapDispatchToProps = dispatch => ({
     onSubmit: (submitData, orderedPunishments)=> {
         // agent magic
         agent.Punishment.createPunishment(submitData).then((payload) => {
+
             let newOrderedPunishments = orderedPunishments.length > 0 ? JSON.parse(JSON.stringify(orderedPunishments)) : [];
             newOrderedPunishments.unshift(payload);
-            console.log(payload);
 
             if (!payload.errorMsg) {
                 dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg: 'Request sent!' });

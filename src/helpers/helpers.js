@@ -5,3 +5,7 @@ export function getElementById(arr, id) { //provided array of punishments and ne
     }
     return null;
 }
+
+export function dateToHumanReadable(date) {
+    
+}

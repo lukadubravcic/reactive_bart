@@ -261,7 +261,6 @@ class Board extends React.Component {
         }
     }
 
-
     // NEPOTREBNO ?? (placeholder)
     loadRandomPunishment() {
         let randomPunishment = randomPunishments[Math.floor(Math.random() * randomPunishments.length)];

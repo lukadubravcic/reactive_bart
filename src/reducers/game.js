@@ -53,6 +53,6 @@ export default (state = defaultState, action) => {
         case 'STOPWATCH_RESET':
             return { ...state, timerValue: defaultState.timerValue, gameInProgress: false }
         default:
-            return state;
+            return defaultState;
     }
 }

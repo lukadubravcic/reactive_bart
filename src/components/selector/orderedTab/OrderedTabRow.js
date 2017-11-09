@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 const OrderedTabRow = props => {
 
@@ -24,9 +25,9 @@ const OrderedTabRow = props => {
     return (
         <div className="container">
             {/* stuktura tog reda u tablici */}
-            <span style={props.style}>{props.punishment.created}</span>
+            <span style={props.style}>{moment(props.punishment.created).fromNow()}</span>
             <span style={props.style}>{props.punishment.user_taking_punishment}</span>
-            <span style={props.style}>{props.punishment.deadline}</span>
+            { props.punishment.deadline ? <span style={props.style}>{moment(props.punishment.deadline).fromNow()}</span>:<span style={props.style}>no deadline</span> }
             <span style={props.style}>{props.punishment.how_many_times}</span>
             <span style={props.style}>{props.punishment.what_to_write}</span>
             <span style={props.style}>{punishmentStatus}</span>

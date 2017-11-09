@@ -22,9 +22,6 @@ const mapDispatchToProps = dispatch => ({
     setClockValue: newClockValue => {
         dispatch({ type: 'CLOCK_VALUE_UPDATED', newClockValue });
     },
-    /* resetStopwatch: () => {
-        dispatch({ type: 'STOPWATCH_RESET'});
-    } */
 })
 
 class Timer extends React.Component {
@@ -107,18 +104,20 @@ class Timer extends React.Component {
         if (nextProps.boardFocused && nextProps.gameInProgress) {
             this.stopClock();
             this.startStopwatch();
+
         } else if (nextProps.boardFocused && !nextProps.gameInProgress){
             console.log('ulaz')
             this.stopStopwatch();
+
         } else if (!nextProps.boardFocused && nextProps.gameInProgress) {
             this.stopStopwatch();
+
         } else if (nextProps.boardHovered && !nextProps.gameInProgress) {
             this.stopClock();
+
         } else if (!nextProps.boardHovered && !nextProps.gameInProgress) {
             this.startClock();
-        }/*  else {
-            this.stopStopwatch();
-        } */
+        }
     }    
 
     render() {

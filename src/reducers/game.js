@@ -48,6 +48,8 @@ export default (state = defaultState, action) => {
             return { ...state, clockValue: action.newClockValue };
         case 'GAME_RESETED':
             return { ...state, progress: 0, boardValue: defaultState.boardValue, timeSpent: 0, timerValue: defaultState.timerValue, gameInProgress: false };
+        case 'USERNAME_SET':
+            return { ...state, activePunishment: action.specialPunishment }
         default:
             return state;
     }

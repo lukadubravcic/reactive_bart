@@ -23,8 +23,9 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.register(username, email, password).then((payload) => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju "alert" o neuspjesnosti
             if (payload !== null) {
-                console.log(payload)
+                
                 dispatch({ type: 'REGISTER', payload });
+
             } else {
                 // bacit alert
                 dispatch({ type: 'ALERT_FAILED_REG' });
@@ -54,14 +55,14 @@ class Register extends React.Component {
         this.usernameChange = ev => {
 
             this.props.onUsernameChange(ev.target.value)
-            console.log(ev.target.value)
+
             if ((ev.target.value.length < MIN_USERNAME_LENGTH && ev.target.value.length !== 0) || ev.target.value.length > MAX_USERNAME_LENGTH) {
-                console.log('ne valja')
+    
                 this.usernameValidationMessage = (<label>&nbsp;Username needs to be between 4 and 20 characters long.</label>);
                 this.props.disableSubmit();
 
             } else {
-                console.log('valja');
+
                 this.usernameValidationMessage = null;
                 this.props.enableSubmit();
             }

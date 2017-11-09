@@ -43,9 +43,8 @@ class App extends React.Component {
         if (token) {
             this.props.onLoad(token);
         }
-
     }
-    
+
     render() {
         return (
             <div>
@@ -58,11 +57,11 @@ class App extends React.Component {
                 <Register />
                 <hr />
                 <Game />
-                <hr /> 
-                <PunishmentCreator /> 
+                <hr />
+                <PunishmentCreator />
                 <hr />
                 <PunishmentSelectorTable />
-                <Stats /> 
+                <Stats />
                 <Prefs />
             </div>
         );

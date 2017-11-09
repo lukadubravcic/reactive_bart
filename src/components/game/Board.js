@@ -116,15 +116,18 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-            this.props.setActivePunishmentDone(this.props.activePunishment._id);
+
+            if (!specialPunishmentIsActive(this.props.activePunishment)) this.props.setActivePunishmentDone(this.props.activePunishment._id);
             this.removeActivePunishmentFromAccepted();
+
+            /* 
+                    TODO: odvojiti funkciju za ispis poruka preko ploce (done/failed/...)
+            */
 
             setTimeout(() => {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu
                 console.log('Punishment completed!');
-                /* 
-                    TODO: odvojiti funkciju za ispis poruka preko ploce (done/failed/...)
-                */
+
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 2000)
         };
@@ -212,20 +215,22 @@ class Board extends React.Component {
         };
 
         this.calculateProgress = (boardText, punishment, howManyTimes) => {
-            let progress = Math.floor((boardText.length / (punishment.length * howManyTimes)) * 100);
+            let progress = Math.floor((boardText.length / ((punishment.length * howManyTimes) - 1)) * 100);
             if (progress > 100) return 100;
             else if (progress < 0) return 0;
             else return progress;
         };
 
         this.handleBeforeunload = () => {
-            this.props.saveCurrentProgress(this.props.activePunishment._id, this.props.progress);
+            this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
         };
 
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
 
         this.activePunishmentChanged = () => { // potrebno loggirat kaznu
-            if (this.props.gameInProgress) { // ako je igra bila u tijeku, logiraj ju
+
+            if (this.props.gameInProgress && !specialPunishmentIsActive(this.props.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
+                console.log('krivo');
                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
             }
             // init nove aktivne kazne
@@ -233,7 +238,9 @@ class Board extends React.Component {
         };
 
         this.newPunishmentInit = () => {
+
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
+
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.props.activePunishment.how_many_times;
@@ -248,7 +255,7 @@ class Board extends React.Component {
         this.startingSentence = '';
     }
 
-    componentDidUpdate() {   
+    componentDidUpdate() {
         if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment._id !== this.punishmentId)) { // postavljena nova kazna
             this.activePunishmentChanged();
         }
@@ -259,6 +266,7 @@ class Board extends React.Component {
     }
 
     render() {
+
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
@@ -328,4 +336,8 @@ function getWrittenText(punishment, charsWritten) {
     let x = Math.ceil(charsWritten / punishment.length);
     let tmpString = punishment.repeat(x);
     return tmpString.slice(0, charsWritten);
-} 
+}
+
+function specialPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
+    return punishment.created ? false : true;
+}

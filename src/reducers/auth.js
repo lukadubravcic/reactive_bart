@@ -20,8 +20,8 @@ export default (state = defaultState, action) => {
             return { ...state, email: '', password: '' };
         case 'DISABLE_SUBMIT':
             return { ...state, submitDisabled: true };
-            case 'ENABLE_SUBMIT': 
-            return {...state, submitDisabled: false};
+        case 'ENABLE_SUBMIT':
+            return { ...state, submitDisabled: false };
         default:
             return state;
     }

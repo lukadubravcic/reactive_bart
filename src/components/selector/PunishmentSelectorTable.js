@@ -90,7 +90,7 @@ class PunishmentSelectorTable extends React.Component {
         this.orderedStyle = this.placeholderStyles.defaultStyle;
 
         this._handleAcceptedPunFromAgent = (payload) => {
-            
+
             if (payload.acceptedPunishments) {
 
                 this.props.setAcceptedPunishments(payload.acceptedPunishments);
@@ -98,14 +98,12 @@ class PunishmentSelectorTable extends React.Component {
                 if (payload.acceptedPunishments.length > 0) {
 
                     this.props.setAcceptedHeaderVisibility(true);
-                    // this.showAcceptedTabHeader = true;
                     this.selectTab('acceptedTab');
                 }
-                // if (this.props.acceptedPunishments[0] && !this.props.activePunishment._id) this.setDefaultPunishment();
+
             } else {
 
                 console.log("error: accepted punishments empty or payload wasn't received");
-                // this.showAcceptedTabHeader = false;
                 this.props.setAcceptedPunishments([]);
             }
         };
@@ -119,7 +117,6 @@ class PunishmentSelectorTable extends React.Component {
                 if (payload.pastPunishments.length > 0) {
 
                     this.props.setPastHeaderVisibility(true);
-                    // this.showPastTabHeader = true;
 
                     if (!this.props.selectedTab) {
                         this.selectTab('pastTab')
@@ -128,7 +125,6 @@ class PunishmentSelectorTable extends React.Component {
             } else {
 
                 console.log("error: past punishments payload empty or wasn't received");
-                // this.showPastTabHeader = false;
                 this.props.setPastPunishments([]);
             }
         };
@@ -142,18 +138,16 @@ class PunishmentSelectorTable extends React.Component {
                 if (orderedPunishments.length > 0) {
 
                     this.props.setOrderedHeaderVisibility(true);
-                    // this.showOrderedTabHeader = true;
 
                     if (!this.props.selectedTab) {
 
                         this.selectTab('orderedTab');
                     }
-                    // if (this.props.acceptedPunishments[0] && !this.props.activePunishment._id) this.setDefaultPunishment();
+
                 }
             } else {
 
                 console.log("error: ordered punishments payload empty or wasn't received");
-                //this.showOrderedTabHeader = false; // potencijalno maknuti
                 this.props.setOrderedPunishments([]);
             }
         };
@@ -162,10 +156,9 @@ class PunishmentSelectorTable extends React.Component {
 
     componentDidUpdate(prevProps) {
 
-        if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvacenog userdata
+        if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvaćanja userdata
 
             agent.Punishment.getAccepted().then((payload) => {
-                console.log(payload)
                 // console.log('accepted answer')
                 this._handleAcceptedPunFromAgent(payload);
             });
@@ -193,14 +186,17 @@ class PunishmentSelectorTable extends React.Component {
         }
 
         if (nextProps.orderedPunishments.length === 0) { // dobivanje praznog arrraya sa servera
+
             this.props.setOrderedHeaderVisibility(false);
-        } 
-        else if (this.props.orderedPunishments.length === 0 && nextProps.orderedPunishments.length > 0) { // stvorene nove ordered kazne
+
+        } else if (this.props.orderedPunishments.length === 0 && nextProps.orderedPunishments.length > 0) { // stvorene nove ordered kazne
+            
             this.props.setOrderedPunishments(nextProps.orderedPunishments);
             this._handleOrderedPunFromAgent(nextProps.orderedPunishments);
         }
 
         if (nextProps.pastPunishments.length === 0) {
+
             this.props.setPastHeaderVisibility(false);
         }
         else if (nextProps.pastPunishments.length) {

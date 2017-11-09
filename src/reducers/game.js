@@ -31,7 +31,7 @@ export default (state = defaultState, action) => {
         case 'UPDATE_PUNISHMENT_PROGRESS':
             return { ...state, progress: action.updatedProgress };
         case 'PUNISHMENT_TRY_LOGGED':
-            return { ...state, progress: 0, boardValue: defaultState.boardValue, timeSpent: 0, timerValue: defaultState.timerValue }
+            return { ...state, progress: 0, boardValue: defaultState.boardValue, timeSpent: 0, timerValue: defaultState.timerValue, gameInProgress: false }
         case 'PUNISHMENT_DONE':
             return { ...state, gameInProgress: false };
         case 'GAME_BOARD_FOCUSED':
@@ -49,7 +49,9 @@ export default (state = defaultState, action) => {
         case 'GAME_RESETED':
             return { ...state, progress: 0, boardValue: defaultState.boardValue, timeSpent: 0, timerValue: defaultState.timerValue, gameInProgress: false };
         case 'USERNAME_SET':
-            return { ...state, activePunishment: action.specialPunishment }
+            return { ...state, activePunishment: action.specialPunishment };
+        case 'STOPWATCH_RESET':
+            return { ...state, timerValue: defaultState.timerValue, gameInProgress: false }
         default:
             return state;
     }

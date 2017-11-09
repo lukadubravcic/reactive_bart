@@ -125,11 +125,11 @@ class Board extends React.Component {
             */
 
             setTimeout(() => {
-                // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu
+                // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu i mjenjanje board focusa u state storu-u
                 console.log('Punishment completed!');
-
+                this.props.onBoardLostFocus();
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
-            }, 2000)
+            }, 5000)
         };
 
         this.removeActivePunishmentFromAccepted = () => {
@@ -222,7 +222,7 @@ class Board extends React.Component {
         };
 
         this.handleBeforeunload = () => {
-            this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            if (!specialPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
         };
 
         this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
@@ -261,6 +261,8 @@ class Board extends React.Component {
         }
     }
 
+
+    // NEPOTREBNO ?? (placeholder)
     loadRandomPunishment() {
         let randomPunishment = randomPunishments[Math.floor(Math.random() * randomPunishments.length)];
     }

@@ -21,7 +21,10 @@ const mapDispatchToProps = dispatch => ({
     },
     setClockValue: newClockValue => {
         dispatch({ type: 'CLOCK_VALUE_UPDATED', newClockValue });
-    }
+    },
+    /* resetStopwatch: () => {
+        dispatch({ type: 'STOPWATCH_RESET'});
+    } */
 })
 
 class Timer extends React.Component {
@@ -47,7 +50,8 @@ class Timer extends React.Component {
         };
 
         this.stopStopwatch = () => {
-            if (this.stopStopwatch) {
+
+            if (this.stopwatchInterval) {
                 clearInterval(this.stopwatchInterval);
                 this.stopwatchInterval = null;
             }
@@ -66,7 +70,7 @@ class Timer extends React.Component {
             let seconds = this.props.timerValue.timerSeconds;
             let minutes = this.props.timerValue.timerMinutes;
             let hours = this.props.timerValue.timerHours;
-            
+
             seconds++;
 
             if (seconds === 60) {
@@ -86,13 +90,10 @@ class Timer extends React.Component {
 
         this.updateClock = () => {
             let now = new Date();
-            let hours = now.getHours();
-            let minutes = now.getMinutes();
-            let seconds = now.getSeconds();
             this.props.setClockValue({
-                hours: hours,
-                minutes: minutes,
-                seconds: seconds
+                hours: now.getHours(),
+                minutes: now.getMinutes(),
+                seconds: now.getSeconds()
             });
         }
     }
@@ -106,14 +107,19 @@ class Timer extends React.Component {
         if (nextProps.boardFocused && nextProps.gameInProgress) {
             this.stopClock();
             this.startStopwatch();
+        } else if (nextProps.boardFocused && !nextProps.gameInProgress){
+            console.log('ulaz')
+            this.stopStopwatch();
         } else if (!nextProps.boardFocused && nextProps.gameInProgress) {
             this.stopStopwatch();
         } else if (nextProps.boardHovered && !nextProps.gameInProgress) {
             this.stopClock();
         } else if (!nextProps.boardHovered && !nextProps.gameInProgress) {
             this.startClock();
-        }
-    }
+        }/*  else {
+            this.stopStopwatch();
+        } */
+    }    
 
     render() {
 
@@ -154,7 +160,7 @@ class Timer extends React.Component {
             textAlign: "center"
         }
         // igra nije u tijeku i hover event
-        if ((this.props.boardHovered && !this.props.gameInProgress) || this.props.gameInProgress) {
+        if ((this.props.boardHovered && !this.props.gameInProgress) || this.props.gameInProgress || this.props.boardFocused) {
             // treba pokazati i tooltip
             return (
                 <div className="container">

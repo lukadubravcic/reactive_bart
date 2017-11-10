@@ -13,7 +13,8 @@ const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
     activePunishment: state.game.activePunishment,
-    progress: state.game.progress
+    progress: state.game.progress,
+    punishmentIdFromURL: state.game.punishmentIdFromURL
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -36,7 +37,7 @@ const mapDispatchToProps = dispatch => ({
         agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
-    updateActivePunishments: (punishments) => {
+    updateAccptedPunishments: (punishments) => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     },
     onBoardFocus: () => {
@@ -66,6 +67,10 @@ class Board extends React.Component {
     constructor() {
         super();
 
+        this.audio = document.createElement('audio');
+        this.audio.style.display = "none";
+        this.audio.src = 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-five/zapsplat_office_blackboard_rubber_duster_rub_remove_chalk_from_blackboard.mp3?_=2';
+
         this._wrongCharPlace = null;
 
         this.spongeHover = ev => {
@@ -75,6 +80,7 @@ class Board extends React.Component {
 
         this.spongeClick = ev => {
             console.log('sponge click');
+            this.audio.play();
             // reset sponge (position), log try, optionally send (trying) mail, 
             // reset board, restart stopwatch
             this.activePunishmentChanged();
@@ -230,7 +236,7 @@ class Board extends React.Component {
         this.activePunishmentChanged = () => { // potrebno loggirat kaznu
 
             if (this.props.gameInProgress && !specialPunishmentIsActive(this.props.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-                console.log('krivo');
+
                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
             }
             // init nove aktivne kazne

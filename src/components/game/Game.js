@@ -1,13 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import agent from '../../agent';
 import Board from './Board';
-import Timer from './Timer'
+import Timer from './Timer';
 
-
-const mapStateToProps = state => ({
-    ...state
-});
 
 class Game extends React.Component {
 
@@ -21,4 +15,4 @@ class Game extends React.Component {
     }
 }
 
-export default connect(mapStateToProps)(Game);
+export default Game;

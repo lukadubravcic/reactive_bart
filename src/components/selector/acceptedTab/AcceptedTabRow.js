@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { capitalizeFirstLetter } from '../../../helpers/helpers';
 
 const AcceptedTabRow = props => {
 
@@ -7,8 +8,8 @@ const AcceptedTabRow = props => {
         <div className="container">
             {/* stuktura tog reda u tablici */}
             <span style={props.style}>{props.punishment.user_ordering_punishment}</span>
-            {props.punishment.deadline != null ? <span style={props.style}>{moment(props.punishment.deadline).fromNow()}</span>
-                : <span style={props.style}>no deadline</span>}
+            {props.punishment.deadline != null ? <span style={props.style}>{capitalizeFirstLetter(moment(props.punishment.deadline).fromNow())}</span>
+                : <span style={props.style}>No deadline</span>}
             <span style={props.style}>{props.punishment.how_many_times}</span>
             <span style={props.style}>{props.punishment.what_to_write}</span>
             <button onClick={props.onGoClick(props.id)} disabled={props.disabledGo}>GO</button>
@@ -19,3 +20,4 @@ const AcceptedTabRow = props => {
 }
 
 export default AcceptedTabRow;
+

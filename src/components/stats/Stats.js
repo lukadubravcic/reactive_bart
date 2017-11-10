@@ -1,10 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PieChart from 'react-minimal-pie-chart';
-// import './App.css'
-/* import { scaleLinear } from 'd3-scale'
-import { max } from 'd3-array'
-import { select } from 'd3-selection' */
+import { checkIfIgnoredPunishment } from '../../helpers/helpers';
 
 const colors = {
       accepted: 'rgba(185, 214, 0, 0.8)',
@@ -46,7 +43,7 @@ class Stats extends React.Component {
                         rejected: 0,
                         ignored: 0,
                         givenUp: 0,
-                        done: 0,
+                        completed: 0,
                         failed: 0
                   };
 
@@ -58,9 +55,9 @@ class Stats extends React.Component {
 
                         if (punishment.accepted) punishmentClass = 'accepted'; // punishmentStatus = 'ACCEPTED';                        
                         if (punishment.given_up) punishmentClass = 'givenUp'; // punishmentStatus = 'GIVEN UP';
-                        if (punishment.done) punishmentClass = 'done'; // punishmentStatus = "DONE";
+                        if (punishment.done) punishmentClass = 'completed'; // punishmentStatus = "DONE";
                         if (punishment.failed) punishmentClass = 'failed'; // punishmentStatus = "FAILED";
-                        if (!punishment.accepted && checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';
+                        if (!punishment.accepted && checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';                        
                         if (punishment.rejected) punishmentClass = 'rejected'; // punishmentStatus = 'REJECTED';
 
                         if (punishmentClass) result[punishmentClass]++;
@@ -115,7 +112,7 @@ class Stats extends React.Component {
 
                         let graphData1 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['accepted', 'rejected', 'ignored']);
                         let graphData2 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['completed', 'givenUp', 'failed']);
-
+                        
                         this.props.updateOrderedGraphState({ graphData1, graphData2 });
                   }
             }
@@ -252,16 +249,6 @@ class Stats extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stats);
-
-
-function checkIfIgnoredPunishment(punishment) {
-
-      let createdPlus30Days = (new Date(punishment.created).getTime()) + (30 * 24 * 60 * 60 * 1000);
-
-      if ((createdPlus30Days - Date.now() < 0) && (punishment.accepted === null)) return true // IGNORED
-
-      return false; // NOT IGNORED
-}
 
 function comparePunishments(pun1, pun2) {
       // iterate trough object properties

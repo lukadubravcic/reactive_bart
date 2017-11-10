@@ -6,6 +6,28 @@ export function getElementById(arr, id) { //provided array of punishments and ne
     return null;
 }
 
-export function dateToHumanReadable(date) {
-    
+export function capitalizeFirstLetter(string) {
+    return string[0].toUpperCase() + string.slice(1);
 }
+
+export function checkIfIgnoredPunishment(punishment) {
+
+    let createdPlus30Days = (new Date(punishment.created).getTime()) + (30 * 24 * 60 * 60 * 1000);
+
+    if ((createdPlus30Days - Date.now() < 0) && (punishment.accepted === null)) return true // IGNORED
+
+    return false; // NOT IGNORED
+}
+
+export function getPunishmentIdFromURL() {
+
+    if (!window.location.search.length) return null; // prazan string
+
+    const queryParamString = window.location.search.split('?')[1];
+
+    if (!queryParamString) return null; // ne sadrzi ? char
+
+    if (queryParamString.split('=')[0] !== 'id' || !queryParamString.split('=')[1].length) return null; // bez = chara ili drugi parametar (id string) je prazan
+
+    return queryParamString.split('=')[1];
+} 

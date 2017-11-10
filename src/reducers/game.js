@@ -1,4 +1,5 @@
 const defaultState = {
+    punishmentIdFromURL: null,
     boardValue: '',
     progress: 0,
     activePunishment: {},
@@ -52,7 +53,11 @@ export default (state = defaultState, action) => {
             return { ...state, activePunishment: action.specialPunishment };
         case 'STOPWATCH_RESET':
             return { ...state, timerValue: defaultState.timerValue, gameInProgress: false }
-        default:
+        case 'PUNISHMENT_IN_URL':
+            return { ...state, punishmentIdFromURL: action.id }
+        case 'LOGOUT':
             return defaultState;
+        default:
+            return state;
     }
 }

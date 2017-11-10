@@ -1,5 +1,4 @@
 const defaultState = {
-    activePunishment: {},
     _message: null,
 
     selectedTab: null, // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."

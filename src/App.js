@@ -7,10 +7,11 @@ import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
-
 import Stats from './components/stats/Stats';
 
 import agent from './agent';
+
+import { getPunishmentIdFromURL } from './helpers/helpers';
 
 
 const mapStateToProps = state => ({ ...state });
@@ -33,6 +34,9 @@ const mapDispatchToProps = dispatch => ({
                 }
             });
         }
+    },
+    setPunishmentIdFromURL: id => {
+        dispatch({ type: 'PUNISHMENT_IN_URL', id });
     }
 });
 
@@ -40,12 +44,18 @@ class App extends React.Component {
 
     componentDidMount() {
         const token = window.localStorage.getItem('token');
-        if (token) {
-            this.props.onLoad(token);
-        }
+        token && this.props.onLoad(token);
+
+
+        // TESTING
+        const punishmentId = getPunishmentIdFromURL();
+        //punishmentId ? prettifyURL() : null;
+        
+        this.props.setPunishmentIdFromURL(punishmentId)
     }
 
     render() {
+
         return (
             <div>
                 <nav className="navbar">
@@ -69,3 +79,8 @@ class App extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+
+function prettifyURL() {
+    window.location.search = '';
+}

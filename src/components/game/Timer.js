@@ -121,7 +121,7 @@ class Timer extends React.Component {
     }    
 
     render() {
-
+        
         const timerValue = this.props.timerValue;
 
         const clockValue = this.props.clockValue;
@@ -166,7 +166,7 @@ class Timer extends React.Component {
                     <Stopwatch style={style} flexContainer={flexContainer} stopwatchimg={stopwatchimg} timerValue={timerValue} />
                 </div>
             )
-        } else /* if (!this.props.boardFocused && !this.props.gameInProgress) */ {
+        } else {
             return (
                 <div className="container">
                     <Clock style={style} flexContainer={flexContainer} clockimg={clockimg} clockValue={clockValue} />

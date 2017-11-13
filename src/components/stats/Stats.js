@@ -168,7 +168,7 @@ class Stats extends React.Component {
                                           <PieChart
                                                 data={this.props.secondGraph}
                                                 lineWidth={80}
-                                                paddingAngle={1}
+                                                paddingAngle={5}
                                                 animate={true}
                                                 animationDuration={3500} />
 
@@ -197,7 +197,7 @@ class Stats extends React.Component {
                                           <PieChart
                                                 data={this.props.thirdGraph}
                                                 lineWidth={80}
-                                                paddingAngle={1}
+                                                paddingAngle={5}
                                                 animate={true}
                                                 animationDuration={3500} />
 
@@ -222,7 +222,7 @@ class Stats extends React.Component {
                                           <PieChart
                                                 data={this.props.fourthGraph}
                                                 lineWidth={80}
-                                                paddingAngle={1}
+                                                paddingAngle={5}
                                                 animate={true}
                                                 animationDuration={3500} />
 

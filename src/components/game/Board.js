@@ -13,8 +13,7 @@ const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
     activePunishment: state.game.activePunishment,
-    progress: state.game.progress,
-    punishmentIdFromURL: state.game.punishmentIdFromURL
+    progress: state.game.progress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -275,6 +274,7 @@ class Board extends React.Component {
     render() {
 
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
+        
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;

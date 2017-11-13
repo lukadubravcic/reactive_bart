@@ -17,7 +17,9 @@ const mapStateToProps = state => ({
     shownAcceptedPunishments: state.punishment.shownAcceptedPunishments,
     currentPage: state.punishment.currentAcceptedPage,
     activePunishment: state.game.activePunishment,
-    punishmentIdFromURL: state.game.punishmentIdFromURL
+    punishmentIdFromURL: state.game.punishmentIdFromURL,
+    specialPunishments: state.punishment.specialPunishments,
+    randomPunishments: state.punishment.randomPunishments
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -44,15 +46,17 @@ class AcceptedTab extends React.Component {
 
     constructor() {
         super();
+        
+        this.changeActivePunishment = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
+            if (this.props.punishmentIdFromURL) { // postavi kaznu sa urla (ako postoji)
 
-        this.setActivePunishment = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
-            console.log(this.props.punishmentIdFromURL)
-            if (this.props.punishmentIdFromURL) {
-                let punishmentInURL = getPunishmentById(this.props.punishmentIdFromURL, this.props.acceptedPunishments);
-                console.log(punishmentInURL);
-            } //else {
-            this.props.setActivePunishment(this.props.acceptedPunishments[0]);
-            //}
+                let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
+                if (punishmentInURL) this.props.setActivePunishment(punishmentInURL);
+                else this.props.setActivePunishment(this.props.acceptedPunishments[0]);
+
+            } else { // ako ne postoji postavi random punishment
+                this.props.setActivePunishment(this.props.randomPunishments[0]);
+            }
         };
 
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
@@ -70,7 +74,7 @@ class AcceptedTab extends React.Component {
             } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
                 return;
             } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-                this.setActivePunishment();
+                this.changeActivePunishment();
             }
         };
 
@@ -195,7 +199,10 @@ class AcceptedTab extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (Object.keys(prevProps.activePunishment).length === 0 && !Object.keys(this.props.activePunishment).length) this.setActivePunishment(); // startup setanje aktivne kazne
+        if (Object.keys(prevProps.activePunishment).length === 0 &&
+            !Object.keys(this.props.activePunishment).length &&
+            this.props.randomPunishments !== 'empty' &&
+            this.props.specialPunishments !== 'empty') this.changeActivePunishment(); // startup setanje aktivne kazne
     }
 
     render() {
@@ -256,17 +263,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(AcceptedTab);
 
 function getByValue(arr, value) {
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
-        if (arr[i].id === value) return arr[i];
+        if (arr[i]._id === value) return arr[i];
     }
     return null;
 }
 
-function getPunishmentById(arr, id) {
-    for (let i = 0, iLen = arr.length; i < iLen; i++) {
-        if (arr[i]._id === id) return arr[i];
-    }
-    return null;
-}
 
 function getPunishmentById(id, punishments) {
     if (punishments.length === 0) return null;

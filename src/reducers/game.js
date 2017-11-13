@@ -28,7 +28,7 @@ export default (state = defaultState, action) => {
         case 'BOARD_WRONG_ENTRY':
             return { ...state, boardTextMistake: action.mistake };
         case 'SET_ACTIVE_PUNISHMENT':
-            return { ...state, activePunishment: action.punishment, gameInProgress: false, timerValue: defaultState.timerValue };
+            return { ...state, activePunishment: action.punishment, gameInProgress: false, timerValue: defaultState.timerValue, punishmentIdFromURL: null };
         case 'UPDATE_PUNISHMENT_PROGRESS':
             return { ...state, progress: action.updatedProgress };
         case 'PUNISHMENT_TRY_LOGGED':
@@ -42,7 +42,7 @@ export default (state = defaultState, action) => {
         case 'GAME_BOARD_HOVER':
             return { ...state, boardHovered: true };
         case 'GAME_BOARD_HOVER_OUT':
-            return { ...state, boardHovered: false }
+            return { ...state, boardHovered: false };
         case 'TIMER_VALUE_UPDATED':
             return { ...state, timerValue: action.newTimerValue, timeSpent: action.timeSpent };
         case 'CLOCK_VALUE_UPDATED':
@@ -52,9 +52,9 @@ export default (state = defaultState, action) => {
         case 'USERNAME_SET':
             return { ...state, activePunishment: action.specialPunishment };
         case 'STOPWATCH_RESET':
-            return { ...state, timerValue: defaultState.timerValue, gameInProgress: false }
+            return { ...state, timerValue: defaultState.timerValue, gameInProgress: false };
         case 'PUNISHMENT_IN_URL':
-            return { ...state, punishmentIdFromURL: action.id }
+            return { ...state, punishmentIdFromURL: action.id };       
         case 'LOGOUT':
             return defaultState;
         default:

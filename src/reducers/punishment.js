@@ -17,8 +17,10 @@ const defaultState = {
 
     showAcceptedTab: false,
     showPastTab: false,
-    showOrderedTab: false
+    showOrderedTab: false,
 
+    specialPunishments: 'empty',
+    randomPunishments: 'empty'
 };
 
 export default (state = defaultState, action) => {
@@ -36,7 +38,6 @@ export default (state = defaultState, action) => {
         case 'GIVE_UP_ON_PUNISHMENT':
             return { ...state, acceptedPunishments: action.newAcceptedPunishments };
         case 'SWITCH_SELECTED_PUNISHMENT_TAB':
-            // promjena taba u selector tableu
             return { ...state, selectedTab: action.id };
         case 'SAVING_ACTIVE_PUNISHMENT':
             return { ...state };
@@ -68,6 +69,11 @@ export default (state = defaultState, action) => {
             return { ...state, showPastTab: action.value };
         case 'ORDERED_TAB_HEADER_VISIBILITY_CHANGED':
             return { ...state, showOrderedTab: action.value };
+
+        case 'SET_RANDOM_PUNISHMENTS':
+            return { ...state, randomPunishments: action.punishments };
+        case 'SET_SPECIAL_PUNISHMENTS':
+            return { ...state, specialPunishments: action.punishments };
 
         case 'LOGOUT':
             return defaultState;

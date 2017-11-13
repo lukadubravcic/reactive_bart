@@ -12,7 +12,8 @@ const MAX_HOW_MANY_TIMES_PUNISHMENT = 999;
 
 const mapStateToProps = state => ({
     ...state.punishmentCreation,
-    orderedPunishments: state.punishment.orderedPunishments
+    orderedPunishments: state.punishment.orderedPunishments,
+    currentUser: state.common.currentUser
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -46,7 +47,7 @@ const mapDispatchToProps = dispatch => ({
         key: 'deadlineDate',
         value
     }),
-    onSubmit: (submitData, orderedPunishments)=> {
+    onSubmit: (submitData, orderedPunishments) => {
         // agent magic
         agent.Punishment.createPunishment(submitData).then((payload) => {
 
@@ -141,6 +142,7 @@ class PunishmentCreator extends React.Component {
 
     render() {
 
+        const usrLoggedIn = Object.keys(this.props.currentUser).length;
         const whomField = this.props.whom;
         const howManyTimesField = this.props.howManyTimes;
         const whatToWriteField = this.props.whatToWrite;
@@ -148,82 +150,84 @@ class PunishmentCreator extends React.Component {
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
 
-        return (
-            <div className="container">
+        if (usrLoggedIn) {
+            return (
+                <div className="container">
 
-                <form onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField)}>
-                    <fieldset>
-                        <fieldset className="form-group">
-                            <label>To whom</label>
-                            <input
-                                type="text"
-                                placeholder="email/username"
-                                value={whomField}
-                                onChange={this.changeWhom}
-                                required />
-                            {this.toWhomErrorText ? <label>{this.toWhomErrorText}</label> : null}
-                        </fieldset>
-                        <fieldset className="form-group">
-                            <label htmlFor="first_name">How many times</label>
+                    <form onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField)}>
+                        <fieldset>
+                            <fieldset className="form-group">
+                                <label>To whom</label>
+                                <input
+                                    type="text"
+                                    placeholder="email/username"
+                                    value={whomField}
+                                    onChange={this.changeWhom}
+                                    required />
+                                {this.toWhomErrorText ? <label>{this.toWhomErrorText}</label> : null}
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <label htmlFor="first_name">How many times</label>
+                                <button
+                                    type="button"
+                                    onClick={this.incrementHowManyTimes}
+                                >˄</button>
+                                <input
+                                    type="number"
+                                    placeholder=""
+                                    value={howManyTimesField}
+                                    onChange={this.changeHowManyTimes}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={this.decrementHowManyTimes}
+                                >˅</button>
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <label>Deadline</label>
+                                <input
+                                    type="checkbox"
+                                    checked={deadlineChecked}
+                                    onChange={this.toggleDeadlineCheckbox} />
+                                <DatePicker
+                                    // default deadline = tjedan od trenutnog datuma
+                                    selected={moment(deadlineDate)}
+                                    onChange={this.deadlineDateChange}
+                                    minDate={moment().add(1, 'days')}
+                                    disabled={!deadlineChecked} />
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <label>What to write</label>
+                                <input
+                                    type="text"
+                                    placeholder="Desired punishment."
+                                    value={whatToWriteField}
+                                    onChange={this.changeWhatToWrite}
+                                    required />
+                                {this.whatToWriteErrorText ? <label>{this.whatToWriteErrorText}</label> : null}
+                            </fieldset>
+                            <fieldset className="form-group">
+                                <label>Why</label>
+                                <textarea
+                                    rows="5" cols="100"
+                                    type="text"
+                                    placeholder="Feel free to explain your reasons."
+                                    value={whyField}
+                                    onChange={this.changeWhy}
+                                    required />
+                                {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
+                            </fieldset>
                             <button
-                                type="button"
-                                onClick={this.incrementHowManyTimes}
-                            >˄</button>
-                            <input
-                                type="number"
-                                placeholder=""
-                                value={howManyTimesField}
-                                onChange={this.changeHowManyTimes}
-                            />
-                            <button
-                                type="button"
-                                onClick={this.decrementHowManyTimes}
-                            >˅</button>
+                                type="submit">
+                                <b>PUNISH</b>
+                            </button>
+                            {this.props._message !== null ? <label>{this.props._message}</label> : null}
                         </fieldset>
-                        <fieldset className="form-group">
-                            <label>Deadline</label>
-                            <input
-                                type="checkbox"
-                                checked={deadlineChecked}
-                                onChange={this.toggleDeadlineCheckbox} />
-                            <DatePicker
-                                // default deadline = tjedan od trenutnog datuma
-                                selected={moment(deadlineDate)}
-                                onChange={this.deadlineDateChange}
-                                minDate={moment().add(1, 'days')}
-                                disabled={!deadlineChecked} />
-                        </fieldset>
-                        <fieldset className="form-group">
-                            <label>What to write</label>
-                            <input
-                                type="text"
-                                placeholder="Desired punishment."
-                                value={whatToWriteField}
-                                onChange={this.changeWhatToWrite}
-                                required />
-                            {this.whatToWriteErrorText ? <label>{this.whatToWriteErrorText}</label> : null}
-                        </fieldset>
-                        <fieldset className="form-group">
-                            <label>Why</label>
-                            <textarea
-                                rows="5" cols="100"
-                                type="text"
-                                placeholder="Feel free to explain your reasons."
-                                value={whyField}
-                                onChange={this.changeWhy}
-                                required />
-                            {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
-                        </fieldset>
-                        <button
-                            type="submit">
-                            <b>PUNISH</b>
-                        </button>
-                        {this.props._message !== null ? <label>{this.props._message}</label> : null}
-                    </fieldset>
-                </form>
+                    </form>
 
-            </div>
-        );
+                </div>
+            );
+        } else return null;
     }
 }
 

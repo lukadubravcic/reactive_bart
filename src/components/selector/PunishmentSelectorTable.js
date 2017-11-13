@@ -155,7 +155,7 @@ class PunishmentSelectorTable extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-
+        
         if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvaćanja userdata
 
             agent.Punishment.getAccepted().then((payload) => {

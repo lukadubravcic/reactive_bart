@@ -1,4 +1,5 @@
 import superagent from 'superagent';
+import { request } from 'http';
 
 const API_ROOT = 'http://localhost:8000';
 
@@ -47,7 +48,9 @@ const Punishment = {
 	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
 	saveProgress: (id, progress) => requests.post('/punishment/save', { id: id, progress: progress }),
 	done: id => requests.post('/punishment/done', { id: id }),
-	logTry: (id, timeSpent) => requests.post('/punishment/log', { id: id, timeSpent: timeSpent })
+	logTry: (id, timeSpent) => requests.post('/punishment/log', { id: id, timeSpent: timeSpent }),
+	getRandom: () => requests.get('/punishment/random'),
+	getSpecial: () => requests.get('/punishment/special')
 };
 
 const Pref = {

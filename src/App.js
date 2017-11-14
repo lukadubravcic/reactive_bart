@@ -65,11 +65,6 @@ class App extends React.Component {
         agent.Punishment.getSpecial().then(payload => {
             this.props.setSpecialPunishment(payload);
         });
-
-        if( window.canRunAds === undefined ){
-            // adblocker detected, show fallback
-            console.log('ablocker detected')
-          }
     }
 
     render() {

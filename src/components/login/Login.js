@@ -70,7 +70,14 @@ class Login extends React.Component {
         const email = this.props.auth.email;
         const password = this.props.auth.password;
 
-        if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
+        if (window.canRunAds === undefined) {
+            // adblock active
+            return (
+                <div className="container">
+                    <h3>Can't login while using Adblock, please disable it.</h3>
+                </div>
+            )
+        } else if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
             return (
                 <div className="auth-page">
                     <div className="container page">

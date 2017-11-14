@@ -98,6 +98,7 @@ function getFromSpecialPunishments(type, username, specialPunishments) {
     if (!specialPunishments.length) return null;
 
     for (let i = 0; i < specialPunishments.length; i++) {
+        
         if (specialPunishments[i].type === type) {
             result = JSON.parse(JSON.stringify(specialPunishments[i]));
             result.what_to_write += username + '.';

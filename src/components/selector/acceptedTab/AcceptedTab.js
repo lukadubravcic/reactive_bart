@@ -44,7 +44,7 @@ class AcceptedTab extends React.Component {
 
     constructor() {
         super();
-        
+
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
             let newActivePunishment = {};
@@ -253,10 +253,13 @@ class AcceptedTab extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(AcceptedTab);
 
 
-function getByValue(arr, value) {
+function getByValue(arr, id) {
+
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
-        if (arr[i]._id === value) return arr[i];
+
+        if (arr[i].id === id) return arr[i];
     }
+
     return null;
 }
 

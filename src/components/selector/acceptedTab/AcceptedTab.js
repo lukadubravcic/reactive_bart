@@ -48,13 +48,16 @@ class AcceptedTab extends React.Component {
         super();
         
         this.changeActivePunishment = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
+            console.log('mjenjanje')
+
             if (this.props.punishmentIdFromURL) { // postavi kaznu sa urla (ako postoji)
 
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
                 if (punishmentInURL) this.props.setActivePunishment(punishmentInURL);
-                else this.props.setActivePunishment(this.props.acceptedPunishments[0]);
+                else this.props.setActivePunishment(this.props.randomPunishments[0]);
 
             } else { // ako ne postoji postavi random punishment
+
                 this.props.setActivePunishment(this.props.randomPunishments[0]);
             }
         };
@@ -198,14 +201,18 @@ class AcceptedTab extends React.Component {
         }
     }
 
-    componentDidUpdate(prevProps) {
-        if (Object.keys(prevProps.activePunishment).length === 0 &&
+    /* componentDidUpdate(prevProps) {
+        console.log(!Object.keys(prevProps.activePunishment).length)
+        if (!Object.keys(prevProps.activePunishment).length &&
             !Object.keys(this.props.activePunishment).length &&
             this.props.randomPunishments !== 'empty' &&
-            this.props.specialPunishments !== 'empty') this.changeActivePunishment(); // startup setanje aktivne kazne
-    }
+            Object.keys(this.props.specialPunishments).length){
+                console.log('ulaz')
+                this.changeActivePunishment();} // startup setanje aktivne kazne
+    } */
 
     render() {
+        console.log('render')
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownAcceptedPunishments;
         const activePunishment = this.props.activePunishment;

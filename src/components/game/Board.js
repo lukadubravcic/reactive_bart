@@ -122,8 +122,12 @@ class Board extends React.Component {
 
         this.activePunishmentDone = () => {
 
-            if (!specialPunishmentIsActive(this.props.activePunishment)) this.props.setActivePunishmentDone(this.props.activePunishment._id);
-            this.removeActivePunishmentFromAccepted();
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+
+                this.props.setActivePunishmentDone(this.props.activePunishment._id);
+                this.removeActivePunishmentFromAccepted();
+            }
+
 
             /* 
                     TODO: odvojiti funkciju za ispis poruka preko ploce (done/failed/...)
@@ -227,14 +231,14 @@ class Board extends React.Component {
         };
 
         this.handleBeforeunload = () => {
-            if (!specialPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
         };
 
-        this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
+        // this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
 
         this.activePunishmentChanged = () => { // potrebno loggirat kaznu
 
-            if (this.props.gameInProgress && !specialPunishmentIsActive(this.props.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
+            if (this.props.gameInProgress && !specialOrRandomPunishmentIsActive(this.props.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
 
                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
             }
@@ -260,8 +264,10 @@ class Board extends React.Component {
         this.startingSentence = '';
     }
 
-    componentDidUpdate() {
-        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment._id !== this.punishmentId)) { // postavljena nova kazna
+    componentDidUpdate(prevProps) {
+        if (Object.keys(this.props.activePunishment).length &&
+            (this.props.activePunishment._id !== prevProps.activePunishment._id)) { // postavljena nova kazna
+                
             this.activePunishmentChanged();
         }
     }
@@ -274,7 +280,7 @@ class Board extends React.Component {
     render() {
 
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
-        
+
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
@@ -345,6 +351,6 @@ function getWrittenText(punishment, charsWritten) {
     return tmpString.slice(0, charsWritten);
 }
 
-function specialPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
+function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
     return punishment.created ? false : true;
 }

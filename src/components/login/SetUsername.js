@@ -2,23 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
-import { getUsernameSetPunishment } from '../../specialPunishments/specialPunishments';
-
 const MAX_USERNAME_LEN = 20;
 const MIN_USERNAME_LEN = 4;
 
 const mapStateToProps = state => ({
-    ...state.common
+    ...state.common,
+    specialPunishments: state.punishment.specialPunishments
 });
 
 const mapDispatchToProps = dispatch => ({
     onUsernameChange: (value) => {
         dispatch({ type: 'UPDATE_SET_USERNAME_FIELD', value })
     },
-    onSubmit: username => {
+    onSubmit: (username, punishment) => {
         agent.Auth.setUsername(username).then(payload => {
             if (payload !== null) {
-                dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: getUsernameSetPunishment(username) });
+                dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment });
             } else {
                 console.log('Err: username not set.');
             }
@@ -45,9 +44,14 @@ class SetUsername extends React.Component {
             }
         };
 
+        this.createOnUsernameSetPunishment = (username) => {
+            return getFromSpecialPunishments('USERNAME_SET', username, this.props.specialPunishments)
+        }
+
         this.submitUsername = username => ev => {
             ev.preventDefault();
-            this.props.onSubmit(username);
+            let punishment = this.createOnUsernameSetPunishment(username);
+            punishment && this.props.onSubmit(username, punishment);
         };
     }
 
@@ -85,3 +89,21 @@ class SetUsername extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SetUsername);
+
+
+function getFromSpecialPunishments(type, username, specialPunishments) {
+
+    let result = null;
+
+    if (!specialPunishments.length) return null;
+
+    for (let i = 0; i < specialPunishments.length; i++) {
+        if (specialPunishments[i].type === type) {
+            result = JSON.parse(JSON.stringify(specialPunishments[i]));
+            result.what_to_write += username + '.';
+            return result;
+        }
+    }
+
+    return null;
+}

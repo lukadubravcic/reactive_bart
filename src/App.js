@@ -65,30 +65,35 @@ class App extends React.Component {
         agent.Punishment.getSpecial().then(payload => {
             this.props.setSpecialPunishment(payload);
         });
+
+        if( window.canRunAds === undefined ){
+            // adblocker detected, show fallback
+            console.log('ablocker detected')
+          }
     }
 
     render() {
 
-        
-            return (
-                <div>
-                    <nav className="navbar">
-                        <div className="container">
-                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
-                        </div>
-                    </nav>
-                    <Login />
-                    <Register />
-                    <hr />
-                    <Game />
-                    <hr />
-                    <PunishmentCreator />
-                    <hr />
-                    <PunishmentSelectorTable />
-                    <Stats />
-                    <Prefs />
-                </div>
-            );
+
+        return (
+            <div>
+                <nav className="navbar">
+                    <div className="container">
+                        <h1 className="navbar-brand">{this.props.common.appName}</h1>
+                    </div>
+                </nav>
+                <Login />
+                <Register />
+                <hr />
+                <Game />
+                <hr />
+                <PunishmentCreator />
+                <hr />
+                <PunishmentSelectorTable />
+                <Stats />
+                <Prefs />
+            </div>
+        );
         /* else {
             return (
                 <div className="container">

@@ -18,8 +18,6 @@ const mapStateToProps = state => ({
     currentPage: state.punishment.currentAcceptedPage,
     activePunishment: state.game.activePunishment,
     punishmentIdFromURL: state.game.punishmentIdFromURL,
-    specialPunishments: state.punishment.specialPunishments,
-    randomPunishments: state.punishment.randomPunishments
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -47,21 +45,6 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
         
-        this.changeActivePunishment = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
-            console.log('mjenjanje')
-
-            if (this.props.punishmentIdFromURL) { // postavi kaznu sa urla (ako postoji)
-
-                let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
-                if (punishmentInURL) this.props.setActivePunishment(punishmentInURL);
-                else this.props.setActivePunishment(this.props.randomPunishments[0]);
-
-            } else { // ako ne postoji postavi random punishment
-
-                this.props.setActivePunishment(this.props.randomPunishments[0]);
-            }
-        };
-
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
             let newActivePunishment = {};
@@ -76,8 +59,10 @@ class AcceptedTab extends React.Component {
 
             } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
                 return;
+
             } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-                this.changeActivePunishment();
+
+                this.props.setActivePunishment(this.props.randomPunishments[0]);
             }
         };
 
@@ -212,7 +197,7 @@ class AcceptedTab extends React.Component {
     } */
 
     render() {
-        console.log('render')
+
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownAcceptedPunishments;
         const activePunishment = this.props.activePunishment;

@@ -76,7 +76,7 @@ export default (state = defaultState, action) => {
             return { ...state, specialPunishments: action.punishments };
 
         case 'LOGOUT':
-            return defaultState;
+            return { ...defaultState, specialPunishments: state.specialPunishments, randomPunishments: state.randomPunishments };
         default:
             return state;
     }

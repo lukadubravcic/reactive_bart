@@ -151,11 +151,10 @@ class PunishmentSelectorTable extends React.Component {
                 this.props.setOrderedPunishments([]);
             }
         };
-
     }
 
     componentDidUpdate(prevProps) {
-        
+
         if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvaćanja userdata
 
             agent.Punishment.getAccepted().then((payload) => {
@@ -174,14 +173,22 @@ class PunishmentSelectorTable extends React.Component {
             });
         }
 
+        if (!prevProps.ignoredPunishmentSet && this.props.ignoredPunishmentSet && this.props.pastPunishments) {
+
+            console.log('ignored set');
+            this.selectTab('pastTab');
+        }
+
     }
 
     componentWillReceiveProps(nextProps) {
 
         if (nextProps.acceptedPunishments.length === 0) {
+
             this.props.setAcceptedHeaderVisibility(false);
-        }
-        else if (nextProps.acceptedPunishments.length) {
+
+        } else if (nextProps.acceptedPunishments.length) {
+
             this.props.setAcceptedPunishments(nextProps.acceptedPunishments);
         }
 
@@ -190,7 +197,7 @@ class PunishmentSelectorTable extends React.Component {
             this.props.setOrderedHeaderVisibility(false);
 
         } else if (this.props.orderedPunishments.length === 0 && nextProps.orderedPunishments.length > 0) { // stvorene nove ordered kazne
-            
+
             this.props.setOrderedPunishments(nextProps.orderedPunishments);
             this._handleOrderedPunFromAgent(nextProps.orderedPunishments);
         }
@@ -198,8 +205,9 @@ class PunishmentSelectorTable extends React.Component {
         if (nextProps.pastPunishments.length === 0) {
 
             this.props.setPastHeaderVisibility(false);
-        }
-        else if (nextProps.pastPunishments.length) {
+
+        } else if (nextProps.pastPunishments.length) {
+
             this.props.setPastPunishments(nextProps.pastPunishments);
         }
 

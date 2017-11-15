@@ -20,7 +20,9 @@ const defaultState = {
     showOrderedTab: false,
 
     specialPunishments: 'empty',
-    randomPunishments: 'empty'
+    randomPunishments: 'empty',
+
+    ignoredPunishmentSet: false
 };
 
 export default (state = defaultState, action) => {
@@ -34,7 +36,7 @@ export default (state = defaultState, action) => {
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _message: action.msg };
         case 'SET_ACTIVE_PUNISHMENT':
-            return { ...state };
+            return { ...state, ignoredPunishmentSet: action.ignoredPunishmentSet ? action.ignoredPunishmentSet : false};
         case 'GIVE_UP_ON_PUNISHMENT':
             return { ...state, acceptedPunishments: action.newAcceptedPunishments };
         case 'SWITCH_SELECTED_PUNISHMENT_TAB':

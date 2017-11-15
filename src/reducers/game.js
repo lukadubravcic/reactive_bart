@@ -17,10 +17,11 @@ const defaultState = {
     gameInProgress: false,
     boardFocused: false,
     boardHovered: false,
-    timeSpent: 0
+    timeSpent: 0,    
 };
 
 export default (state = defaultState, action) => {
+
     switch (action.type) {
         case 'UPDATE_BOARD_VALUE':
             return { ...state, boardValue: action.value };
@@ -29,11 +30,21 @@ export default (state = defaultState, action) => {
         case 'BOARD_WRONG_ENTRY':
             return { ...state, boardTextMistake: action.mistake };
         case 'SET_ACTIVE_PUNISHMENT':
-            return { ...state, activePunishment: action.punishment, gameInProgress: false, timerValue: defaultState.timerValue, punishmentIdFromURL: null };
+            return {
+                ...state, activePunishment: action.punishment,
+                gameInProgress: false,
+                timerValue: defaultState.timerValue                
+            };
         case 'UPDATE_PUNISHMENT_PROGRESS':
             return { ...state, progress: action.updatedProgress };
         case 'PUNISHMENT_TRY_LOGGED':
-            return { ...state, progress: 0, boardValue: defaultState.boardValue, timeSpent: 0, timerValue: defaultState.timerValue, gameInProgress: false }
+            return {
+                ...state, progress: 0,
+                boardValue: defaultState.boardValue,
+                timeSpent: 0,
+                timerValue: defaultState.timerValue,
+                gameInProgress: false
+            }
         case 'PUNISHMENT_DONE':
             return { ...state, gameInProgress: false };
         case 'GAME_BOARD_FOCUSED':
@@ -49,7 +60,13 @@ export default (state = defaultState, action) => {
         case 'CLOCK_VALUE_UPDATED':
             return { ...state, clockValue: action.newClockValue };
         case 'GAME_RESETED':
-            return { ...state, progress: 0, boardValue: defaultState.boardValue, timeSpent: 0, timerValue: defaultState.timerValue, gameInProgress: false };
+            return {
+                ...state, progress: 0,
+                boardValue: defaultState.boardValue,
+                timeSpent: 0,
+                timerValue: defaultState.timerValue,
+                gameInProgress: false
+            };
         case 'USERNAME_SET':
             return { ...state, activePunishment: action.specialPunishment };
         case 'STOPWATCH_RESET':

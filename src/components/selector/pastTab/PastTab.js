@@ -12,10 +12,12 @@ import agent from '../../../agent';
 import { ITEMS_PER_PAGE } from '../../../constants/constants';
 
 const mapStateToProps = state => ({
-    state: state,
+    //state: state,
     pastPunishments: state.punishment.pastPunishments,
     shownPastPunishments: state.punishment.shownPastPunishments,
     currentPage: state.punishment.currentPastPage,
+    ignoredPunishmentSet: state.punishment.ignoredPunishmentSet,
+    punishmentIdFromURL: state.game.punishmentIdFromURL
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -45,10 +47,10 @@ class PastTab extends React.Component {
             this.props.changeShownPunishments(firstPage, 1);
         };
 
-        this.loadAndShowPastPunishments = (punishments) => { // poziv kada stigne payload sa past punishmentima
+        /* this.loadAndShowPastPunishments = (punishments) => { // poziv kada stigne payload sa past punishmentima
             this.props.onLoadedPastPunishments(punishments);
             this._showFirstPage();
-        };
+        }; */
 
         this.changeElement = (element) => {
             let ASC = ' (ʌ)';
@@ -65,7 +67,18 @@ class PastTab extends React.Component {
 
         this.updateAndShowPastPunishments = punishments => {
             this.props.changePastPunishments(punishments);
-            this._showFirstPage(punishments);
+
+            // specijalni slucaj - ignored punishment
+            if (this.props.ignoredPunishmentSet) {
+                console.log('ignoredPunSet')
+                let pageNum = getPunishmentPageNumber(this.props.punishmentIdFromURL, this.props.pastPunishments);
+                console.log(getPageElements(pageNum, punishments));
+                this.props.changeShownPunishments(getPageElements(pageNum, punishments), pageNum);
+
+            } else {
+
+                this._showFirstPage(punishments);
+            }
         };
 
         this.reSortPunishments = (id) => {
@@ -153,6 +166,7 @@ class PastTab extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
+
             this.updateAndShowPastPunishments(nextProps.pastPunishments);
         }
     }
@@ -197,3 +211,31 @@ class PastTab extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(PastTab);
 
+
+function getPunishmentPageNumber(targetId, punishments) {
+
+    let targetIndex = null;
+
+    for (let i = 0; i < punishments.length; i++) {
+        
+        if (punishments[i]._id === targetId) targetIndex = i + 1;
+    }
+
+    let pageNum = Math.ceil(targetIndex / ITEMS_PER_PAGE);
+
+    return pageNum;
+}
+
+function getPageElements(pageNum, punishments) {
+
+    let startIndex = ((pageNum - 1) * ITEMS_PER_PAGE);
+    let endIndex = (pageNum * ITEMS_PER_PAGE) - 1;
+    let page = [];
+
+    for (let i = startIndex; i < endIndex; i++) {
+
+        if (punishments[i]) page.push(punishments[i]);
+    }
+
+    return page;
+};

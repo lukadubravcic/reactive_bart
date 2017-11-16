@@ -56,7 +56,7 @@ class App extends React.Component {
         const punishmentId = getPunishmentIdFromURL();
         if (punishmentId) this.props.setPunishmentIdFromURL(punishmentId);
 
-        //punishmentId && prettifyURL();
+        punishmentId && prettifyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

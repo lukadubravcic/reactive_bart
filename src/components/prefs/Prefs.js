@@ -5,9 +5,10 @@ import agent from '../../agent'
 const mapStateToProps = state => ({ ...state.prefs });
 
 const mapDispatchToProps = dispatch => ({
-    updatePrefs: newPrefs => {
-        agent.Pref.updatePreferences(newPrefs)
-        dispatch({ type: 'PREFS_UPDATED', newPrefs })
+    updatePref: newPref => {
+        console.log(newPref)
+        agent.Pref.updatePreferences(newPref)
+        dispatch({ type: 'PREFS_UPDATED', newPref })
     }
 });
 
@@ -18,7 +19,7 @@ class Prefs extends React.Component {
         super();
 
         this.clickHandler = ev => {
-            this.props.updatePrefs({[ev.target.name]: !this.props[ev.target.name]});
+            this.props.updatePref({[ev.target.name]: !this.props[ev.target.name]});
         };
     }
 

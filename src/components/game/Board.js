@@ -103,7 +103,7 @@ class Board extends React.Component {
 
         this.boardFocused = ev => {
             ev.preventDefault();
-            this.clearStartingSentence();
+            //this.clearStartingSentence();
             this.props.onBoardFocus();
         };
 
@@ -128,6 +128,7 @@ class Board extends React.Component {
                 this.removeActivePunishmentFromAccepted();
             }
 
+            this.props.onBoardLostFocus();
             console.log('Punishment completed!');
 
             /* 
@@ -136,8 +137,8 @@ class Board extends React.Component {
 
             setTimeout(() => {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu i mjenjanje board focusa u state storu-u
+
                 
-                this.props.onBoardLostFocus();
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 5000)
         };
@@ -204,13 +205,13 @@ class Board extends React.Component {
 
         // rekurzivno ispisvanje početne rečenice i dodavanje već napisanih znakova (ako ih ima)
         this.writeStartingSentance = () => {
-            this.clearStartingSentence();
+            //this.clearStartingSentence();
             this.props.updateBoardValue('');
 
             const write = (i) => {
                 if (this.punishmentExplanation.length <= i) {
                     this.activeWriteTimeout = setTimeout(() => {
-                        this.addToStartingSentence("Click to start!");
+                        // this.addToStartingSentence("Click to start!");
                         this.props.boardDisabledStatus(false);
                     }, 100);
                     return;
@@ -254,7 +255,11 @@ class Board extends React.Component {
             this.punishment = this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.props.activePunishment.how_many_times;
-            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" + this.punishment + "\". ";
+            //this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" +this.punishment + "\". "; 
+            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" +
+                (this.punishment[this.punishment.length - 1] === ' ' ?
+                this.punishment.substring(0, this.punishment.length - 1) : this.punishment) +
+                "\". ";
             this.clearStartingSentence();
             this.props.boardDisabledStatus(true);
             this.writeStartingSentance();
@@ -268,7 +273,7 @@ class Board extends React.Component {
     componentDidUpdate(prevProps) {
         if (Object.keys(this.props.activePunishment).length &&
             (this.props.activePunishment._id !== prevProps.activePunishment._id)) { // postavljena nova kazna
-                
+
             this.activePunishmentChanged();
         }
     }

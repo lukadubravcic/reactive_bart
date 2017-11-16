@@ -25,40 +25,80 @@ class Game extends React.Component {
     constructor() {
         super();
 
-        this.changeActivePunishment = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
+        this.changeActivePunishmentNotLoggedIn = () => {
+            if (window.canRunAds === undefined) { // adblocker detektiran
+
+                let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
+
+                if (specialPunishment) {
+
+                    this.props.setActivePunishment(specialPunishment);
+
+                } else return;
+
+            } else if (this.props.punishmentIdFromURL) {
+
+                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0]), true);
+
+            } else {
+
+                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0]));
+            }
+        }
+
+        this.changeActivePunishmentLoggedIn = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
 
             if (window.canRunAds === undefined) { // adblocker detektiran
 
-                let specialPunishment = getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments);
+                let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
 
-                if (specialPunishment) this.props.setActivePunishment(specialPunishment);
-                else return;
+                if (specialPunishment) {
+
+                    this.props.setActivePunishment(specialPunishment);
+
+                } else return;
 
             } else if (this.props.punishmentIdFromURL && this.props.currentUser._id) { // kazna sa url-a
 
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
 
-                if (punishmentInURL) this.props.setActivePunishment(punishmentInURL); // kazna je aktivna
+                if (punishmentInURL) {  // kazna je aktivna
+                    console.log(punishmentInURL)
+                    this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));
 
-                else { // kazna nije pronadena u accepted
+                } else { // kazna nije pronadena u accepted
 
                     punishmentInURL = getByValue(this.props.pastPunishments, this.props.punishmentIdFromURL) // pronadi je u past kaznama
-                    console.log(this.props.pastPunishments)
-                    console.log(this.props.currentUser)
+                    /* console.log(this.props.pastPunishments)
+                    console.log(this.props.currentUser) */
                     if (punishmentInURL && checkIfIgnoredPunishment(punishmentInURL)) { // ako je u past kaznama i status = ignored
-                        console.log('game: kazna sa urla')
-                        let specialPunishment = getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments)
+
+                        let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
                         specialPunishment && this.props.setActivePunishment(specialPunishment, true);
 
                     } else { // pristup kazni koja se ne moze izvrsiti, prebaci na random
 
-                        this.props.setActivePunishment(this.props.randomPunishments[0]);
+                        let randomPunishment = null;
+
+                        if (this.props.randomPunishments[0]) {
+
+                            randomPunishment = addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0])
+                        }
+
+                        this.props.setActivePunishment(randomPunishment);
                     }
                 }
 
             } else { // ako ne postoji postavi random punishment
 
-                this.props.setActivePunishment(this.props.randomPunishments[0]);
+                let randomPunishment = null;
+
+                if (this.props.randomPunishments[0]) {
+
+                    randomPunishment = addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0])
+                }
+
+                this.props.setActivePunishment(randomPunishment);
             }
         };
     }
@@ -70,7 +110,6 @@ class Game extends React.Component {
         const userLoggedIn = Object.keys(this.props.currentUser).length;
         const appFinishedLoadingUser = prevProps.loadInProgress === true && this.props.loadInProgress === false && userJustLoggedIn;
         const appFinishedLoadingUserNotFound = !window.localStorage.getItem('token') || (window.localStorage.getItem('token') && userNotLoggedIn && prevProps.loadInProgress === true & this.props.loadInProgress === false);
-
         const randomAndSpecialPunishmentsLoaded = this.props.randomPunishments !== 'empty' && this.props.randomPunishments.length > 0 && this.props.specialPunishments !== 'empty' && this.props.specialPunishments.length > 0;
         const activePunishmentNotSet = !Object.keys(prevProps.activePunishment).length && !Object.keys(this.props.activePunishment).length;
         const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.acceptedPunishments.length > 0 && this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0;
@@ -80,11 +119,11 @@ class Game extends React.Component {
         // nema usera
         if (appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) {
 
-            this.changeActivePunishment();
-        // ima usera
-        } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet){
+            this.changeActivePunishmentNotLoggedIn();
+            // ima usera
+        } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) {
 
-            this.changeActivePunishment();
+            this.changeActivePunishmentLoggedIn();
         }
 
         /* if (Object.keys(this.props.currentUser).length === 0) {
@@ -151,4 +190,17 @@ function getSpecialPunishment(type, specialPunishments) {
     }
 
     return null;
+}
+
+
+function addSpacingToPunishmentWhatToWrite(punishment) {
+
+    if (punishment.what_to_write[punishment.what_to_write.length - 1] === ' ') {
+
+        return { ...punishment };
+
+    } else {
+
+        return { ...punishment, what_to_write: punishment.what_to_write += ' ' };
+    }
 }

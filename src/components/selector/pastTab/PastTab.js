@@ -180,6 +180,10 @@ class PastTab extends React.Component {
             "width": "210px",
             "display": "inline-block"
         };
+        const styleMarkIgnored = {
+            ...style,
+            backgroundColor: "rgba(158, 234, 86, 0.75)"
+        }
 
         if (shownPunishments !== 'empty') {
             return (
@@ -187,9 +191,18 @@ class PastTab extends React.Component {
                     <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
-                            return (
-                                <PastTabRow punishment={punishment} style={style} key={punishment._id} id={punishment._id} />
-                            )
+                            if (this.props.punishmentIdFromURL === punishment._id) {
+
+                                return (
+                                    <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment._id} id={punishment._id} />
+                                )
+
+                            } else {
+                                
+                                return (
+                                    <PastTabRow punishment={punishment} style={style} key={punishment._id} id={punishment._id} />
+                                )
+                            }
                         })
                     }
                     <TableFooter currentPage={currentPage} punishments={this.props.pastPunishments} changeShownPunishments={this.props.changeShownPunishments} />
@@ -217,7 +230,7 @@ function getPunishmentPageNumber(targetId, punishments) {
     let targetIndex = null;
 
     for (let i = 0; i < punishments.length; i++) {
-        
+
         if (punishments[i]._id === targetId) targetIndex = i + 1;
     }
 

@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
     ...state.punishment,
     user: state.common.currentUser,
     acceptedPunishments: state.punishment.acceptedPunishments,
+    activePunishment: state.game.activePunishment
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -173,9 +174,10 @@ class PunishmentSelectorTable extends React.Component {
             });
         }
 
-        if (!prevProps.ignoredPunishmentSet && this.props.ignoredPunishmentSet && this.props.pastPunishments) {
+        const activePunishmentJustSet = !Object.keys(prevProps.activePunishment).length && Object.keys(this.props.activePunishment).length > 0;
+        
+        if (activePunishmentJustSet && this.props.ignoredPunishmentSet && this.props.pastPunishments && Object.keys(this.props.user).length > 0) {
 
-            console.log('ignored set');
             this.selectTab('pastTab');
         }
 

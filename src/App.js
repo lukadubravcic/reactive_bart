@@ -17,9 +17,10 @@ import { getPunishmentIdFromURL } from './helpers/helpers';
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
-    onLoad: (token) => {
+    onLoad: (token) => { // ako se postavljen token u localstrageu, ulogiraj usera
         if (token) {
             agent.setToken(token);
+            dispatch({type: 'LOADING_IN_PROGRESS'})
             agent.Auth.current().then((payload) => {
                 if (payload !== null) {
                     dispatch({
@@ -32,7 +33,7 @@ const mapDispatchToProps = dispatch => ({
                         }
                     });
                 }
-            });
+            });           
         }
     },
     setPunishmentIdFromURL: id => {
@@ -55,7 +56,7 @@ class App extends React.Component {
         const punishmentId = getPunishmentIdFromURL();
         if (punishmentId) this.props.setPunishmentIdFromURL(punishmentId);
 
-        punishmentId && prettifyURL();
+        //punishmentId && prettifyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

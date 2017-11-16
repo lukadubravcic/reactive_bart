@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
     ...state.punishment,
     activePunishment: state.game.activePunishment,
     currentUser: state.common.currentUser,
+    loadInProgress: state.common.loadInProgress,
     punishmentIdFromURL: state.game.punishmentIdFromURL
 });
 
@@ -33,17 +34,17 @@ class Game extends React.Component {
                 if (specialPunishment) this.props.setActivePunishment(specialPunishment);
                 else return;
 
-            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a
-                
+            } else if (this.props.punishmentIdFromURL && this.props.currentUser._id) { // kazna sa url-a
+
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
 
                 if (punishmentInURL) this.props.setActivePunishment(punishmentInURL); // kazna je aktivna
 
                 else { // kazna nije pronadena u accepted
-                    
+
                     punishmentInURL = getByValue(this.props.pastPunishments, this.props.punishmentIdFromURL) // pronadi je u past kaznama
-                    /* console.log(this.props.pastPunishments)
-                    console.log(this.props.currentUser) */
+                    console.log(this.props.pastPunishments)
+                    console.log(this.props.currentUser)
                     if (punishmentInURL && checkIfIgnoredPunishment(punishmentInURL)) { // ako je u past kaznama i status = ignored
                         console.log('game: kazna sa urla')
                         let specialPunishment = getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments)
@@ -64,8 +65,31 @@ class Game extends React.Component {
 
     componentDidUpdate(prevProps) {
 
-        if (!Object.keys(this.props.currentUser).length) {
+        const userNotLoggedIn = Object.keys(prevProps.currentUser).length === 0 && Object.keys(this.props.currentUser).length === 0;
+        const userJustLoggedIn = Object.keys(prevProps.currentUser).length !== Object.keys(this.props.currentUser).length;
+        const userLoggedIn = Object.keys(this.props.currentUser).length;
+        const appFinishedLoadingUser = prevProps.loadInProgress === true && this.props.loadInProgress === false && userJustLoggedIn;
+        const appFinishedLoadingUserNotFound = !window.localStorage.getItem('token') || (window.localStorage.getItem('token') && userNotLoggedIn && prevProps.loadInProgress === true & this.props.loadInProgress === false);
 
+        const randomAndSpecialPunishmentsLoaded = this.props.randomPunishments !== 'empty' && this.props.randomPunishments.length > 0 && this.props.specialPunishments !== 'empty' && this.props.specialPunishments.length > 0;
+        const activePunishmentNotSet = !Object.keys(prevProps.activePunishment).length && !Object.keys(this.props.activePunishment).length;
+        const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.acceptedPunishments.length > 0 && this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0;
+
+        //console.log('acceptedAndPastPunishmentsLoaded: ' + acceptedAndPastPunishmentsLoaded);
+
+        // nema usera
+        if (appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) {
+
+            this.changeActivePunishment();
+        // ima usera
+        } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet){
+
+            this.changeActivePunishment();
+        }
+
+        /* if (Object.keys(this.props.currentUser).length === 0) {
+            console.log(!Object.keys(this.props.currentUser).length)
+            console.log(this.props.currentUser)
             if (//prevProps.currentUser._id !== this.props.currentUser._id &&
                 this.props.randomPunishments !== 'empty' &&
                 this.props.specialPunishments !== 'empty' ||
@@ -77,20 +101,24 @@ class Game extends React.Component {
                 this.changeActivePunishment();
             }
 
-        } else if (this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty') {
-           
-            if (prevProps.currentUser._id !== this.props.currentUser._id &&
+        } else if (
+
+            (this.props.acceptedPunishments !== 'empty' &&
+                this.props.pastPunishments !== 'empty' &&
+                prevProps.currentUser._id !== this.props.currentUser._id &&
                 this.props.randomPunishments !== 'empty' &&
-                this.props.specialPunishments !== 'empty' ||
+                this.props.specialPunishments !== 'empty') ||
+            (this.props.acceptedPunishments !== 'empty' &&
+                this.props.pastPunishments !== 'empty' &&
                 !Object.keys(prevProps.activePunishment).length &&
                 !Object.keys(this.props.activePunishment).length &&
                 this.props.randomPunishments !== 'empty' &&
-                Object.keys(this.props.specialPunishments).length) {
-
-                this.changeActivePunishment();
-            } // startup setanje aktivne kazne
-        }
+                Object.keys(this.props.specialPunishments).length)) {
+            console.log('drugi if')
+            this.changeActivePunishment();
+        } */
     }
+
 
     render() {
         return (

@@ -36,7 +36,7 @@ const mapDispatchToProps = dispatch => ({
         agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
-    updateAccptedPunishments: (punishments) => {
+    updateAcceptedPunishments: (punishments) => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     },
     onBoardFocus: () => {
@@ -128,6 +128,7 @@ class Board extends React.Component {
                 this.removeActivePunishmentFromAccepted();
             }
 
+            console.log('Punishment completed!');
 
             /* 
                     TODO: odvojiti funkciju za ispis poruka preko ploce (done/failed/...)
@@ -135,7 +136,7 @@ class Board extends React.Component {
 
             setTimeout(() => {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu i mjenjanje board focusa u state storu-u
-                console.log('Punishment completed!');
+                
                 this.props.onBoardLostFocus();
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 5000)
@@ -143,9 +144,9 @@ class Board extends React.Component {
 
         this.removeActivePunishmentFromAccepted = () => {
             let filteredAccPunishments = this.props.acceptedPunishments.filter((punishment) => {
-                return punishment._id === this.props.activePunishment._id ? null : punishment;
+                return punishment._id === this.props.activePunishment._id ? null : JSON.parse(JSON.stringify(punishment));
             });
-            this.props.updateActivePunishments(filteredAccPunishments);
+            this.props.updateAcceptedPunishments(filteredAccPunishments);
         };
 
         this.validateKey = (char, boardText) => {

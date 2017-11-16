@@ -1,7 +1,10 @@
 export const sortPunishmentsByString = (punishments, order, field) => { // order = 1 / -1 (ASC / DESC)
     let tmpPun = JSON.parse(JSON.stringify(punishments));
 
-    tmpPun.sort((a, b) => (a[field].localeCompare(b[field]) * order));
+    tmpPun.sort((a, b) => {
+        if (a[field]) return a[field].localeCompare(b[field]) * order;
+        else return order;
+    });
 
     return tmpPun;
 };

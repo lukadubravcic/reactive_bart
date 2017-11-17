@@ -103,12 +103,12 @@ class PunishmentCreator extends React.Component {
             this.props.onChangeWhatToWrite(ev.target.value);
         }
         this.changeWhy = ev => {
-            if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0) {
+            /* if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0) {
                 this.whyErrorText = null;
             } else {
                 console.log('TODO WARNING: WHY FIELD TOO LONG')
                 this.whyErrorText = 'Punishment explanation too long or empty. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.'
-            }
+            } */
             this.props.onChangeWhy(ev.target.value);
         }
         this.incrementHowManyTimes = ev => {
@@ -213,8 +213,7 @@ class PunishmentCreator extends React.Component {
                                     type="text"
                                     placeholder="Feel free to explain your reasons."
                                     value={whyField}
-                                    onChange={this.changeWhy}
-                                    required />
+                                    onChange={this.changeWhy} />
                                 {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
                             </fieldset>
                             <button

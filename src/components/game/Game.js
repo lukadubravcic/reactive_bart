@@ -112,7 +112,7 @@ class Game extends React.Component {
         const appFinishedLoadingUserNotFound = !window.localStorage.getItem('token') || (window.localStorage.getItem('token') && userNotLoggedIn && prevProps.loadInProgress === true & this.props.loadInProgress === false);
         const randomAndSpecialPunishmentsLoaded = this.props.randomPunishments !== 'empty' && this.props.randomPunishments.length > 0 && this.props.specialPunishments !== 'empty' && this.props.specialPunishments.length > 0;
         const activePunishmentNotSet = !Object.keys(prevProps.activePunishment).length && !Object.keys(this.props.activePunishment).length;
-        const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.acceptedPunishments.length > 0 && this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0;
+        const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty';
 
         //console.log('acceptedAndPastPunishmentsLoaded: ' + acceptedAndPastPunishmentsLoaded);
 

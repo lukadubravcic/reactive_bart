@@ -26,6 +26,7 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
+    
     switch (action.type) {
         case 'UPDATE_FIELD_PUNISH_CREATE':
             return { ...state, [action.key]: action.value };
@@ -36,7 +37,7 @@ export default (state = defaultState, action) => {
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _message: action.msg };
         case 'SET_ACTIVE_PUNISHMENT':
-            return { ...state, ignoredPunishmentSet: action.ignoredPunishmentSet ? action.ignoredPunishmentSet : false};
+            return { ...state, ignoredPunishmentSet: action.ignoredPunishmentSet ? action.ignoredPunishmentSet : defaultState.ignoredPunishmentSet };
         case 'GIVE_UP_ON_PUNISHMENT':
             return { ...state, acceptedPunishments: action.newAcceptedPunishments };
         case 'SWITCH_SELECTED_PUNISHMENT_TAB':

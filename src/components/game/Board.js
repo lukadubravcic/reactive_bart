@@ -4,10 +4,9 @@ import agent from '../../agent';
 
 import ProgressBar from './ProgressBar';
 
-import { randomPunishments } from '../../constants/constants';
-
 import chalkboardImg from '../../assets/chalkboard.jpg';
 
+const UPPERCASE = false;
 
 const mapStateToProps = state => ({
     ...state.game,
@@ -66,6 +65,8 @@ class Board extends React.Component {
     constructor() {
         super();
 
+        this.clickToStartMessage = 'Click to start!'
+
         this.audio = document.createElement('audio');
         this.audio.style.display = "none";
         this.audio.src = 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-five/zapsplat_office_blackboard_rubber_duster_rub_remove_chalk_from_blackboard.mp3?_=2';
@@ -82,7 +83,9 @@ class Board extends React.Component {
             this.audio.play();
             // reset sponge (position), log try, optionally send (trying) mail, 
             // reset board, restart stopwatch
+            this._wrongCharPlace = null;
             this.activePunishmentChanged();
+            
             this.props.resetProgress();
         };
 
@@ -103,8 +106,16 @@ class Board extends React.Component {
 
         this.boardFocused = ev => {
             ev.preventDefault();
-            //this.clearStartingSentence();
+            this.trimClickToStartMessage();
             this.props.onBoardFocus();
+        };
+
+        this.trimClickToStartMessage = () => {
+
+            if (this.startingSentence.includes(this.clickToStartMessage)) {
+
+                this.startingSentence = this.startingSentence.substring(0, this.startingSentence.length - this.clickToStartMessage.length);
+            }
         };
 
         this.boardLostFocus = ev => {
@@ -138,7 +149,7 @@ class Board extends React.Component {
             setTimeout(() => {
                 // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu i mjenjanje board focusa u state storu-u
 
-                
+
                 this.props.setActivePunishment(this.props.acceptedPunishments[0])
             }, 5000)
         };
@@ -183,7 +194,7 @@ class Board extends React.Component {
                     if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
                 } else {
                     if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
-                    else transformedBoardText = boardText + key;
+                    else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
                 }
                 this.validateKey(key, transformedBoardText);
                 this.props.updateBoardValue(transformedBoardText);
@@ -211,7 +222,7 @@ class Board extends React.Component {
             const write = (i) => {
                 if (this.punishmentExplanation.length <= i) {
                     this.activeWriteTimeout = setTimeout(() => {
-                        // this.addToStartingSentence("Click to start!");
+                        this.addToStartingSentence(this.clickToStartMessage);
                         this.props.boardDisabledStatus(false);
                     }, 100);
                     return;
@@ -252,15 +263,16 @@ class Board extends React.Component {
 
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
 
-            this.punishment = this.props.activePunishment.what_to_write;
+            // incijalni setup
+            this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.props.activePunishment.how_many_times;
-            //this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" +this.punishment + "\". "; 
             this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" +
                 (this.punishment[this.punishment.length - 1] === ' ' ?
-                this.punishment.substring(0, this.punishment.length - 1) : this.punishment) +
+                    this.punishment.substring(0, this.punishment.length - 1) : this.punishment) +
                 "\". ";
             this.clearStartingSentence();
+            this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
             this.writeStartingSentance();
         };
@@ -276,11 +288,6 @@ class Board extends React.Component {
 
             this.activePunishmentChanged();
         }
-    }
-
-    // NEPOTREBNO ?? (placeholder)
-    loadRandomPunishment() {
-        let randomPunishment = randomPunishments[Math.floor(Math.random() * randomPunishments.length)];
     }
 
     render() {

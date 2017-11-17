@@ -32,7 +32,7 @@ export default (state = defaultState, action) => {
         case 'SET_ACTIVE_PUNISHMENT':
             return {
                 ...state, activePunishment: action.punishment,
-                gameInProgress: false,
+                gameInProgress: defaultState.gameInProgress,
                 timerValue: defaultState.timerValue,
                 punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
                 boardTextMistake: defaultState.boardTextMistake
@@ -41,11 +41,13 @@ export default (state = defaultState, action) => {
             return { ...state, progress: action.updatedProgress };
         case 'PUNISHMENT_TRY_LOGGED':
             return {
-                ...state, progress: 0,
+                ...state, 
+                progress: defaultState.progress,
                 boardValue: defaultState.boardValue,
-                timeSpent: 0,
+                timeSpent: defaultState.timeSpent,
                 timerValue: defaultState.timerValue,
-                gameInProgress: false
+                gameInProgress: defaultState.gameInProgress,
+                boardTextMistake: defaultState.boardTextMistake
             }
         case 'PUNISHMENT_DONE':
             return { ...state, gameInProgress: false };
@@ -63,11 +65,13 @@ export default (state = defaultState, action) => {
             return { ...state, clockValue: action.newClockValue };
         case 'GAME_RESETED':
             return {
-                ...state, progress: 0,
+                ...state, 
+                progress: defaultState.progress,
                 boardValue: defaultState.boardValue,
-                timeSpent: 0,
+                timeSpent: defaultState.timeSpent,
                 timerValue: defaultState.timerValue,
-                gameInProgress: false
+                gameInProgress: defaultState.gameInProgress,
+                boardTextMistake: defaultState.boardTextMistake
             };
         case 'USERNAME_SET':
             return { ...state, activePunishment: action.specialPunishment };

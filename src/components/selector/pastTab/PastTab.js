@@ -65,20 +65,18 @@ class PastTab extends React.Component {
             element.sortOrder *= -1;
         };
 
-        this.updateAndShowPastPunishments = punishments => {
-            this.props.changePastPunishments(punishments);
+        this.showIgnoredPunishmentPage = punishments => {
 
-            // specijalni slucaj - ignored punishment
-            if (this.props.ignoredPunishmentSet) {
-                console.log('ignoredPunSet')
                 let pageNum = getPunishmentPageNumber(this.props.punishmentIdFromURL, this.props.pastPunishments);
-                console.log(getPageElements(pageNum, punishments));
+               
                 this.props.changeShownPunishments(getPageElements(pageNum, punishments), pageNum);
+            
+        };
 
-            } else {
+        this.updateAndShowPastPunishments = punishments => {
 
-                this._showFirstPage(punishments);
-            }
+            this.props.changePastPunishments(punishments);
+            this._showFirstPage(punishments);
         };
 
         this.reSortPunishments = (id) => {
@@ -160,14 +158,26 @@ class PastTab extends React.Component {
 
     componentDidMount() {
         if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) {
-            this.updateAndShowPastPunishments(this.props.pastPunishments);
+            if (this.props.ignoredPunishmentSet) {
+                this.showIgnoredPunishmentPage(this.props.pastPunishments);
+            } else this.updateAndShowPastPunishments(this.props.pastPunishments);
         }
     }
 
     componentWillReceiveProps(nextProps) {
+
         if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
 
             this.updateAndShowPastPunishments(nextProps.pastPunishments);
+        }
+
+    }
+
+    componentWillUpdate(prevProps) {
+
+        if (prevProps.ignoredPunishmentSet && !this.props.ignoredPunishmentSet) {
+        
+            this.showIgnoredPunishmentPage(this.props.pastPunishments);
         }
     }
 
@@ -198,7 +208,7 @@ class PastTab extends React.Component {
                                 )
 
                             } else {
-                                
+
                                 return (
                                     <PastTabRow punishment={punishment} style={style} key={punishment._id} id={punishment._id} />
                                 )

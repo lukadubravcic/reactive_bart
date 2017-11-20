@@ -79,7 +79,7 @@ class PunishmentCreator extends React.Component {
         };
 
         this.validateToWhomValue = value => {
-            if (!validateEmail(value)) {
+            if (!isMail(value)) {
                 if (value.length > 30)
                     this.toWhomErrorText = 'Username can\'t be that long. Maximum 30 characters.';
                 else
@@ -97,18 +97,16 @@ class PunishmentCreator extends React.Component {
                 this.whatToWriteErrorText = null;
             } else {
                 // warning da je text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
-                console.log('TODO WARNING: PUNISHMENT (whatToWrite) FIELD TOO LONG');
                 this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.'
             }
             this.props.onChangeWhatToWrite(ev.target.value);
         }
         this.changeWhy = ev => {
-            /* if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0) {
+            if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0 || ev.target.value.length === 0) {
                 this.whyErrorText = null;
             } else {
-                console.log('TODO WARNING: WHY FIELD TOO LONG')
-                this.whyErrorText = 'Punishment explanation too long or empty. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.'
-            } */
+                this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.'
+            }
             this.props.onChangeWhy(ev.target.value);
         }
         this.incrementHowManyTimes = ev => {
@@ -130,7 +128,7 @@ class PunishmentCreator extends React.Component {
             ev.preventDefault();
 
             let submitData = {};
-            validateEmail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
+            isMail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
             submitData.deadlineDate = deadlineChecked ? deadlineDate : null;
             submitData.whatToWrite = whatToWriteField;
@@ -232,7 +230,7 @@ class PunishmentCreator extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(PunishmentCreator);
 
-function validateEmail(email) {
+function isMail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }

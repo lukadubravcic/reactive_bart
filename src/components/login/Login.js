@@ -3,11 +3,18 @@ import React from 'react';
 import agent from '../../agent'
 import SetUsername from './SetUsername';
 
+const EMAIL_MAX_LEN = 20;
+const EMAIL_MIN_LEN = 5;
+const PASSWORD_MAX_LEN = 20;
+const PASSWORD_MIN_LEN = 3;
+
+const EMAIL_VALIDATION_ERROR_TEXT = 'Username must be between ' + EMAIL_MIN_LEN + ' and ' + EMAIL_MAX_LEN + ' characters long.';
+const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MIN_LEN + ' and ' + PASSWORD_MAX_LEN + ' characters long.';
+
 const mapStateToProps = state => ({
     ...state,
     username: state.common.currentUser.username,
     email: state.common.currentUser.email
-
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -41,34 +48,49 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'LOGOUT' });
         localStorage.removeItem('token');
         agent.setToken(0)
-    },
-    onSetUsername: () => {
-
     }
 });
 
 class Login extends React.Component {
 
     constructor() {
+
         super();
-        this.emailChange = event => this.props.onEmailChange(event.target.value);
-        this.passwordChange = event => this.props.onPasswordChange(event.target.value);
+
+        this.emailValidationError = null;
+        this.passwordValidationError = null;
+
+        this.emailChange = event => {
+
+            if (event.target.value.length < EMAIL_MIN_LEN || event.target.value.length > EMAIL_MAX_LEN) this.emailValidationError = EMAIL_VALIDATION_ERROR_TEXT;
+            else this.emailValidationError = null;
+
+            this.props.onEmailChange(event.target.value);
+        }
+
+        this.passwordChange = event => {
+
+            if (event.target.value.length < PASSWORD_MIN_LEN || event.target.value.length > PASSWORD_MAX_LEN) this.passwordValidationError = PASSWORD_VALIDATION_ERROR_TEXT;
+            else this.passwordValidationError = null;
+
+            this.props.onPasswordChange(event.target.value);
+        }
         this.submitForm = (email, password) => ev => {
             ev.preventDefault();
             this.props.onSubmit(email, password);
         }
+
         this.showRegisterForm = () => {
             // hide login and show register form
             this.props.onShowRegisterForm();
         }
-        this.handleSetUsername = ev => {
-
-        }
     }
 
     render() {
+
         const email = this.props.auth.email;
         const password = this.props.auth.password;
+        const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
 
         if (window.canRunAds === undefined) {
             // adblock active
@@ -100,6 +122,7 @@ class Login extends React.Component {
                                                 value={email}
                                                 onChange={this.emailChange}
                                                 required />
+                                            {this.emailValidationError ? <label>{this.emailValidationError}</label> : null}
                                         </fieldset>
 
                                         <fieldset className="form-group">
@@ -110,13 +133,14 @@ class Login extends React.Component {
                                                 value={password}
                                                 onChange={this.passwordChange}
                                                 required />
+                                            {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
                                         </fieldset>
                                         <button
                                             className="btn btn-lg btn-primary pull-xs-right"
-                                            type="submit">
+                                            type="submit"
+                                            disabled={!formValid}>
                                             Login
                                         </button>
-
                                     </fieldset>
                                 </form>
                             </div>

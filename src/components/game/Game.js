@@ -107,6 +107,7 @@ class Game extends React.Component {
 
         const userNotLoggedIn = Object.keys(prevProps.currentUser).length === 0 && Object.keys(this.props.currentUser).length === 0;
         const userJustLoggedIn = Object.keys(prevProps.currentUser).length !== Object.keys(this.props.currentUser).length;
+        const userJustLoggedOut = Object.keys(prevProps.currentUser).length > 0 && !Object.keys(this.props.currentUser).length === 0;
         const userLoggedIn = Object.keys(this.props.currentUser).length;
         const appFinishedLoadingUser = prevProps.loadInProgress === true && this.props.loadInProgress === false && userJustLoggedIn;
         const appFinishedLoadingUserNotFound = !window.localStorage.getItem('token') || (window.localStorage.getItem('token') && userNotLoggedIn && prevProps.loadInProgress === true & this.props.loadInProgress === false);
@@ -114,8 +115,12 @@ class Game extends React.Component {
         const activePunishmentNotSet = !Object.keys(prevProps.activePunishment).length && !Object.keys(this.props.activePunishment).length;
         const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty';
 
-        //console.log('acceptedAndPastPunishmentsLoaded: ' + acceptedAndPastPunishmentsLoaded);
+        /* console.log("userJustLoggedOut " + userJustLoggedOut);
+        console.log("activePunishmentNotSet " + activePunishmentNotSet);
+        console.log("randomAndSpecialPunishmentsLoaded " + randomAndSpecialPunishmentsLoaded);
+        console.log('--------------------------------------------------') */
 
+        if (appFinishedLoadingUserNotFound && activePunishmentNotSet) console.log('here')
         // nema usera
         if (appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) {
 
@@ -124,6 +129,9 @@ class Game extends React.Component {
         } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) {
 
             this.changeActivePunishmentLoggedIn();
+
+        } else if (userJustLoggedOut && activePunishmentNotSet && randomAndSpecialPunishmentsLoaded) {
+
         }
 
         /* if (Object.keys(this.props.currentUser).length === 0) {

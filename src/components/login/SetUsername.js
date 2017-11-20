@@ -38,13 +38,13 @@ class SetUsername extends React.Component {
             this.props.onUsernameChange(ev.target.value);
 
             if (ev.target.value.length < MIN_USERNAME_LEN || ev.target.value.length > MAX_USERNAME_LEN) {
-                this.validationMessage = 'Username needs to be between 4 and 30 characters long.'
+                this.validationMessage = 'Username needs to be between ' + MIN_USERNAME_LEN + ' and ' + MAX_USERNAME_LEN + ' characters long.'
             } else {
                 this.validationMessage = null;
             }
         };
 
-        this.createOnUsernameSetPunishment = (username) => {
+        this.createOnUsernameSetPunishment = username => {
             return getFromSpecialPunishments('USERNAME_SET', username, this.props.specialPunishments)
         }
 
@@ -98,8 +98,9 @@ function getFromSpecialPunishments(type, username, specialPunishments) {
     if (!specialPunishments.length) return null;
 
     for (let i = 0; i < specialPunishments.length; i++) {
-        
+
         if (specialPunishments[i].type === type) {
+
             result = JSON.parse(JSON.stringify(specialPunishments[i]));
             result.what_to_write += username + '.';
             return result;

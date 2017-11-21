@@ -5,14 +5,14 @@ import agent from '../../agent';
 import ProgressBar from './ProgressBar';
 
 import chalkboardImg from '../../assets/chalkboard.jpg';
+import { text } from 'superagent/lib/node/parsers';
 
 const UPPERCASE = false;
 
 const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
-    activePunishment: state.game.activePunishment,
-    progress: state.game.progress
+    currentUser: state.common.currentUser
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -84,8 +84,13 @@ class Board extends React.Component {
             // reset sponge (position), log try, optionally send (trying) mail, 
             // reset board, restart stopwatch
             this._wrongCharPlace = null;
+
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
+                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            }
+
             this.activePunishmentChanged();
-            
+
             this.props.resetProgress();
         };
 
@@ -244,17 +249,12 @@ class Board extends React.Component {
         };
 
         this.handleBeforeunload = () => {
-            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
         };
 
         // this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
 
-        this.activePunishmentChanged = () => { // potrebno loggirat kaznu
-
-            if (this.props.gameInProgress && !specialOrRandomPunishmentIsActive(this.props.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-
-                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
-            }
+        this.activePunishmentChanged = () => { // potrebno loggirat kaznu            
             // init nove aktivne kazne
             this.newPunishmentInit();
         };
@@ -277,21 +277,38 @@ class Board extends React.Component {
             this.writeStartingSentance();
         };
     }
+
     componentDidMount() {
         window.addEventListener("beforeunload", this.handleBeforeunload);
         this.startingSentence = '';
     }
 
+    componentWillUpdate(nextProps) {
+
+        const userWillLogoutWhileGameInProgress = this.props.gameInProgress && !nextProps.gameInProgress && !Object.keys(nextProps.currentUser).length;
+
+        if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && userWillLogoutWhileGameInProgress) {
+            this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+
+        }
+
+    }
+
     componentDidUpdate(prevProps) {
-        if (Object.keys(this.props.activePunishment).length &&
-            (this.props.activePunishment._id !== prevProps.activePunishment._id)) { // postavljena nova kazna
+
+        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment._id !== prevProps.activePunishment._id)) { // postavljena nova kazna
+
+            if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
+
+                this.props.logPunishmentTry(prevProps.activePunishment._id, prevProps.timeSpent);
+
+            }
 
             this.activePunishmentChanged();
         }
     }
 
     render() {
-
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
 
         const boardText = this.props.boardValue;

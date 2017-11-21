@@ -107,22 +107,16 @@ class Game extends React.Component {
 
         const userNotLoggedIn = Object.keys(prevProps.currentUser).length === 0 && Object.keys(this.props.currentUser).length === 0;
         const userJustLoggedIn = Object.keys(prevProps.currentUser).length !== Object.keys(this.props.currentUser).length;
-        const userJustLoggedOut = Object.keys(prevProps.currentUser).length > 0 && !Object.keys(this.props.currentUser).length === 0;
         const userLoggedIn = Object.keys(this.props.currentUser).length;
         const appFinishedLoadingUser = prevProps.loadInProgress === true && this.props.loadInProgress === false && userJustLoggedIn;
         const appFinishedLoadingUserNotFound = !window.localStorage.getItem('token') || (window.localStorage.getItem('token') && userNotLoggedIn && prevProps.loadInProgress === true & this.props.loadInProgress === false);
         const randomAndSpecialPunishmentsLoaded = this.props.randomPunishments !== 'empty' && this.props.randomPunishments.length > 0 && this.props.specialPunishments !== 'empty' && this.props.specialPunishments.length > 0;
         const activePunishmentNotSet = !Object.keys(prevProps.activePunishment).length && !Object.keys(this.props.activePunishment).length;
         const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty';
+        const userJustLoggedOut = Object.keys(prevProps.activePunishment).length > 0 && Object.keys(this.props.activePunishment).length === 0 && !userLoggedIn;
 
-        /* console.log("userJustLoggedOut " + userJustLoggedOut);
-        console.log("activePunishmentNotSet " + activePunishmentNotSet);
-        console.log("randomAndSpecialPunishmentsLoaded " + randomAndSpecialPunishmentsLoaded);
-        console.log('--------------------------------------------------') */
-
-        if (appFinishedLoadingUserNotFound && activePunishmentNotSet) console.log('here')
-        // nema usera
-        if (appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) {
+        // nema usera ili se desio logout
+        if ((appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
 
             this.changeActivePunishmentNotLoggedIn();
             // ima usera

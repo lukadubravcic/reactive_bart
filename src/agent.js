@@ -27,10 +27,7 @@ const requests = {
 		.type('form')
 		.use(tokenPlugin)
 		.send(body)
-		.then(responseBody, (err) => {
-			console.log(err);
-			return null;
-		})
+		.then(responseBody)
 };
 
 const Auth = {

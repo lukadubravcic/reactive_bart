@@ -5,7 +5,7 @@ import agent from '../../agent';
 
 const MIN_USERNAME_LENGTH = 4;
 const MAX_USERNAME_LENGTH = 20;
-const MIN_PASSWORD_LENGTH = 4;
+const MIN_PASSWORD_LENGTH = 3;
 const MAX_PASSWORD_LENGTH = 20;
 
 const mapStateToProps = state => ({ ...state.auth });
@@ -13,25 +13,33 @@ const mapStateToProps = state => ({ ...state.auth });
 const mapDispatchToProps = dispatch => ({
     onUsernameChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'username', value }),
+
     onEmailChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value }),
+
     onPasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
+
     onRePasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'rePassword', value }),
-    onSubmit: (username, email, password) => {
+
+    onSubmit: (username, email, password) => {        
         agent.Auth.register(username, email, password).then((payload) => {
-            // ako je ispravan register onda prikaz login forma, u drugom slucaju "alert" o neuspjesnosti
-            if (payload !== null) {
+            // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
+            if (payload && payload.hasOwnProperty('errMsg')) {
+            
+                dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
+            
+            } else if (payload) {
 
                 dispatch({ type: 'REGISTER', payload });
-
+            
             } else {
-                // bacit alert
-                dispatch({ type: 'ALERT_FAILED_REG' });
+                dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
             }
         });
     },
+
     backToLogin: () => {
         dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
     }
@@ -47,7 +55,6 @@ class Register extends React.Component {
         this.passwordValidationError = null;
 
         this.usernameChange = ev => {
-
             this.props.onUsernameChange(ev.target.value)
 
             if ((ev.target.value.length < MIN_USERNAME_LENGTH && ev.target.value.length !== 0) || ev.target.value.length > MAX_USERNAME_LENGTH) {
@@ -62,7 +69,6 @@ class Register extends React.Component {
         };
 
         this.emailChange = ev => {
-
             this.props.onEmailChange(ev.target.value);
 
             if (ev.target.value.length > 0 && !isMail(ev.target.value)) {
@@ -76,18 +82,17 @@ class Register extends React.Component {
         };
 
         this.passwordChange = ev => {
-
             this.props.onPasswordChange(ev.target.value);
 
             if (ev.target.value.length !== 0 && (ev.target.value.length < MIN_PASSWORD_LENGTH || ev.target.value.length > MAX_PASSWORD_LENGTH)) {
 
                 this.passwordValidationError = 'Password needs to be between ' + MIN_PASSWORD_LENGTH + ' and ' + MAX_PASSWORD_LENGTH + ' characters long.';
-             
+
 
             } else {
 
                 this.passwordValidationError = null;
-             
+
             }
         };
 
@@ -95,6 +100,7 @@ class Register extends React.Component {
 
         this.submitForm = (username, email, password) => ev => {
             ev.preventDefault();
+
             this.props.onSubmit(username, email, password);
         }
     }
@@ -104,6 +110,7 @@ class Register extends React.Component {
         const email = this.props.email;
         const password = this.props.password;
         const rePassword = this.props.rePassword;
+        const _errMsg = this.props._errMsg;
 
         const formValid =
             this.usernameValidationError === null &&
@@ -152,7 +159,7 @@ class Register extends React.Component {
                                                 value={email}
                                                 onChange={this.emailChange}
                                                 required />
-                                            {this.emailValidationError === null && this.passwordValidationError ? <label>{this.emailValidationError === null && this.passwordValidationError}</label> : null}
+                                            {this.emailValidationError ? <label>{this.emailValidationError}</label> : null}
                                         </fieldset>
 
                                         <fieldset className="form-group">
@@ -179,7 +186,8 @@ class Register extends React.Component {
                                             type="submit"
                                             disabled={!formValid}>
                                             Register
-                                    </button>
+                                        </button>
+                                        {_errMsg ? <label>{_errMsg}</label> : null}
 
                                     </fieldset>
                                 </form>

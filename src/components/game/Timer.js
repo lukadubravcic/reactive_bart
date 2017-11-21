@@ -42,7 +42,7 @@ class Timer extends React.Component {
                 this.updateClock();
                 this.clockInterval = setInterval(() => {
                     this.updateClock();
-                }, 500);
+                }, 1000);
             }
         };
 

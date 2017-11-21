@@ -4,8 +4,7 @@ const defaultState = {
     password: '',
     rePassword: '',
     shownForm: 'login',
-    _serverAnswer: '',
-    submitDisabled: true
+    _errMsg: null
 }
 
 export default (state = defaultState, action) => {
@@ -13,11 +12,15 @@ export default (state = defaultState, action) => {
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
         case 'REGISTER_LOGIN_TOGGLE':
-            return { ...state, email: '', password: '', username: '', rePassword: '', shownForm: state.shownForm === 'login' ? 'register' : 'login' };
+            return { ...defaultState, shownForm: state.shownForm === 'login' ? 'register' : 'login' };
         case 'REGISTER':
-            return { ...state, username: '', email: '', password: '', rePassword: '', _serverAnswer: action.payload, shownForm: state.shownForm = 'login'/*  ? 'register' : 'login' */ };
+            return { ...defaultState };
         case 'LOGIN':
-            return { ...state, email: '', password: '' };
+            return { ...state, email: defaultState.email, password: defaultState.password };
+        case 'FAILED_REGISTER':
+            return { ...state, _errMsg: action.errMsg }
+        case 'LOGOUT':
+            return defaultState;
         default:
             return state;
     }

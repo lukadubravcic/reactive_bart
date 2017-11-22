@@ -60,10 +60,10 @@ class AcceptedTab extends React.Component {
             } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
                 return;
 
-            } else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
+            } /* else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
 
                 this.props.setActivePunishment(this.props.randomPunishments[0]);
-            }
+            } */
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea

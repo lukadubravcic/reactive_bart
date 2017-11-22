@@ -27,17 +27,28 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
     onSubmit: (email, password) => {
         agent.Auth.login(email, password).then((payload) => {
+
             if (payload !== null) {
 
-                agent.setToken(payload.token);
-                localStorage.setItem('token', payload.token);
+                if (typeof payload.message !== "undefined") {
 
-                dispatch({
-                    type: 'LOGIN',
-                    currentUser: { username: payload.username, email: payload.email, _id: payload._id },
-                    token: payload.token,
-                    prefs: payload.prefs
-                });
+                    dispatch({ type: 'LOGIN_FAILED', errMsg: payload.message });
+
+                } else if (typeof payload.token !== 'undefined' && typeof payload.email !== 'undefined' && typeof payload._id !== 'undefined') {
+                    agent.setToken(payload.token);
+
+                    localStorage.setItem('token', payload.token);
+
+                    dispatch({
+                        type: 'LOGIN',
+                        currentUser: { username: payload.username, email: payload.email, _id: payload._id },
+                        token: payload.token,
+                        prefs: payload.prefs
+                    });
+                } else {
+
+                    dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
+                }
             } else {
                 // TODO: alert - neispravan login
                 console.log('Login payload === null')
@@ -107,6 +118,7 @@ class Login extends React.Component {
 
         const email = this.props.auth.email;
         const password = this.props.auth.password;
+        const errMsg = this.props.auth._errMsg;
         const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
 
         if (window.canRunAds === undefined) {
@@ -152,6 +164,7 @@ class Login extends React.Component {
                                                 required />
                                             {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
                                         </fieldset>
+                                        {errMsg ? (<label>{errMsg}</label>) : null}
                                         <button
                                             className="btn btn-lg btn-primary pull-xs-right"
                                             type="submit"

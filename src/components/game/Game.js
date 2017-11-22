@@ -37,12 +37,12 @@ class Game extends React.Component {
                 } else return;
 
             } else if (this.props.punishmentIdFromURL) {
-
-                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0]), true);
+                let randomPunishment = getRandomPunishment(this.props.randomPunishments);
+                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment), true);
 
             } else {
-
-                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0]));
+                let randomPunishment = getRandomPunishment(this.props.randomPunishments);
+                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
             }
         }
 
@@ -63,7 +63,6 @@ class Game extends React.Component {
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
 
                 if (punishmentInURL) {  // kazna je aktivna
-                    console.log(punishmentInURL)
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));
 
                 } else { // kazna nije pronadena u accepted
@@ -78,14 +77,8 @@ class Game extends React.Component {
 
                     } else { // pristup kazni koja se ne moze izvrsiti, prebaci na random
 
-                        let randomPunishment = null;
-
-                        if (this.props.randomPunishments[0]) {
-
-                            randomPunishment = addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0])
-                        }
-
-                        this.props.setActivePunishment(randomPunishment);
+                        let randomPunishment = getRandomPunishment(this.props.randomPunishments);
+                        this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
                     }
                 }
 
@@ -123,8 +116,6 @@ class Game extends React.Component {
         } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) {
 
             this.changeActivePunishmentLoggedIn();
-
-        } else if (userJustLoggedOut && activePunishmentNotSet && randomAndSpecialPunishmentsLoaded) {
 
         }
 
@@ -204,5 +195,18 @@ function addSpacingToPunishmentWhatToWrite(punishment) {
     } else {
 
         return { ...punishment, what_to_write: punishment.what_to_write += ' ' };
+    }
+}
+
+function getRandomPunishment(punishments) {
+    if (punishments.length === 1) {
+        return punishments[0];
+
+    } else if (!punishments.length) {
+        return null;
+
+    } else {
+        const randIndex = Math.floor(Math.random() * punishments.length);
+        return punishments[randIndex];
     }
 }

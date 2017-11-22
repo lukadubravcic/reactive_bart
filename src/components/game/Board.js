@@ -271,7 +271,7 @@ class Board extends React.Component {
             this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" +
                 (this.punishment[this.punishment.length - 1] === ' ' ?
                     this.punishment.substring(0, this.punishment.length - 1) : this.punishment) +
-                "\". ";
+                "\": ";
             this.clearStartingSentence();
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);

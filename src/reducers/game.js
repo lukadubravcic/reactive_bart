@@ -30,11 +30,13 @@ export default (state = defaultState, action) => {
             return { ...state, boardTextMistake: action.mistake };
         case 'SET_ACTIVE_PUNISHMENT':
             return {
-                ...state, activePunishment: action.punishment,
+                ...state, 
+                activePunishment: action.punishment,
                 gameInProgress: defaultState.gameInProgress,
                 timerValue: defaultState.timerValue,
                 punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
-                boardTextMistake: defaultState.boardTextMistake
+                boardTextMistake: defaultState.boardTextMistake,
+                boardValue: defaultState.boardValue
             };
         case 'UPDATE_PUNISHMENT_PROGRESS':
             return { ...state, progress: action.updatedProgress };

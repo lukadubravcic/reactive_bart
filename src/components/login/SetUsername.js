@@ -15,13 +15,22 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_SET_USERNAME_FIELD', value })
     },
     onSubmit: (username, punishment) => {
-        agent.Auth.setUsername(username).then(payload => {
-            if (payload !== null) {
-                dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment });
-            } else {
-                console.log('Err: username not set.');
-            }
-        });
+        agent.Auth.setUsername(username)
+            .then(payload => {
+                if (payload !== null) {
+
+                    if (typeof payload.errMsg != 'undefined') {
+                        dispatch({ type: 'SET_USERNAME_ERROR', errMsg: payload.errMsg })
+
+                    } else if (typeof payload._id != 'undefined' && typeof payload.email != 'undefined' && typeof payload.username != 'undefined') {
+                        dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment });
+                    }
+                } else {
+
+                }
+            }, (err) => {
+                dispatch({ type: 'SET_USERNAME_ERROR', errMsg: 'Username not set. Try again.' });
+            });
     }
 });
 
@@ -58,6 +67,7 @@ class SetUsername extends React.Component {
     render() {
 
         const username = this.props.usernameSet;
+        const errMsg = this.props._errMsg;
 
         return (
             <div className="container">
@@ -74,7 +84,7 @@ class SetUsername extends React.Component {
                         required />
 
                     {this.validationMessage ? <label>&nbsp;{this.validationMessage}</label> : null}
-
+                    {errMsg ? (<label>{errMsg}</label>) : null}
                     <br />
 
                     <button

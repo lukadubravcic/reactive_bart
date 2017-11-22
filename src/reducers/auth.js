@@ -18,6 +18,8 @@ export default (state = defaultState, action) => {
         case 'LOGIN':
             return { ...state, email: defaultState.email, password: defaultState.password };
         case 'FAILED_REGISTER':
+            return { ...state, _errMsg: action.errMsg };
+        case 'LOGIN_FAILED':
             return { ...state, _errMsg: action.errMsg }
         case 'LOGOUT':
             return defaultState;

@@ -14,7 +14,10 @@ const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MI
 const mapStateToProps = state => ({
     ...state,
     username: state.common.currentUser.username,
-    email: state.common.currentUser.email
+    email: state.common.currentUser.email,
+    activePunishment: state.game.activePunishment,
+    timeSpent: state.game.timeSpent,
+    gameInProgress: state.game.gameInProgress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -48,6 +51,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'LOGOUT' });
         localStorage.removeItem('token');
         agent.setToken(0)
+    },
+    logPunishmentTry: (id, timeSpent) => {
+        agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
+        dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
     }
 });
 
@@ -83,6 +90,16 @@ class Login extends React.Component {
         this.showRegisterForm = () => {
             // hide login and show register form
             this.props.onShowRegisterForm();
+        }
+
+        this.handleLogout = () => {
+
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
+                // logiraj kaznu
+                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent)
+            }
+
+            this.props.onLogout();
         }
     }
 
@@ -156,7 +173,7 @@ class Login extends React.Component {
                         : <SetUsername />}
                     <button
                         type="button"
-                        onClick={this.props.onLogout}>
+                        onClick={this.handleLogout}>
                         Logout
                     </button>
                 </div >
@@ -169,3 +186,7 @@ class Login extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
+
+function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
+    return punishment.created ? false : true;
+}

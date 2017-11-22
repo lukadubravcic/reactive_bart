@@ -12,7 +12,8 @@ const UPPERCASE = false;
 const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
-    currentUser: state.common.currentUser
+    currentUser: state.common.currentUser,
+    token: state.common.token
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -281,17 +282,6 @@ class Board extends React.Component {
     componentDidMount() {
         window.addEventListener("beforeunload", this.handleBeforeunload);
         this.startingSentence = '';
-    }
-
-    componentWillUpdate(nextProps) {
-
-        const userWillLogoutWhileGameInProgress = this.props.gameInProgress && !nextProps.gameInProgress && !Object.keys(nextProps.currentUser).length;
-
-        if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && userWillLogoutWhileGameInProgress) {
-            this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
-
-        }
-
     }
 
     componentDidUpdate(prevProps) {

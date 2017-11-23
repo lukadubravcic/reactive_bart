@@ -22,7 +22,11 @@ const mapDispatchToProps = dispatch => ({
                     if (typeof payload.errMsg != 'undefined') {
                         dispatch({ type: 'SET_USERNAME_ERROR', errMsg: payload.errMsg })
 
-                    } else if (typeof payload._id != 'undefined' && typeof payload.email != 'undefined' && typeof payload.username != 'undefined') {
+                    } else if (
+                        typeof payload._id != 'undefined'
+                        && typeof payload.email != 'undefined'
+                        && typeof payload.username != 'undefined'
+                    ) {
                         dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment });
                     }
                 } else {
@@ -59,7 +63,7 @@ class SetUsername extends React.Component {
 
         this.submitUsername = username => ev => {
             ev.preventDefault();
-            let punishment = this.createOnUsernameSetPunishment(username);
+            let punishment = this.createOnUsernameSetPunishment(username.trim());
             punishment && this.props.onSubmit(username, punishment);
         };
     }

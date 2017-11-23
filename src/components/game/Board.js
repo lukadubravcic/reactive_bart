@@ -52,8 +52,8 @@ const mapDispatchToProps = dispatch => ({
     onBoardHoverOut: () => {
         dispatch({ type: 'GAME_BOARD_HOVER_OUT' });
     },
-    resetProgress: () => {
-        dispatch({ type: 'GAME_RESETED' })
+    gameReset: () => {
+        dispatch({ type: 'GAME_RESETED' });
     },
     logPunishmentTry: (id, timeSpent) => {
         agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
@@ -66,13 +66,28 @@ class Board extends React.Component {
     constructor() {
         super();
 
-        this.clickToStartMessage = 'Click to start!'
+        this.clickToStartMessage = 'Click to start!';
 
         this.audio = document.createElement('audio');
         this.audio.style.display = "none";
         this.audio.src = 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-five/zapsplat_office_blackboard_rubber_duster_rub_remove_chalk_from_blackboard.mp3?_=2';
 
         this._wrongCharPlace = null;
+
+        this.incorrectBoardEntry = () => {
+
+            //this._wrongCharPlace = null;
+
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            }
+
+            this.props.onBoardLostFocus();
+
+            // setaj da je greska 
+
+
+        }
 
         this.spongeHover = ev => {
             // igra u tijeku -> pokazi tooltip
@@ -86,13 +101,12 @@ class Board extends React.Component {
             // reset board, restart stopwatch
             this._wrongCharPlace = null;
 
-            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
             }
 
-            this.activePunishmentChanged();
-
-            this.props.resetProgress();
+            this.props.gameReset();
+            this.punishmentInit();
         };
 
         this.boardTextChange = ev => {
@@ -181,12 +195,18 @@ class Board extends React.Component {
                     if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
                         this._wrongCharPlace = boardText.length - 1;
                         this.props.wrongBoardEntryWarning(true);
+
+                        // greska
+                        return false;
+
                     }
                 }
             } else if (boardText.length === 0 && char === 'Backspace') {
                 this.props.wrongBoardEntryWarning(false);
                 this._wrongCharPlace = null;
             }
+
+            return true;
         };
 
         this.boardStateUpdate = (key) => {
@@ -194,7 +214,7 @@ class Board extends React.Component {
             let transformedBoardText = '';
             let progress = 0;
 
-            if (inArray(key, validKeys)) {
+            if (inArray(key, validKeys) && this._wrongCharPlace === null) {
 
                 if (key === 'Backspace') {
                     if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
@@ -202,7 +222,10 @@ class Board extends React.Component {
                     if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
                     else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
                 }
-                this.validateKey(key, transformedBoardText);
+                if (!this.validateKey(key, transformedBoardText)) {
+                    this.incorrectBoardEntry();
+                    return;
+                }
                 this.props.updateBoardValue(transformedBoardText);
                 progress = this.updateProgress(transformedBoardText, this.punishment, this.howManyTimes);
                 if (progress === 100) {
@@ -223,7 +246,9 @@ class Board extends React.Component {
         // rekurzivno ispisvanje početne rečenice i dodavanje već napisanih znakova (ako ih ima)
         this.writeStartingSentance = () => {
             //this.clearStartingSentence();
+
             this.props.updateBoardValue('');
+            console.log(`write | board: ${this.props.boardValue}`);
 
             const write = (i) => {
                 if (this.punishmentExplanation.length <= i) {
@@ -253,14 +278,12 @@ class Board extends React.Component {
             if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
         };
 
-        // this.loadRandomPunishment = this.loadRandomPunishment.bind(this);
-
-        this.activePunishmentChanged = () => { // potrebno loggirat kaznu            
+        this.activePunishmentChanged = () => {
             // init nove aktivne kazne
-            this.newPunishmentInit();
+            this.punishmentInit();
         };
 
-        this.newPunishmentInit = () => {
+        this.punishmentInit = () => {
 
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
 
@@ -299,6 +322,7 @@ class Board extends React.Component {
     }
 
     render() {
+
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
 
         const boardText = this.props.boardValue;
@@ -306,18 +330,31 @@ class Board extends React.Component {
         const boardTextMistake = this.props.boardTextMistake;
         const bcgColor = boardTextMistake ? '#f2cbcb' : '';
 
-        const style = {
+        let style = {
             backgroundColor: bcgColor,
             height: "400px",
             width: "100%"
         };
 
+        const failedFilter = {
+            "-webkit-filter": "blur(3px)",
+            "-moz-filter": "blur(3px)",
+            "-o-filter": "blur(3px)",
+            "-ms-filter": "blur(3px)",
+            "filter": "blur(3px)",
+        };
+
+        style = boardTextMistake ? { ...style, ...failedFilter } : style;
+
         if (activePunishmentSet) {
             return (
                 <div className="container">
-                    <div style={{ width: "1024px" }}>
+                    <div style={{ width: "1024px", position: "relative" }}>
                         <textarea id="writing-board"
-                            style={{ ...style, ...this.doneClass }}
+                            style={{
+                                ...style,
+                                ...this.doneClass
+                            }}
                             value={this.startingSentence + boardText}
                             disabled={this.props.boardDisabled}
                             onKeyDown={this.boardTextChange}
@@ -326,7 +363,18 @@ class Board extends React.Component {
                             onBlur={this.boardLostFocus}
                             onMouseOver={this.boardHover}
                             onMouseOut={this.boardHoverOut}
+                            spellCheck="false"
                         />
+                        {boardTextMistake ? (
+                            <div style={{
+                                "position": 'absolute',
+                                "top": 0,
+                                "height": "400px",
+                                "width": "100%"
+                            }}>
+                                <h1>FAILED</h1>
+                            </div>
+                        ) : null}
                         <ProgressBar progress={progress} spongeClick={this.spongeClick} onHover={this.spongeHover} />
                     </div>
                 </div >

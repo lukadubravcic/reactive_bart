@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
     onLoad: (token) => { // ako se postavljen token u localstrageu, ulogiraj usera
         if (token) {
             agent.setToken(token);
-            dispatch({type: 'LOADING_IN_PROGRESS'})
+            dispatch({ type: 'LOADING_IN_PROGRESS' })
             agent.Auth.current().then((payload) => {
                 if (payload !== null) {
                     dispatch({
@@ -33,7 +33,7 @@ const mapDispatchToProps = dispatch => ({
                         }
                     });
                 }
-            });           
+            });
         }
     },
     setPunishmentIdFromURL: id => {
@@ -68,7 +68,7 @@ class App extends React.Component {
         });
     }
 
-    render() {
+    render() {       
 
         return (
             <div>
@@ -76,6 +76,7 @@ class App extends React.Component {
                     <div className="container">
                         <h1 className="navbar-brand">{this.props.common.appName}</h1>
                     </div>
+                   
                 </nav>
                 <Login />
                 <Register />
@@ -89,17 +90,6 @@ class App extends React.Component {
                 <Prefs />
             </div>
         );
-        /* else {
-            return (
-                <div className="container">
-                    <svg width="200px" height="200px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" className="lds-eclipse" style={{ "background": "none" }}>
-                        <path stroke="none" d="M5 50A45 45 0 0 0 95 50A45 48 0 0 1 5 50" fill="#e15b64" transform="rotate(43.6364 50 51.5)">
-                            <animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 51.5;360 50 51.5" keyTimes="0;1" dur="1.1s" begin="0s" repeatCount="indefinite"></animateTransform>
-                        </path>
-                    </svg>
-                </div>
-            );
-        } */
     }
 }
 

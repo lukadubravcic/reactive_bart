@@ -36,7 +36,8 @@ export default (state = defaultState, action) => {
                 timerValue: defaultState.timerValue,
                 punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
                 boardTextMistake: defaultState.boardTextMistake,
-                boardValue: defaultState.boardValue
+                boardValue: defaultState.boardValue,
+                progress: defaultState.progress
             };
         case 'UPDATE_PUNISHMENT_PROGRESS':
             return { ...state, progress: action.updatedProgress };
@@ -51,7 +52,7 @@ export default (state = defaultState, action) => {
                 boardTextMistake: defaultState.boardTextMistake
             }
         case 'PUNISHMENT_DONE':
-            return { ...state, gameInProgress: false };
+            return { ...state, boardFocused: false };
         case 'GAME_BOARD_FOCUSED':
             return { ...state, boardFocused: true, gameInProgress: true };
         case 'GAME_BOARD_UNFOCUSED':

@@ -148,7 +148,7 @@ class PunishmentCreator extends React.Component {
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
 
-        if (usrLoggedIn) {
+        if (usrLoggedIn && window.canRunAds) {
             return (
                 <div className="container">
 

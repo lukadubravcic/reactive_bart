@@ -31,7 +31,6 @@ class Game extends React.Component {
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
 
                 if (specialPunishment) {
-
                     this.props.setActivePunishment(specialPunishment);
 
                 } else return;
@@ -52,8 +51,7 @@ class Game extends React.Component {
 
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
 
-                if (specialPunishment) {
-
+                if (specialPunishment) {                    
                     this.props.setActivePunishment(specialPunishment);
 
                 } else return;

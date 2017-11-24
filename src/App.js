@@ -17,7 +17,7 @@ import { getPunishmentIdFromURL } from './helpers/helpers';
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
-    onLoad: (token) => { // ako se postavljen token u localstrageu, ulogiraj usera
+    onLoad: (token) => { // ako je postavljen token u localstrageu, ulogiraj usera
         if (token) {
             agent.setToken(token);
             dispatch({ type: 'LOADING_IN_PROGRESS' })

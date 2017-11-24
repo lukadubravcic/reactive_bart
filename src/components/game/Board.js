@@ -33,7 +33,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     },
     setActivePunishmentDone: id => {
-        agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
+        //agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
     updateAcceptedPunishments: (punishments) => {
@@ -73,20 +73,13 @@ class Board extends React.Component {
         this.audio.src = 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-five/zapsplat_office_blackboard_rubber_duster_rub_remove_chalk_from_blackboard.mp3?_=2';
 
         this._wrongCharPlace = null;
+        this.adblockDetected = false;
 
         this.incorrectBoardEntry = () => {
-
-            //this._wrongCharPlace = null;
-
-            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
-            }
-
+            /*  if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+             } */
             this.props.onBoardLostFocus();
-
-            // setaj da je greska 
-
-
         }
 
         this.spongeHover = ev => {
@@ -96,17 +89,18 @@ class Board extends React.Component {
 
         this.spongeClick = ev => {
             console.log('sponge click');
-            this.audio.play();
-            // reset sponge (position), log try, optionally send (trying) mail, 
-            // reset board, restart stopwatch
-            this._wrongCharPlace = null;
+            // nema reseta ako je kazna obavljena
+            if (this.props.progress < 100) {
+                this.audio.play();
+                this._wrongCharPlace = null;
 
-            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                    this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+                }
+
+                this.props.gameReset();
+                this.punishmentInit();
             }
-
-            this.props.gameReset();
-            this.punishmentInit();
         };
 
         this.boardTextChange = ev => {
@@ -162,16 +156,6 @@ class Board extends React.Component {
             this.props.onBoardLostFocus();
             console.log('Punishment completed!');
 
-            /* 
-                    TODO: odvojiti funkciju za ispis poruka preko ploce (done/failed/...)
-            */
-
-            setTimeout(() => {
-                // prikaz poruke na odredeno vrijeme, pa zatim prebacivanje na sljedecu kaznu i mjenjanje board focusa u state storu-u
-
-
-                this.props.setActivePunishment(this.props.acceptedPunishments[0])
-            }, 5000)
         };
 
         this.removeActivePunishmentFromAccepted = () => {
@@ -195,13 +179,12 @@ class Board extends React.Component {
                     if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
                         this._wrongCharPlace = boardText.length - 1;
                         this.props.wrongBoardEntryWarning(true);
-
                         // greska
                         return false;
 
                     }
                 }
-            } else if (boardText.length === 0 && char === 'Backspace') {
+            } else if (boardText.length === 0) {
                 this.props.wrongBoardEntryWarning(false);
                 this._wrongCharPlace = null;
             }
@@ -214,14 +197,11 @@ class Board extends React.Component {
             let transformedBoardText = '';
             let progress = 0;
 
-            if (inArray(key, validKeys) && this._wrongCharPlace === null) {
+            if (inArray(key, validKeys) && this._wrongCharPlace === null && this.props.progress < 100) {
 
-                if (key === 'Backspace') {
-                    if (boardText.length > 0) transformedBoardText = boardText.slice(0, -1);
-                } else {
-                    if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
-                    else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
-                }
+                if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
+                else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
+
                 if (!this.validateKey(key, transformedBoardText)) {
                     this.incorrectBoardEntry();
                     return;
@@ -236,7 +216,12 @@ class Board extends React.Component {
         };
 
         this.updateProgress = (transformedBoardText, punishment, howManyTimes) => {
-            if (this._wrongCharPlace === null) {
+
+            // specijalni adblocker slucaj gdje nije moguce odraditi kaznu
+            if (this.adblockDetected) {
+                return 0;
+
+            } else if (this._wrongCharPlace === null) {
                 let updatedProgress = this.calculateProgress(transformedBoardText, punishment, howManyTimes);
                 this.props.updatePunishmentProgress(updatedProgress);
                 return updatedProgress;
@@ -248,7 +233,6 @@ class Board extends React.Component {
             //this.clearStartingSentence();
 
             this.props.updateBoardValue('');
-            console.log(`write | board: ${this.props.boardValue}`);
 
             const write = (i) => {
                 if (this.punishmentExplanation.length <= i) {
@@ -290,11 +274,13 @@ class Board extends React.Component {
             // incijalni setup
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
-            this.howManyTimes = this.props.activePunishment.how_many_times;
-            this.punishmentExplanation = "Write " + this.howManyTimes + "x \"" +
+            this.howManyTimes = this.adblockDetected ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
+            this.punishmentExplanation = "Write "
+                + this.howManyTimes
+                + (this.adblockDetected ? ' times "' : 'x "') +
                 (this.punishment[this.punishment.length - 1] === ' ' ?
-                    this.punishment.substring(0, this.punishment.length - 1) : this.punishment) +
-                "\": ";
+                    this.punishment.substring(0, this.punishment.length - 1) : this.punishment)
+                + "\": ";
             this.clearStartingSentence();
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
@@ -316,6 +302,10 @@ class Board extends React.Component {
                 this.props.logPunishmentTry(prevProps.activePunishment._id, prevProps.timeSpent);
 
             }
+            // specijalni slucaj detektiranja adblocker-a
+            if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {
+                this.adblockDetected = true;
+            }
 
             this.activePunishmentChanged();
         }
@@ -328,7 +318,7 @@ class Board extends React.Component {
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
-        const bcgColor = boardTextMistake ? '#f2cbcb' : '';
+        const bcgColor = boardTextMistake ? '#f2cbcb' : progress === 100 ? '#80f957' : '';
 
         let style = {
             backgroundColor: bcgColor,
@@ -336,7 +326,7 @@ class Board extends React.Component {
             width: "100%"
         };
 
-        const failedFilter = {
+        const blurFilter = {
             "-webkit-filter": "blur(3px)",
             "-moz-filter": "blur(3px)",
             "-o-filter": "blur(3px)",
@@ -344,7 +334,8 @@ class Board extends React.Component {
             "filter": "blur(3px)",
         };
 
-        style = boardTextMistake ? { ...style, ...failedFilter } : style;
+        style = boardTextMistake ? { ...style, ...blurFilter } : style;
+        style = progress === 100 ? { ...style, ...blurFilter } : style;
 
         if (activePunishmentSet) {
             return (
@@ -375,6 +366,16 @@ class Board extends React.Component {
                                 <h1>FAILED</h1>
                             </div>
                         ) : null}
+                        {progress === 100 ? (
+                            <div style={{
+                                "position": 'absolute',
+                                "top": 0,
+                                "height": "400px",
+                                "width": "100%"
+                            }}>
+                                <h1>DONE</h1>
+                            </div>
+                        ) : null}
                         <ProgressBar progress={progress} spongeClick={this.spongeClick} onHover={this.spongeHover} />
                     </div>
                 </div >
@@ -401,7 +402,7 @@ const validKeys = [
     "{", "}", "Å", "Í", "Î", "Ï", "Ì", "Ó", "Ô", "", "Ò", "æ", "Æ", "|",
     "~", "«", "»", "Ç", "◊", "Ñ", "ˆ", "¯", "È", "ˇ", "¿", "œ", "∑", "®",
     "†", "—", "ø", "π", "[", "]", "å", "ß", "∂", "ƒ", "©", "∆", "¬", "…",
-    "^", "Ω", "≈", "ç", "√", "∫", "µ", "≤", "≥", "÷", "Backspace"
+    "^", "Ω", "≈", "ç", "√", "∫", "µ", "≤", "≥", "÷"
 ]
 
 function inArray(target, array) {

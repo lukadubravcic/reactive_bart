@@ -100,7 +100,7 @@ class Register extends React.Component {
 
         this.submitForm = (username, email, password) => ev => {
             ev.preventDefault();
-
+            this.refs.registerBtn.setAttribute("disabled", "disabled");
             this.props.onSubmit(username, email, password);
         }
     }
@@ -182,6 +182,7 @@ class Register extends React.Component {
                                         </fieldset>
 
                                         <button
+                                            ref="registerBtn"
                                             className="btn btn-lg btn-primary pull-xs-right"
                                             type="submit"
                                             disabled={!formValid}>

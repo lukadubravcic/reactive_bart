@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value }),
     onPasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
-    onSubmit: (email, password) => {
+    onSubmit: (email, password, cb) => {
         agent.Auth.login(email, password).then((payload) => {
 
             if (payload !== null) {
@@ -53,6 +53,8 @@ const mapDispatchToProps = dispatch => ({
                 // TODO: alert - neispravan login
                 console.log('Login payload === null')
             }
+
+            cb();
         });
     },
     onShowRegisterForm: () => {
@@ -95,7 +97,8 @@ class Login extends React.Component {
         }
         this.submitForm = (email, password) => ev => {
             ev.preventDefault();
-            this.props.onSubmit(email, password);
+            this.refs.loginBtn.setAttribute("disabled", "true");
+            this.props.onSubmit(email, password, this.enableSubmit);
         }
 
         this.showRegisterForm = () => {
@@ -112,7 +115,18 @@ class Login extends React.Component {
 
             this.props.onLogout();
         }
+        this.enableSubmit = () => {
+            this.refs.loginBtn.setAttribute("disabled", "enabled");
+            console.log('here')
+        }
     }
+
+   /*  componentWillUpdate(nextProps) {
+        if ((!this.props.auth._errMsg && nextProps.auth._errMsg) || (typeof this.props.username === 'undefined' && typeof nextProps.username !== 'undefined')) {
+            console.log('here')
+            
+        }
+    } */
 
     render() {
 
@@ -168,6 +182,7 @@ class Login extends React.Component {
                                         </fieldset>
                                         {errMsg ? (<label>{errMsg}</label>) : null}
                                         <button
+                                            ref="loginBtn"
                                             className="btn btn-lg btn-primary pull-xs-right"
                                             type="submit"
                                             disabled={!formValid}>
@@ -191,8 +206,7 @@ class Login extends React.Component {
                         onClick={this.handleLogout}>
                         Logout
                     </button>
-                </div >
-
+                </div>
             );
         } else {
             return null;

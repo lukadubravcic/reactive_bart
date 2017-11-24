@@ -230,7 +230,6 @@ class Board extends React.Component {
 
         // rekurzivno ispisvanje početne rečenice i dodavanje već napisanih znakova (ako ih ima)
         this.writeStartingSentance = () => {
-            //this.clearStartingSentence();
 
             this.props.updateBoardValue('');
 

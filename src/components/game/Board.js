@@ -13,10 +13,14 @@ const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
     currentUser: state.common.currentUser,
-    token: state.common.token
+    token: state.common.token,
+    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
 });
 
 const mapDispatchToProps = dispatch => ({
+    setStartingSentence: value => {
+        dispatch({ type: 'STARTING_SENTANCE_CHANGED', value })
+    },
     updateBoardValue: (value) => {
         dispatch({ type: 'UPDATE_BOARD_VALUE', value });
     },
@@ -94,7 +98,7 @@ class Board extends React.Component {
                 this.audio.play();
                 this._wrongCharPlace = null;
 
-                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
                     this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
                 }
 
@@ -108,16 +112,6 @@ class Board extends React.Component {
             this.boardStateUpdate(ev.key);
         };
 
-        this.clearStartingSentence = () => {
-            this.startingSentence = '';
-            this.forceUpdate();
-        }
-
-        this.addToStartingSentence = char => {
-            this.startingSentence += char;
-            this.forceUpdate(); // force re-render -> startingSentence nije u stateu (potencijalno ga staviti)
-        };
-
         this.boardFocused = ev => {
             ev.preventDefault();
             this.trimClickToStartMessage();
@@ -126,9 +120,9 @@ class Board extends React.Component {
 
         this.trimClickToStartMessage = () => {
 
-            if (this.startingSentence.includes(this.clickToStartMessage)) {
+            if (this.props.startingSentence.includes(this.clickToStartMessage)) {
 
-                this.startingSentence = this.startingSentence.substring(0, this.startingSentence.length - this.clickToStartMessage.length);
+                this.props.setStartingSentence(this.props.startingSentence.substring(0, this.props.startingSentence.length - this.clickToStartMessage.length));
             }
         };
 
@@ -228,20 +222,21 @@ class Board extends React.Component {
             }
         };
 
-        // rekurzivno ispisvanje početne rečenice i dodavanje već napisanih znakova (ako ih ima)
-        this.writeStartingSentance = () => {
+        // rekurzivno ispisvanje pocetne recenice i dodavanje vec napisanih znakova (ako ih ima)
+        this.writeStartingSentence = () => {
 
             this.props.updateBoardValue('');
+            this.props.setStartingSentence('');
 
             const write = (i) => {
-                if (this.punishmentExplanation.length <= i) {
+                if (this.punishmentExplanation.length <= i && !this.props.showSetNewPasswordComponent) {
                     this.activeWriteTimeout = setTimeout(() => {
-                        this.addToStartingSentence(this.clickToStartMessage);
+                        this.props.setStartingSentence(this.props.startingSentence + this.clickToStartMessage);
                         this.props.boardDisabledStatus(false);
                     }, 100);
                     return;
                 }
-                this.addToStartingSentence(this.punishmentExplanation[i]);
+                this.props.setStartingSentence(this.props.startingSentence + this.punishmentExplanation[i]);
                 i++;
                 this.activeWriteTimeout = setTimeout(() => {
                     write(i);
@@ -280,16 +275,14 @@ class Board extends React.Component {
                 (this.punishment[this.punishment.length - 1] === ' ' ?
                     this.punishment.substring(0, this.punishment.length - 1) : this.punishment)
                 + "\": ";
-            this.clearStartingSentence();
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
-            this.writeStartingSentance();
+            this.writeStartingSentence();
         };
     }
 
     componentDidMount() {
         window.addEventListener("beforeunload", this.handleBeforeunload);
-        this.startingSentence = '';
     }
 
     componentDidUpdate(prevProps) {
@@ -314,6 +307,7 @@ class Board extends React.Component {
 
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
 
+        const startingSentence = this.props.startingSentence;
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
@@ -345,7 +339,7 @@ class Board extends React.Component {
                                 ...style,
                                 ...this.doneClass
                             }}
-                            value={this.startingSentence + boardText}
+                            value={startingSentence + boardText}
                             disabled={this.props.boardDisabled}
                             onKeyDown={this.boardTextChange}
                             onChange={() => { }}

@@ -4,7 +4,8 @@ const defaultState = {
     password: '',
     rePassword: '',
     shownForm: 'login',
-    _errMsg: null
+    _errMsg: null,
+    showSetNewPasswordComponent: false
 }
 
 export default (state = defaultState, action) => {
@@ -20,10 +21,12 @@ export default (state = defaultState, action) => {
         case 'FAILED_REGISTER':
             return { ...state, _errMsg: action.errMsg };
         case 'LOGIN_FAILED':
-            return { ...state, _errMsg: action.errMsg }
+            return { ...state, _errMsg: action.errMsg };
+        case 'SHOW_CHANGE_PASSWORD_FORM':
+            return { ...state, showSetNewPasswordComponent: action.value }
         case 'LOGOUT':
             return defaultState;
         default:
             return state;
     }
-};
+}

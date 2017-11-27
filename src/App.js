@@ -8,6 +8,7 @@ import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
+import NewPassword from './components/newPassword/NewPassword';
 
 import agent from './agent';
 
@@ -68,7 +69,9 @@ class App extends React.Component {
         });
     }
 
-    render() {       
+    render() {
+
+        const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
 
         return (
             <div>
@@ -76,18 +79,23 @@ class App extends React.Component {
                     <div className="container">
                         <h1 className="navbar-brand">{this.props.common.appName}</h1>
                     </div>
-                   
                 </nav>
                 <Login />
-                <Register />
-                <hr />
-                <Game />
-                <hr />
-                <PunishmentCreator />
-                <hr />
-                <PunishmentSelectorTable />
-                <Stats />
-                <Prefs />
+                {userLoggedInAndChangePasswordForm
+                    ? <NewPassword />
+                    : <div>
+                        <hr />
+                        <Register />
+                        <hr />
+                        <Game />
+                        <hr />
+                        <PunishmentCreator />
+                        <hr />
+                        <PunishmentSelectorTable />
+                        <Stats />
+                        <Prefs />
+                    </div>
+                }
             </div>
         );
     }

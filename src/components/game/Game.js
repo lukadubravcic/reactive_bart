@@ -11,12 +11,16 @@ const mapStateToProps = state => ({
     activePunishment: state.game.activePunishment,
     currentUser: state.common.currentUser,
     loadInProgress: state.common.loadInProgress,
-    punishmentIdFromURL: state.game.punishmentIdFromURL
+    punishmentIdFromURL: state.game.punishmentIdFromURL,
+    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
 });
 
 const mapDispatchToProps = dispatch => ({
     setActivePunishment: (punishment, ignoredPunishmentSet = false) => {
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment, ignoredPunishmentSet });
+    },
+    gameUnmount: () =>{
+        dispatch({type: 'GAME_UNMOUNT'});
     }
 });
 
@@ -51,7 +55,7 @@ class Game extends React.Component {
 
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
 
-                if (specialPunishment) {                    
+                if (specialPunishment) {
                     this.props.setActivePunishment(specialPunishment);
 
                 } else return;
@@ -82,16 +86,25 @@ class Game extends React.Component {
 
             } else { // ako ne postoji postavi random punishment
 
-                let randomPunishment = null;
+                let randomPunishment = getRandomPunishment(this.props.randomPunishments);
 
-                if (this.props.randomPunishments[0]) {
-
-                    randomPunishment = addSpacingToPunishmentWhatToWrite(this.props.randomPunishments[0])
+                if (randomPunishment) {
+                    this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
                 }
-
-                this.props.setActivePunishment(randomPunishment);
             }
         };
+    }
+
+    componentDidMount() {
+
+        // return from change password form
+        if (Object.keys(this.props.activePunishment).length && Object.keys(this.props.currentUser).length) {
+            this.changeActivePunishmentLoggedIn();
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.gameUnmount();
     }
 
     componentDidUpdate(prevProps) {
@@ -114,7 +127,6 @@ class Game extends React.Component {
         } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) {
 
             this.changeActivePunishmentLoggedIn();
-
         }
 
         /* if (Object.keys(this.props.currentUser).length === 0) {

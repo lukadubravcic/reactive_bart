@@ -18,10 +18,13 @@ const defaultState = {
     boardFocused: false,
     boardHovered: false,
     timeSpent: 0,
+    startingSentence: ''
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'STARTING_SENTANCE_CHANGED':
+            return { ...state, startingSentence: action.value }
         case 'UPDATE_BOARD_VALUE':
             return { ...state, boardValue: action.value };
         case 'TOGGLE_BOARD_DISABLED_STATUS':
@@ -30,20 +33,21 @@ export default (state = defaultState, action) => {
             return { ...state, boardTextMistake: action.mistake };
         case 'SET_ACTIVE_PUNISHMENT':
             return {
-                ...state, 
+                ...state,
                 activePunishment: action.punishment,
                 gameInProgress: defaultState.gameInProgress,
                 timerValue: defaultState.timerValue,
                 punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
                 boardTextMistake: defaultState.boardTextMistake,
                 boardValue: defaultState.boardValue,
-                progress: defaultState.progress
+                progress: defaultState.progress,
+                startingSentence: defaultState.startingSentence
             };
         case 'UPDATE_PUNISHMENT_PROGRESS':
             return { ...state, progress: action.updatedProgress };
         case 'PUNISHMENT_TRY_LOGGED':
             return {
-                ...state, 
+                ...state,
                 progress: defaultState.progress,
                 boardValue: defaultState.boardValue,
                 timeSpent: defaultState.timeSpent,
@@ -67,22 +71,25 @@ export default (state = defaultState, action) => {
             return { ...state, clockValue: action.newClockValue };
         case 'GAME_RESETED':
             return {
-                ...state, 
+                ...state,
                 progress: defaultState.progress,
                 boardValue: defaultState.boardValue,
                 timeSpent: defaultState.timeSpent,
                 timerValue: defaultState.timerValue,
                 gameInProgress: defaultState.gameInProgress,
-                boardTextMistake: defaultState.boardTextMistake
+                boardTextMistake: defaultState.boardTextMistake,
+                startingSentence: defaultState.startingSentence
             };
         case 'USERNAME_SET':
             return { ...state, activePunishment: action.specialPunishment };
-        case 'STOPWATCH_RESET':
-            return { ...state, timerValue: defaultState.timerValue, gameInProgress: false };
+        /* case 'STOPWATCH_RESET':
+            return { ...state, timerValue: defaultState.timerValue, gameInProgress: false }; */
         case 'PUNISHMENT_IN_URL':
             return { ...state, punishmentIdFromURL: action.id };
         case 'LOGIN':
             return { ...defaultState, punishmentIdFromURL: state.punishmentIdFromURL };
+        case 'GAME_UNMOUNT':
+            return defaultState;
         case 'LOGOUT':
             return defaultState;
         default:

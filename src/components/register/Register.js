@@ -23,20 +23,23 @@ const mapDispatchToProps = dispatch => ({
     onRePasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'rePassword', value }),
 
-    onSubmit: (username, email, password) => {        
+    onSubmit: (username, email, password, enableSubmit) => {
         agent.Auth.register(username, email, password).then((payload) => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
+            enableSubmit();
             if (payload && payload.hasOwnProperty('errMsg')) {
-            
+
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
-            
+
             } else if (payload) {
 
                 dispatch({ type: 'REGISTER', payload });
-            
+
             } else {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
             }
+
+
         });
     },
 
@@ -92,7 +95,6 @@ class Register extends React.Component {
             } else {
 
                 this.passwordValidationError = null;
-
             }
         };
 
@@ -101,7 +103,11 @@ class Register extends React.Component {
         this.submitForm = (username, email, password) => ev => {
             ev.preventDefault();
             this.refs.registerBtn.setAttribute("disabled", "disabled");
-            this.props.onSubmit(username, email, password);
+            this.props.onSubmit(username, email, password, this.enableSubmit);
+        }
+
+        this.enableSubmit = () => {
+            this.refs.registerBtn.removeAttribute("disabled");
         }
     }
 

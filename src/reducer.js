@@ -8,6 +8,7 @@ import punishment from './reducers/punishment';
 import punishmentCreation from './reducers/punishmentCreation';
 import prefs from './reducers/prefs';
 import graphData from './reducers/graphData';
+import newPassword from './reducers/newPassword';
 
 export default combineReducers({
     common,
@@ -16,5 +17,6 @@ export default combineReducers({
     punishment,
     punishmentCreation,
     prefs,
-    graphData
+    graphData,
+    newPassword
 });

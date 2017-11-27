@@ -17,7 +17,8 @@ const mapStateToProps = state => ({
     email: state.common.currentUser.email,
     activePunishment: state.game.activePunishment,
     timeSpent: state.game.timeSpent,
-    gameInProgress: state.game.gameInProgress
+    gameInProgress: state.game.gameInProgress,
+    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -25,8 +26,10 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value }),
     onPasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
-    onSubmit: (email, password, cb) => {
+    onSubmit: (email, password, enableSubmit) => {
         agent.Auth.login(email, password).then((payload) => {
+
+            enableSubmit();
 
             if (payload !== null) {
 
@@ -53,8 +56,6 @@ const mapDispatchToProps = dispatch => ({
                 // TODO: alert - neispravan login
                 console.log('Login payload === null')
             }
-
-            cb();
         });
     },
     onShowRegisterForm: () => {
@@ -68,6 +69,9 @@ const mapDispatchToProps = dispatch => ({
     logPunishmentTry: (id, timeSpent) => {
         agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
         dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
+    },
+    showPasswordSetForm: value => {
+        dispatch({ type: 'SHOW_CHANGE_PASSWORD_FORM', value });
     }
 });
 
@@ -115,18 +119,26 @@ class Login extends React.Component {
 
             this.props.onLogout();
         }
+
         this.enableSubmit = () => {
-            this.refs.loginBtn.setAttribute("disabled", "enabled");
-            console.log('here')
+            this.refs.loginBtn.removeAttribute("disabled");
+        }
+
+        this.showChangePasswordForm = () => {
+            if (!this.props.showSetNewPasswordComponent) this.props.showPasswordSetForm(true);
+        }
+
+        this.hideChangePasswordForm = () => {
+            if (this.props.showSetNewPasswordComponent) this.props.showPasswordSetForm(false);
         }
     }
 
-   /*  componentWillUpdate(nextProps) {
-        if ((!this.props.auth._errMsg && nextProps.auth._errMsg) || (typeof this.props.username === 'undefined' && typeof nextProps.username !== 'undefined')) {
-            console.log('here')
-            
-        }
-    } */
+    /*  componentWillUpdate(nextProps) {
+         if ((!this.props.auth._errMsg && nextProps.auth._errMsg) || (typeof this.props.username === 'undefined' && typeof nextProps.username !== 'undefined')) {
+             console.log('here')
+             
+         }
+     } */
 
     render() {
 
@@ -134,6 +146,7 @@ class Login extends React.Component {
         const password = this.props.auth.password;
         const errMsg = this.props.auth._errMsg;
         const punishmentIdFromURL = this.props.game.punishmentIdFromURL;
+        const showSetNewPasswordComponent = this.props.showSetNewPasswordComponent;
         const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
 
         if (window.canRunAds === undefined) {
@@ -188,6 +201,7 @@ class Login extends React.Component {
                                             disabled={!formValid}>
                                             Login
                                         </button>
+
                                     </fieldset>
                                 </form>
                             </div>
@@ -206,6 +220,16 @@ class Login extends React.Component {
                         onClick={this.handleLogout}>
                         Logout
                     </button>
+                    {showSetNewPasswordComponent ?
+                        <button
+                            onClick={this.hideChangePasswordForm}>
+                            Return to game
+                        </button>
+                        : <button
+                            onClick={this.showChangePasswordForm}>
+                            Change Password
+                        </button>
+                    }
                 </div>
             );
         } else {

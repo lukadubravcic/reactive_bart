@@ -47,8 +47,9 @@ const mapDispatchToProps = dispatch => ({
         key: 'deadlineDate',
         value
     }),
-    onSubmit: (submitData, orderedPunishments) => {
+    onSubmit: (submitData, orderedPunishments, enableSubmit) => {
         // agent magic
+        dispatch({ type: 'SUBMITING_NEW_PUNISHMENT' });
         agent.Punishment.createPunishment(submitData).then((payload) => {
 
             let newOrderedPunishments = orderedPunishments.length > 0 ? JSON.parse(JSON.stringify(orderedPunishments)) : [];
@@ -58,6 +59,8 @@ const mapDispatchToProps = dispatch => ({
                 dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg: 'Request sent!' });
             }
             else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });
+
+            enableSubmit();
         });
     }
 });
@@ -72,18 +75,14 @@ class PunishmentCreator extends React.Component {
         this.whyErrorText = null;
 
         this.changeWhom = ev => {
-
             this.validateToWhomValue(ev.target.value);
             this.props.onChangeWhom(ev.target.value);
-
-        };
+        }
 
         this.validateToWhomValue = value => {
             if (!isMail(value)) {
-                if (value.length > 30)
-                    this.toWhomErrorText = 'Username can\'t be that long. Maximum 30 characters.';
-                else
-                    this.toWhomErrorText = null;
+                if (value.length > 30) this.toWhomErrorText = 'Username can\'t be that long. Maximum 30 characters.';
+                else this.toWhomErrorText = null;
             }
         }
 
@@ -92,6 +91,7 @@ class PunishmentCreator extends React.Component {
             else if (ev.target.value < 1) ev.target.value = 1;
             this.props.onChangeHowManyTimes(ev.target.value);
         }
+
         this.changeWhatToWrite = ev => {
             if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
                 this.whatToWriteErrorText = null;
@@ -101,6 +101,7 @@ class PunishmentCreator extends React.Component {
             }
             this.props.onChangeWhatToWrite(ev.target.value);
         }
+
         this.changeWhy = ev => {
             if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0 || ev.target.value.length === 0) {
                 this.whyErrorText = null;
@@ -109,24 +110,28 @@ class PunishmentCreator extends React.Component {
             }
             this.props.onChangeWhy(ev.target.value);
         }
+
         this.incrementHowManyTimes = ev => {
             ev.preventDefault();
             if (this.props.howManyTimes < MAX_HOW_MANY_TIMES_PUNISHMENT) this.props.onChangeHowManyTimes(parseInt(this.props.howManyTimes) + 1, 10);
         }
+
         this.decrementHowManyTimes = ev => {
             ev.preventDefault();
             if (this.props.howManyTimes > 1) this.props.onChangeHowManyTimes(this.props.howManyTimes - 1);
         }
+
         this.deadlineDateChange = date => {
             this.props.onDeadlineDateChange(moment(date).toDate().valueOf());
         }
+
         this.toggleDeadlineCheckbox = ev => {
             this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
         }
 
         this.submitForm = (whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField) => ev => {
             ev.preventDefault();
-
+            this.refs.submitPunishmentBtn.setAttribute('disabled', 'true');
             let submitData = {};
             isMail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
@@ -134,8 +139,12 @@ class PunishmentCreator extends React.Component {
             submitData.whatToWrite = whatToWriteField;
             submitData.why = whyField;
 
-            this.props.onSubmit(submitData, this.props.orderedPunishments);
-        };
+            this.props.onSubmit(submitData, this.props.orderedPunishments, this.enableSubmit);
+        }
+
+        this.enableSubmit = () => {
+            this.refs.submitPunishmentBtn.removeAttribute('disabled');
+        }
     }
 
     render() {
@@ -215,10 +224,11 @@ class PunishmentCreator extends React.Component {
                                 {this.whyErrorText ? <label>{this.whyErrorText}</label> : null}
                             </fieldset>
                             <button
+                                ref="submitPunishmentBtn"
                                 type="submit">
                                 <b>PUNISH</b>
                             </button>
-                            {this.props._message !== null ? <label>{this.props._message}</label> : null}
+                            {this.props._errMsg !== null ? <label>{this.props._errMsg}</label> : null}
                         </fieldset>
                     </form>
 

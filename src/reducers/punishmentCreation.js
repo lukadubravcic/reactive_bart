@@ -7,7 +7,7 @@ const defaultState = {
         deadlineDate: currentDate.setDate(currentDate.getDate() + 1),
         whatToWrite: '',
         why: '',
-        _message: ''
+        _errMsg: null
 };
 
 export default (state = defaultState, action) => {
@@ -17,9 +17,11 @@ export default (state = defaultState, action) => {
         case 'TOGGLE_PUNISHMENT_DEADLINE_CKECKBOX':
             return { ...state, deadlineChecked: !state.deadlineChecked };
         case 'PUNISHMENT_CREATED':
-            return { ...defaultState, _message: action.msg };
+            return { ...defaultState, _errMsg: action.msg };
         case 'PUNISHMENT_CREATED_ERROR':
-            return { ...state, _message: action.msg };
+            return { ...state, _errMsg: action.msg };
+            case 'SUBMITING_NEW_PUNISHMENT':
+            return {...state, _errMsg: defaultState._errMsg}
         case 'LOGOUT':
             return defaultState;
         default:

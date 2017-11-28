@@ -21,7 +21,9 @@ const mapDispatchToProps = dispatch => ({
     onReNewPasswordChange: value => {
         dispatch({ type: 'UPDATE_FIELD', key: 'reNewPassword', value });
     },
-    submitNewPassword: (currentPassword, newPassword, reNewPassword) => {
+    submitNewPassword: (currentPassword, newPassword, reNewPassword, enableSubmit) => {
+        dispatch({ type: 'SETTING_NEW_PASSWORD' });
+
         agent.Auth.setNewPassword(currentPassword, newPassword, reNewPassword).then((payload) => {
             if (payload !== null) {
 
@@ -32,6 +34,7 @@ const mapDispatchToProps = dispatch => ({
                     dispatch({ type: 'PASSWORD_CHANGED' });
                 }
             }
+            enableSubmit();
         });
     }
 });
@@ -45,9 +48,10 @@ class NewPassword extends React.Component {
         this.newPasswordValidationMessage = null;
         this.reNewPasswordValidationMessage = null;
 
-        this.submitNewPassword = (currentPassword, newPassword, reNewPassword) => ev => {
+        this.submitNewPassword = (currentPassword, newPassword, reNewPassword, enableSubmit) => ev => {
             ev.preventDefault();
-            this.props.submitNewPassword(currentPassword, newPassword, reNewPassword);
+            this.refs.changePasswordBtn.setAttribute('disabled', 'true');
+            this.props.submitNewPassword(currentPassword, newPassword, reNewPassword, this.enableSubmit);
         }
 
         this.currentPasswordChange = ev => {
@@ -65,6 +69,10 @@ class NewPassword extends React.Component {
         this.reNewPasswordChange = ev => {
             this.props.onReNewPasswordChange(ev.target.value);
         }
+
+        this.enableSubmit = () => {
+            this.refs.changePasswordBtn.removeAttribute('disabled');
+        }
     }
 
     render() {
@@ -73,7 +81,13 @@ class NewPassword extends React.Component {
         const newPassword = this.props.newPassword;
         const reNewPassword = this.props.reNewPassword;
         const errMsg = this.props._errMsg;
-        const formValid = !this.currentPasswordValidationMessage && !this.newPasswordValidationMessage && !this.reNewPasswordValidationMessage && newPassword === reNewPassword && currentPassword !== newPassword;
+        const formValid = currentPassword.length
+            && newPassword.length
+            && !this.currentPasswordValidationMessage
+            && !this.newPasswordValidationMessage
+            && !this.reNewPasswordValidationMessage
+            && newPassword === reNewPassword
+            && currentPassword !== newPassword;
 
         return (
             <div className="container">
@@ -113,7 +127,9 @@ class NewPassword extends React.Component {
                     <br />
 
                     <button
+                        ref="changePasswordBtn"
                         type="submit"
+                        className="btn btn-lg btn-primary"
                         disabled={!formValid}>
                         Set new password
                     </button>

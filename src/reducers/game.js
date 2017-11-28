@@ -17,6 +17,7 @@ const defaultState = {
     gameInProgress: false,
     boardFocused: false,
     boardHovered: false,
+    spongeHovered: false,
     timeSpent: 0,
     startingSentence: ''
 };
@@ -58,13 +59,17 @@ export default (state = defaultState, action) => {
         case 'PUNISHMENT_DONE':
             return { ...state, boardFocused: false };
         case 'GAME_BOARD_FOCUSED':
-            return { ...state, boardFocused: true, gameInProgress: true };
+            return { ...state, boardFocused: true, gameInProgress: true, boardHovered: false };
         case 'GAME_BOARD_UNFOCUSED':
             return { ...state, boardFocused: false };
         case 'GAME_BOARD_HOVER':
             return { ...state, boardHovered: true };
         case 'GAME_BOARD_HOVER_OUT':
             return { ...state, boardHovered: false };
+        case 'SPONGE_HOVER':
+            return { ...state, spongeHovered: true }
+        case 'SPONGE_HOVER_OUT':
+            return { ...state, spongeHovered: false }
         case 'TIMER_VALUE_UPDATED':
             return { ...state, timerValue: action.newTimerValue, timeSpent: action.timeSpent };
         case 'CLOCK_VALUE_UPDATED':

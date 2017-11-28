@@ -17,9 +17,20 @@ const ProgressBar = props => {
         border: "0.5px solid red"
     }
 
+    const spongeHoverStyle = {
+        "position": 'absolute',
+        marginLeft: leftMargin + "%",
+        width: "70px",        
+        "bottom": "50px",
+        "height": "30px",
+        backgroundColor: "grey",
+        border: "0.5px solid red"
+    }
+
     return (
         <div className="container">
-            <label style={style} onClick={props.spongeClick} onMouseOver={props.onHover}>{progress + "%"}</label>
+            {props.hovering ? <div style={spongeHoverStyle}><label>Restart</label></div> : null}
+            <label style={style} onClick={props.spongeClick} onMouseOver={props.onHover} onMouseOut={props.onHoverOut}>{progress + "%"}</label>
         </div>
     );
 }

@@ -56,6 +56,12 @@ const mapDispatchToProps = dispatch => ({
     onBoardHoverOut: () => {
         dispatch({ type: 'GAME_BOARD_HOVER_OUT' });
     },
+    onSpongeHover: () => {
+        dispatch({ type: 'SPONGE_HOVER' });
+    },
+    onSpongeHoverOut: () => {
+        dispatch({ type: 'SPONGE_HOVER_OUT' });
+    },
     gameReset: () => {
         dispatch({ type: 'GAME_RESETED' });
     },
@@ -88,13 +94,24 @@ class Board extends React.Component {
 
         this.spongeHover = ev => {
             // igra u tijeku -> pokazi tooltip
-            if (this.props.gameInProgress) console.log('sponge hover');
-        };
+            if (this.props.gameInProgress) {
+                console.log('sponge hover');
+                this.props.onSpongeHover();
+            }
+        }
+
+        this.spongeHoverOut = ev => {
+            if (this.props.spongeHovered) {
+                console.log('sponge hover out')
+                this.props.onSpongeHoverOut();
+            }
+        }
 
         this.spongeClick = ev => {
             console.log('sponge click');
             // nema reseta ako je kazna obavljena
             if (this.props.progress < 100) {
+
                 this.audio.play();
                 this._wrongCharPlace = null;
 
@@ -102,7 +119,6 @@ class Board extends React.Component {
                     this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
                 }
 
-                this.props.gameReset();
                 this.punishmentInit();
             }
         };
@@ -132,11 +148,11 @@ class Board extends React.Component {
         };
 
         this.boardHover = ev => {
-            this.props.onBoardHover();
+            if (!this.props.gameInProgress) this.props.onBoardHover();
         };
 
         this.boardHoverOut = ev => {
-            this.props.onBoardHoverOut();
+            if (this.props.boardHovered) this.props.onBoardHoverOut();
         };
 
         this.activePunishmentDone = () => {
@@ -225,10 +241,10 @@ class Board extends React.Component {
         // rekurzivno ispisvanje pocetne recenice i dodavanje vec napisanih znakova (ako ih ima)
         this.writeStartingSentence = () => {
 
-            this.props.updateBoardValue('');
-            this.props.setStartingSentence('');
+
 
             const write = (i) => {
+
                 if (this.punishmentExplanation.length <= i && !this.props.showSetNewPasswordComponent) {
                     this.activeWriteTimeout = setTimeout(() => {
                         this.props.setStartingSentence(this.props.startingSentence + this.clickToStartMessage);
@@ -236,12 +252,14 @@ class Board extends React.Component {
                     }, 100);
                     return;
                 }
-                this.props.setStartingSentence(this.props.startingSentence + this.punishmentExplanation[i]);
+                i === 0 ? this.props.setStartingSentence(this.punishmentExplanation[i])
+                    : this.props.setStartingSentence(this.props.startingSentence + this.punishmentExplanation[i]);
                 i++;
                 this.activeWriteTimeout = setTimeout(() => {
                     write(i);
                 }, Math.floor(Math.random() * 150) + 30);
             }
+
             write(0);
         };
 
@@ -264,8 +282,8 @@ class Board extends React.Component {
         this.punishmentInit = () => {
 
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
-
             // incijalni setup
+            this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
             this.howManyTimes = this.adblockDetected ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
@@ -289,10 +307,9 @@ class Board extends React.Component {
 
         if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment._id !== prevProps.activePunishment._id)) { // postavljena nova kazna
 
-            if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je kazna bila u tijeku (i nije specijalna kazna), logiraj ju
+            if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
 
                 this.props.logPunishmentTry(prevProps.activePunishment._id, prevProps.timeSpent);
-
             }
             // specijalni slucaj detektiranja adblocker-a
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {
@@ -301,6 +318,10 @@ class Board extends React.Component {
 
             this.activePunishmentChanged();
         }
+    }
+
+    componentWillUnmount() {
+        if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
     }
 
     render() {
@@ -329,6 +350,15 @@ class Board extends React.Component {
 
         style = boardTextMistake ? { ...style, ...blurFilter } : style;
         style = progress === 100 ? { ...style, ...blurFilter } : style;
+
+        const boardTooltipStyle = {
+            "position": 'absolute',
+            "width": "100px",
+            "top": "200px",
+            "left": "50px",
+            backgroundColor: "grey",
+            border: "0.5px solid red"
+        }
 
         if (activePunishmentSet) {
             return (
@@ -369,7 +399,9 @@ class Board extends React.Component {
                                 <h1>DONE</h1>
                             </div>
                         ) : null}
-                        <ProgressBar progress={progress} spongeClick={this.spongeClick} onHover={this.spongeHover} />
+                        {this.props.boardHovered ? <div style={boardTooltipStyle}><h3>Click to start</h3></div> : null}
+
+                        <ProgressBar progress={progress} spongeClick={this.spongeClick} onHover={this.spongeHover} onHoverOut={this.spongeHoverOut} hovering={this.props.spongeHovered} />
                     </div>
                 </div >
             )

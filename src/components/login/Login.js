@@ -27,8 +27,9 @@ const mapDispatchToProps = dispatch => ({
     onPasswordChange: value =>
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'password', value }),
     onSubmit: (email, password, enableSubmit) => {
-        agent.Auth.login(email, password).then((payload) => {
+        dispatch({ type: 'LOGIN_ATTEMPT' });
 
+        agent.Auth.login(email, password).then((payload) => {
             enableSubmit();
 
             if (payload !== null) {
@@ -99,9 +100,10 @@ class Login extends React.Component {
 
             this.props.onPasswordChange(event.target.value);
         }
+
         this.submitForm = (email, password) => ev => {
             ev.preventDefault();
-            this.refs.loginBtn.setAttribute("disabled", "true");
+            this.refs.loginBtn.setAttribute('disabled', 'true');
             this.props.onSubmit(email, password, this.enableSubmit);
         }
 
@@ -121,7 +123,7 @@ class Login extends React.Component {
         }
 
         this.enableSubmit = () => {
-            this.refs.loginBtn.removeAttribute("disabled");
+            this.refs.loginBtn.removeAttribute('disabled');
         }
 
         this.showChangePasswordForm = () => {

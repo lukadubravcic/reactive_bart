@@ -84,7 +84,6 @@ class App extends React.Component {
                 {userLoggedInAndChangePasswordForm
                     ? <NewPassword />
                     : <div>
-                        <hr />
                         <Register />
                         <hr />
                         <Game />

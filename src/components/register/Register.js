@@ -24,6 +24,8 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'rePassword', value }),
 
     onSubmit: (username, email, password, enableSubmit) => {
+        dispatch({ type: 'REGISTER_ATTEMPT' });
+
         agent.Auth.register(username, email, password).then((payload) => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
             enableSubmit();
@@ -38,8 +40,6 @@ const mapDispatchToProps = dispatch => ({
             } else {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
             }
-
-
         });
     },
 
@@ -185,6 +185,7 @@ class Register extends React.Component {
                                                 placeholder="Repeat password"
                                                 value={rePassword}
                                                 onChange={this.rePasswordChange} />
+                                            {password !== rePassword && rePassword.length ? <label>Passwords don't match.</label> : null}
                                         </fieldset>
 
                                         <button

@@ -16,10 +16,14 @@ export default (state = defaultState, action) => {
             return { ...defaultState, shownForm: state.shownForm === 'login' ? 'register' : 'login' };
         case 'REGISTER':
             return { ...defaultState };
-        case 'LOGIN':
-            return { ...state, email: defaultState.email, password: defaultState.password };
+        case 'REGISTER_ATTEMPT':
+            return { ...state, _errMsg: defaultState._errMsg };
         case 'FAILED_REGISTER':
             return { ...state, _errMsg: action.errMsg };
+        case 'LOGIN':
+            return { ...state, email: defaultState.email, password: defaultState.password };
+        case 'LOGIN_ATTEMPT':
+            return { ...state, _errMsg: defaultState._errMsg };
         case 'LOGIN_FAILED':
             return { ...state, _errMsg: action.errMsg };
         case 'SHOW_CHANGE_PASSWORD_FORM':

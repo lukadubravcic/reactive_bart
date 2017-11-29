@@ -35,7 +35,8 @@ const Auth = {
 	login: (email, password) => requests.post('/users/login', { email, password }),
 	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
 	setUsername: username => requests.post('/users/username', { username }),
-	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword })
+	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),
+	forgotPassword: email => requests.post('/users/forgot', { email })
 };
 
 const Punishment = {
@@ -44,7 +45,6 @@ const Punishment = {
 	getPast: () => requests.get('/punishment/past'),
 	getOrdered: () => requests.get('/punishment/ordered'),
 	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
-	saveProgress: (id, progress) => requests.post('/punishment/save', { id: id, progress: progress }),
 	done: id => requests.post('/punishment/done', { id: id }),
 	logTry: (id, timeSpent) => requests.post('/punishment/log', { id: id, timeSpent: timeSpent }),
 	getRandom: () => requests.get('/punishment/random'),
@@ -52,7 +52,7 @@ const Punishment = {
 };
 
 const Pref = {
-	updatePreferences: (prefs) => requests.post('/prefs/update', prefs)
+	updatePreferences: prefs => requests.post('/prefs/update', prefs)
 }
 
 export default {

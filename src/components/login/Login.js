@@ -2,13 +2,14 @@ import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../agent'
 import SetUsername from './SetUsername';
+import ResetPassword from './ResetPassword';
 
 const EMAIL_MAX_LEN = 20;
 const EMAIL_MIN_LEN = 5;
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;
 
-const EMAIL_VALIDATION_ERROR_TEXT = 'Username must be between ' + EMAIL_MIN_LEN + ' and ' + EMAIL_MAX_LEN + ' characters long.';
+const EMAIL_VALIDATION_ERROR_TEXT = 'Email must be between ' + EMAIL_MIN_LEN + ' and ' + EMAIL_MAX_LEN + ' characters long.';
 const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MIN_LEN + ' and ' + PASSWORD_MAX_LEN + ' characters long.';
 
 const mapStateToProps = state => ({
@@ -73,6 +74,9 @@ const mapDispatchToProps = dispatch => ({
     },
     showPasswordSetForm: value => {
         dispatch({ type: 'SHOW_CHANGE_PASSWORD_FORM', value });
+    },
+    showResetPasswordForm: () => {
+        dispatch({ type: 'SHOW_RESET_PASSWORD_FORM' });
     }
 });
 
@@ -133,14 +137,11 @@ class Login extends React.Component {
         this.hideChangePasswordForm = () => {
             if (this.props.showSetNewPasswordComponent) this.props.showPasswordSetForm(false);
         }
-    }
 
-    /*  componentWillUpdate(nextProps) {
-         if ((!this.props.auth._errMsg && nextProps.auth._errMsg) || (typeof this.props.username === 'undefined' && typeof nextProps.username !== 'undefined')) {
-             console.log('here')
-             
-         }
-     } */
+        this.showResetPasswordForm = () => {
+            this.props.showResetPasswordForm();
+        }
+    }
 
     render() {
 
@@ -149,6 +150,7 @@ class Login extends React.Component {
         const errMsg = this.props.auth._errMsg;
         const punishmentIdFromURL = this.props.game.punishmentIdFromURL;
         const showSetNewPasswordComponent = this.props.showSetNewPasswordComponent;
+        const showResetPasswordForm = this.props.auth.showResetPasswordForm;
         const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
 
         if (window.canRunAds === undefined) {
@@ -171,41 +173,47 @@ class Login extends React.Component {
                                         <u className="a">Create account</u>
                                     </a>
                                 </p>
+                                {showResetPasswordForm ? <ResetPassword /> :
+                                    <form onSubmit={this.submitForm(email, password)}>
+                                        <fieldset>
+                                            <fieldset className="form-group">
+                                                <input
+                                                    className="form-control form-control-lg"
+                                                    type="email"
+                                                    placeholder="Email"
+                                                    value={email}
+                                                    onChange={this.emailChange}
+                                                    required />
+                                                {this.emailValidationError ? <label>{this.emailValidationError}</label> : null}
+                                            </fieldset>
 
-                                <form onSubmit={this.submitForm(email, password)}>
-                                    <fieldset>
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="email"
-                                                placeholder="Email"
-                                                value={email}
-                                                onChange={this.emailChange}
-                                                required />
-                                            {this.emailValidationError ? <label>{this.emailValidationError}</label> : null}
-                                        </fieldset>
+                                            <fieldset className="form-group">
+                                                <input
+                                                    className="form-control form-control-lg"
+                                                    type="password"
+                                                    placeholder="Password"
+                                                    value={password}
+                                                    onChange={this.passwordChange}
+                                                    required />
+                                                {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
+                                            </fieldset>
+                                            {errMsg ? (<label>{errMsg}</label>) : null}
 
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="password"
-                                                placeholder="Password"
-                                                value={password}
-                                                onChange={this.passwordChange}
-                                                required />
-                                            {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
-                                        </fieldset>
-                                        {errMsg ? (<label>{errMsg}</label>) : null}
-                                        <button
-                                            ref="loginBtn"
-                                            className="btn btn-lg btn-primary pull-xs-right"
-                                            type="submit"
-                                            disabled={!formValid}>
-                                            Login
+                                            <a onClick={this.showResetPasswordForm}>
+                                                <u className="a">Forgot password?</u>
+                                            </a>
+
+                                            <button
+                                                ref="loginBtn"
+                                                className="btn btn-lg btn-primary pull-xs-right"
+                                                type="submit"
+                                                disabled={!formValid}>
+                                                Login
                                         </button>
 
-                                    </fieldset>
-                                </form>
+                                        </fieldset>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>

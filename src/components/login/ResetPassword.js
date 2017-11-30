@@ -21,9 +21,11 @@ const mapDispatchToProps = dispatch => ({
                 }
             }
             enableForm();
+
         }, () => {
-            dispatch({ type: 'RESET_PASSWORD_FAILED', errMsg: 'Password reset failed. Try again.' });
             enableForm();
+            dispatch({ type: 'RESET_PASSWORD_FAILED', errMsg: 'Password reset failed. Try again.' });
+
         });
     },
     backToLogin: () => dispatch({ type: 'HIDE_RESET_PASSWORD_FORM' })

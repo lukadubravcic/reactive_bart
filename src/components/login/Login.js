@@ -4,7 +4,7 @@ import agent from '../../agent'
 import SetUsername from './SetUsername';
 import ResetPassword from './ResetPassword';
 
-const EMAIL_MAX_LEN = 20;
+const EMAIL_MAX_LEN = 50;
 const EMAIL_MIN_LEN = 5;
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;
@@ -66,6 +66,7 @@ const mapDispatchToProps = dispatch => ({
     onLogout: () => {
         dispatch({ type: 'LOGOUT' });
         localStorage.removeItem('token');
+        agent.Auth.logout();
         agent.setToken(0)
     },
     logPunishmentTry: (id, timeSpent) => {
@@ -197,11 +198,13 @@ class Login extends React.Component {
                                                     required />
                                                 {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
                                             </fieldset>
-                                            {errMsg ? (<label>{errMsg}</label>) : null}
+                                            
 
                                             <a onClick={this.showResetPasswordForm}>
                                                 <u className="a">Forgot password?</u>
                                             </a>
+
+                                            {errMsg ? (<label>{errMsg}</label>) : null}
 
                                             <button
                                                 ref="loginBtn"

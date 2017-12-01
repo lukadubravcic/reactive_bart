@@ -241,8 +241,6 @@ class Board extends React.Component {
         // rekurzivno ispisvanje pocetne recenice i dodavanje vec napisanih znakova (ako ih ima)
         this.writeStartingSentence = () => {
 
-
-
             const write = (i) => {
 
                 if (this.punishmentExplanation.length <= i && !this.props.showSetNewPasswordComponent) {
@@ -356,7 +354,7 @@ class Board extends React.Component {
             "width": "100px",
             "top": "200px",
             "left": "50px",
-            backgroundColor: "grey",
+            backgroundColor: "#d8d8d8",
             border: "0.5px solid red"
         }
 

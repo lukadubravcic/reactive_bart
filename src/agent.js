@@ -33,6 +33,7 @@ const requests = {
 const Auth = {
 	current: () => requests.get('/users'),
 	login: (email, password) => requests.post('/users/login', { email, password }),
+	logout: () => requests.post('/users/logout'),
 	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
 	setUsername: username => requests.post('/users/username', { username }),
 	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),

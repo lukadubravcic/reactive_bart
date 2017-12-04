@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PieChart from 'react-minimal-pie-chart';
 import { checkIfIgnoredPunishment } from '../../helpers/helpers';
+import RankInfo from './RankInfo';
 
 const colors = {
       accepted: 'rgba(185, 214, 0, 0.8)',
@@ -13,6 +14,7 @@ const colors = {
 };
 
 const mapStateToProps = state => ({
+      rank: state.common.rank,
       acceptedPunishments: state.punishment.acceptedPunishments,
       pastPunishments: state.punishment.pastPunishments,
       orderedPunishments: state.punishment.orderedPunishments,
@@ -57,7 +59,7 @@ class Stats extends React.Component {
                         if (punishment.given_up) punishmentClass = 'givenUp'; // punishmentStatus = 'GIVEN UP';
                         if (punishment.done) punishmentClass = 'completed'; // punishmentStatus = "DONE";
                         if (punishment.failed) punishmentClass = 'failed'; // punishmentStatus = "FAILED";
-                        if (!punishment.accepted && checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';                        
+                        if (!punishment.accepted && checkIfIgnoredPunishment(punishment)) punishmentClass = 'ignored';
                         if (punishment.rejected) punishmentClass = 'rejected'; // punishmentStatus = 'REJECTED';
 
                         if (punishmentClass) result[punishmentClass]++;
@@ -112,7 +114,7 @@ class Stats extends React.Component {
 
                         let graphData1 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['accepted', 'rejected', 'ignored']);
                         let graphData2 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['completed', 'givenUp', 'failed']);
-                        
+
                         this.props.updateOrderedGraphState({ graphData1, graphData2 });
                   }
             }
@@ -133,7 +135,7 @@ class Stats extends React.Component {
       }
 
       render() {
-
+            
             return (
                   <div>
                         <div className="container">
@@ -243,6 +245,8 @@ class Stats extends React.Component {
                                     : null}
                               <br style={{ clear: "left" }} />
                         </div>
+
+                        <RankInfo rank={this.props.rank}/>
                   </div>
             )
       }

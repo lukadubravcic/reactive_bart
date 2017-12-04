@@ -48,7 +48,8 @@ const mapDispatchToProps = dispatch => ({
                         type: 'LOGIN',
                         currentUser: { username: payload.username, email: payload.email, _id: payload._id },
                         token: payload.token,
-                        prefs: payload.prefs
+                        prefs: payload.prefs,
+                        rank: payload.rank
                     });
                 } else {
 

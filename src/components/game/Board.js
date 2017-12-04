@@ -36,8 +36,8 @@ const mapDispatchToProps = dispatch => ({
     setActivePunishment: punishment => {
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     },
-    setActivePunishmentDone: id => {
-        //agent.Punishment.done(id).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
+    setActivePunishmentDone: (id, timeSpent) => {
+        agent.Punishment.done(id, timeSpent).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
     updateAcceptedPunishments: (punishments) => {
@@ -95,14 +95,12 @@ class Board extends React.Component {
         this.spongeHover = ev => {
             // igra u tijeku -> pokazi tooltip
             if (this.props.gameInProgress) {
-                console.log('sponge hover');
                 this.props.onSpongeHover();
             }
         }
 
         this.spongeHoverOut = ev => {
             if (this.props.spongeHovered) {
-                console.log('sponge hover out')
                 this.props.onSpongeHoverOut();
             }
         }
@@ -159,7 +157,7 @@ class Board extends React.Component {
 
             if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
 
-                this.props.setActivePunishmentDone(this.props.activePunishment._id);
+                this.props.setActivePunishmentDone(this.props.activePunishment._id, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
 

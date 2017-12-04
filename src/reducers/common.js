@@ -4,7 +4,8 @@ const defaultState = {
     token: null,
     loadInProgress: false,
     usernameSet: '',
-    _errMsg: null
+    _errMsg: null,
+    rank: null
 }
 
 export default (state = defaultState, action) => {
@@ -14,7 +15,7 @@ export default (state = defaultState, action) => {
         case 'REGISTER':
             return { ...state };
         case 'LOGIN':
-            return { ...state, currentUser: action.currentUser, token: action.token };
+            return { ...state, currentUser: action.currentUser, token: action.token, rank: action.rank };
         case 'LOGOUT':
             return defaultState;
         case 'APP_LOAD':

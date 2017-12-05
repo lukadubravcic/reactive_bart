@@ -12,15 +12,16 @@ const mapStateToProps = state => ({
     currentUser: state.common.currentUser,
     loadInProgress: state.common.loadInProgress,
     punishmentIdFromURL: state.game.punishmentIdFromURL,
-    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
+    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
+    cheating: state.game.cheating
 });
 
 const mapDispatchToProps = dispatch => ({
     setActivePunishment: (punishment, ignoredPunishmentSet = false) => {
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment, ignoredPunishmentSet });
     },
-    gameUnmount: () =>{
-        dispatch({type: 'GAME_UNMOUNT'});
+    gameUnmount: () => {
+        dispatch({ type: 'GAME_UNMOUNT' });
     }
 });
 
@@ -28,6 +29,14 @@ class Game extends React.Component {
 
     constructor() {
         super();
+
+        this.setCheatingPunishment = () => {
+            let cheatingPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('CHEAT_DETECTED', this.props.specialPunishments));
+            console.log(cheatingPunishment)
+            if (cheatingPunishment) {                
+                this.props.setActivePunishment(cheatingPunishment);
+            }
+        }
 
         this.changeActivePunishmentNotLoggedIn = () => {
             if (window.canRunAds === undefined) { // adblocker detektiran
@@ -41,11 +50,11 @@ class Game extends React.Component {
 
             } else if (this.props.punishmentIdFromURL) {
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
-                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment), true);
+                this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment), true);
 
             } else {
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
-                this.props.randomPunishments[0] && this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
+                this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
             }
         }
 
@@ -118,7 +127,8 @@ class Game extends React.Component {
         const activePunishmentNotSet = !Object.keys(prevProps.activePunishment).length && !Object.keys(this.props.activePunishment).length;
         const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty';
         const userJustLoggedOut = Object.keys(prevProps.activePunishment).length > 0 && Object.keys(this.props.activePunishment).length === 0 && !userLoggedIn;
-
+        const cheating = !prevProps.cheating && this.props.cheating;
+       
         // nema usera ili se desio logout
         if ((appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
 
@@ -129,36 +139,11 @@ class Game extends React.Component {
             this.changeActivePunishmentLoggedIn();
         }
 
-        /* if (Object.keys(this.props.currentUser).length === 0) {
-            console.log(!Object.keys(this.props.currentUser).length)
-            console.log(this.props.currentUser)
-            if (//prevProps.currentUser._id !== this.props.currentUser._id &&
-                this.props.randomPunishments !== 'empty' &&
-                this.props.specialPunishments !== 'empty' ||
-                !Object.keys(prevProps.activePunishment).length &&
-                !Object.keys(this.props.activePunishment).length &&
-                this.props.randomPunishments !== 'empty' &&
-                Object.keys(this.props.specialPunishments).length) {
+        if (cheating) {
+            console.log('CHEATING');
+            this.setCheatingPunishment();
+        }
 
-                this.changeActivePunishment();
-            }
-
-        } else if (
-
-            (this.props.acceptedPunishments !== 'empty' &&
-                this.props.pastPunishments !== 'empty' &&
-                prevProps.currentUser._id !== this.props.currentUser._id &&
-                this.props.randomPunishments !== 'empty' &&
-                this.props.specialPunishments !== 'empty') ||
-            (this.props.acceptedPunishments !== 'empty' &&
-                this.props.pastPunishments !== 'empty' &&
-                !Object.keys(prevProps.activePunishment).length &&
-                !Object.keys(this.props.activePunishment).length &&
-                this.props.randomPunishments !== 'empty' &&
-                Object.keys(this.props.specialPunishments).length)) {
-            console.log('drugi if')
-            this.changeActivePunishment();
-        } */
     }
 
 
@@ -200,7 +185,7 @@ function addSpacingToPunishmentWhatToWrite(punishment) {
 
     if (punishment.what_to_write[punishment.what_to_write.length - 1] === ' ') {
 
-        return { ...punishment };
+        return punishment;
 
     } else {
 

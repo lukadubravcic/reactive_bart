@@ -30,11 +30,9 @@ const mapDispatchToProps = dispatch => ({
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
             enableSubmit();
             if (payload && payload.hasOwnProperty('errMsg')) {
-
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
 
             } else if (payload) {
-
                 dispatch({ type: 'REGISTER', payload });
 
             } else {

@@ -5,7 +5,8 @@ import agent from '../../agent';
 import ProgressBar from './ProgressBar';
 
 import chalkboardImg from '../../assets/chalkboard.jpg';
-import { text } from 'superagent/lib/node/parsers';
+// import { text } from 'superagent/lib/node/parsers';
+import cheatingCheck from '../../helpers/cheatingCheck';
 
 const UPPERCASE = false;
 
@@ -14,7 +15,8 @@ const mapStateToProps = state => ({
     acceptedPunishments: state.punishment.acceptedPunishments,
     currentUser: state.common.currentUser,
     token: state.common.token,
-    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
+    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
+    specialPunishments: state.punishment.specialPunishments
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -68,6 +70,9 @@ const mapDispatchToProps = dispatch => ({
     logPunishmentTry: (id, timeSpent) => {
         agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
         dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
+    },
+    cheatingDetected: () => {
+        dispatch({ type: 'CHEATING_DETECTED' });
     }
 });
 
@@ -80,10 +85,11 @@ class Board extends React.Component {
 
         this.audio = document.createElement('audio');
         this.audio.style.display = "none";
-        this.audio.src = 'https://www.zapsplat.com/wp-content/uploads/2015/sound-effects-five/zapsplat_office_blackboard_rubber_duster_rub_remove_chalk_from_blackboard.mp3?_=2';
+        this.audio.src = 'http://www.freesfx.co.uk/rx2/mp3s/6/18460_1464720565.mp3';
 
         this._wrongCharPlace = null;
         this.adblockDetected = false;
+        this.cheatDetected = false;
 
         this.incorrectBoardEntry = () => {
             /*  if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
@@ -110,7 +116,6 @@ class Board extends React.Component {
             // nema reseta ako je kazna obavljena
             if (this.props.progress < 100) {
 
-                this.audio.play();
                 this._wrongCharPlace = null;
 
                 if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
@@ -154,14 +159,14 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-
+            this.props.onBoardLostFocus();
             if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
 
                 this.props.setActivePunishmentDone(this.props.activePunishment._id, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
 
-            this.props.onBoardLostFocus();
+
             console.log('Punishment completed!');
 
         };
@@ -197,13 +202,31 @@ class Board extends React.Component {
                 this._wrongCharPlace = null;
             }
 
+            this.playTypeSound(char);
+
             return true;
         };
 
-        this.boardStateUpdate = (key) => {
+        this.playTypeSound = char => {
+            if (char !== ' ' && (!this.audio.paused || this.audio.currentTime > 0)) {
+                // playing
+                this.audio.currentTime = 0;
+
+            } else if (char !== ' ') {
+                this.audio.play();
+            }
+        }
+
+        this.boardStateUpdate = key => {
             let boardText = this.props.boardValue.slice();
             let transformedBoardText = '';
             let progress = 0;
+
+            if (cheatingCheck()) {
+                // set special pun
+                this.cheatDetected = true;
+                this.props.cheatingDetected();
+            };
 
             if (inArray(key, validKeys) && this._wrongCharPlace === null && this.props.progress < 100) {
 
@@ -282,10 +305,10 @@ class Board extends React.Component {
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
-            this.howManyTimes = this.adblockDetected ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
+            this.howManyTimes = this.adblockDetected || this.cheatDetected ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
             this.punishmentExplanation = "Write "
                 + this.howManyTimes
-                + (this.adblockDetected ? ' times "' : 'x "') +
+                + (this.adblockDetected || this.cheatDetected ? ' times "' : 'x "') +
                 (this.punishment[this.punishment.length - 1] === ' ' ?
                     this.punishment.substring(0, this.punishment.length - 1) : this.punishment)
                 + "\": ";
@@ -337,11 +360,11 @@ class Board extends React.Component {
         };
 
         const blurFilter = {
-            "-webkit-filter": "blur(3px)",
-            "-moz-filter": "blur(3px)",
-            "-o-filter": "blur(3px)",
-            "-ms-filter": "blur(3px)",
-            "filter": "blur(3px)",
+            "-webkit-filter": "blur(1.5px)",
+            "-moz-filter": "blur(1.5px)",
+            "-o-filter": "blur(1.5px)",
+            "-ms-filter": "blur(1.5px)",
+            "filter": "blur(1.5px)",
         };
 
         style = boardTextMistake ? { ...style, ...blurFilter } : style;

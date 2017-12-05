@@ -9,6 +9,7 @@ import PunishmentSelectorTable from './components/selector/PunishmentSelectorTab
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
 import NewPassword from './components/newPassword/NewPassword';
+import Footer from './components/Footer';
 
 import agent from './agent';
 
@@ -95,6 +96,7 @@ class App extends React.Component {
                         <Prefs />
                     </div>
                 }
+                <Footer />
             </div>
         );
     }

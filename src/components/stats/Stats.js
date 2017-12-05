@@ -14,6 +14,7 @@ const colors = {
 };
 
 const mapStateToProps = state => ({
+      currentUser: state.common.currentUser,
       rank: state.common.rank,
       acceptedPunishments: state.punishment.acceptedPunishments,
       pastPunishments: state.punishment.pastPunishments,
@@ -135,120 +136,124 @@ class Stats extends React.Component {
       }
 
       render() {
-            
-            return (
-                  <div>
-                        <div className="container">
-                              {this.props.firstGraph ?
-                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
 
-                                          <PieChart
-                                                data={this.props.firstGraph}
-                                                lineWidth={80}
-                                                paddingAngle={5}
-                                                animate={true}
-                                                animationDuration={3500} />
+            const usrLoggedIn = Object.keys(this.props.currentUser).length;
 
-                                          <br />
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
-                                                <label>&nbsp;Accepted</label>
-                                          </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
-                                                <label>&nbsp;Rejected</label>
-                                          </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
-                                                <label>&nbsp;Ignored</label>
-                                          </div>
-                                    </div>
-                                    : null}
-                              {this.props.secondGraph ?
-                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
+            if (usrLoggedIn) {
+                  return (
+                        <div>
+                              <div className="container">
+                                    {this.props.firstGraph ?
+                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
 
-                                          <PieChart
-                                                data={this.props.secondGraph}
-                                                lineWidth={80}
-                                                paddingAngle={5}
-                                                animate={true}
-                                                animationDuration={3500} />
+                                                <PieChart
+                                                      data={this.props.firstGraph}
+                                                      lineWidth={80}
+                                                      paddingAngle={5}
+                                                      animate={true}
+                                                      animationDuration={3500} />
 
-                                          <br />
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
-                                                <label>&nbsp;Completed</label>
+                                                <br />
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
+                                                      <label>&nbsp;Accepted</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
+                                                      <label>&nbsp;Rejected</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
+                                                      <label>&nbsp;Ignored</label>
+                                                </div>
                                           </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
-                                                <label>&nbsp;Given up</label>
+                                          : null}
+                                    {this.props.secondGraph ?
+                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                                <PieChart
+                                                      data={this.props.secondGraph}
+                                                      lineWidth={80}
+                                                      paddingAngle={5}
+                                                      animate={true}
+                                                      animationDuration={3500} />
+
+                                                <br />
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
+                                                      <label>&nbsp;Completed</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
+                                                      <label>&nbsp;Given up</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
+                                                      <label>&nbsp;Failed</label>
+                                                </div>
                                           </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
-                                                <label>&nbsp;Failed</label>
+                                          : null}
+                                    <br style={{ clear: "left" }} />
+                              </div>
+
+                              <div className="container">
+                                    {this.props.thirdGraph ?
+                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                                <PieChart
+                                                      data={this.props.thirdGraph}
+                                                      lineWidth={80}
+                                                      paddingAngle={5}
+                                                      animate={true}
+                                                      animationDuration={3500} />
+
+                                                <br />
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
+                                                      <label>&nbsp;Accepted</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
+                                                      <label>&nbsp;Rejected</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
+                                                      <label>&nbsp;Ignored</label>
+                                                </div>
                                           </div>
-                                    </div>
-                                    : null}
-                              <br style={{ clear: "left" }} />
+                                          : null}
+                                    {this.props.fourthGraph ?
+                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
+
+                                                <PieChart
+                                                      data={this.props.fourthGraph}
+                                                      lineWidth={80}
+                                                      paddingAngle={5}
+                                                      animate={true}
+                                                      animationDuration={3500} />
+
+                                                <br />
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
+                                                      <label>&nbsp;Completed</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
+                                                      <label>&nbsp;Given up</label>
+                                                </div>
+                                                <div className="graph-legend-container">
+                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
+                                                      <label>&nbsp;Failed</label>
+                                                </div>
+                                          </div>
+                                          : null}
+                                    <br style={{ clear: "left" }} />
+
+                                    <RankInfo rank={this.props.rank} />
+                              </div>
                         </div>
-
-                        <div className="container">
-                              {this.props.thirdGraph ?
-                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
-
-                                          <PieChart
-                                                data={this.props.thirdGraph}
-                                                lineWidth={80}
-                                                paddingAngle={5}
-                                                animate={true}
-                                                animationDuration={3500} />
-
-                                          <br />
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
-                                                <label>&nbsp;Accepted</label>
-                                          </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
-                                                <label>&nbsp;Rejected</label>
-                                          </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
-                                                <label>&nbsp;Ignored</label>
-                                          </div>
-                                    </div>
-                                    : null}
-                              {this.props.fourthGraph ?
-                                    <div style={{ float: "left", width: "200px", margin: "50px" }}>
-
-                                          <PieChart
-                                                data={this.props.fourthGraph}
-                                                lineWidth={80}
-                                                paddingAngle={5}
-                                                animate={true}
-                                                animationDuration={3500} />
-
-                                          <br />
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
-                                                <label>&nbsp;Completed</label>
-                                          </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
-                                                <label>&nbsp;Given up</label>
-                                          </div>
-                                          <div className="graph-legend-container">
-                                                <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
-                                                <label>&nbsp;Failed</label>
-                                          </div>
-                                    </div>
-                                    : null}
-                              <br style={{ clear: "left" }} />
-                        </div>
-
-                        <RankInfo rank={this.props.rank}/>
-                  </div>
-            )
+                  )
+            } else return null;
       }
 }
 

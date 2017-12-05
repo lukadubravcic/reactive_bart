@@ -19,7 +19,8 @@ const defaultState = {
     boardHovered: false,
     spongeHovered: false,
     timeSpent: 0,
-    startingSentence: ''
+    startingSentence: '',
+    cheating: false
 };
 
 export default (state = defaultState, action) => {
@@ -97,6 +98,8 @@ export default (state = defaultState, action) => {
             return defaultState;
         case 'LOGOUT':
             return defaultState;
+        case 'CHEATING_DETECTED':
+            return { ...state, cheating: true };
         default:
             return state;
     }

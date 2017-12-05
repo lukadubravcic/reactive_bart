@@ -101,12 +101,11 @@ class Timer extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        if (nextProps.boardFocused && nextProps.gameInProgress) {
+        if (nextProps.boardFocused && nextProps.gameInProgress && !nextProps.boardTextMistake && nextProps.progress !== 100) {
             this.stopClock();
             this.startStopwatch();
 
         } else if (nextProps.boardFocused && !nextProps.gameInProgress){
-            console.log('ulaz')
             this.stopStopwatch();
 
         } else if (!nextProps.boardFocused && nextProps.gameInProgress) {

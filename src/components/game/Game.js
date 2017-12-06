@@ -140,12 +140,10 @@ class Game extends React.Component {
         }
 
         if (cheating) {
-            console.log('CHEATING');
             this.setCheatingPunishment();
         }
 
     }
-
 
     render() {
         return (

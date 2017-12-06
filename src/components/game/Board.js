@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     },
     setActivePunishmentDone: (id, timeSpent) => {
-        agent.Punishment.done(id, timeSpent).then(dispatch({ type: 'PUNISHMENT_MARKED_DONE' }));
+        agent.Punishment.done(id, timeSpent).then(payload => dispatch({ type: 'PUNISHMENT_MARKED_DONE', newRank: payload.rank }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
     updateAcceptedPunishments: (punishments) => {
@@ -133,7 +133,7 @@ class Board extends React.Component {
 
         this.boardFocused = ev => {
             ev.preventDefault();
-            this.trimClickToStartMessage();
+            // this.trimClickToStartMessage();
             this.props.onBoardFocus();
         };
 
@@ -165,7 +165,6 @@ class Board extends React.Component {
                 this.props.setActivePunishmentDone(this.props.activePunishment._id, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
-
 
             console.log('Punishment completed!');
 
@@ -249,7 +248,7 @@ class Board extends React.Component {
         this.updateProgress = (transformedBoardText, punishment, howManyTimes) => {
 
             // specijalni adblocker slucaj gdje nije moguce odraditi kaznu
-            if (this.adblockDetected) {
+            if (this.adblockDetected || this.cheatDetected) {
                 return 0;
 
             } else if (this._wrongCharPlace === null) {
@@ -266,7 +265,7 @@ class Board extends React.Component {
 
                 if (this.punishmentExplanation.length <= i && !this.props.showSetNewPasswordComponent) {
                     this.activeWriteTimeout = setTimeout(() => {
-                        this.props.setStartingSentence(this.props.startingSentence + this.clickToStartMessage);
+                        //this.props.setStartingSentence(this.props.startingSentence + this.clickToStartMessage);
                         this.props.boardDisabledStatus(false);
                     }, 100);
                     return;
@@ -305,13 +304,10 @@ class Board extends React.Component {
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment._id;
-            this.howManyTimes = this.adblockDetected || this.cheatDetected ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
-            this.punishmentExplanation = "Write "
-                + this.howManyTimes
-                + (this.adblockDetected || this.cheatDetected ? ' times "' : 'x "') +
-                (this.punishment[this.punishment.length - 1] === ' ' ?
-                    this.punishment.substring(0, this.punishment.length - 1) : this.punishment)
-                + "\": ";
+            this.howManyTimes = typeof this.props.activePunishment.special_how_many_times !== 'undefined' ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
+
+            this.punishmentExplanation = `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times "' : 'x "')}${(this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.substring(0, this.punishment.length - 1) : this.punishment)}": `;
+
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
             this.writeStartingSentence();

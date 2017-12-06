@@ -1,4 +1,5 @@
 const defaultState = {
+    userIdFromURL: null,
     username: '',
     email: '',
     password: '',
@@ -22,7 +23,7 @@ export default (state = defaultState, action) => {
         case 'FAILED_REGISTER':
             return { ...state, _errMsg: action.errMsg };
         case 'LOGIN':
-            return { ...state, email: defaultState.email, password: defaultState.password };
+            return { ...defaultState };
         case 'LOGIN_ATTEMPT':
             return { ...state, _errMsg: defaultState._errMsg };
         case 'LOGIN_FAILED':
@@ -39,6 +40,10 @@ export default (state = defaultState, action) => {
             return { ...state, _errMsg: action.errMsg };
         case 'RESET_PASSWORD_FAILED':
             return { ...state, _errMsg: action.errMsg };
+        case 'USERID_IN_URL':
+            return { ...state, userIdFromURL: action.id };
+        case 'FAULTY_SPECIAL_LOGIN':
+            return { ...state, userIdFromURL: null }
         case 'LOGOUT':
             return defaultState;
         default:

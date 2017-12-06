@@ -1,6 +1,6 @@
 let averageTime = null;
 let lastCharTypedTimestamp = null;
-const THRESHOLD = 100; // 30ms
+const THRESHOLD = 10; // 30ms
 
 const cheatingDetector = function detectIfUserIsCheating(char, punishmentText) {
     /* console.log('----------------');
@@ -19,7 +19,7 @@ const cheatingDetector = function detectIfUserIsCheating(char, punishmentText) {
         //console.log(`avg: ${averageTime}`);
 
         if (timeBetweenCharEntry < THRESHOLD) {
-            console.log('TOO FAST');
+            // console.log('TOO FAST');
             return true;
         }
         averageTime = averageTime ? (averageTime + timeBetweenCharEntry) / 2 : timeBetweenCharEntry;

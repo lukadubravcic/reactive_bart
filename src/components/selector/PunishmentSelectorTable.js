@@ -10,7 +10,8 @@ const mapStateToProps = state => ({
     ...state.punishment,
     user: state.common.currentUser,
     acceptedPunishments: state.punishment.acceptedPunishments,
-    activePunishment: state.game.activePunishment
+    activePunishment: state.game.activePunishment,
+    cheating: state.game.cheating
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -218,10 +219,11 @@ class PunishmentSelectorTable extends React.Component {
     render() {
 
         const userLoggedIn = this.props.user._id;
+        const adblockerOrCheatDetected = window.canRunAds === undefined || this.props.cheating;
         let shownTab = null;
 
 
-        if (userLoggedIn) {
+        if (userLoggedIn && !adblockerOrCheatDetected) {
 
             const acceptedTabHeader = this.props.showAcceptedTab ? (<label id="acceptedTab" style={this.acceptedStyle} onClick={this.onChangeTab}>ACCEPTED</label>) : null;
             const pastTabHeader = this.props.showPastTab ? (<label id="pastTab" style={this.pastStyle} onClick={this.onChangeTab}>PAST</label>) : null;

@@ -1,5 +1,4 @@
 import superagent from 'superagent';
-import { request } from 'http';
 
 const API_ROOT = 'http://localhost:8000';
 
@@ -35,6 +34,7 @@ const Auth = {
 	login: (email, password) => requests.post('/users/login', { email, password }),
 	logout: () => requests.post('/users/logout'),
 	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
+	specialRegister: (userID, password) => requests.post('/users/sregister', {userID, password}),
 	setUsername: username => requests.post('/users/username', { username }),
 	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),
 	forgotPassword: email => requests.post('/users/forgot', { email })
@@ -46,7 +46,7 @@ const Punishment = {
 	getPast: () => requests.get('/punishment/past'),
 	getOrdered: () => requests.get('/punishment/ordered'),
 	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
-	done: (id,timeSpent) => requests.post('/punishment/done', { id, timeSpent}),
+	done: (id, timeSpent) => requests.post('/punishment/done', { id, timeSpent }),
 	logTry: (id, timeSpent) => requests.post('/punishment/log', { id: id, timeSpent: timeSpent }),
 	getRandom: () => requests.get('/punishment/random'),
 	getSpecial: () => requests.get('/punishment/special')

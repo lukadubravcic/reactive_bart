@@ -42,3 +42,18 @@ export function getUserIDfromURL() {
 
     return queryParamString.split('=')[1];
 }
+
+export function getQueryStringData() {
+    let match,
+        pl = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query = window.location.search.substring(1);
+
+    let urlParams = {};
+    
+    while (match = search.exec(query))
+        urlParams[decode(match[1])] = decode(match[2]);
+
+    return urlParams;
+}

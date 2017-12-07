@@ -14,7 +14,7 @@ import Footer from './components/Footer';
 
 import agent from './agent';
 
-import { getPunishmentIdFromURL, getUserIDfromURL } from './helpers/helpers';
+import { getQueryStringData } from './helpers/helpers';
 
 
 const mapStateToProps = state => ({ ...state });
@@ -57,16 +57,21 @@ const mapDispatchToProps = dispatch => ({
 class App extends React.Component {
 
     componentDidMount() {
+
+        let queryStringData = getQueryStringData();
+        console.log(queryStringData)
+        console.log(window.location.search);
+
         const token = window.localStorage.getItem('token');
         token && this.props.onLoad(token);
 
-        const punishmentId = getPunishmentIdFromURL();
-        if (punishmentId) this.props.setPunishmentIdFromURL(punishmentId);
+        //const punishmentId = getPunishmentIdFromURL();
+        if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 
-        const userId = getUserIDfromURL();
-        if (userId) this.props.setUserIdFromUrl(userId);
+        //const userId = getUserIDfromURL();
+        if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
 
-        (punishmentId || userId) && prettifyURL();
+        prettifyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {
@@ -82,10 +87,10 @@ class App extends React.Component {
 
         const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
 
-        if (1/* this.props.auth.userIdFromURL */) {
+        if (this.props.auth.userIdFromURL) {
             return (
                 <InvitedRegister />
-            )            
+            )
         } else {
             return (
                 <div>

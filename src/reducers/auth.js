@@ -43,7 +43,7 @@ export default (state = defaultState, action) => {
         case 'USERID_IN_URL':
             return { ...state, userIdFromURL: action.id };
         case 'FAULTY_SPECIAL_LOGIN':
-            return { ...state, userIdFromURL: null }
+            return { ...state, userIdFromURL: null };
         case 'LOGOUT':
             return defaultState;
         default:

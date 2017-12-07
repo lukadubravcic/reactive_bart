@@ -14,7 +14,6 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'rePassword', value });
     },
     onSubmitForm: (userID, password) => {
-        console.log(userID + "  " + password)
         agent.Auth.specialRegister(userID, password).then(payload => {
             if (payload !== null) {
 

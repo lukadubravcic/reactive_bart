@@ -20,7 +20,8 @@ const defaultState = {
     spongeHovered: false,
     timeSpent: 0,
     startingSentence: '',
-    cheating: false
+    cheating: false,
+    guestPunishment: null
 };
 
 export default (state = defaultState, action) => {
@@ -100,6 +101,8 @@ export default (state = defaultState, action) => {
             return defaultState;
         case 'CHEATING_DETECTED':
             return { ...state, cheating: true };
+        case 'GUEST_PUNISHMENT_LOADED':
+            return { ...state, guestPunishment: action.punishment };
         default:
             return state;
     }

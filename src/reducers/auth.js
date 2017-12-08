@@ -7,7 +7,7 @@ const defaultState = {
     shownForm: 'login',
     _errMsg: null,
     showSetNewPasswordComponent: false,
-    showResetPasswordForm: false
+    showResetPasswordForm: false,
 }
 
 export default (state = defaultState, action) => {

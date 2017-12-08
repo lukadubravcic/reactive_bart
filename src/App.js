@@ -40,6 +40,16 @@ const mapDispatchToProps = dispatch => ({
             });
         }
     },
+    handleInvitedGuest: (userId, punishmentId) => {
+        dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
+        agent.Auth.getPunishmentAsGuest(userId, punishmentId).then(payload => {
+
+            dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment });
+
+        }, failed => {
+            dispatch({ type: 'GUEST_PUNISHMENT_INVALID' });
+        });
+    },
     setPunishmentIdFromURL: id => {
         dispatch({ type: 'PUNISHMENT_IN_URL', id });
     },
@@ -58,20 +68,37 @@ class App extends React.Component {
 
     componentDidMount() {
 
+        // hendlaj invited usera kao guesta
+
+
         let queryStringData = getQueryStringData();
-        console.log(queryStringData)
+        console.log(queryStringData);
         console.log(window.location.search);
 
-        const token = window.localStorage.getItem('token');
-        token && this.props.onLoad(token);
 
-        //const punishmentId = getPunishmentIdFromURL();
+
+        // id kazne
         if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 
-        //const userId = getUserIDfromURL();
-        if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
+        let token = window.localStorage.getItem('token');
 
-        prettifyURL();
+        // ako postoji user id u query stringu potencijalno pobrisi token
+        // pa dohvati podatke o kazni
+
+        if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
+            // sprijeci 
+            token && window.localStorage.removeItem('token');
+            token = null;
+
+            // set usera i dohvacanje kazne
+            this.props.setUserIdFromUrl(queryStringData.uid);
+            this.props.handleInvitedGuest(queryStringData.uid, queryStringData.id);
+
+        } else {
+            token && this.props.onLoad(token);
+        }
+
+        // prettifyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {
@@ -86,38 +113,39 @@ class App extends React.Component {
     render() {
 
         const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
-
-        if (this.props.auth.userIdFromURL) {
+        const accessViaInvite = !!this.props.auth.userIdFromURL;
+        /* if (this.props.auth.userIdFromURL) {
             return (
-                <InvitedRegister />
+                
             )
-        } else {
-            return (
-                <div>
-                    <nav className="navbar">
-                        <div className="container">
-                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
-                        </div>
-                    </nav>
-                    <Login />
-                    {userLoggedInAndChangePasswordForm
-                        ? <NewPassword />
-                        : <div>
-                            <Register />
-                            <hr />
-                            <Game />
-                            <hr />
-                            <PunishmentCreator />
-                            <hr />
-                            <PunishmentSelectorTable />
-                            <Stats />
-                            <Prefs />
-                        </div>
-                    }
-                    <Footer />
-                </div>
-            );
-        }
+        } else { */
+        return (
+            <div>
+                <nav className="navbar">
+                    <div className="container">
+                        <h1 className="navbar-brand">{this.props.common.appName}</h1>
+                    </div>
+                </nav>
+                {/* accessViaInvite ? <InvitedRegister /> : <Login /> */}
+                <Login />
+                {userLoggedInAndChangePasswordForm
+                    ? <NewPassword />
+                    : <div>
+                        <Register />
+                        <hr />
+                        <Game />
+                        <hr />
+                        <PunishmentCreator />
+                        <hr />
+                        <PunishmentSelectorTable />
+                        <Stats />
+                        <Prefs />
+                    </div>
+                }
+                <Footer />
+            </div>
+        );
+        /* } */
     }
 }
 

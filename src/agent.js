@@ -34,10 +34,11 @@ const Auth = {
 	login: (email, password) => requests.post('/users/login', { email, password }),
 	logout: () => requests.post('/users/logout'),
 	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
-	specialRegister: (userID, password) => requests.post('/users/sregister', {userID, password}),
+	specialRegister: (userID, password) => requests.post('/users/sregister', { userID, password }),
 	setUsername: username => requests.post('/users/username', { username }),
 	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),
-	forgotPassword: email => requests.post('/users/forgot', { email })
+	forgotPassword: email => requests.post('/users/forgot', { email }),
+	getPunishmentAsGuest: (userId, punishmentId) => requests.post('/users/guest', { userId, punishmentId })
 };
 
 const Punishment = {

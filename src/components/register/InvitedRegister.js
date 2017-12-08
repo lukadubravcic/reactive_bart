@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
                     typeof payload.token !== 'undefined' &&
                     typeof payload.email !== 'undefined' &&
                     typeof payload._id !== 'undefined' &&
-                    typeof payload.rand !== 'undefined') {
+                    typeof payload.rank !== 'undefined') {
 
                     agent.setToken(payload.token);
 
@@ -89,7 +89,7 @@ class InvitedRegister extends React.Component {
 
                             <h2 className="text-xs-center bottomMarginToTwenty">Provide password</h2>
                             <label className="text-xs-center bottomMarginToTwenty">Please register by providing password for your account so you can proceed.</label>
-
+                            <br /><label>UserID: {this.props.userIdFromURL}</label>
                             <form onSubmit={this.submitForm(password, rePassword)}>
                                 <fieldset>
 

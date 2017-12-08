@@ -13,7 +13,9 @@ const mapStateToProps = state => ({
     loadInProgress: state.common.loadInProgress,
     punishmentIdFromURL: state.game.punishmentIdFromURL,
     showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
-    cheating: state.game.cheating
+    cheating: state.game.cheating,
+    guestPunishment: state.game.guestPunishment,
+    guestDataLoadingInProgress: state.common.guestDataLoadingInProgress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -32,13 +34,14 @@ class Game extends React.Component {
 
         this.setCheatingPunishment = () => {
             let cheatingPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('CHEAT_DETECTED', this.props.specialPunishments));
-            console.log(cheatingPunishment)
-            if (cheatingPunishment) {                
+
+            if (cheatingPunishment) {
                 this.props.setActivePunishment(cheatingPunishment);
             }
         }
 
         this.changeActivePunishmentNotLoggedIn = () => {
+
             if (window.canRunAds === undefined) { // adblocker detektiran
 
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
@@ -47,6 +50,16 @@ class Game extends React.Component {
                     this.props.setActivePunishment(specialPunishment);
 
                 } else return;
+
+            } else if (this.props.guestPunishment) { // invited user
+
+                if (checkIfIgnoredPunishment(this.props.guestPunishment)) {
+                    let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
+                    specialPunishment && this.props.setActivePunishment(specialPunishment, false);
+
+                } else {
+                    this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(this.props.guestPunishment));
+                }
 
             } else if (this.props.punishmentIdFromURL) {
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
@@ -79,8 +92,7 @@ class Game extends React.Component {
                 } else { // kazna nije pronadena u accepted
 
                     punishmentInURL = getByValue(this.props.pastPunishments, this.props.punishmentIdFromURL) // pronadi je u past kaznama
-                    /* console.log(this.props.pastPunishments)
-                    console.log(this.props.currentUser) */
+
                     if (punishmentInURL && checkIfIgnoredPunishment(punishmentInURL)) { // ako je u past kaznama i status = ignored
 
                         let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
@@ -105,8 +117,7 @@ class Game extends React.Component {
     }
 
     componentDidMount() {
-
-        // return from change password form
+        // trigera se kod setanja novog pwda
         if (Object.keys(this.props.activePunishment).length && Object.keys(this.props.currentUser).length) {
             this.changeActivePunishmentLoggedIn();
         }
@@ -128,11 +139,13 @@ class Game extends React.Component {
         const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty';
         const userJustLoggedOut = Object.keys(prevProps.activePunishment).length > 0 && Object.keys(this.props.activePunishment).length === 0 && !userLoggedIn;
         const cheating = !prevProps.cheating && this.props.cheating;
-       
-        // nema usera ili se desio logout
-        if ((appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
+        const guestPunishmentLoaded = this.props.punishmentIdFromURL ? !this.props.guestDataLoadingInProgress : true;
 
+        // nema usera ili se desio logout ili invited user
+        if ((guestPunishmentLoaded && appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
+            console.log('TEST')
             this.changeActivePunishmentNotLoggedIn();
+
             // ima usera
         } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) {
 

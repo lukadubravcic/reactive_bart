@@ -14,6 +14,7 @@ const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
     currentUser: state.common.currentUser,
+    guestUserId: state.auth.userIdFromURL,
     token: state.common.token,
     showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
     specialPunishments: state.punishment.specialPunishments
@@ -23,16 +24,16 @@ const mapDispatchToProps = dispatch => ({
     setStartingSentence: value => {
         dispatch({ type: 'STARTING_SENTANCE_CHANGED', value })
     },
-    updateBoardValue: (value) => {
+    updateBoardValue: value => {
         dispatch({ type: 'UPDATE_BOARD_VALUE', value });
     },
-    boardDisabledStatus: (disabled) => {
+    boardDisabledStatus: disabled => {
         dispatch({ type: 'TOGGLE_BOARD_DISABLED_STATUS', disabled });
     },
-    wrongBoardEntryWarning: (status) => {
+    wrongBoardEntryWarning: status => {
         dispatch({ type: 'BOARD_WRONG_ENTRY', mistake: status });
     },
-    updatePunishmentProgress: (updatedProgress) => {
+    updatePunishmentProgress: updatedProgress => {
         dispatch({ type: 'UPDATE_PUNISHMENT_PROGRESS', updatedProgress });
     },
     setActivePunishment: punishment => {
@@ -42,7 +43,10 @@ const mapDispatchToProps = dispatch => ({
         agent.Punishment.done(id, timeSpent).then(payload => dispatch({ type: 'PUNISHMENT_MARKED_DONE', newRank: payload.rank }));
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
-    updateAcceptedPunishments: (punishments) => {
+    setActivePunishmentGuestDone: (userId, punishmentId, timeSpent) => {
+        agent.Punishment.guestDone(userId, punishmentId, timeSpent);
+    },
+    updateAcceptedPunishments: punishments => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     },
     onBoardFocus: () => {
@@ -70,6 +74,9 @@ const mapDispatchToProps = dispatch => ({
     logPunishmentTry: (id, timeSpent) => {
         agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
         dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
+    },
+    logPunishmentGuestTry: (userId, punishmentId, timeSpent) => {
+        agent.Punishment.guestLogTry(userId, punishmentId, timeSpent).then(() => { console.log('Try logged') });
     },
     cheatingDetected: () => {
         dispatch({ type: 'CHEATING_DETECTED' });
@@ -119,7 +126,15 @@ class Board extends React.Component {
                 this._wrongCharPlace = null;
 
                 if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
-                    this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+
+                    if (this.props.guestPunishment !== null &&
+                        Object.keys(this.props.guestPunishment).length &&
+                        typeof this.props.guestPunishment._id !== 'undefined' &&
+                        this.props.guestPunishment._id === this.props.activePunishment._id) {
+
+                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+
+                    } else this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
                 }
 
                 this.punishmentInit();
@@ -128,7 +143,7 @@ class Board extends React.Component {
 
         this.boardTextChange = ev => {
             ev.preventDefault();
-            this.boardStateUpdate(ev.key);
+            if (this.props.boardFocused) this.boardStateUpdate(ev.key);
         };
 
         this.boardFocused = ev => {
@@ -159,9 +174,13 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-            this.props.onBoardLostFocus();
-            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
 
+            this.props.onBoardLostFocus();
+
+            if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment._id === this.props.activePunishment._id) {
+                this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+
+            } else if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 this.props.setActivePunishmentDone(this.props.activePunishment._id, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
@@ -289,7 +308,17 @@ class Board extends React.Component {
         };
 
         this.handleBeforeunload = () => {
-            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
+
+                if (this.props.guestPunishment !== null &&
+                    Object.keys(this.props.guestPunishment).length &&
+                    typeof this.props.guestPunishment._id !== 'undefined' &&
+                    this.props.guestPunishment._id === this.props.activePunishment._id) {
+
+                    this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+
+                } else this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+            }
         };
 
         this.activePunishmentChanged = () => {
@@ -387,7 +416,6 @@ class Board extends React.Component {
                             value={startingSentence + boardText}
                             disabled={this.props.boardDisabled}
                             onKeyDown={this.boardTextChange}
-                            onChange={() => { }}
                             onFocus={this.boardFocused}
                             onBlur={this.boardLostFocus}
                             onMouseOver={this.boardHover}

@@ -48,7 +48,9 @@ const Punishment = {
 	getOrdered: () => requests.get('/punishment/ordered'),
 	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
 	done: (id, timeSpent) => requests.post('/punishment/done', { id, timeSpent }),
-	logTry: (id, timeSpent) => requests.post('/punishment/log', { id: id, timeSpent: timeSpent }),
+	guestDone: (userId, punishmentId, timeSpent) => requests.post('/punishment/guestDone', { userId, punishmentId, timeSpent }),
+	logTry: (id, timeSpent) => requests.post('/punishment/log', { id, timeSpent }),
+	guestLogTry: (userId, punishmentId, timeSpent) => requests.post('/punishment/guestLog', { userId, punishmentId, timeSpent }),
 	getRandom: () => requests.get('/punishment/random'),
 	getSpecial: () => requests.get('/punishment/special')
 };

@@ -150,8 +150,7 @@ class Register extends React.Component {
                                                 type="text"
                                                 placeholder="Username"
                                                 value={username}
-                                                onChange={this.usernameChange}
-                                                required />
+                                                onChange={this.usernameChange} />
                                             {this.usernameValidationError ? <label>{this.usernameValidationError}</label> : null}
                                         </fieldset>
 

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 
 import Login from './components/login/Login';
 import Register from './components/register/Register';
-import InvitedRegister from './components/register/InvitedRegister';
 import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
@@ -120,13 +119,7 @@ class App extends React.Component {
             )
         } else { */
         return (
-            <div>
-                <nav className="navbar">
-                    <div className="container">
-                        <h1 className="navbar-brand">{this.props.common.appName}</h1>
-                    </div>
-                </nav>
-                {/* accessViaInvite ? <InvitedRegister /> : <Login /> */}
+            <div>                
                 <Login />
                 {userLoggedInAndChangePasswordForm
                     ? <NewPassword />

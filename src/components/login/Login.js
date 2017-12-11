@@ -159,12 +159,22 @@ class Login extends React.Component {
             // adblock active
             return (
                 <div className="container">
+                    <nav className="navbar">
+                        <div className="container">
+                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
+                        </div>
+                    </nav>
                     <h3>Can't login while using Adblock, please disable it.</h3>
                 </div>
             )
         } else if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
             return (
                 <div className="auth-page">
+                    <nav className="navbar">
+                        <div className="container">
+                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
+                        </div>
+                    </nav>
                     <div className="container page">
                         <div className="row">
                             <div className="col-md-6 offset-md-3 col-xs-12">
@@ -199,7 +209,7 @@ class Login extends React.Component {
                                                     required />
                                                 {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
                                             </fieldset>
-                                            
+
 
                                             <a onClick={this.showResetPasswordForm}>
                                                 <u className="a">Forgot password?</u>
@@ -226,8 +236,13 @@ class Login extends React.Component {
         } else if (this.props.common.token !== null && this.props.auth.shownForm === 'login') {
             return (
                 <div className="container">
+                    <nav className="navbar">
+                        <div className="container">
+                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
+                        </div>
+                    </nav>
                     {this.props.username ?
-                        <h1 className="text-xs-left">{this.props.common.currentUser.username}</h1>
+                        <h1 className="text-xs-left">{this.props.username}</h1>
                         : <SetUsername />}
                     <button
                         type="button"

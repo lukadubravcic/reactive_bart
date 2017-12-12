@@ -12,9 +12,11 @@ export function capitalizeFirstLetter(string) {
 
 export function checkIfIgnoredPunishment(punishment) {
 
+    if (typeof punishment.ignored !== 'undefined' && punishment.ignored !== null) return true;
+
     let createdPlus30Days = (new Date(punishment.created).getTime()) + (30 * 24 * 60 * 60 * 1000);
 
-    if ((createdPlus30Days - Date.now() < 0) && (punishment.accepted === null)) return true // IGNORED
+    if ((createdPlus30Days - Date.now() < 0) && (punishment.accepted === null)) return true; // IGNORED
 
     return false; // NOT IGNORED
 }

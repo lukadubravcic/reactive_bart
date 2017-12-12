@@ -74,8 +74,6 @@ class App extends React.Component {
         console.log(queryStringData);
         console.log(window.location.search);
 
-
-
         // id kazne
         if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 

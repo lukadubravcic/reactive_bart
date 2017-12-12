@@ -57,7 +57,7 @@ const mapDispatchToProps = dispatch => ({
                 }
             } else {
                 // TODO: alert - neispravan login
-                console.log('Login payload === null')
+                console.log('Login payload === null');
             }
         });
     },
@@ -210,11 +210,6 @@ class Login extends React.Component {
                                                 {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
                                             </fieldset>
 
-
-                                            <a onClick={this.showResetPasswordForm}>
-                                                <u className="a">Forgot password?</u>
-                                            </a>
-
                                             {errMsg ? (<label>{errMsg}</label>) : null}
 
                                             <button
@@ -223,7 +218,12 @@ class Login extends React.Component {
                                                 type="submit"
                                                 disabled={!formValid}>
                                                 Login
-                                        </button>
+                                            </button>
+
+                                            <br />
+                                            <a onClick={this.showResetPasswordForm}>
+                                                <u className="a">Forgot password?</u>
+                                            </a>
 
                                         </fieldset>
                                     </form>

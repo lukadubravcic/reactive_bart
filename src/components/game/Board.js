@@ -482,11 +482,11 @@ function inArray(target, array) {
     return false;
 }
 
-function getWrittenText(punishment, charsWritten) {
+/* function getWrittenText(punishment, charsWritten) {
     let x = Math.ceil(charsWritten / punishment.length);
     let tmpString = punishment.repeat(x);
     return tmpString.slice(0, charsWritten);
-}
+} */
 
 function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
     return punishment.created ? false : true;

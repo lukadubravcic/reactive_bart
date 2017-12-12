@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
@@ -137,4 +137,4 @@ class InvitedRegister extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvitedRegister);
+export default connect(mapStateToProps, mapDispatchToProps)(InvitedRegister); */

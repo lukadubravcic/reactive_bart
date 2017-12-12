@@ -47,11 +47,6 @@ class PastTab extends React.Component {
             this.props.changeShownPunishments(firstPage, 1);
         };
 
-        /* this.loadAndShowPastPunishments = (punishments) => { // poziv kada stigne payload sa past punishmentima
-            this.props.onLoadedPastPunishments(punishments);
-            this._showFirstPage();
-        }; */
-
         this.changeElement = (element) => {
             let ASC = ' (ʌ)';
             let DESC = ' (v)';

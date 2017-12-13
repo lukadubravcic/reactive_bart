@@ -151,6 +151,7 @@ class Login extends React.Component {
         const password = this.props.auth.password;
         const errMsg = this.props.auth._errMsg;
         const punishmentIdFromURL = this.props.game.punishmentIdFromURL;
+        const userIdFromURL = this.props.auth.userIdFromURL;
         const showSetNewPasswordComponent = this.props.showSetNewPasswordComponent;
         const showResetPasswordForm = this.props.auth.showResetPasswordForm;
         const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
@@ -179,7 +180,9 @@ class Login extends React.Component {
                         <div className="row">
                             <div className="col-md-6 offset-md-3 col-xs-12">
                                 <h1 className="text-xs-center">Sign In</h1>
-                                {punishmentIdFromURL ? <label>Login to proceed completing your punishment</label> : null}
+
+                                {punishmentIdFromURL && !userIdFromURL ? <label>Login to proceed completing your punishment</label> : null}
+
                                 <p className="text-xs-center">
                                     <a onClick={this.showRegisterForm}>
                                         <u className="a">Create account</u>

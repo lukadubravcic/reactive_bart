@@ -6,6 +6,7 @@ const defaultState = {
     rePassword: '',
     shownForm: 'login',
     _errMsg: null,
+    serverAnswer: null,
     showSetNewPasswordComponent: false,
     showResetPasswordForm: false,
 }
@@ -17,7 +18,7 @@ export default (state = defaultState, action) => {
         case 'REGISTER_LOGIN_TOGGLE':
             return { ...defaultState, shownForm: state.shownForm === 'login' ? 'register' : 'login' };
         case 'REGISTER':
-            return { ...defaultState };
+            return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
         case 'REGISTER_ATTEMPT':
             return { ...state, _errMsg: defaultState._errMsg };
         case 'FAILED_REGISTER':
@@ -41,9 +42,9 @@ export default (state = defaultState, action) => {
         case 'RESET_PASSWORD_FAILED':
             return { ...state, _errMsg: action.errMsg };
         case 'USERID_IN_URL':
-            return { ...state, userIdFromURL: action.id };
-        case 'FAULTY_SPECIAL_LOGIN':
-            return { ...state, userIdFromURL: null };
+            return { ...state, userIdFromURL: action.id, shownForm: 'register' };
+        /* case 'FAULTY_SPECIAL_LOGIN':
+            return { ...state, userIdFromURL: null }; */
         case 'LOGOUT':
             return defaultState;
         default:

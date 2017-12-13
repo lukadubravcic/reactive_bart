@@ -7,6 +7,7 @@ const defaultState = {
     _errMsg: null,
     rank: null,
     guestDataLoadingInProgress: false,
+    guestAccessMsg: null
 }
 
 export default (state = defaultState, action) => {
@@ -26,7 +27,7 @@ export default (state = defaultState, action) => {
         case 'GUEST_PUNISHMENT_LOADING':
             return { ...state, guestDataLoadingInProgress: true }
         case 'GUEST_PUNISHMENT_INVALID':
-            return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress };
+            return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestAccessMsg: action.msg };
         case 'UPDATE_SET_USERNAME_FIELD':
             return { ...state, usernameSet: action.value };
         case 'USERNAME_SET':

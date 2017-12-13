@@ -32,8 +32,9 @@ const mapDispatchToProps = dispatch => ({
             if (payload && payload.hasOwnProperty('errMsg')) {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
 
-            } else if (payload) {
-                dispatch({ type: 'REGISTER', payload });
+            } else if (typeof payload.message !== 'undefined') {
+                
+                dispatch({ type: 'REGISTER', serverAnswer: payload.message });
 
             } else {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
@@ -115,6 +116,7 @@ class Register extends React.Component {
         const password = this.props.password;
         const rePassword = this.props.rePassword;
         const _errMsg = this.props._errMsg;
+        const serverAnswer = this.props.serverAnswer;
 
         const formValid =
             this.usernameValidationError === null &&
@@ -192,7 +194,9 @@ class Register extends React.Component {
                                             disabled={!formValid}>
                                             Register
                                         </button>
+
                                         {_errMsg ? <label>{_errMsg}</label> : null}
+                                        {serverAnswer ? <label>{serverAnswer}</label> : null}
 
                                     </fieldset>
                                 </form>

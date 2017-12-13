@@ -21,7 +21,7 @@ export function checkIfIgnoredPunishment(punishment) {
     return false; // NOT IGNORED
 }
 
-export function getPunishmentIdFromURL() {
+/* export function getPunishmentIdFromURL() {
 
     if (!window.location.search.length) return null; // prazan string
 
@@ -43,7 +43,7 @@ export function getUserIDfromURL() {
     if (queryParamString.split('=')[0] !== 'uid' || !queryParamString.split('=')[1].length) return null;
 
     return queryParamString.split('=')[1];
-}
+} */
 
 export function getQueryStringData() {
     let match,
@@ -53,9 +53,53 @@ export function getQueryStringData() {
         query = window.location.search.substring(1);
 
     let urlParams = {};
-    
+
     while (match = search.exec(query))
         urlParams[decode(match[1])] = decode(match[2]);
 
     return urlParams;
+}
+
+export function getPunishmentStatus(punishment) {
+
+    let punishmentStatus = 'UNKNOWN';
+
+    const acceptedTimeDefined = typeof punishment.accepted !== 'undefined' && punishment.accepted !== null;
+    const givenUpTimeDefined = typeof punishment.given_up !== 'undefined' && punishment.given_up !== null;
+    const deadlinePassed = typeof punishment.deadline !== 'undefined' && punishment.deadline !== null && hasPunishmentDeadlinePassed(punishment.deadline);
+    const failedTimeDefined = typeof punishment.failed !== 'undefined' && punishment.failed !== null;
+    const doneTimeDefined = typeof punishment.done !== 'undefined' && punishment.done !== null;
+    const punishmentIgnored = checkIfIgnoredPunishment(punishment);
+    const rejectedTimeDefined = typeof punishment.rejected !== 'undefined' && punishment.rejected !== null;
+    const waitingForAccept = !punishmentIgnored && !deadlinePassed;
+
+    if (acceptedTimeDefined) {
+        // ako je kazna acceptana, moze biti inprogress (accepted), givenup, done, failed
+        if (givenUpTimeDefined) {
+            punishmentStatus = 'GIVEN UP';
+        } else if (failedTimeDefined || (deadlinePassed && !doneTimeDefined)) {
+            punishmentStatus = 'FAILED';
+        } else if (doneTimeDefined) {
+            punishmentStatus = 'DONE';
+        } else {
+            punishmentStatus = 'ACCEPTED';
+        }
+    } else {
+        // ignored, rejected, pending, failed (nije acceptano, deadline je prosao)
+        if (punishmentIgnored) {
+            punishmentStatus = 'IGNORED';
+        } else if (rejectedTimeDefined) {
+            punishmentStatus = 'REJECTED';
+        } else if (waitingForAccept) {
+            punishmentStatus = 'PENDING';
+        } else if (deadlinePassed) {
+            punishmentStatus = 'FAILED';
+        }
+    }
+
+    return punishmentStatus;
+}
+
+export function hasPunishmentDeadlinePassed(deadline) {
+    return (Date.now() > new Date(deadline).getTime());
 }

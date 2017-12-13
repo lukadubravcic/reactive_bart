@@ -42,11 +42,22 @@ const mapDispatchToProps = dispatch => ({
     handleInvitedGuest: (userId, punishmentId) => {
         dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
         agent.Auth.getPunishmentAsGuest(userId, punishmentId).then(payload => {
+            if (payload) {
 
-            dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment });
+                if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
+                    console.log(payload.msg)
+                    dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: payload.msg });
 
+                } else if (
+                    typeof payload.guestPunishment !== 'undefined'
+                    && payload.guestPunishment !== null
+                    && Object.keys(payload.guestPunishment).length) {
+
+                    dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment });
+                }
+            }
         }, failed => {
-            dispatch({ type: 'GUEST_PUNISHMENT_INVALID' });
+            dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: 'Could not load desired punishment.' });
         });
     },
     setPunishmentIdFromURL: id => {
@@ -68,14 +79,12 @@ class App extends React.Component {
     componentDidMount() {
 
         // hendlaj invited usera kao guesta
-
-
         let queryStringData = getQueryStringData();
         console.log(queryStringData);
         console.log(window.location.search);
 
         // id kazne
-        if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
+        if (typeof queryStringData.id !== 'undefined' /* && typeof queryStringData.uid === 'undefined' */) this.props.setPunishmentIdFromURL(queryStringData.id);
 
         let token = window.localStorage.getItem('token');
 
@@ -110,20 +119,24 @@ class App extends React.Component {
     render() {
 
         const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
-        const accessViaInvite = !!this.props.auth.userIdFromURL;
-        /* if (this.props.auth.userIdFromURL) {
-            return (
-                
-            )
-        } else { */
+
         return (
-            <div>                
+            <div>
                 <Login />
                 {userLoggedInAndChangePasswordForm
                     ? <NewPassword />
                     : <div>
                         <Register />
                         <hr />
+                        {
+                            this.props.common.guestAccessMsg
+                                ? (
+                                    <div className='container'>
+                                        <label>{this.props.common.guestAccessMsg}</label>
+                                    </div>
+                                )
+                                : null
+                        }
                         <Game />
                         <hr />
                         <PunishmentCreator />

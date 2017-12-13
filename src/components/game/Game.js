@@ -1,6 +1,7 @@
 import React from 'react';
 import Board from './Board';
 import Timer from './Timer';
+import Ads from '../ads/Ads';
 import { connect } from 'react-redux';
 
 import { checkIfIgnoredPunishment } from '../../helpers/helpers';
@@ -143,7 +144,7 @@ class Game extends React.Component {
 
         // nema usera ili se desio logout ili invited user
         if ((guestPunishmentLoaded && appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
-            
+
             this.changeActivePunishmentNotLoggedIn();
 
             // ima usera
@@ -161,8 +162,14 @@ class Game extends React.Component {
     render() {
         return (
             <div className="container">
-                <Timer />
-                <Board />
+                <div style={{ float: "left" }}>
+                    <Timer />
+                    <Board />
+                </div>
+                <div style={{ overflow: "hidden" }}>
+                    <Ads />
+                </div>
+                <br style={{ "clear": "left" }} />
             </div>
         );
     }

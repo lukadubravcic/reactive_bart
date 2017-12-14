@@ -103,3 +103,10 @@ export function getPunishmentStatus(punishment) {
 export function hasPunishmentDeadlinePassed(deadline) {
     return (Date.now() > new Date(deadline).getTime());
 }
+
+export function trimExcessSpaces(whatToWrite) {
+
+    let trimmed = whatToWrite.replace(/\s+/g, ' ').trim();
+
+    return trimmed;
+}

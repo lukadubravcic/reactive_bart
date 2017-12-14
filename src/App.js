@@ -84,26 +84,35 @@ class App extends React.Component {
         console.log(window.location.search);
 
         // id kazne
-        if (typeof queryStringData.id !== 'undefined' /* && typeof queryStringData.uid === 'undefined' */) this.props.setPunishmentIdFromURL(queryStringData.id);
+        if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 
         let token = window.localStorage.getItem('token');
 
+        if (token) {
+
+            this.props.onLoad(token);
+
+        } else if (typeof queryStringData.uid !== 'undefined') {
+            this.props.setUserIdFromUrl(queryStringData.uid);
+            this.props.handleInvitedGuest(queryStringData.uid, queryStringData.id);
+
+        }
         // ako postoji user id u query stringu potencijalno pobrisi token
         // pa dohvati podatke o kazni
 
-        if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
+        /* if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
             // sprijeci 
             token && window.localStorage.removeItem('token');
             token = null;
 
             // set usera i dohvacanje kazne
             this.props.setUserIdFromUrl(queryStringData.uid);
-            this.props.handleInvitedGuest(queryStringData.uid, queryStringData.id);
-
+            
         } else {
             token && this.props.onLoad(token);
-        }
+        } */
 
+        // MICANJE QUERY STRINGA IZ URL-a 
         // prettifyURL();
 
         // dohvati specijalne i random kazne sa be-a.

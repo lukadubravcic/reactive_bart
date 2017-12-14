@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import agent from '../../agent';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import { trimExcessSpaces } from '../../helpers/helpers';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -136,8 +137,8 @@ class PunishmentCreator extends React.Component {
             isMail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
             submitData.deadlineDate = deadlineChecked ? deadlineDate : null;
-            submitData.whatToWrite = whatToWriteField;
-            submitData.why = whyField;
+            submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
+            submitData.why = trimExcessSpaces(whyField);
 
             this.props.onSubmit(submitData, this.props.orderedPunishments, this.enableSubmit);
         }

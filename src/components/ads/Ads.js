@@ -4,7 +4,7 @@ const Ads = props => {
     return (
         <div style={{
             height: '500px',
-            borderStyle: 'solid',
+            border: '1px solid',
             marginLeft: '100px'
         }}>
             Ads placeholder

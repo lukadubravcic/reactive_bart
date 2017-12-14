@@ -1,6 +1,7 @@
 import superagent from 'superagent';
 
-const API_ROOT = 'http://localhost:8000';
+import { API_ROOT } from './constants/constants';
+
 
 const encode = encodeURIComponent;
 

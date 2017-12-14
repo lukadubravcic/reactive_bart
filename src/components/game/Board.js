@@ -7,6 +7,7 @@ import ProgressBar from './ProgressBar';
 import chalkboardImg from '../../assets/chalkboard.jpg';
 // import { text } from 'superagent/lib/node/parsers';
 import cheatingCheck from '../../helpers/cheatingCheck';
+import { API_ROOT } from '../../constants/constants';
 
 const UPPERCASE = false;
 
@@ -308,6 +309,9 @@ class Board extends React.Component {
         };
 
         this.handleBeforeunload = () => {
+
+            const xhttp = new XMLHttpRequest();
+
             if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
 
                 if (this.props.guestPunishment !== null &&
@@ -315,9 +319,22 @@ class Board extends React.Component {
                     typeof this.props.guestPunishment._id !== 'undefined' &&
                     this.props.guestPunishment._id === this.props.activePunishment._id) {
 
-                    this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+                    xhttp.open("POST", `${API_ROOT}/punishment/guestLog`, false);
+                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhttp.send(`userId=${this.props.guestUserId}&punishmentId=${this.props.activePunishment._id}&timeSpent=${this.props.timeSpent}`);
+                    xhttp.send();
 
-                } else this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+                    //this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+
+                } else {
+
+                    /* xhttp.open("POST", `${API_ROOT}/punishment/log`, false);
+                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    xhttp.send(`id=${this.props.activePunishment._id}&timeSpent=${this.props.timeSpent}`);
+                    xhttp.send(); */
+
+                    this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+                }
             }
         };
 
@@ -344,6 +361,8 @@ class Board extends React.Component {
     }
 
     componentDidMount() {
+        // special snowflake - zahtjeva sinkroni ajax request, te radi browser supporta, mora biti i beforeunload i onunload
+        // window.onunload = window.onbeforeunload
         window.addEventListener("beforeunload", this.handleBeforeunload);
     }
 

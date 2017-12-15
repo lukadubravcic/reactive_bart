@@ -18,7 +18,8 @@ const mapStateToProps = state => ({
     guestUserId: state.auth.userIdFromURL,
     token: state.common.token,
     showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
-    specialPunishments: state.punishment.specialPunishments
+    specialPunishments: state.punishment.specialPunishments,
+    showTooltips: state.prefs.show_tooltips
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -108,7 +109,7 @@ class Board extends React.Component {
 
         this.spongeHover = ev => {
             // igra u tijeku -> pokazi tooltip
-            if (this.props.gameInProgress) {
+            if (this.props.gameInProgress && this.props.showTooltips) {
                 this.props.onSpongeHover();
             }
         }
@@ -167,7 +168,7 @@ class Board extends React.Component {
         };
 
         this.boardHover = ev => {
-            if (!this.props.gameInProgress) this.props.onBoardHover();
+            if (!this.props.gameInProgress && this.props.showTooltips) this.props.onBoardHover();
         };
 
         this.boardHoverOut = ev => {

@@ -32,7 +32,7 @@ const requests = {
 
 const Auth = {
 	current: () => requests.get('/users'),
-	login: (email, password) => requests.post('/users/login', { email, password }),
+	login: data => requests.post('/users/login', { ...data }),
 	logout: () => requests.post('/users/logout'),
 	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
 	specialRegister: (userID, password) => requests.post('/users/sregister', { userID, password }),

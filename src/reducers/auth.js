@@ -1,5 +1,6 @@
 const defaultState = {
     userIdFromURL: null,
+    loginWhom: '',
     username: '',
     email: '',
     password: '',
@@ -20,13 +21,13 @@ export default (state = defaultState, action) => {
         case 'REGISTER':
             return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
         case 'REGISTER_ATTEMPT':
-            return { ...state, _errMsg: defaultState._errMsg };
+            return { ...state, _errMsg: defaultState._errMsg, serverAnswer: defaultState.serverAnswer };
         case 'FAILED_REGISTER':
-            return { ...state, _errMsg: action.errMsg };
+            return { ...state, _errMsg: action.errMsg, password: defaultState.password, rePassword: defaultState.rePassword };
         case 'LOGIN':
             return { ...defaultState };
         case 'LOGIN_ATTEMPT':
-            return { ...state, _errMsg: defaultState._errMsg };
+            return { ...state, _errMsg: defaultState._errMsg, password: defaultState.password };
         case 'LOGIN_FAILED':
             return { ...state, _errMsg: action.errMsg };
         case 'SHOW_CHANGE_PASSWORD_FORM':

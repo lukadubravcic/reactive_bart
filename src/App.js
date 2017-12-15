@@ -29,6 +29,7 @@ const mapDispatchToProps = dispatch => ({
                         type: 'APP_LOAD',
                         token,
                         rank: payload.rank,
+                        pref: typeof payload.pref !== 'undefined' ? payload.pref : null,
                         user: {
                             _id: payload._id,
                             email: payload.email,

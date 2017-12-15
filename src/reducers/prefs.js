@@ -11,6 +11,8 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'APP_LOAD':
+            return { ...state, ...action.pref };
         case 'PREFS_UPDATED':
             return { ...state, ...action.newPref };
         case 'LOGIN':

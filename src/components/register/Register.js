@@ -1,12 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
-// import request from 'superagent';
-
-const MIN_USERNAME_LENGTH = 4;
-const MAX_USERNAME_LENGTH = 20;
-const MIN_PASSWORD_LENGTH = 3;
-const MAX_PASSWORD_LENGTH = 20;
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -26,20 +20,20 @@ const mapDispatchToProps = dispatch => ({
     onSubmit: (username, email, password, enableSubmit) => {
         dispatch({ type: 'REGISTER_ATTEMPT' });
 
-        agent.Auth.register(username, email, password).then((payload) => {
+        agent.Auth.register(username, email, password).then(payload => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
             enableSubmit();
+
             if (payload && payload.hasOwnProperty('errMsg')) {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
 
             } else if (typeof payload.message !== 'undefined') {
-                
                 dispatch({ type: 'REGISTER', serverAnswer: payload.message });
-
+                
             } else {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
             }
-        });
+        }, err => console.log(err));
     },
 
     backToLogin: () => {
@@ -52,57 +46,27 @@ class Register extends React.Component {
     constructor() {
         super();
 
-        this.usernameValidationError = null;
-        this.emailValidationError = null;
-        this.passwordValidationError = null;
-
         this.usernameChange = ev => {
-            this.props.onUsernameChange(ev.target.value)
-
-            if ((ev.target.value.length < MIN_USERNAME_LENGTH && ev.target.value.length !== 0) || ev.target.value.length > MAX_USERNAME_LENGTH) {
-
-                this.usernameValidationError = 'Username needs to be between ' + MIN_USERNAME_LENGTH + ' and ' + MAX_USERNAME_LENGTH + ' characters long.';
-
-
-            } else {
-
-                this.usernameValidationError = null;
-            }
+            this.props.onUsernameChange(ev.target.value);
         };
 
         this.emailChange = ev => {
             this.props.onEmailChange(ev.target.value);
-
-            if (ev.target.value.length > 0 && !isMail(ev.target.value)) {
-
-                this.emailValidationError = 'Email not valid.';
-
-            } else {
-
-                this.emailValidationError = null;
-            }
         };
 
         this.passwordChange = ev => {
             this.props.onPasswordChange(ev.target.value);
-
-            if (ev.target.value.length !== 0 && (ev.target.value.length < MIN_PASSWORD_LENGTH || ev.target.value.length > MAX_PASSWORD_LENGTH)) {
-
-                this.passwordValidationError = 'Password needs to be between ' + MIN_PASSWORD_LENGTH + ' and ' + MAX_PASSWORD_LENGTH + ' characters long.';
-
-
-            } else {
-
-                this.passwordValidationError = null;
-            }
         };
 
         this.rePasswordChange = ev => this.props.onRePasswordChange(ev.target.value);
 
-        this.submitForm = (username, email, password) => ev => {
+        this.submitForm = (username, email, password, rePassword) => ev => {
             ev.preventDefault();
-            this.refs.registerBtn.setAttribute("disabled", "disabled");
-            this.props.onSubmit(username, email, password, this.enableSubmit);
+
+            if (password === rePassword) {
+                this.refs.registerBtn.setAttribute("disabled", "disabled");
+                this.props.onSubmit(username, email, password, this.enableSubmit);
+            }
         }
 
         this.enableSubmit = () => {
@@ -111,21 +75,13 @@ class Register extends React.Component {
     }
 
     render() {
+
         const username = this.props.username;
         const email = this.props.email;
         const password = this.props.password;
         const rePassword = this.props.rePassword;
         const _errMsg = this.props._errMsg;
         const serverAnswer = this.props.serverAnswer;
-
-        const formValid =
-            this.usernameValidationError === null &&
-            this.emailValidationError === null &&
-            this.passwordValidationError === null &&
-            username !== '' &&
-            email !== '' &&
-            password !== '' &&
-            password === rePassword;
 
         if (this.props.shownForm === 'register') {
             return (
@@ -143,18 +99,8 @@ class Register extends React.Component {
 
                                 <h1 className="text-xs-center bottomMarginToTwenty">Register</h1>
 
-                                <form onSubmit={this.submitForm(username, email, password)}>
+                                <form onSubmit={this.submitForm(username, email, password, rePassword)}>
                                     <fieldset>
-
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="text"
-                                                placeholder="Username"
-                                                value={username}
-                                                onChange={this.usernameChange} />
-                                            {this.usernameValidationError ? <label>{this.usernameValidationError}</label> : null}
-                                        </fieldset>
 
                                         <fieldset className="form-group">
                                             <input
@@ -164,7 +110,15 @@ class Register extends React.Component {
                                                 value={email}
                                                 onChange={this.emailChange}
                                                 required />
-                                            {this.emailValidationError ? <label>{this.emailValidationError}</label> : null}
+                                        </fieldset>
+
+                                        <fieldset className="form-group">
+                                            <input
+                                                className="form-control form-control-lg"
+                                                type="text"
+                                                placeholder="Username"
+                                                value={username}
+                                                onChange={this.usernameChange} />
                                         </fieldset>
 
                                         <fieldset className="form-group">
@@ -173,8 +127,8 @@ class Register extends React.Component {
                                                 type="password"
                                                 placeholder="Password"
                                                 value={password}
-                                                onChange={this.passwordChange} />
-                                            {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
+                                                onChange={this.passwordChange}
+                                                required />
                                         </fieldset>
 
                                         <fieldset className="form-group">
@@ -183,15 +137,16 @@ class Register extends React.Component {
                                                 type="password"
                                                 placeholder="Repeat password"
                                                 value={rePassword}
-                                                onChange={this.rePasswordChange} />
+                                                onChange={this.rePasswordChange}
+                                                required />
+
                                             {password !== rePassword && rePassword.length ? <label>Passwords don't match.</label> : null}
                                         </fieldset>
 
                                         <button
                                             ref="registerBtn"
                                             className="btn btn-lg btn-primary pull-xs-right"
-                                            type="submit"
-                                            disabled={!formValid}>
+                                            type="submit">
                                             Register
                                         </button>
 
@@ -212,9 +167,5 @@ class Register extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(Register);
 
 
-function isMail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-}
 
 

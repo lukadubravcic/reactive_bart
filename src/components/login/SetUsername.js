@@ -97,6 +97,8 @@ class SetUsername extends React.Component {
                         Set username
                     </button>
                 </form>
+
+                <br />
             </div>
         )
     }

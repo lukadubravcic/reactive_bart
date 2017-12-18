@@ -9,7 +9,7 @@ const defaultState = {
     _errMsg: null,
     serverAnswer: null,
     showSetNewPasswordComponent: false,
-    showResetPasswordForm: false,
+    showResetPasswordForm: false
 }
 
 export default (state = defaultState, action) => {
@@ -21,13 +21,13 @@ export default (state = defaultState, action) => {
         case 'REGISTER':
             return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
         case 'REGISTER_MAIL_INVALID':
-            return { ...state, username: state.email, email: defaultState.email }
+            return { ...state, username: state.email, email: defaultState.email, _errMsg: action.errMsg };
         case 'REGISTER_ATTEMPT':
             return { ...state, _errMsg: defaultState._errMsg, serverAnswer: defaultState.serverAnswer };
         case 'FAILED_REGISTER':
             return { ...state, _errMsg: action.errMsg, password: defaultState.password, rePassword: defaultState.rePassword };
         case 'REGISTER_EXISTING_MAIL':
-            return { ...state, shownForm: 'login', loginWhom: state.email, password: defaultState.password };
+            return { ...state, shownForm: 'login', loginWhom: state.email, password: defaultState.password, _errMsg: action.errMsg };
         case 'LOGIN':
             return { ...defaultState };
         case 'LOGIN_ATTEMPT':
@@ -48,8 +48,10 @@ export default (state = defaultState, action) => {
             return { ...state, _errMsg: action.errMsg };
         case 'USERID_IN_URL':
             return { ...state, userIdFromURL: action.id };
-        /* case 'FAULTY_SPECIAL_LOGIN':
-            return { ...state, userIdFromURL: null }; */
+        case 'GUEST_PUNISHMENT_LOADED':
+            return { ...state, loginWhom: action.guestUser.email };
+        case 'USERNAME_SET_AS_GUEST':
+            return { ...state, loginWhom: action.user.username };
         case 'LOGOUT':
             return defaultState;
         default:

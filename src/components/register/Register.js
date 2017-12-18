@@ -27,10 +27,10 @@ const mapDispatchToProps = dispatch => ({
             const isMailValid = isMail(email);
 
             if (!isMailValid) {
-                dispatch({ type: 'REGISTER_MAIL_INVALID' });
+                dispatch({ type: 'REGISTER_MAIL_INVALID', errMsg: 'Invalid email.' });
 
             } else if (payload.errMsg === 'User with that email exists.') {
-                dispatch({ type: 'REGISTER_EXISTING_MAIL' });
+                dispatch({ type: 'REGISTER_EXISTING_MAIL', errMsg: 'Existing email. Try logging in.' });
 
             } else if (payload && payload.hasOwnProperty('errMsg')) {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });

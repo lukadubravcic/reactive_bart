@@ -19,7 +19,8 @@ const mapStateToProps = state => ({
     token: state.common.token,
     showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
     specialPunishments: state.punishment.specialPunishments,
-    showTooltips: state.prefs.show_tooltips
+    showTooltips: state.prefs.show_tooltips,
+    soundEnabled: state.prefs.sound
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -222,7 +223,7 @@ class Board extends React.Component {
                 this._wrongCharPlace = null;
             }
 
-            this.playTypeSound(char);
+            if (this.props.soundEnabled) this.playTypeSound(char);
 
             return true;
         };

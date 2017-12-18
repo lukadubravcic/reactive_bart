@@ -156,6 +156,11 @@ class Login extends React.Component {
         const userIdFromURL = this.props.auth.userIdFromURL;
         const showSetNewPasswordComponent = this.props.showSetNewPasswordComponent;
         const showResetPasswordForm = this.props.auth.showResetPasswordForm;
+        const guestUserSetWithNoUsername = this.props.common.guestUser !== null
+            && Object.keys(this.props.common.guestUser).length
+            && typeof this.props.common.guestUser.email !== 'undefined'
+            && typeof this.props.common.guestUser.username !== 'undefined'
+            && this.props.common.guestUser.username === null;
         // const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
 
         if (window.canRunAds === undefined) {
@@ -231,9 +236,13 @@ class Login extends React.Component {
                                         </fieldset>
                                     </form>
                                 }
+
+                                
+
                             </div>
                         </div>
                     </div>
+                    {guestUserSetWithNoUsername ? <SetUsername /> : null}
                 </div>
             );
         } else if (this.props.common.token !== null && this.props.auth.shownForm === 'login') {

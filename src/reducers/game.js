@@ -25,9 +25,9 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-    
+
     switch (action.type) {
-        
+
         case 'STARTING_SENTANCE_CHANGED':
             return { ...state, startingSentence: action.value }
         case 'UPDATE_BOARD_VALUE':
@@ -90,6 +90,8 @@ export default (state = defaultState, action) => {
                 startingSentence: defaultState.startingSentence
             };
         case 'USERNAME_SET':
+            return { ...state, activePunishment: action.specialPunishment };
+        case 'USERNAME_SET_AS_GUEST':
             return { ...state, activePunishment: action.specialPunishment };
         /* case 'STOPWATCH_RESET':
             return { ...state, timerValue: defaultState.timerValue, gameInProgress: false }; */

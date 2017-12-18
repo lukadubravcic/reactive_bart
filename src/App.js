@@ -44,7 +44,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
         agent.Auth.getPunishmentAsGuest(userId, punishmentId).then(payload => {
             if (payload) {
-
+                console.log(payload);
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
                     console.log(payload.msg)
                     dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: payload.msg });
@@ -52,9 +52,11 @@ const mapDispatchToProps = dispatch => ({
                 } else if (
                     typeof payload.guestPunishment !== 'undefined'
                     && payload.guestPunishment !== null
-                    && Object.keys(payload.guestPunishment).length) {
+                    && Object.keys(payload.guestPunishment).length
+                    && payload.guestUser !== null
+                    && Object.keys(payload.guestUser).length) {
 
-                    dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment });
+                    dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
                 }
             }
         }, failed => {
@@ -89,13 +91,14 @@ class App extends React.Component {
 
         let token = window.localStorage.getItem('token');
 
-        if (token) {
-
-            this.props.onLoad(token);
-
-        } else if (typeof queryStringData.uid !== 'undefined') {
+        if (typeof queryStringData.uid !== 'undefined') {
             this.props.setUserIdFromUrl(queryStringData.uid);
             this.props.handleInvitedGuest(queryStringData.uid, queryStringData.id);
+            window.localStorage.removeItem('token');
+
+        } else if (token) {
+
+            this.props.onLoad(token);
 
         }
         // ako postoji user id u query stringu potencijalno pobrisi token

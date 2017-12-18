@@ -1,6 +1,7 @@
 import superagent from 'superagent';
 
 import { API_ROOT } from './constants/constants';
+import { request } from 'https';
 
 
 const encode = encodeURIComponent;
@@ -37,6 +38,7 @@ const Auth = {
 	register: (username, email, password) => requests.post('/users/register', { username, email, password }),
 	specialRegister: (userID, password) => requests.post('/users/sregister', { userID, password }),
 	setUsername: username => requests.post('/users/username', { username }),
+	setUsernameAsGuest: (username, email) => requests.post('/users/guestUsername', { username, email }),
 	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),
 	forgotPassword: email => requests.post('/users/forgot', { email }),
 	getPunishmentAsGuest: (userId, punishmentId) => requests.post('/users/guest', { userId, punishmentId })

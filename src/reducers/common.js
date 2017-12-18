@@ -7,7 +7,8 @@ const defaultState = {
     _errMsg: null,
     rank: null,
     guestDataLoadingInProgress: false,
-    guestAccessMsg: null
+    guestAccessMsg: null,
+    guestUser: null
 }
 
 export default (state = defaultState, action) => {
@@ -23,7 +24,7 @@ export default (state = defaultState, action) => {
         case 'APP_LOAD':
             return { ...state, token: action.token || null, currentUser: action.user, loadInProgress: defaultState.loadInProgress, rank: action.rank };
         case 'GUEST_PUNISHMENT_LOADED':
-            return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress };
+            return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestUser: action.guestUser };
         case 'GUEST_PUNISHMENT_LOADING':
             return { ...state, guestDataLoadingInProgress: true }
         case 'GUEST_PUNISHMENT_INVALID':
@@ -32,6 +33,8 @@ export default (state = defaultState, action) => {
             return { ...state, usernameSet: action.value };
         case 'USERNAME_SET':
             return { ...state, currentUser: action.user };
+        case 'USERNAME_SET_AS_GUEST':
+            return { ...state, guestUser: action.user };
         case 'LOADING_IN_PROGRESS':
             return { ...state, loadInProgress: true };
         case 'SET_USERNAME_ERROR':

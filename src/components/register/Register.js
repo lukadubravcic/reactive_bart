@@ -24,12 +24,20 @@ const mapDispatchToProps = dispatch => ({
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
             enableSubmit();
 
-            if (payload && payload.hasOwnProperty('errMsg')) {
+            const isMailValid = isMail(email);
+
+            if (!isMailValid) {
+                dispatch({ type: 'REGISTER_MAIL_INVALID' });
+
+            } else if (payload.errMsg === 'User with that email exists.') {
+                dispatch({ type: 'REGISTER_EXISTING_MAIL' });
+
+            } else if (payload && payload.hasOwnProperty('errMsg')) {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
 
             } else if (typeof payload.message !== 'undefined') {
                 dispatch({ type: 'REGISTER', serverAnswer: payload.message });
-                
+
             } else {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
             }
@@ -168,4 +176,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Register);
 
 
 
-
+function isMail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}

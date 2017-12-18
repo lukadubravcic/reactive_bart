@@ -20,10 +20,14 @@ export default (state = defaultState, action) => {
             return { ...defaultState, shownForm: state.shownForm === 'login' ? 'register' : 'login' };
         case 'REGISTER':
             return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
+        case 'REGISTER_MAIL_INVALID':
+            return { ...state, username: state.email, email: defaultState.email }
         case 'REGISTER_ATTEMPT':
             return { ...state, _errMsg: defaultState._errMsg, serverAnswer: defaultState.serverAnswer };
         case 'FAILED_REGISTER':
             return { ...state, _errMsg: action.errMsg, password: defaultState.password, rePassword: defaultState.rePassword };
+        case 'REGISTER_EXISTING_MAIL':
+            return { ...state, shownForm: 'login', loginWhom: state.email, password: defaultState.password };
         case 'LOGIN':
             return { ...defaultState };
         case 'LOGIN_ATTEMPT':
@@ -43,7 +47,7 @@ export default (state = defaultState, action) => {
         case 'RESET_PASSWORD_FAILED':
             return { ...state, _errMsg: action.errMsg };
         case 'USERID_IN_URL':
-            return { ...state, userIdFromURL: action.id, shownForm: 'register' };
+            return { ...state, userIdFromURL: action.id };
         /* case 'FAULTY_SPECIAL_LOGIN':
             return { ...state, userIdFromURL: null }; */
         case 'LOGOUT':

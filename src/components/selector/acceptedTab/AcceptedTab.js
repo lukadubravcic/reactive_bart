@@ -49,7 +49,7 @@ class AcceptedTab extends React.Component {
             ev.preventDefault();
             let newActivePunishment = {};
 
-            if (id !== this.props.activePunishment._id && window.canRunAds) {
+            if (id !== this.props.activePunishment.uid && window.canRunAds) {
                 newActivePunishment = JSON.parse(JSON.stringify(getPunishmentById(id, this.props.acceptedPunishments)));
 
                 if (newActivePunishment.what_to_write[newActivePunishment.what_to_write.length - 1] !== ' ') {
@@ -57,7 +57,7 @@ class AcceptedTab extends React.Component {
                 }
                 if (newActivePunishment) this.props.setActivePunishment(newActivePunishment);
 
-            } else if (id === this.props.activePunishment._id) { // odabir trenutne kazne, nema promjene
+            } else if (id === this.props.activePunishment.uid) { // odabir trenutne kazne, nema promjene
                 return;
 
             } /* else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
@@ -68,7 +68,7 @@ class AcceptedTab extends React.Component {
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea
             let filteredPunishments = this.props.acceptedPunishments.filter((punishment) => {
-                return punishment._id === id ? null : punishment;
+                return punishment.uid === id ? null : punishment;
             });
             this.props.giveUpPunishment(id, filteredPunishments);
         };
@@ -104,7 +104,7 @@ class AcceptedTab extends React.Component {
             element.sortOrder *= -1;
         };
 
-        this.reSortPunishments = (id) => {
+        this.reSortPunishments = id => {
 
             let sortedPunishments = [];
             let acceptedPunishments = this.props.acceptedPunishments;
@@ -218,17 +218,18 @@ class AcceptedTab extends React.Component {
                     <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
-                            if (punishment._id === activePunishment._id) {
+
+                            if (punishment.uid === activePunishment.uid) {
                                 return (
-                                    <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment._id}
-                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                    <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment.uid}
+                                        id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
                                         disabledGo={true} />
                                 )
                             }
                             else {
                                 return (
-                                    <AcceptedTabRow punishment={punishment} style={style} key={punishment._id}
-                                        id={punishment._id} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                    <AcceptedTabRow punishment={punishment} style={style} key={punishment.uid}
+                                        id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
                                         disabledGo={false} />
                                 )
                             }
@@ -271,7 +272,7 @@ function getPunishmentById(id, punishments) {
 
     if (id) {
         for (let pun of punishments) {
-            if (pun._id === id) {
+            if (pun.uid === id) {
                 return pun;
             }
         }

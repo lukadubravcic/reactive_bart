@@ -74,7 +74,7 @@ class PastTab extends React.Component {
             this._showFirstPage(punishments);
         };
 
-        this.reSortPunishments = (id) => {
+        this.reSortPunishments = id => {
 
             let sortedPunishments = [];
             let pastPunishments = this.props.pastPunishments;
@@ -196,16 +196,16 @@ class PastTab extends React.Component {
                     <TableHeader columns={columns} style={style} />
                     {
                         shownPunishments.map(punishment => {
-                            if (this.props.punishmentIdFromURL === punishment._id) {
+                            if (this.props.punishmentIdFromURL === punishment.uid) {
 
                                 return (
-                                    <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment._id} id={punishment._id} />
+                                    <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
                                 )
 
                             } else {
 
                                 return (
-                                    <PastTabRow punishment={punishment} style={style} key={punishment._id} id={punishment._id} />
+                                    <PastTabRow punishment={punishment} style={style} key={punishment.uid} id={punishment.uid} />
                                 )
                             }
                         })
@@ -236,7 +236,7 @@ function getPunishmentPageNumber(targetId, punishments) {
 
     for (let i = 0; i < punishments.length; i++) {
 
-        if (punishments[i]._id === targetId) targetIndex = i + 1;
+        if (punishments[i].uid === targetId) targetIndex = i + 1;
     }
 
     let pageNum = Math.ceil(targetIndex / ITEMS_PER_PAGE);

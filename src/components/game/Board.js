@@ -132,12 +132,12 @@ class Board extends React.Component {
 
                     if (this.props.guestPunishment !== null &&
                         Object.keys(this.props.guestPunishment).length &&
-                        typeof this.props.guestPunishment._id !== 'undefined' &&
-                        this.props.guestPunishment._id === this.props.activePunishment._id) {
+                        typeof this.props.guestPunishment.uid !== 'undefined' &&
+                        this.props.guestPunishment.uid === this.props.activePunishment.uid) {
 
-                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
 
-                    } else this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+                    } else this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
                 }
 
                 this.punishmentInit();
@@ -180,11 +180,11 @@ class Board extends React.Component {
 
             this.props.onBoardLostFocus();
 
-            if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment._id === this.props.activePunishment._id) {
-                this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
+            if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
+                this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
 
             } else if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                this.props.setActivePunishmentDone(this.props.activePunishment._id, this.props.timeSpent);
+                this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
 
@@ -194,7 +194,7 @@ class Board extends React.Component {
 
         this.removeActivePunishmentFromAccepted = () => {
             let filteredAccPunishments = this.props.acceptedPunishments.filter((punishment) => {
-                return punishment._id === this.props.activePunishment._id ? null : JSON.parse(JSON.stringify(punishment));
+                return punishment.uid === this.props.activePunishment.uid ? null : JSON.parse(JSON.stringify(punishment));
             });
             this.props.updateAcceptedPunishments(filteredAccPunishments);
         };
@@ -318,12 +318,12 @@ class Board extends React.Component {
 
                 if (this.props.guestPunishment !== null &&
                     Object.keys(this.props.guestPunishment).length &&
-                    typeof this.props.guestPunishment._id !== 'undefined' &&
-                    this.props.guestPunishment._id === this.props.activePunishment._id) {
+                    typeof this.props.guestPunishment.uid !== 'undefined' &&
+                    this.props.guestPunishment.uid === this.props.activePunishment.uid) {
 
                     xhttp.open("POST", `${API_ROOT}/punishment/guestLog`, false);
                     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send(`userId=${this.props.guestUserId}&punishmentId=${this.props.activePunishment._id}&timeSpent=${this.props.timeSpent}`);
+                    xhttp.send(`userId=${this.props.guestUserId}&punishmentId=${this.props.activePunishment.uid}&timeSpent=${this.props.timeSpent}`);
                     xhttp.send();
 
                     //this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
@@ -335,7 +335,7 @@ class Board extends React.Component {
                     xhttp.send(`id=${this.props.activePunishment._id}&timeSpent=${this.props.timeSpent}`);
                     xhttp.send(); */
 
-                    this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
+                    this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
                 }
             }
         };
@@ -351,7 +351,7 @@ class Board extends React.Component {
             // incijalni setup
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
-            this.punishmentId = this.props.activePunishment._id;
+            this.punishmentId = this.props.activePunishment.uid;
             this.howManyTimes = typeof this.props.activePunishment.special_how_many_times !== 'undefined' ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
 
             this.punishmentExplanation = `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times "' : 'x "')}${(this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.substring(0, this.punishment.length - 1) : this.punishment)}": `;
@@ -370,11 +370,11 @@ class Board extends React.Component {
 
     componentDidUpdate(prevProps) {
 
-        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment._id !== prevProps.activePunishment._id)) { // postavljena nova kazna
+        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)) { // postavljena nova kazna
 
             if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
 
-                this.props.logPunishmentTry(prevProps.activePunishment._id, prevProps.timeSpent);
+                this.props.logPunishmentTry(prevProps.activePunishment.uid, prevProps.timeSpent);
             }
             // specijalni slucaj detektiranja adblocker-a
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {

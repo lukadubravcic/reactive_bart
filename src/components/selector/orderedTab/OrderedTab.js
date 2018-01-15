@@ -11,7 +11,7 @@ import agent from '../../../agent';
 import { ITEMS_PER_PAGE } from '../../../constants/constants';
 
 const mapStateToProps = state => ({
-    state: state,
+    //state: state,
     orderedPunishments: state.punishment.orderedPunishments,
     shownOrderedPunishments: state.punishment.shownOrderedPunishments,
     currentPage: state.punishment.currentOrderedPage
@@ -44,12 +44,12 @@ class OrderedTab extends React.Component {
             this.props.changeShownPunishments(firstPage, 1);
         };
 
-        this.loadAndShowOrderedPunishments = (punishments) => { // poziv kada stigne payload sa past punishmentima
+        this.loadAndShowOrderedPunishments = punishments => { // poziv kada stigne payload sa past punishmentima
             this.props.onLoadedOrderedPunishments(punishments);
             this._showFirstPage();
         };
 
-        this.changeElement = (element) => {
+        this.changeElement = element => {
             let ASC = ' (ʌ)';
             let DESC = ' (v)';
             let lastFourChars = element.name.substring(element.name.length - 4);
@@ -67,7 +67,7 @@ class OrderedTab extends React.Component {
             this._showFirstPage(punishments);
         };
 
-        this.reSortPunishments = (id) => {
+        this.reSortPunishments = id => {
 
             let sortedPunishments = [];
             let orderedPunishments = this.props.orderedPunishments
@@ -176,13 +176,11 @@ class OrderedTab extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
         } else if (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
         }
-
     }
 
     render() {
@@ -201,7 +199,7 @@ class OrderedTab extends React.Component {
                     {
                         shownPunishments.map(punishment => {
                             return (
-                                <OrderedTabRow punishment={punishment} style={style} key={punishment._id} id={punishment._id} />
+                                <OrderedTabRow punishment={punishment} style={style} key={punishment.uid} id={punishment.uid} />
                             )
                         })
                     }

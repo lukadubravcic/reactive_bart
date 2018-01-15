@@ -93,7 +93,7 @@ class PunishmentSelectorTable extends React.Component {
 
         this._handleAcceptedPunFromAgent = (payload) => {
 
-            if (payload.acceptedPunishments) {
+            if (payload !== null && typeof payload.acceptedPunishments !== 'undefined') {
 
                 this.props.setAcceptedPunishments(payload.acceptedPunishments);
 
@@ -112,7 +112,7 @@ class PunishmentSelectorTable extends React.Component {
 
         this._handlePastPunFromAgent = (payload) => {
 
-            if (payload.pastPunishments) {
+            if (payload !== null && typeof payload.pastPunishments !== 'undefined') {
 
                 this.props.setPastPunishments(payload.pastPunishments);
 
@@ -131,13 +131,13 @@ class PunishmentSelectorTable extends React.Component {
             }
         };
 
-        this._handleOrderedPunFromAgent = (orderedPunishments) => {
+        this._handleOrderedPunFromAgent = (payload) => {
 
-            if (orderedPunishments) {
+            if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
 
-                this.props.setOrderedPunishments(orderedPunishments);
+                this.props.setOrderedPunishments(payload.orderedPunishments);
 
-                if (orderedPunishments.length > 0) {
+                if (payload.orderedPunishments.length > 0) {
 
                     this.props.setOrderedHeaderVisibility(true);
 
@@ -159,24 +159,24 @@ class PunishmentSelectorTable extends React.Component {
 
         if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvaćanja userdata
 
-            agent.Punishment.getAccepted().then((payload) => {
+            agent.Punishment.getAccepted().then(payload => {
                 // console.log('accepted answer')
                 this._handleAcceptedPunFromAgent(payload);
             });
 
-            agent.Punishment.getPast().then((payload) => {
+            agent.Punishment.getPast().then(payload => {
                 // console.log('past answer')
                 this._handlePastPunFromAgent(payload);
             });
 
-            agent.Punishment.getOrdered().then((payload) => {
+            agent.Punishment.getOrdered().then(payload => {
                 // console.log('ordered answer')
-                this._handleOrderedPunFromAgent(payload.orderedPunishments);
+                this._handleOrderedPunFromAgent(payload);
             });
         }
 
         const activePunishmentJustSet = !Object.keys(prevProps.activePunishment).length && Object.keys(this.props.activePunishment).length > 0;
-        
+
         if (activePunishmentJustSet && this.props.ignoredPunishmentSet && this.props.pastPunishments && Object.keys(this.props.user).length > 0) {
 
             this.selectTab('pastTab');

@@ -156,7 +156,6 @@ class Game extends React.Component {
         if (cheating) {
             this.setCheatingPunishment();
         }
-
     }
 
     render() {
@@ -180,7 +179,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Game);
 
 function getByValue(arr, value) {
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
-        if (arr[i]._id === value) return arr[i];
+        if (arr[i].uid === value) return arr[i];
     }
     return null;
 }

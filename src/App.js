@@ -19,7 +19,7 @@ import { getQueryStringData } from './helpers/helpers';
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
-    onLoad: (token) => { // ako je postavljen token u localstrageu, ulogiraj usera
+    onLoad: token => { // ako je postavljen token u localstrageu, ulogiraj usera
         if (token) {
             agent.setToken(token);
             dispatch({ type: 'LOADING_IN_PROGRESS' })
@@ -162,7 +162,6 @@ class App extends React.Component {
                 <Footer />
             </div>
         );
-        /* } */
     }
 }
 

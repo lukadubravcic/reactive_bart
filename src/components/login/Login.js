@@ -124,7 +124,7 @@ class Login extends React.Component {
 
             if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
                 // logiraj kaznu
-                this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent)
+                this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent)
             }
 
             this.props.onLogout();

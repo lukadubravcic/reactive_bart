@@ -2,7 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
-const mapStateToProps = state => ({ ...state.auth });
+const mapStateToProps = state => ({
+    ...state.auth
+});
 
 const mapDispatchToProps = dispatch => ({
     onUsernameChange: value =>
@@ -82,8 +84,9 @@ class Register extends React.Component {
         }
     }
 
-    render() {
+    componentDidMount() { }
 
+    render() {
         const username = this.props.username;
         const email = this.props.email;
         const password = this.props.password;

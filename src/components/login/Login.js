@@ -242,7 +242,7 @@ class Login extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {guestUserSetWithNoUsername ? <SetUsername /> : null}
+                    
                 </div>
             );
         } else if (this.props.common.token !== null && this.props.auth.shownForm === 'login') {

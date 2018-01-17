@@ -4,8 +4,6 @@ import agent from '../../agent';
 
 import ProgressBar from './ProgressBar';
 
-import chalkboardImg from '../../assets/chalkboard.jpg';
-// import { text } from 'superagent/lib/node/parsers';
 import cheatingCheck from '../../helpers/cheatingCheck';
 import { API_ROOT } from '../../constants/constants';
 

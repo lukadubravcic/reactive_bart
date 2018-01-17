@@ -105,7 +105,7 @@ class PunishmentSelectorTable extends React.Component {
 
             } else {
 
-                console.log("error: accepted punishments empty or payload wasn't received");
+                console.log("warning: accepted punishments empty or payload wasn't received");
                 this.props.setAcceptedPunishments([]);
             }
         };
@@ -126,7 +126,7 @@ class PunishmentSelectorTable extends React.Component {
                 }
             } else {
 
-                console.log("error: past punishments payload empty or wasn't received");
+                console.log("warning: past punishments payload empty or wasn't received");
                 this.props.setPastPunishments([]);
             }
         };
@@ -149,7 +149,7 @@ class PunishmentSelectorTable extends React.Component {
                 }
             } else {
 
-                console.log("error: ordered punishments payload empty or wasn't received");
+                console.log("warning: ordered punishments payload empty or wasn't received");
                 this.props.setOrderedPunishments([]);
             }
         };

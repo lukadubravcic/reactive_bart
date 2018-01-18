@@ -21,30 +21,6 @@ export function checkIfIgnoredPunishment(punishment) {
     return false; // NOT IGNORED
 }
 
-/* export function getPunishmentIdFromURL() {
-
-    if (!window.location.search.length) return null; // prazan string
-
-    const queryParamString = window.location.search.split('?')[1];
-
-    if (!queryParamString) return null; // ne sadrzi ? char
-
-    if (queryParamString.split('=')[0] !== 'id' || !queryParamString.split('=')[1].length) return null; // bez = chara ili drugi parametar (id string) je prazan
-
-    return queryParamString.split('=')[1];
-}
-
-export function getUserIDfromURL() {
-
-    if (!window.location.search.length) return null;
-
-    const queryParamString = window.location.search.split('?')[1];
-
-    if (queryParamString.split('=')[0] !== 'uid' || !queryParamString.split('=')[1].length) return null;
-
-    return queryParamString.split('=')[1];
-} */
-
 export function getQueryStringData() {
     let match,
         pl = /\+/g,  // Regex for replacing addition symbol with a space

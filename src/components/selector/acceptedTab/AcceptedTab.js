@@ -21,13 +21,13 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onLoadedAcceptedPunishments: (punishments) => {
+    onLoadedAcceptedPunishments: punishments => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_LOADED', punishments })
     },
-    changeAcceptedPunishments: (punishments) => {
+    changeAcceptedPunishments: punishments => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments })
     },
-    setActivePunishment: (punishment) => {
+    setActivePunishment: punishment => {
         if (punishment.what_to_write[punishment.what_to_write.length - 1] !== ' ') punishment.what_to_write += ' ';
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment })
     },
@@ -59,11 +59,7 @@ class AcceptedTab extends React.Component {
 
             } else if (id === this.props.activePunishment.uid) { // odabir trenutne kazne, nema promjene
                 return;
-
-            } /* else { // id ne postoji -> slucaj kada se automatski postavlja proizvoljna aktivna kazna 
-
-                this.props.setActivePunishment(this.props.randomPunishments[0]);
-            } */
+            } 
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea

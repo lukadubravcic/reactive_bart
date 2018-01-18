@@ -281,7 +281,7 @@ class Board extends React.Component {
         // rekurzivno ispisvanje pocetne recenice i dodavanje vec napisanih znakova (ako ih ima)
         this.writeStartingSentence = () => {
 
-            const write = (i) => {
+            const write = i => {
 
                 if (this.punishmentExplanation.length <= i && !this.props.showSetNewPasswordComponent) {
                     this.activeWriteTimeout = setTimeout(() => {
@@ -339,7 +339,7 @@ class Board extends React.Component {
         };
 
         this.activePunishmentChanged = () => {
-            // init nove aktivne kazne
+            // init nove aktivne kazne           
             this.punishmentInit();
         };
 
@@ -350,7 +350,7 @@ class Board extends React.Component {
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             this.punishmentId = this.props.activePunishment.uid;
-            this.howManyTimes = typeof this.props.activePunishment.special_how_many_times !== 'undefined' ? this.props.activePunishment.special_how_many_times : this.props.activePunishment.how_many_times;
+            this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'Gazzilion' : this.props.activePunishment.how_many_times;
 
             this.punishmentExplanation = `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times "' : 'x "')}${(this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.substring(0, this.punishment.length - 1) : this.punishment)}": `;
 
@@ -368,10 +368,12 @@ class Board extends React.Component {
 
     componentDidUpdate(prevProps) {
 
-        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)) { // postavljena nova kazna
-
+        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)
+            || Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid === prevProps.activePunishment.uid) && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write) ) { // postavljena nova kazna
+            // console.log('%cTRUE', 'background: yellow; color: green')
+            
             if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-
+                
                 this.props.logPunishmentTry(prevProps.activePunishment.uid, prevProps.timeSpent);
             }
             // specijalni slucaj detektiranja adblocker-a
@@ -380,7 +382,7 @@ class Board extends React.Component {
             }
 
             this.activePunishmentChanged();
-        }
+        } // else console.log('%cfalse', 'color: red')
     }
 
     componentWillUnmount() {

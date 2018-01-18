@@ -20,16 +20,16 @@ const mapDispatchToProps = dispatch => ({
                         dispatch({ type: 'SET_USERNAME_ERROR', errMsg: payload.errMsg })
 
                     } else if (
-                        typeof payload._id != 'undefined'
-                        && typeof payload.email != 'undefined'
-                        && typeof payload.username != 'undefined'
+                        typeof payload._id !== 'undefined'
+                        && typeof payload.email !== 'undefined'
+                        && typeof payload.username !== 'undefined'
                     ) {
                         dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment });
                     }
                 } else {
                     console.log('set username: payload === null');
                 }
-            }, (err) => {
+            }, err => {
                 dispatch({ type: 'SET_USERNAME_ERROR', errMsg: 'Username not set. Try again.' });
             });
     },
@@ -37,8 +37,6 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.setUsernameAsGuest(username, email)
             .then(payload => {
                 if (payload !== null) {
-
-                    console.log(payload);
 
                     if (typeof payload.errMsg != 'undefined') {
                         dispatch({ type: 'SET_USERNAME_ERROR', errMsg: payload.errMsg })
@@ -76,6 +74,8 @@ class SetUsername extends React.Component {
         this.submitUsername = username => ev => {
             ev.preventDefault();
             let punishment = this.createOnUsernameSetPunishment(username.trim());
+
+           
 
             if (Object.keys(this.props.currentUser).length) {
                 punishment && this.props.onSubmit(username, punishment);
@@ -134,7 +134,8 @@ function getFromSpecialPunishments(type, username, specialPunishments) {
         if (specialPunishments[i].type === type) {
 
             result = JSON.parse(JSON.stringify(specialPunishments[i]));
-            result.what_to_write += username + '.';
+            result.what_to_write += username;
+            result.what_to_write.trim();
             return result;
         }
     }

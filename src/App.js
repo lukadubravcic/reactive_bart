@@ -16,7 +16,11 @@ import agent from './agent';
 import { getQueryStringData } from './helpers/helpers';
 
 
-const mapStateToProps = state => ({ ...state });
+const mapStateToProps = state => ({
+    common: state.common,
+    auth: state.auth,
+    guestPunishment: state.game.guestPunishment
+});
 
 const mapDispatchToProps = dispatch => ({
     onLoad: token => { // ako je postavljen token u localstrageu, ulogiraj usera
@@ -67,6 +71,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'PUNISHMENT_IN_URL', id });
     },
     setUserIdFromUrl: id => {
+        console.log('here')
         dispatch({ type: 'USERID_IN_URL', id });
     },
     setRandomPunishments: punishments => {
@@ -74,6 +79,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setSpecialPunishment: punishments => {
         dispatch({ type: 'SET_SPECIAL_PUNISHMENTS', punishments })
+    },
+    specialLogout: () => {
+        dispatch({ type: 'SPECIAL_LOGOUT' });
     }
 });
 
@@ -83,39 +91,23 @@ class App extends React.Component {
 
         // hendlaj invited usera kao guesta
         let queryStringData = getQueryStringData();
-        
+
         console.log(queryStringData);
-        console.log(window.location.search);
 
         // id kazne
-        //if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 
         let token = window.localStorage.getItem('token');
 
-        if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
+        if (token) {
+            this.props.onLoad(token);
+            if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
+            if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
+
+        } else if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
             this.props.setUserIdFromUrl(queryStringData.uid);
             this.props.handleInvitedGuest(queryStringData.uid, queryStringData.id);
             window.localStorage.removeItem('token');
-
-        } else if (token) {
-
-            this.props.onLoad(token);
-
         }
-        // ako postoji user id u query stringu potencijalno pobrisi token
-        // pa dohvati podatke o kazni
-
-        /* if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
-            // sprijeci 
-            token && window.localStorage.removeItem('token');
-            token = null;
-
-            // set usera i dohvacanje kazne
-            this.props.setUserIdFromUrl(queryStringData.uid);
-            
-        } else {
-            token && this.props.onLoad(token);
-        } */
 
         // MICANJE QUERY STRINGA IZ URL-a 
         // prettifyURL();
@@ -128,6 +120,20 @@ class App extends React.Component {
         agent.Punishment.getSpecial().then(payload => {
             this.props.setSpecialPunishment(payload);
         });
+    }
+
+    componentWillUpdate(nextProps) {
+
+        const userLoggedIn = !!Object.keys(nextProps.common.currentUser).length;
+        const isUrlPunOwnedByLoggedUser = typeof nextProps.auth.userIdFromURL !== 'undefined' && nextProps.auth.userIdFromURL !== null && nextProps.common.currentUser._id === nextProps.auth.userIdFromURL;
+
+        if (userLoggedIn && !isUrlPunOwnedByLoggedUser) { // user je logiran, no pristupa tudim kaznama putem accept linka -> logout
+            console.log('HERE')
+            window.localStorage.removeItem('token');
+            agent.Auth.logout();
+            agent.setToken(0);
+            this.props.specialLogout();
+        }
     }
 
     render() {

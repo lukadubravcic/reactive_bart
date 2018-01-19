@@ -42,7 +42,7 @@ export default (state = defaultState, action) => {
                 activePunishment: action.punishment,
                 gameInProgress: defaultState.gameInProgress,
                 timerValue: defaultState.timerValue,
-                //punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
+                // punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
                 boardTextMistake: defaultState.boardTextMistake,
                 boardValue: defaultState.boardValue,
                 progress: defaultState.progress,
@@ -101,6 +101,8 @@ export default (state = defaultState, action) => {
             return { ...defaultState, punishmentIdFromURL: state.punishmentIdFromURL };
         case 'GAME_UNMOUNT':
             return defaultState;
+        case 'SPECIAL_LOGOUT':
+            return { ...defaultState, guestPunishment: state.guestPunishment, punishmentIdFromURL: state.punishmentIdFromURL };
         case 'LOGOUT':
             return defaultState;
         case 'CHEATING_DETECTED':

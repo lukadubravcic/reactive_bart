@@ -91,7 +91,7 @@ class PunishmentSelectorTable extends React.Component {
         this.pastStyle = this.placeholderStyles.defaultStyle;
         this.orderedStyle = this.placeholderStyles.defaultStyle;
 
-        this._handleAcceptedPunFromAgent = (payload) => {
+        this._handleAcceptedPunFromAgent = payload => {
 
             if (payload !== null && typeof payload.acceptedPunishments !== 'undefined') {
 
@@ -110,7 +110,7 @@ class PunishmentSelectorTable extends React.Component {
             }
         };
 
-        this._handlePastPunFromAgent = (payload) => {
+        this._handlePastPunFromAgent = payload => {
 
             if (payload !== null && typeof payload.pastPunishments !== 'undefined') {
 
@@ -131,7 +131,7 @@ class PunishmentSelectorTable extends React.Component {
             }
         };
 
-        this._handleOrderedPunFromAgent = (payload) => {
+        this._handleOrderedPunFromAgent = payload => {
 
             if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
 
@@ -157,7 +157,7 @@ class PunishmentSelectorTable extends React.Component {
 
     componentDidUpdate(prevProps) {
 
-        if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvaćanja userdata
+        if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvacanja userdata
 
             agent.Punishment.getAccepted().then(payload => {
                 // console.log('accepted answer')

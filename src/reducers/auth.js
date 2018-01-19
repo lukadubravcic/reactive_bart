@@ -52,6 +52,8 @@ export default (state = defaultState, action) => {
             return { ...state, loginWhom: action.guestUser.email };
         case 'USERNAME_SET_AS_GUEST':
             return { ...state, loginWhom: action.user.username };
+        case 'SPECIAL_LOGOUT':
+            return { ...defaultState, userIdFromURL: state.userIdFromURL };
         case 'LOGOUT':
             return defaultState;
         default:

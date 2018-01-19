@@ -19,6 +19,8 @@ export default (state = defaultState, action) => {
             return { ...state };
         case 'LOGIN':
             return { ...state, currentUser: action.currentUser, token: action.token, rank: action.rank };
+        case 'SPECIAL_LOGOUT':
+            return { ...defaultState, guestDataLoadingInProgress: state.guestDataLoadingInProgress, guestAccessMsg: state.guestAccessMsg, guestUser: state.guestUser };
         case 'LOGOUT':
             return defaultState;
         case 'APP_LOAD':

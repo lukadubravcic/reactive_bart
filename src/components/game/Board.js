@@ -17,6 +17,7 @@ const mapStateToProps = state => ({
     token: state.common.token,
     showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
     specialPunishments: state.punishment.specialPunishments,
+    randomPunishments: state.punishment.randomPunishments,
     showTooltips: state.prefs.show_tooltips,
     soundEnabled: state.prefs.sound
 });
@@ -139,6 +140,10 @@ class Board extends React.Component {
                 }
 
                 this.punishmentInit();
+            } else if (this.props.progress === 100) { // u slucaju kada je kazna izvrsena (100%) reset tipka ce postaviti random kaznu
+
+                let randomPunishment = getRandomPunishment(this.props.randomPunishments);
+                if (randomPunishment) this.props.setActivePunishment(randomPunishment);
             }
         };
 
@@ -178,20 +183,22 @@ class Board extends React.Component {
 
             this.props.onBoardLostFocus();
 
-            if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
+            if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                return;
+
+            } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
 
-            } else if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+            } else {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
 
             console.log('Punishment completed!');
-
         };
 
         this.removeActivePunishmentFromAccepted = () => {
-            let filteredAccPunishments = this.props.acceptedPunishments.filter((punishment) => {
+            let filteredAccPunishments = this.props.acceptedPunishments.filter(punishment => {
                 return punishment.uid === this.props.activePunishment.uid ? null : JSON.parse(JSON.stringify(punishment));
             });
             this.props.updateAcceptedPunishments(filteredAccPunishments);
@@ -369,11 +376,11 @@ class Board extends React.Component {
     componentDidUpdate(prevProps) {
 
         if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)
-            || Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid === prevProps.activePunishment.uid) && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write) ) { // postavljena nova kazna
+            || Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid === prevProps.activePunishment.uid) && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write)) { // postavljena nova kazna
             // console.log('%cTRUE', 'background: yellow; color: green')
-            
+
             if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-                
+
                 this.props.logPunishmentTry(prevProps.activePunishment.uid, prevProps.timeSpent);
             }
             // specijalni slucaj detektiranja adblocker-a
@@ -503,12 +510,16 @@ function inArray(target, array) {
     return false;
 }
 
-/* function getWrittenText(punishment, charsWritten) {
-    let x = Math.ceil(charsWritten / punishment.length);
-    let tmpString = punishment.repeat(x);
-    return tmpString.slice(0, charsWritten);
-} */
-
 function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
     return punishment.created ? false : true;
+}
+
+function getRandomPunishment(randomPunishments) {
+
+    if (randomPunishments.length === 0) return null;
+
+    let index = Math.floor(Math.random() * randomPunishments.length); 
+
+    if (index > randomPunishments.length - 1) return randomPunishments[0];
+    else return randomPunishments[index];    
 }

@@ -17,7 +17,8 @@ const mapStateToProps = state => ({
     cheating: state.game.cheating,
     guestPunishment: state.game.guestPunishment,
     guestDataLoadingInProgress: state.common.guestDataLoadingInProgress,
-    userIdFromURL: state.auth.userIdFromURL
+    userIdFromURL: state.auth.userIdFromURL,
+    punishmentProgress: state.game.progress
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -55,8 +56,6 @@ class Game extends React.Component {
 
             } else if (this.props.guestPunishment) { // invited user
 
-
-
                 if (checkIfIgnoredPunishment(this.props.guestPunishment)) {
                     let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
                     specialPunishment && this.props.setActivePunishment(specialPunishment, false);
@@ -76,6 +75,7 @@ class Game extends React.Component {
         }
 
         this.changeActivePunishmentLoggedIn = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
+           
 
             if (window.canRunAds === undefined) { // adblocker detektiran
 
@@ -86,8 +86,8 @@ class Game extends React.Component {
 
                 } else return;
 
-            } else if (this.props.punishmentIdFromURL && this.props.currentUser._id === this.props.userIdFromURL) { // kazna sa url-a
-
+            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a                
+                
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
 
                 if (punishmentInURL) {  // kazna je aktivna
@@ -135,7 +135,7 @@ class Game extends React.Component {
 
         const userNotLoggedIn = Object.keys(prevProps.currentUser).length === 0 && Object.keys(this.props.currentUser).length === 0;
         const userJustLoggedIn = Object.keys(prevProps.currentUser).length !== Object.keys(this.props.currentUser).length;
-        const userLoggedIn = Object.keys(this.props.currentUser).length && typeof this.props.currentUser.uid !== 'undefined';
+        const userLoggedIn = Object.keys(this.props.currentUser).length && typeof this.props.currentUser._id !== 'undefined';
         const appFinishedLoadingUser = prevProps.loadInProgress === true && this.props.loadInProgress === false && userJustLoggedIn;
         const appFinishedLoadingUserNotFound = !window.localStorage.getItem('token') || (window.localStorage.getItem('token') && userNotLoggedIn && prevProps.loadInProgress === true & this.props.loadInProgress === false);
         const randomAndSpecialPunishmentsLoaded = this.props.randomPunishments && this.props.specialPunishments && this.props.randomPunishments !== 'empty' && this.props.randomPunishments.length > 0 && this.props.specialPunishments !== 'empty' && this.props.specialPunishments.length > 0;
@@ -144,21 +144,18 @@ class Game extends React.Component {
         const userJustLoggedOut = Object.keys(prevProps.activePunishment).length > 0 && Object.keys(this.props.activePunishment).length === 0 && !userLoggedIn;
         const cheating = !prevProps.cheating && this.props.cheating;
         const guestPunishmentLoaded = this.props.punishmentIdFromURL ? !this.props.guestDataLoadingInProgress : true;
-        //detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
-        const activePunishmentGivenUp = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid))
+        // detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
+        const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.progress < 100;
+        // console.log('givenUp: ' + activePunishmentGivenUp);
+        // console.log('userLoggedIn: ' + (typeof this.props.currentUser._id !== 'undefined'))
 
-
-        
-        console.log('givenUp: ' + activePunishmentGivenUp);
-
-        //console.log(prevProps.currentUser.username === '' && prevProps.currentUser.username !== this.props.currentUser.username && typeof this.props.activePunishment.type !== 'undefined' && this.props.activePunishment.type === 'USERNAME_SET')
+        // console.log(activePunishmentNotSet)
         // nema usera ili se desio logout ili invited user
         if ((guestPunishmentLoaded && appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
             this.changeActivePunishmentNotLoggedIn();
-            console.log('TEST')
 
             // ima usera
-        } else if (userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet || userLoggedIn && activePunishmentGivenUp) {
+        } else if ((userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) || (userLoggedIn && activePunishmentGivenUpWhileNotDone)) {
             this.changeActivePunishmentLoggedIn();
         }
 
@@ -187,6 +184,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(Game);
 
 
 function getByValue(arr, uid) {
+
+    uid = typeof uid !== 'number' ? parseInt(uid) : uid; 
+   
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
         if (arr[i].uid === uid) return arr[i];
     }

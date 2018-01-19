@@ -26,7 +26,6 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-    
     switch (action.type) {
         case 'UPDATE_FIELD_PUNISH_CREATE':
             return { ...state, [action.key]: action.value };
@@ -78,6 +77,8 @@ export default (state = defaultState, action) => {
         case 'SET_SPECIAL_PUNISHMENTS':
             return { ...state, specialPunishments: action.punishments };
 
+        case 'SPECIAL_LOGOUT':
+            return { ...defaultState, specialPunishments: state.specialPunishments, randomPunishments: state.randomPunishments };
         case 'LOGOUT':
             return { ...defaultState, specialPunishments: state.specialPunishments, randomPunishments: state.randomPunishments };
         default:

@@ -19,7 +19,8 @@ import { getQueryStringData } from './helpers/helpers';
 const mapStateToProps = state => ({
     common: state.common,
     auth: state.auth,
-    guestPunishment: state.game.guestPunishment
+    guestPunishment: state.game.guestPunishment,
+    punishmentIdFromURL: state.game.punishmentIdFromURL
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -48,7 +49,6 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
         agent.Auth.getPunishmentAsGuest(userId, punishmentId).then(payload => {
             if (payload) {
-                console.log(payload);
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
                     console.log(payload.msg)
                     dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: payload.msg });
@@ -60,7 +60,13 @@ const mapDispatchToProps = dispatch => ({
                     && payload.guestUser !== null
                     && Object.keys(payload.guestUser).length) {
 
-                    dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
+                    console.log(payload);
+                    if (payload.guestUser.confirmed !== null) {
+                        dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
+
+                    } else {
+                        dispatch({ type: 'INVITED_GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
+                    }
                 }
             }
         }, failed => {
@@ -71,7 +77,6 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'PUNISHMENT_IN_URL', id });
     },
     setUserIdFromUrl: id => {
-        console.log('here')
         dispatch({ type: 'USERID_IN_URL', id });
     },
     setRandomPunishments: punishments => {
@@ -110,7 +115,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        // prettifyURL();
+        // prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {
@@ -125,15 +130,40 @@ class App extends React.Component {
     componentWillUpdate(nextProps) {
 
         const userLoggedIn = !!Object.keys(nextProps.common.currentUser).length;
-        const isUrlPunOwnedByLoggedUser = typeof nextProps.auth.userIdFromURL !== 'undefined' && nextProps.auth.userIdFromURL !== null && nextProps.common.currentUser._id === nextProps.auth.userIdFromURL;
+        const userIdFromUrlExist = nextProps.auth.userIdFromURL !== null;
+        const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id == nextProps.auth.userIdFromURL;
 
-        if (userLoggedIn && !isUrlPunOwnedByLoggedUser) { // user je logiran, no pristupa tudim kaznama putem accept linka -> logout
-            console.log('HERE')
-            window.localStorage.removeItem('token');
-            agent.Auth.logout();
-            agent.setToken(0);
-            this.props.specialLogout();
+        // ako je user logiran, a postavljena
+
+        if (userLoggedIn) {
+
+            if (nextProps.auth.userIdFromURL !== null && !isUrlPunOwnedByLoggedUser) {
+
+                console.log('HERE')
+                console.log('compare ids ' + (nextProps.common.currentUser._id == nextProps.auth.userIdFromURL))
+                console.log('nextProps.common.currentUser._id ' + typeof nextProps.common.currentUser._id)
+                console.log('userIdFromURL ' + typeof nextProps.auth.userIdFromURL)
+                console.log('isUrlPunOwnedByLoggedUser ' + isUrlPunOwnedByLoggedUser)
+                agent.Auth.logout();
+                agent.setToken(0);
+                window.localStorage.removeItem('token');
+                this.props.handleInvitedGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
+                this.props.specialLogout();
+            }
+
         }
+
+
+        /*   if (nextProps.auth.userIdFromURL !== null && userLoggedIn && !isUrlPunOwnedByLoggedUser) { // user je logiran, no pristupa tudim kaznama putem accept linka -> logout
+  
+              console.log('ULAZ');
+  
+              window.localStorage.removeItem('token');
+              agent.Auth.logout();
+              agent.setToken(0);
+  
+              this.props.specialLogout();
+          } */
     }
 
     render() {
@@ -175,7 +205,7 @@ class App extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 
-function prettifyURL() {
+function prettyURL() {
 
     if (window.history.replaceState) {
         window.history.replaceState({}, "removing query string", window.location.origin);

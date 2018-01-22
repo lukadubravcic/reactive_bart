@@ -109,6 +109,8 @@ export default (state = defaultState, action) => {
             return { ...state, cheating: true };
         case 'GUEST_PUNISHMENT_LOADED':
             return { ...state, guestPunishment: action.punishment };
+        case 'INVITED_GUEST_PUNISHMENT_LOADED':
+            return { ...state, guestPunishment: action.punishment };
         default:
             return state;
     }

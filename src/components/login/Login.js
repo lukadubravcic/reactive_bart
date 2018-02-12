@@ -177,101 +177,95 @@ class Login extends React.Component {
             )
         } else if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
             return (
-                <div className="auth-page">
-                    <nav className="navbar">
-                        <div className="container">
-                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
-                        </div>
-                    </nav>
-                    <div className="container page">
-                        <div className="row">
-                            <div className="col-md-6 offset-md-3 col-xs-12">
-                                <h1 className="text-xs-center">Sign In</h1>
 
-                                {/* punishmentIdFromURL && !userIdFromURL ? <label>Login to proceed completing your punishment</label> : null */}
+                <div className="parent-component header">
+                    <div className="container">
 
-                                <p className="text-xs-center">
-                                    <a onClick={this.showRegisterForm}>
-                                        <u className="a">Create account</u>
-                                    </a>
-                                </p>
-                                {showResetPasswordForm ? <ResetPassword /> :
-                                    <form onSubmit={this.submitForm(loginWhom, password)}>
-                                        <fieldset>
-                                            <fieldset className="form-group">
-                                                <input
-                                                    className="form-control form-control-lg"
-                                                    type="text"
-                                                    placeholder="Email or Username"
-                                                    value={loginWhom}
-                                                    onChange={this.loginWhomChange}
-                                                    required />
-                                            </fieldset>
+                        <label className="heading">Log in</label>
 
-                                            <fieldset className="form-group">
-                                                <input
-                                                    className="form-control form-control-lg"
-                                                    type="password"
-                                                    placeholder="Password"
-                                                    value={password}
-                                                    onChange={this.passwordChange}
-                                                    required />
-                                                {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
-                                            </fieldset>
+                        <form id="login-form" onSubmit={this.submitForm(loginWhom, password)}>
+                            <fieldset className="header-form-row">
+                                <input
+                                    className="text-input"
+                                    type="text"
+                                    value={loginWhom}
+                                    placeholder="e-mail/username"
+                                    onChange={this.loginWhomChange}
+                                    required />
+                            </fieldset>
 
-                                            {errMsg ? (<label>{errMsg}</label>) : null}
+                            <fieldset className="header-form-row">
+                                <input
+                                    className="text-input"
+                                    type="password"
+                                    placeholder="password"
+                                    value={password}
+                                    onChange={this.passwordChange}
+                                    required />
+                                <label className="form-feedback">WRONG</label>
 
-                                            <button
-                                                ref="loginBtn"
-                                                className="btn btn-lg btn-primary pull-xs-right"
-                                                type="submit">
-                                                Login
-                                            </button>
+                                {this.passwordValidationError ? <label>{this.passwordValidationError}</label> : null}
 
-                                            <br />
-                                            <a onClick={this.showResetPasswordForm}>
-                                                <u className="a">Forgot password?</u>
-                                            </a>
+                            </fieldset>
 
-                                        </fieldset>
-                                    </form>
-                                }
+                            {errMsg ? (<label>{errMsg}</label>) : null}
 
-                                
+                            <fieldset className="header-form-row">
+                                <button className="btn-submit" ref="loginBtn" type="submit">LOG IN</button>
+                                <a id="forgot-password" className="link" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
+                            </fieldset>
 
-                            </div>
-                        </div>
+                            <a onClick={this.showRegisterForm}>
+                                <u className="a">Create account</u>
+                            </a>
+                        </form>
+
                     </div>
-                    
                 </div>
+
             );
         } else if (this.props.common.token !== null && this.props.auth.shownForm === 'login') {
+
+            // logiran korisnik
             return (
-                <div className="container">
-                    <nav className="navbar">
-                        <div className="container">
-                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
+
+                <div className="user-loggedin-top-component">
+                    <div className="container">
+
+                        <button className="float-right logout-button" onClick={this.handleLogout}>LOG OUT</button>
+
+                        <div className="float-right delimiter-container">
+                            <svg id="user-loggedin-top-delimiter" width="2px" height="22px" viewBox="0 0 2 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+                                <title>Line Copy 2</title>
+                                <desc>Created with Sketch.</desc>
+                                <defs></defs>
+                                <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1120.000000, -32.000000)"
+                                    stroke-linecap="square">
+                                    <path d="M1121,53 L1121,33" id="Line-Copy-2" stroke="#979797"></path>
+                                </g>
+                            </svg>
                         </div>
-                    </nav>
-                    {this.props.username ?
-                        <h1 className="text-xs-left">{this.props.username}</h1>
-                        : <SetUsername />}
-                    <button
-                        type="button"
-                        onClick={this.handleLogout}>
-                        Logout
-                    </button>
-                    {showSetNewPasswordComponent ?
-                        <button
-                            onClick={this.hideChangePasswordForm}>
-                            Return to game
+
+                        <label className="float-right user-identity">{this.props.username ? this.props.username : this.props.email}</label>
+
+                        {this.props.username ? null : <SetUsername />}
+
+                        {showSetNewPasswordComponent ?
+                            <button
+                                onClick={this.hideChangePasswordForm}>
+                                Return to game
                         </button>
-                        : <button
-                            onClick={this.showChangePasswordForm}>
-                            Change Password
+                            : <button
+                                onClick={this.showChangePasswordForm}>
+                                Change Password
                         </button>
-                    }
-                </div>
+                        }
+
+                    </div>
+                </div >
+
+
             );
         } else {
             return null;
@@ -287,6 +281,6 @@ function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nem
 }
 
 function isMail(email) {
-    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1, 3}\.[0-9]{1, 3}\.[0-9]{1, 3}\.[0-9]{1, 3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2, }))$/;
     return re.test(email);
 }

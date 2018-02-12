@@ -177,7 +177,6 @@ class App extends React.Component {
                     ? <NewPassword />
                     : <div>
                         <Register />
-                        <hr />
                         {
                             this.props.common.guestAccessMsg
                                 ? (
@@ -188,9 +187,7 @@ class App extends React.Component {
                                 : null
                         }
                         <Game />
-                        <hr />
                         <PunishmentCreator />
-                        <hr />
                         <PunishmentSelectorTable />
                         <Stats />
                         <Prefs />

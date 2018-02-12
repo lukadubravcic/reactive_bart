@@ -161,14 +161,14 @@ class Timer extends React.Component {
         if ((this.props.boardHovered && !this.props.gameInProgress) || this.props.gameInProgress || this.props.boardFocused) {
             // treba pokazati i tooltip
             return (
-                <div className="container">
-                    <Stopwatch style={style} flexContainer={flexContainer} stopwatchimg={stopwatchimg} timerValue={timerValue} />
+                <div id="board-watch-component">
+                    <Stopwatch timerValue={timerValue} />
                 </div>
             )
         } else {
             return (
-                <div className="container">
-                    <Clock style={style} flexContainer={flexContainer} clockimg={clockimg} clockValue={clockValue} />
+                <div id="board-watch-component">
+                    <Clock clockValue={clockValue} />
                 </div>
             )
         }// else return null;

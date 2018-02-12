@@ -434,47 +434,83 @@ class Board extends React.Component {
 
         if (activePunishmentSet) {
             return (
-                <div className="container">
-                    <div style={{ width: "1024px", position: "relative" }}>
-                        <textarea id="writing-board"
-                            style={{
-                                ...style,
-                                ...this.doneClass
-                            }}
-                            value={startingSentence + boardText}
-                            disabled={this.props.boardDisabled}
-                            onKeyDown={this.boardTextChange}
-                            onFocus={this.boardFocused}
-                            onBlur={this.boardLostFocus}
-                            onMouseOver={this.boardHover}
-                            onMouseOut={this.boardHoverOut}
-                            spellCheck="false"
-                        />
-                        {boardTextMistake ? (
-                            <div style={{
-                                "position": 'absolute',
-                                "top": 0,
-                                "height": "400px",
-                                "width": "100%"
-                            }}>
-                                <h1>FAILED</h1>
-                            </div>
-                        ) : null}
-                        {progress === 100 ? (
-                            <div style={{
-                                "position": 'absolute',
-                                "top": 0,
-                                "height": "400px",
-                                "width": "100%"
-                            }}>
-                                <h1>DONE</h1>
-                            </div>
-                        ) : null}
-                        {this.props.boardHovered ? <div style={boardTooltipStyle}><h3>Click to start</h3></div> : null}
 
-                        <ProgressBar progress={progress} spongeClick={this.spongeClick} onHover={this.spongeHover} onHoverOut={this.spongeHoverOut} hovering={this.props.spongeHovered} />
+                <div id="board-writing-board-component">
+                    <div id="board-frame">
+                        <div id="drawing-board">
+                            <textarea
+                                id="board-textarea"
+                                value={startingSentence + boardText}
+                                disabled={this.props.boardDisabled}
+                                onKeyDown={this.boardTextChange}
+                                onFocus={this.boardFocused}
+                                onBlur={this.boardLostFocus}
+                                onMouseOver={this.boardHover}
+                                onMouseOut={this.boardHoverOut}
+                                spellCheck="false"
+                            />
+                        </div>
+
+                        <div id="chalk-container">
+
+                            <ProgressBar
+                                progress={progress}
+                                spongeClick={this.spongeClick}
+                                onHover={this.spongeHover}
+                                onHoverOut={this.spongeHoverOut}
+                                hovering={this.props.spongeHovered}
+                            />
+
+                            {this.props.boardHovered ?
+                                <div id="click-to-start-element" className="hover-dialog">
+                                    <label className="hover-dialog-text">
+                                        CLICK
+                                        <br /> TO START
+                                    </label>
+
+                                    <div className="triangle-hover-box-container">
+
+                                        <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+                                            <title>Triangle 4 Copy</title>
+                                            <desc>Created with Sketch.</desc>
+                                            <defs></defs>
+                                            <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-528.000000, -981.000000)">
+                                                <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
+                                                    <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
+                                                        points="83.5 65 95 79 72 79"></polygon>
+                                                </g>
+                                            </g>
+                                        </svg>
+
+                                    </div>
+
+                                </div> : null}
+
+
+
+                            <svg id="board-chalks" width="486px" height="22px" viewBox="0 0 486 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <title>krede na ploci</title>
+                                <desc>Created with Sketch.</desc>
+                                <defs></defs>
+                                <g id="page-01" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-226.000000, -918.000000)">
+                                    <g id="Ploca" transform="translate(0.000000, 150.000000)">
+                                        <g id="krede-na-ploci" transform="translate(226.000000, 768.000000)">
+                                            <polygon id="kreda" fill="#FEFEFE" points="0.34306 22 38.34306 22 38.34306 13 0.34306 13"></polygon>
+                                            <polygon id="zuta-kreda" fill="#FFD75F" transform="translate(45.343060, 11.273000) rotate(20.000000) translate(-45.343060, -11.273000) "
+                                                points="26.34306 15.7730005 64.34306 15.7730005 64.34306 6.77300048 26.34306 6.77300048"></polygon>
+                                            <polygon id="Fill-15" fill="#FEFEFE" points="448 22 486 22 486 13 448 13"></polygon>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
                     </div>
-                </div >
+
+                    <div id="board-shelf"></div>
+
+                </div>
+
             )
         } else {
             return (
@@ -518,8 +554,8 @@ function getRandomPunishment(randomPunishments) {
 
     if (randomPunishments.length === 0) return null;
 
-    let index = Math.floor(Math.random() * randomPunishments.length); 
+    let index = Math.floor(Math.random() * randomPunishments.length);
 
     if (index > randomPunishments.length - 1) return randomPunishments[0];
-    else return randomPunishments[index];    
+    else return randomPunishments[index];
 }

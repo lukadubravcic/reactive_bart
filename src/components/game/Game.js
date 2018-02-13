@@ -171,7 +171,62 @@ class Game extends React.Component {
                     <div className="left-side-col">
                         <Timer />
                         <Board />
+
+                        <div id="board-bottom-books-component">
+
+                            <svg id="books-on-floor" width="157px" height="139px" viewBox="0 0 157 139" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <title>knjige ispod ploce</title>
+                                <desc>Created with Sketch.</desc>
+                                <defs></defs>
+                                <g id="page-01" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-827.000000, -971.000000)">
+                                    <g id="Ploca" transform="translate(0.000000, 150.000000)">
+                                        <g id="knjige-ispod-ploce" transform="translate(827.000000, 821.000000)">
+                                            <g id="Group" transform="translate(0.000000, 64.000000)">
+                                                <polygon id="Fill-23" fill="#4F69A8" points="0 21 126 21 126 0 0 0"></polygon>
+                                                <polygon id="Fill-24" fill="#FF545F" points="114 21 120 21 120 0 114 0"></polygon>
+                                                <polygon id="Fill-25" fill="#FF545F" points="102 21 108 21 108 0 102 0"></polygon>
+                                                <polygon id="Fill-26" fill="#FF545F" points="19 16 31 16 31 5 19 5"></polygon>
+                                                <polygon id="Fill-27" fill="#FF545F" points="7 21 13 21 13 0 7 0"></polygon>
+                                            </g>
+                                            <g id="Fill-30-+-Fill-28-+-Fill-33" transform="translate(31.000000, 85.000000)">
+                                                <path d="M6.1682,6 L6.1682,26 L95.1082,26 C95.1082,26 103.1082,26 103.1082,17.3513514 L103.1082,14.6486486 C103.1082,14.6486486 103.1082,6 95.1082,6 L6.1682,6 Z"
+                                                    id="Fill-30" fill="#FF948A"></path>
+                                                <path d="M110.5082,17.1162791 L110.5082,14.8837209 C110.5082,14.8837209 110.5082,0 95.7737733,0 L0,0 L0,6.69767442 L95.037052,6.69767442 C103.140987,6.69767442 103.140987,14.8837209 103.140987,14.8837209 L103.140987,17.1162791 C103.140987,25.3023256 95.037052,25.3023256 95.037052,25.3023256 L0,25.3023256 L0,32 L95.7737733,32 C95.7737733,32 110.5082,32 110.5082,17.1162791"
+                                                    id="Fill-28" fill="#A479E1"></path>
+                                                <polygon id="Fill-33" fill="#FF545F" points="63 15.0397 63 31.3637 68.5 26.1397 74 31.3637 74 15.0397"></polygon>
+                                            </g>
+                                            <g id="Fill-30-+-Fill-28-+-Fill-33-Copy" transform="translate(64.500000, 48.000000) scale(-1, 1) translate(-64.500000, -48.000000) translate(9.000000, 32.000000)">
+                                                <path d="M6.1682,6 L6.1682,26 L95.1082,26 C95.1082,26 103.1082,26 103.1082,17.3513514 L103.1082,14.6486486 C103.1082,14.6486486 103.1082,6 95.1082,6 L6.1682,6 Z"
+                                                    id="Fill-30" fill="#2BD7F3"></path>
+                                                <path d="M110.5082,17.1162791 L110.5082,14.8837209 C110.5082,14.8837209 110.5082,0 95.7737733,0 L0,0 L0,6.69767442 L95.037052,6.69767442 C103.140987,6.69767442 103.140987,14.8837209 103.140987,14.8837209 L103.140987,17.1162791 C103.140987,25.3023256 95.037052,25.3023256 95.037052,25.3023256 L0,25.3023256 L0,32 L95.7737733,32 C95.7737733,32 110.5082,32 110.5082,17.1162791"
+                                                    id="Fill-28" fill="#3B8DBC"></path>
+                                                <polygon id="Fill-33" fill="#234F78" points="63 15.0397 63 31.3637 68.5 26.1397 74 31.3637 74 15.0397"></polygon>
+                                            </g>
+                                            <g id="Fill-30-+-Fill-28-+-Fill-33-Copy-2" transform="translate(46.000000, 0.000000)">
+                                                <path d="M6.1682,6 L6.1682,26 L95.1082,26 C95.1082,26 103.1082,26 103.1082,17.3513514 L103.1082,14.6486486 C103.1082,14.6486486 103.1082,6 95.1082,6 L6.1682,6 Z"
+                                                    id="Fill-30" fill="#FF948A"></path>
+                                                <path d="M110.5082,17.1162791 L110.5082,14.8837209 C110.5082,14.8837209 110.5082,0 95.7737733,0 L0,0 L0,6.69767442 L95.037052,6.69767442 C103.140987,6.69767442 103.140987,14.8837209 103.140987,14.8837209 L103.140987,17.1162791 C103.140987,25.3023256 95.037052,25.3023256 95.037052,25.3023256 L0,25.3023256 L0,32 L95.7737733,32 C95.7737733,32 110.5082,32 110.5082,17.1162791"
+                                                    id="Fill-28" fill="#EA411E"></path>
+                                            </g>
+                                            <g id="knjiga-1" transform="translate(3.000000, 117.000000)">
+                                                <polygon id="Fill-34" fill="#EA411E" points="0 21.9798 148 21.9798 148 0 0 0"></polygon>
+                                                <polygon id="Fill-37" fill="#2B80B2" points="21 21.9798 28 21.9798 28 0 21 0"></polygon>
+                                                <polygon id="Fill-38" fill="#2B80B2" points="7 22 14 22 14 0 7 0"></polygon>
+                                                <polygon id="Fill-37-Copy-3" fill="#2B80B2" points="134 21.9798 141 21.9798 141 0 134 0"></polygon>
+                                                <polygon id="Fill-37-Copy-2" fill="#2B80B2" points="120 21.9798 127 21.9798 127 0 120 0"></polygon>
+                                                <path d="M107,18 C110.866137,18 114,14.8661367 114,11 C114,7.13386328 110.866137,4 107,4 C103.133863,4 100,7.13386328 100,11 C100,14.8661367 103.133863,18 107,18"
+                                                    id="Fill-39" fill="#00BBD6"></path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+
+                            <div id="classroom-floor"></div>
+
+                        </div>
                     </div>
+                    
                     <div className="right-side-col">
 
                         <div id="plant-board-right-container">
@@ -204,59 +259,6 @@ class Game extends React.Component {
                             <Ads />
                         </div>
 
-                    </div>
-
-                    <div id="board-bottom-books-component">
-
-                        <svg id="books-on-floor" width="157px" height="139px" viewBox="0 0 157 139" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                            <title>knjige ispod ploce</title>
-                            <desc>Created with Sketch.</desc>
-                            <defs></defs>
-                            <g id="page-01" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-827.000000, -971.000000)">
-                                <g id="Ploca" transform="translate(0.000000, 150.000000)">
-                                    <g id="knjige-ispod-ploce" transform="translate(827.000000, 821.000000)">
-                                        <g id="Group" transform="translate(0.000000, 64.000000)">
-                                            <polygon id="Fill-23" fill="#4F69A8" points="0 21 126 21 126 0 0 0"></polygon>
-                                            <polygon id="Fill-24" fill="#FF545F" points="114 21 120 21 120 0 114 0"></polygon>
-                                            <polygon id="Fill-25" fill="#FF545F" points="102 21 108 21 108 0 102 0"></polygon>
-                                            <polygon id="Fill-26" fill="#FF545F" points="19 16 31 16 31 5 19 5"></polygon>
-                                            <polygon id="Fill-27" fill="#FF545F" points="7 21 13 21 13 0 7 0"></polygon>
-                                        </g>
-                                        <g id="Fill-30-+-Fill-28-+-Fill-33" transform="translate(31.000000, 85.000000)">
-                                            <path d="M6.1682,6 L6.1682,26 L95.1082,26 C95.1082,26 103.1082,26 103.1082,17.3513514 L103.1082,14.6486486 C103.1082,14.6486486 103.1082,6 95.1082,6 L6.1682,6 Z"
-                                                id="Fill-30" fill="#FF948A"></path>
-                                            <path d="M110.5082,17.1162791 L110.5082,14.8837209 C110.5082,14.8837209 110.5082,0 95.7737733,0 L0,0 L0,6.69767442 L95.037052,6.69767442 C103.140987,6.69767442 103.140987,14.8837209 103.140987,14.8837209 L103.140987,17.1162791 C103.140987,25.3023256 95.037052,25.3023256 95.037052,25.3023256 L0,25.3023256 L0,32 L95.7737733,32 C95.7737733,32 110.5082,32 110.5082,17.1162791"
-                                                id="Fill-28" fill="#A479E1"></path>
-                                            <polygon id="Fill-33" fill="#FF545F" points="63 15.0397 63 31.3637 68.5 26.1397 74 31.3637 74 15.0397"></polygon>
-                                        </g>
-                                        <g id="Fill-30-+-Fill-28-+-Fill-33-Copy" transform="translate(64.500000, 48.000000) scale(-1, 1) translate(-64.500000, -48.000000) translate(9.000000, 32.000000)">
-                                            <path d="M6.1682,6 L6.1682,26 L95.1082,26 C95.1082,26 103.1082,26 103.1082,17.3513514 L103.1082,14.6486486 C103.1082,14.6486486 103.1082,6 95.1082,6 L6.1682,6 Z"
-                                                id="Fill-30" fill="#2BD7F3"></path>
-                                            <path d="M110.5082,17.1162791 L110.5082,14.8837209 C110.5082,14.8837209 110.5082,0 95.7737733,0 L0,0 L0,6.69767442 L95.037052,6.69767442 C103.140987,6.69767442 103.140987,14.8837209 103.140987,14.8837209 L103.140987,17.1162791 C103.140987,25.3023256 95.037052,25.3023256 95.037052,25.3023256 L0,25.3023256 L0,32 L95.7737733,32 C95.7737733,32 110.5082,32 110.5082,17.1162791"
-                                                id="Fill-28" fill="#3B8DBC"></path>
-                                            <polygon id="Fill-33" fill="#234F78" points="63 15.0397 63 31.3637 68.5 26.1397 74 31.3637 74 15.0397"></polygon>
-                                        </g>
-                                        <g id="Fill-30-+-Fill-28-+-Fill-33-Copy-2" transform="translate(46.000000, 0.000000)">
-                                            <path d="M6.1682,6 L6.1682,26 L95.1082,26 C95.1082,26 103.1082,26 103.1082,17.3513514 L103.1082,14.6486486 C103.1082,14.6486486 103.1082,6 95.1082,6 L6.1682,6 Z"
-                                                id="Fill-30" fill="#FF948A"></path>
-                                            <path d="M110.5082,17.1162791 L110.5082,14.8837209 C110.5082,14.8837209 110.5082,0 95.7737733,0 L0,0 L0,6.69767442 L95.037052,6.69767442 C103.140987,6.69767442 103.140987,14.8837209 103.140987,14.8837209 L103.140987,17.1162791 C103.140987,25.3023256 95.037052,25.3023256 95.037052,25.3023256 L0,25.3023256 L0,32 L95.7737733,32 C95.7737733,32 110.5082,32 110.5082,17.1162791"
-                                                id="Fill-28" fill="#EA411E"></path>
-                                        </g>
-                                        <g id="knjiga-1" transform="translate(3.000000, 117.000000)">
-                                            <polygon id="Fill-34" fill="#EA411E" points="0 21.9798 148 21.9798 148 0 0 0"></polygon>
-                                            <polygon id="Fill-37" fill="#2B80B2" points="21 21.9798 28 21.9798 28 0 21 0"></polygon>
-                                            <polygon id="Fill-38" fill="#2B80B2" points="7 22 14 22 14 0 7 0"></polygon>
-                                            <polygon id="Fill-37-Copy-3" fill="#2B80B2" points="134 21.9798 141 21.9798 141 0 134 0"></polygon>
-                                            <polygon id="Fill-37-Copy-2" fill="#2B80B2" points="120 21.9798 127 21.9798 127 0 120 0"></polygon>
-                                            <path d="M107,18 C110.866137,18 114,14.8661367 114,11 C114,7.13386328 110.866137,4 107,4 C103.133863,4 100,7.13386328 100,11 C100,14.8661367 103.133863,18 107,18"
-                                                id="Fill-39" fill="#00BBD6"></path>
-                                        </g>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg>
-                        
-                        <div id="classroom-floor"></div>
                     </div>
 
                 </div>

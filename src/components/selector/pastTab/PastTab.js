@@ -62,10 +62,10 @@ class PastTab extends React.Component {
 
         this.showIgnoredPunishmentPage = punishments => {
 
-                let pageNum = getPunishmentPageNumber(this.props.punishmentIdFromURL, this.props.pastPunishments);
-               
-                this.props.changeShownPunishments(getPageElements(pageNum, punishments), pageNum);
-            
+            let pageNum = getPunishmentPageNumber(this.props.punishmentIdFromURL, this.props.pastPunishments);
+
+            this.props.changeShownPunishments(getPageElements(pageNum, punishments), pageNum);
+
         };
 
         this.updateAndShowPastPunishments = punishments => {
@@ -119,6 +119,7 @@ class PastTab extends React.Component {
                 id: 'created',
                 fieldName: 'created',
                 sortOrder: 1,
+                style: 'float-left ordered-on-field ordered-on-lmargin-field'
             },
             {
                 name: 'BY WHOM',
@@ -127,6 +128,7 @@ class PastTab extends React.Component {
                 id: 'userOrdering',
                 fieldName: 'user_ordering_punishment',
                 sortOrder: 1,
+                style: 'float-left by-whom-field'
             },
             {
                 name: 'X',
@@ -135,18 +137,21 @@ class PastTab extends React.Component {
                 id: 'howManyTimes',
                 fieldName: 'how_many_times',
                 sortOrder: 1,
+                style: 'float-left past-num-time-field'
             },
             {
                 name: 'WHAT',
                 defaultName: 'WHAT',
                 clickHandler: null,
-                id: 'whatToWrite'
+                id: 'whatToWrite',
+                style: 'float-left what-field-longer'
             },
             {
                 name: 'STATUS',
                 defaultName: 'STATUS',
                 clickHandler: null,
-                id: 'status'
+                id: 'status',
+                style: 'float-left status-field'
             }
         ];
     }
@@ -171,7 +176,7 @@ class PastTab extends React.Component {
     componentWillUpdate(prevProps) {
 
         if (prevProps.ignoredPunishmentSet && !this.props.ignoredPunishmentSet) {
-        
+
             this.showIgnoredPunishmentPage(this.props.pastPunishments);
         }
     }
@@ -181,35 +186,37 @@ class PastTab extends React.Component {
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownPastPunishments;
         const columns = this.columns;
-        const style = {
-            "width": "210px",
-            "display": "inline-block"
-        };
-        const styleMarkIgnored = {
-            ...style,
-            backgroundColor: "rgba(158, 234, 86, 0.75)"
-        }
+
+        const styleMarkIgnored = 'picker-selected-row'
 
         if (shownPunishments !== 'empty') {
             return (
-                <div className="container">
-                    <TableHeader columns={columns} style={style} />
-                    {
-                        shownPunishments.map(punishment => {
-                            if (this.props.punishmentIdFromURL === punishment.uid) {
+                <div>
+                    <TableHeader columns={columns} />
 
-                                return (
-                                    <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
-                                )
+                    <table className="picker-table">
+                        <tbody>
 
-                            } else {
+                            {
+                                shownPunishments.map(punishment => {
 
-                                return (
-                                    <PastTabRow punishment={punishment} style={style} key={punishment.uid} id={punishment.uid} />
-                                )
+                                    if (this.props.punishmentIdFromURL === punishment.uid) {
+
+                                        return (
+                                            <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
+                                        )
+
+                                    } else {
+                                        return (
+                                            <PastTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
+                                        )
+                                    }
+                                })
                             }
-                        })
-                    }
+
+                        </tbody>
+                    </table>
+
                     <TableFooter currentPage={currentPage} punishments={this.props.pastPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
             )

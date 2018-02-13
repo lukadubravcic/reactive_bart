@@ -118,6 +118,7 @@ class OrderedTab extends React.Component {
                 id: 'created',
                 fieldName: 'created',
                 sortOrder: 1,
+                style: 'float-left when-field ordered-on-lmargin-field'
             },
             {
                 name: 'TO WHOM',
@@ -126,6 +127,7 @@ class OrderedTab extends React.Component {
                 id: 'toWhom',
                 fieldName: 'user_taking_punishment',
                 sortOrder: 1,
+                style: 'float-left to-whom-field'
             },
             {
                 name: 'DEADLINE',
@@ -134,6 +136,7 @@ class OrderedTab extends React.Component {
                 id: 'deadline',
                 fieldName: 'deadline',
                 sortOrder: 1,
+                style: 'float-left ordered-deadline-field'
             },
             {
                 name: 'X',
@@ -142,31 +145,23 @@ class OrderedTab extends React.Component {
                 id: 'howManyTimes',
                 fieldName: 'how_many_times',
                 sortOrder: 1,
+                style: 'float-left ordered-num-time-field'
             },
             {
                 name: 'WHAT',
                 defaultName: 'WHAT',
                 clickHandler: null,
-                id: 'whatToWrite'
+                id: 'whatToWrite',
+                style: 'float-left ordered-what-field'
             },
             {
                 name: 'STATUS',
                 defaultName: 'STATUS',
                 clickHandler: null,
                 id: 'status',
+                style: 'float-left ordered-status-field'
             }
         ];
-
-        this.styles = {
-            wideField: {
-                "width": "220px",
-                "display": "inline-block"
-            },
-            narrowField: {
-                "width": "100px",
-                "display": "inline-block"
-            }
-        };
     }
 
     componentDidMount() {
@@ -187,22 +182,25 @@ class OrderedTab extends React.Component {
 
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownOrderedPunishments;
-        const style = {
-            "width": "220px",
-            "display": "inline-block"
-        };
+
 
         if (shownPunishments !== 'empty') {
             return (
-                <div className="container">
-                    <TableHeader columns={this.columns} style={style} />
-                    {
-                        shownPunishments.map(punishment => {
-                            return (
-                                <OrderedTabRow punishment={punishment} style={style} key={punishment.uid} id={punishment.uid} />
-                            )
-                        })
-                    }
+                <div>
+                    <TableHeader columns={this.columns} />
+
+                    <table className="picker-table">
+                        <tbody>
+                            {
+                                shownPunishments.map(punishment => {
+                                    return (
+                                        <OrderedTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+
                     <TableFooter currentPage={currentPage} punishments={this.props.orderedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
             )

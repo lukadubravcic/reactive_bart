@@ -3,18 +3,18 @@ import React from 'react';
 const OrderedTabRow = props => {
 
     return (
-        <div className="container">
+        <div className="picker-table-header">
             <hr />
             {
                 props.columns.map((column) => {
                     return (
-                        <label
-                            style={props.style}
+                        <div
+                            className={column.style}
                             key={column.id}
                             id={column.id}
                             onClick={() => (column.clickHandler) ? column.clickHandler(column.id): ()=>{}}>
                             {column.name}
-                        </label>
+                        </div>
                     )
                 })
             }

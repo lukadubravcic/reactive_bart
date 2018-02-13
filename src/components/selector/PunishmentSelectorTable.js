@@ -53,43 +53,9 @@ class PunishmentSelectorTable extends React.Component {
 
         this.selectTab = tab => {
             if (tab !== this.props.selectedTab) { // ako se selektira razlicit tab od trenutnog
-                switch (tab) {
-                    case 'acceptedTab':
-                        this.acceptedStyle = this.placeholderStyles.selectedStyle;
-                        this.pastStyle = this.orderedStyle = this.placeholderStyles.defaultStyle;
-                        break;
-                    case 'pastTab':
-                        this.pastStyle = this.placeholderStyles.selectedStyle;
-                        this.acceptedStyle = this.orderedStyle = this.placeholderStyles.defaultStyle;
-                        break;
-                    case 'orderedTab':
-                        this.orderedStyle = this.placeholderStyles.selectedStyle;
-                        this.acceptedStyle = this.pastStyle = this.placeholderStyles.defaultStyle;
-                        break;
-                }
                 this.props.changeSelectedTab(tab);
             }
         }
-
-        this.placeholderStyles = { // jednostavan styling radi lakseg rada
-            defaultStyle: {
-                margin: "5px 10px",
-                padding: "5px 10px",
-                fontWeight: "bold",
-                textAlign: "center"
-            },
-            selectedStyle: {
-                margin: "5px 10px",
-                padding: "5px 10px",
-                fontWeight: "bold",
-                textAlign: "center",
-                borderBottom: "6px solid grey"
-            }
-        };
-
-        this.acceptedStyle = this.placeholderStyles.defaultStyle;
-        this.pastStyle = this.placeholderStyles.defaultStyle;
-        this.orderedStyle = this.placeholderStyles.defaultStyle;
 
         this._handleAcceptedPunFromAgent = payload => {
 
@@ -153,6 +119,62 @@ class PunishmentSelectorTable extends React.Component {
                 this.props.setOrderedPunishments([]);
             }
         };
+
+        this.setHeaderTabsElement = selectedTab => {
+
+            let acceptedTabHeader = null;
+            let pastTabHeader = null;
+            let orderedTabHeader = null;
+        
+            switch (selectedTab) {
+                case 'acceptedTab':
+                    acceptedTabHeader = this.props.showAcceptedTab
+                        ? (<button className="picker-tab picker-selected-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+                    pastTabHeader = this.props.showPastTab
+                        ? (<button className="picker-tab picker-tab-with-border" id="pastTab" onClick={this.onChangeTab}>PAST</button>)
+                        : null;
+                    orderedTabHeader = this.props.showOrderedTab
+                        ? (<button className="picker-tab" id="orderedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+        
+                    break;
+        
+                case 'pastTab':
+                    acceptedTabHeader = this.props.showAcceptedTab
+                        ? (<button className="picker-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+                    pastTabHeader = this.props.showPastTab
+                        ? (<button className="picker-tab picker-selected-tab" id="pastTab" onClick={this.onChangeTab}>PAST</button>)
+                        : null;
+                    orderedTabHeader = this.props.showOrderedTab
+                        ? (<button className="picker-tab" id="orderedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+        
+                    break;
+        
+                case 'orderedTab':
+                    acceptedTabHeader = this.props.showAcceptedTab
+                        ? (<button className="picker-tab picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+                    pastTabHeader = this.props.showPastTab
+                        ? (<button className="picker-tab" id="pastTab" onClick={this.onChangeTab}>PAST</button>)
+                        : null;
+                    orderedTabHeader = this.props.showOrderedTab
+                        ? (<button className="picker-tab picker-selected-tab" id="orderedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+            }
+        
+            return (
+                <div className="picker-nav-container">
+                    <nav className="picker-navigation">
+                        {acceptedTabHeader}
+                        {pastTabHeader}
+                        {orderedTabHeader}
+                    </nav>
+                </div>
+            );
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -225,26 +247,29 @@ class PunishmentSelectorTable extends React.Component {
 
         if (userLoggedIn && !adblockerOrCheatDetected) {
 
-            const acceptedTabHeader = this.props.showAcceptedTab ? (<label id="acceptedTab" style={this.acceptedStyle} onClick={this.onChangeTab}>ACCEPTED</label>) : null;
-            const pastTabHeader = this.props.showPastTab ? (<label id="pastTab" style={this.pastStyle} onClick={this.onChangeTab}>PAST</label>) : null;
-            const orderedTabHeader = this.props.showOrderedTab ? (<label id="orderedTab" style={this.orderedStyle} onClick={this.onChangeTab}>ORDERED</label>) : null;
+            /* const acceptedTabHeader = this.props.showAcceptedTab ? (<button className="picker-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>) : null;
+            const pastTabHeader = this.props.showPastTab ? (<button class="picker-tab" id="pastTab" onClick={this.onChangeTab}>PAST</button>) : null;
+            const orderedTabHeader = this.props.showOrderedTab ? (<button class="picker-tab" id="orderedTab" onClick={this.onChangeTab}>ORDERED</button>) : null;
+
 
 
             let tableTabNamesElement = (
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    {acceptedTabHeader}
-                    {pastTabHeader}
-                    {orderedTabHeader}
+                <div className="picker-nav-container">
+                    <nav className="picker-navigation">
+                        {acceptedTabHeader}
+                        {pastTabHeader}
+                        {orderedTabHeader}
+                    </nav>
                 </div>
-            );
+            ); */
+
+            const tableTabNamesElement = this.setHeaderTabsElement(this.props.selectedTab);
 
             switch (this.props.selectedTab) {
                 case 'acceptedTab':
                     this.props.showAcceptedTab ? shownTab = (
 
-                        <div className="container">
-                            <AcceptedTab />
-                        </div>
+                        <AcceptedTab />
 
                     ) : null;
                     break;
@@ -252,9 +277,7 @@ class PunishmentSelectorTable extends React.Component {
                 case 'pastTab':
                     this.props.showPastTab ? shownTab = (
 
-                        <div className="container">
-                            <PastTab />
-                        </div>
+                        <PastTab />
 
                     ) : null;
                     break;
@@ -262,25 +285,33 @@ class PunishmentSelectorTable extends React.Component {
                 case 'orderedTab':
                     this.props.showOrderedTab ? shownTab = (
 
-                        <div className="container">
-                            <OrderedTab />
-                        </div>
+                        <OrderedTab />
 
                     ) : null;
                     break;
             }
 
             return (
-                <div className="container">
-                    {tableTabNamesElement}
-                    {shownTab}
+                <div className="parent-component picker-component-container picker-accepted-color">
+                    <div className="container">
+                        <label className="heading picker-heading">Pick your punishment</label>
+
+                        <div className="pun-picker-component">
+
+                            {tableTabNamesElement}
+                            {shownTab}
+
+                        </div>
+                    </div>
                 </div>
             )
 
-        } else return null // no data
+        } else return null; // no data
     }
 }
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(PunishmentSelectorTable)
+
+
 

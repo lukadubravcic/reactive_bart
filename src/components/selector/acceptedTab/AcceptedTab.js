@@ -59,7 +59,7 @@ class AcceptedTab extends React.Component {
 
             } else if (id === this.props.activePunishment.uid) { // odabir trenutne kazne, nema promjene
                 return;
-            } 
+            }
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea
@@ -144,6 +144,7 @@ class AcceptedTab extends React.Component {
                 id: 'orderedBy',
                 fieldName: 'user_ordering_punishment',
                 sortOrder: 1,
+                style: 'float-left ordering-field'
             },
             {
                 name: 'DEADLINE',
@@ -152,6 +153,7 @@ class AcceptedTab extends React.Component {
                 id: 'deadline',
                 fieldName: 'deadline',
                 sortOrder: 1,
+                style: 'float-left deadline-field'
             },
             {
                 name: 'X',
@@ -160,12 +162,14 @@ class AcceptedTab extends React.Component {
                 id: 'howManyTimes',
                 fieldName: 'how_many_times',
                 sortOrder: 1,
+                style: 'float-left num-time-field'
             },
             {
                 name: 'WHAT',
                 defaultName: 'WHAT',
                 clickHandler: null,
-                id: 'whatToWrite'
+                id: 'whatToWrite',
+                style: 'float-left what-field'
             }
         ];
     }
@@ -198,41 +202,43 @@ class AcceptedTab extends React.Component {
         const shownPunishments = this.props.shownAcceptedPunishments;
         const activePunishment = this.props.activePunishment;
         const columns = this.columns;
-        const style = {
-            "width": "220px",
-            "display": "inline-block"
-        };
-        const selectedStyle = {
-            ...style,
-            backgroundColor: "rgba(158, 234, 86, 0.75)"
-        };
+
+        const selectedStyle = 'picker-selected-row';
 
 
         if (shownPunishments !== 'empty') {
             return (
-                <div className="container">
-                    <TableHeader columns={columns} style={style} />
-                    {
-                        shownPunishments.map(punishment => {
+                <div>
+                    <TableHeader columns={columns} />
 
-                            if (punishment.uid === activePunishment.uid) {
-                                return (
-                                    <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment.uid}
-                                        id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
-                                        disabledGo={true} />
-                                )
+                    <table className="picker-table">
+                        <tbody>
+                            {
+                                shownPunishments.map(punishment => {
+
+                                    if (punishment.uid === activePunishment.uid) {
+                                        return (
+                                            <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment.uid}
+                                                id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                                disabledGo={true} />
+                                        )
+                                    }
+                                    else {
+                                        return (
+                                            <AcceptedTabRow punishment={punishment} key={punishment.uid}
+                                                id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                                disabledGo={false} />
+                                        )
+                                    }
+                                })
                             }
-                            else {
-                                return (
-                                    <AcceptedTabRow punishment={punishment} style={style} key={punishment.uid}
-                                        id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
-                                        disabledGo={false} />
-                                )
-                            }
-                        })
-                    }
+
+                        </tbody>
+                    </table>
+
                     <TableFooter currentPage={currentPage} punishments={this.props.acceptedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
+
             )
         } else if (shownPunishments === 'empty') {
             return (

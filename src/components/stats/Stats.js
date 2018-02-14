@@ -5,12 +5,12 @@ import { checkIfIgnoredPunishment } from '../../helpers/helpers';
 import RankInfo from './RankInfo';
 
 const colors = {
-      accepted: 'rgba(185, 214, 0, 0.8)',
-      rejected: 'rgba(198, 51, 51, 0.8)',
-      ignored: 'rgba(131, 64, 214, 0.8)',
-      completed: 'rgba(185, 214, 0, 0.8)',
-      givenUp: 'rgba(198, 51, 51, 0.8)',
-      failed: 'rgba(131, 64, 214, 0.8'
+      accepted: '#FFA623',
+      rejected: '#EA411E',
+      ignored: '#00BBD6',
+      completed: '#FFA623',
+      givenUp: '#00BBD6',
+      failed: '#EA411E'
 };
 
 const mapStateToProps = state => ({
@@ -142,115 +142,89 @@ class Stats extends React.Component {
             if (usrLoggedIn) {
                   return (
                         <div>
-                              <div className="container">
-                                    {this.props.firstGraph ?
-                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
+                              <div className="parent-component statz-component-container">
+                                    <div className="container">
 
-                                                <PieChart
-                                                      data={this.props.firstGraph}
-                                                      lineWidth={80}
-                                                      paddingAngle={5}
-                                                      animate={true}
-                                                      animationDuration={3500} />
+                                          <label id="statz-heading" className="heading">Statz</label>
 
-                                                <br />
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
-                                                      <label>&nbsp;Accepted</label>
+
+                                          <div className="punishing-others-container">
+
+                                                <label className="statz-group-heading">PUNISHING OTHERS</label>
+
+                                                {this.props.firstGraph ?
+                                                      <div className="float-left graph-container graph1-container"
+                                                            style={{ width: "420px" }}>
+
+                                                            <PieChart
+                                                                  data={this.props.firstGraph}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={3500} />
+                                                      </div>
+
+                                                      : null}
+
+                                                {this.props.secondGraph ?
+                                                      <div className="float-right graph-container graph2-container"
+                                                            style={{ width: "420px" }}>
+
+                                                            <PieChart
+                                                                  data={this.props.secondGraph}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={3500} />
+                                                      </div>
+                                                      : null}
+
+                                                <div className="pun-others-bottom-image-container">
+                                                      {punishingOthersSVG}
                                                 </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
-                                                      <label>&nbsp;Rejected</label>
-                                                </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
-                                                      <label>&nbsp;Ignored</label>
-                                                </div>
+
                                           </div>
-                                          : null}
-                                    {this.props.secondGraph ?
-                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
 
-                                                <PieChart
-                                                      data={this.props.secondGraph}
-                                                      lineWidth={80}
-                                                      paddingAngle={5}
-                                                      animate={true}
-                                                      animationDuration={3500} />
+                                          <div className="being-punished-container">
 
-                                                <br />
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
-                                                      <label>&nbsp;Completed</label>
+                                                <label className="statz-group-heading">ME, BEING PUNISHED</label>
+
+                                                {this.props.thirdGraph ?
+                                                      <div className="float-left graph-container graph1-container"
+                                                            style={{ width: "420px" }}>
+
+                                                            <PieChart
+                                                                  data={this.props.thirdGraph}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={3500} />
+                                                      </div>
+                                                      : null}
+
+                                                {this.props.fourthGraph ?
+                                                      <div className="float-right graph-container graph2-container"
+                                                            style={{ width: "420px" }}>
+
+                                                            <PieChart
+                                                                  data={this.props.fourthGraph}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={3500} />
+                                                      </div>
+                                                      : null}
+
+                                                <div className="being-punished-bottom-image-container">
+                                                      {beingPunishedSVG}
                                                 </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
-                                                      <label>&nbsp;Given up</label>
-                                                </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
-                                                      <label>&nbsp;Failed</label>
-                                                </div>
+
                                           </div>
-                                          : null}
-                                    <br style={{ clear: "left" }} />
+                                    </div>
                               </div>
 
-                              <div className="container">
-                                    {this.props.thirdGraph ?
-                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
+                              <RankInfo rank={this.props.rank} />
 
-                                                <PieChart
-                                                      data={this.props.thirdGraph}
-                                                      lineWidth={80}
-                                                      paddingAngle={5}
-                                                      animate={true}
-                                                      animationDuration={3500} />
-
-                                                <br />
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.accepted }}>&nbsp;</label>
-                                                      <label>&nbsp;Accepted</label>
-                                                </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.rejected }}>&nbsp;</label>
-                                                      <label>&nbsp;Rejected</label>
-                                                </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.ignored }}>&nbsp;</label>
-                                                      <label>&nbsp;Ignored</label>
-                                                </div>
-                                          </div>
-                                          : null}
-                                    {this.props.fourthGraph ?
-                                          <div style={{ float: "left", width: "200px", margin: "50px" }}>
-
-                                                <PieChart
-                                                      data={this.props.fourthGraph}
-                                                      lineWidth={80}
-                                                      paddingAngle={5}
-                                                      animate={true}
-                                                      animationDuration={3500} />
-
-                                                <br />
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.completed }}>&nbsp;</label>
-                                                      <label>&nbsp;Completed</label>
-                                                </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.givenUp }}>&nbsp;</label>
-                                                      <label>&nbsp;Given up</label>
-                                                </div>
-                                                <div className="graph-legend-container">
-                                                      <label style={{ width: "20px", height: "auto", backgroundColor: colors.failed }}>&nbsp;</label>
-                                                      <label>&nbsp;Failed</label>
-                                                </div>
-                                          </div>
-                                          : null}
-                                    <br style={{ clear: "left" }} />
-
-                                    <RankInfo rank={this.props.rank} />
-                              </div>
                         </div>
                   )
             } else return null;
@@ -275,3 +249,53 @@ function getGraphProperties(classificationResults, neededProperties) {
             if (neededProperties.indexOf(property) > -1) return { [property]: classificationResults[property] };
       }));
 }
+
+
+
+const punishingOthersSVG = (
+      <svg id="pun-others-bottom-image" width="1080px" height="43px" viewBox="0 0 1080 43" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+            <title>Group 11</title>
+            <desc>Created with Sketch.</desc>
+            <defs></defs>
+            <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -4071.000000)">
+                  <g id="Group" transform="translate(0.000000, 3353.000000)">
+                        <g id="Group-11" transform="translate(100.000000, 718.000000)">
+                              <polygon id="Fill-7-Copy-8" fill="#A479E1" points="-2.38411233e-13 43 1080 43 1080 23 -2.38411233e-13 23"></polygon>
+                              <polygon id="Fill-15-Copy-2" fill="#FEFEFE" points="684 23 722 23 722 14 684 14"></polygon>
+                              <polygon id="Fill-15-Copy-6" fill="#FEFEFE" transform="translate(728.000000, 11.500000) rotate(22.000000) translate(-728.000000, -11.500000) "
+                                    points="709 16 747 16 747 7 709 7"></polygon>
+                        </g>
+                  </g>
+            </g>
+      </svg>
+)
+
+
+const beingPunishedSVG = (
+      <svg id="being-punished-bottom-image" width="1080px" height="213px" viewBox="0 0 1080 213" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+            <title>Fill 7 Copy 9 + Fill 15 Copy 4 + Group Copy 10</title>
+            <desc>Created with Sketch.</desc>
+            <defs></defs>
+            <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -4631.000000)">
+                  <g id="Group" transform="translate(0.000000, 3353.000000)">
+                        <g id="Fill-7-Copy-9-+-Fill-15-Copy-4-+-Group-Copy-10" transform="translate(100.000000, 1278.000000)">
+                              <polygon id="Fill-7-Copy-9" fill="#A479E1" points="-2.38411233e-13 213 1080 213 1080 193 -2.38411233e-13 193"></polygon>
+                              <polygon id="Fill-15-Copy-4" fill="#FEFEFE" points="496 193 534 193 534 184 496 184"></polygon>
+                              <g id="Group-Copy-10" transform="translate(371.000000, 0.000000)">
+                                    <polygon id="Fill-57" fill="#4F69A8" points="87.3739 127.1981 89.4319 66.1211 107.9589 0.3091 105.8999 68.0671 92.3909 128.2961"></polygon>
+                                    <path d="M75.4524,139.4763 C75.4524,135.1873 39.7284,80.5903 39.7284,80.5903 L23.9904,83.8963 L64.1304,137.4173 L75.4524,139.4763 Z"
+                                          id="Fill-58" fill="#4F69A8"></path>
+                                    <polygon id="Fill-60" fill="#4F69A8" points="75.4524 131.2423 55.8964 60.2243 75.7524 58.9763 80.5984 131.2423"></polygon>
+                                    <polygon id="Fill-61" fill="#4F69A8" points="91.9204 139.4763 122.0684 80.5903 135.1494 84.9263 100.1544 139.4763"></polygon>
+                                    <polygon id="Fill-62" fill="#EA411E" points="46.7632 125.7058 57.0962 192.7788 106.4192 192.7788 116.7522 125.7058"></polygon>
+                                    <polygon id="Fill-63" fill="#A479E1" points="22.2313 83.4673 0.6173 142.1343 39.7283 80.3793"></polygon>
+                                    <polygon id="Fill-64" fill="#A479E1" points="75.7523 58.976 55.8963 151.827 55.8963 60.224"></polygon>
+                                    <polygon id="Fill-65" fill="#A479E1" points="122.0686 80.5902 143.3826 153.8862 136.1786 84.9262"></polygon>
+                              </g>
+                        </g>
+                  </g>
+            </g>
+      </svg>
+)

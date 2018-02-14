@@ -6,11 +6,11 @@ const Clock = props => {
     const hours = get12HourTime(props.clockValue.hours);
     const minutes = props.clockValue.minutes < 10 ? "0" + props.clockValue.minutes : props.clockValue.minutes;
     const seconds = props.clockValue.seconds < 10 ? "0" + props.clockValue.seconds : props.clockValue.seconds;
-
+  
     return (
         <div id="board-watch-container">
             <div id="watch-AM-PM-container" className="board-watch-block">
-                <span id="watch-AM-PM" className="watch-digits">AM</span>
+                <span id="watch-AM-PM" className="watch-digits">{am_pm}</span>
             </div>
             <div className="board-watch-block">
                 <span id="watch-hour" className="watch-digits">{hours}</span>
@@ -30,6 +30,7 @@ export default Clock;
 function get12HourTime(hours) {
     let hour = hours;
 
-    if (hour <= 12) return  "0" + hour;
+    if (hour < 10) return "0" + hour;
+    else if (hour <= 12) return hour;
     else return '0' + (hour - 12); // hour > 12
 }

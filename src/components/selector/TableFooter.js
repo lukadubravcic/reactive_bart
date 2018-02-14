@@ -7,45 +7,62 @@ class TableFooter extends React.Component {
     constructor(props) {
         super(props);
         this.changeShownPunishments = this.props.changeShownPunishments;
-        this.showPage = this.showPage.bind(this);
-    }
 
-    showPage(ev) {
+        this.showPage = id => {            
+            const currentPage = this.props.currentPage;
+            const punishments = this.props.punishments;
+            const punishmentsLength = punishments.length;
 
-        const currentPage = this.props.currentPage;
-        const punishments = this.props.punishments;
-        const punishmentsLength = punishments.length;
-
-        let startingIndex;
-        let destinationPage;
-        let lastPage = (punishmentsLength % ITEMS_PER_PAGE) ? Math.floor(punishmentsLength / ITEMS_PER_PAGE) + 1 : Math.floor(punishmentsLength / ITEMS_PER_PAGE);
-        let shownPunishments = [];
-
-        switch (ev.target.id) {
-            case 'first-page-button':
-                destinationPage = 1;
-                startingIndex = 0;
-                break;
-            case 'punishment-previous-page-navigation-btn':
-                destinationPage = currentPage === 1 ? currentPage : currentPage - 1;
-                startingIndex = getCounterStartingValue(destinationPage, punishmentsLength, ITEMS_PER_PAGE);
-                break;
-            case 'punishment-next-page-navigation-btn':
-                destinationPage = currentPage < lastPage ? currentPage + 1 : currentPage;
-                startingIndex = getCounterStartingValue(destinationPage, punishmentsLength, ITEMS_PER_PAGE);
-                break;
-            case 'last-page-button':
-                destinationPage = lastPage;
-                startingIndex = getCounterStartingValue(-1, punishmentsLength, ITEMS_PER_PAGE);
-                break;
+            let startingIndex;
+            let destinationPage;
+            let lastPage = (punishmentsLength % ITEMS_PER_PAGE) ? Math.floor(punishmentsLength / ITEMS_PER_PAGE) + 1 : Math.floor(punishmentsLength / ITEMS_PER_PAGE);
+            let shownPunishments = [];
+    
+            switch (id) {
+                case 1:
+                    destinationPage = 1;
+                    startingIndex = 0;
+                    break;
+                case 2:
+                    destinationPage = currentPage === 1 ? currentPage : currentPage - 1;
+                    startingIndex = getCounterStartingValue(destinationPage, punishmentsLength, ITEMS_PER_PAGE);
+                    break;
+                case 3:
+                    destinationPage = currentPage < lastPage ? currentPage + 1 : currentPage;
+                    startingIndex = getCounterStartingValue(destinationPage, punishmentsLength, ITEMS_PER_PAGE);
+                    break;
+                case 4:
+                    destinationPage = lastPage;
+                    startingIndex = getCounterStartingValue(-1, punishmentsLength, ITEMS_PER_PAGE);
+                    break;
+            }
+    
+            for (let i = startingIndex; i < (startingIndex + ITEMS_PER_PAGE); i++) {
+                if (punishments[i]) {
+                    shownPunishments.push(punishments[i])
+                };
+            }
+            this.changeShownPunishments(shownPunishments, destinationPage);
         }
 
-        for (let i = startingIndex; i < (startingIndex + ITEMS_PER_PAGE); i++) {
-            if (punishments[i]) {
-                shownPunishments.push(punishments[i])
-            };
+        this.firstPageClickHandler = ev => {
+            ev.preventDefault()
+            this.showPage(1)
         }
-        this.changeShownPunishments(shownPunishments, destinationPage);
+        this.previousPageClickHandler = ev => {
+            ev.preventDefault()
+            this.showPage(2)
+        }
+        this.nextPageClickHandler = ev => {
+            ev.preventDefault()
+            this.showPage(3)
+        }
+        this.lastPageClickHandler = ev => {
+            ev.preventDefault()
+            this.showPage(4)
+        }
+
+        this.test = () => console.log('test')
     }
 
     render() {
@@ -55,9 +72,12 @@ class TableFooter extends React.Component {
         return (
             <div className="page-listing-component">
 
-                <button id="first-page-button" onClick={this.showPage}>FIRST</button>
+                <button id="first-page-button" onClick={this.firstPageClickHandler}>FIRST</button>
 
-                <button id="punishment-previous-page-navigation-btn" className="punishment-page-navigation-btn" onClick={this.showPage}>
+                <button
+                    id="punishment-previous-page-navigation-btn"
+                    className="punishment-page-navigation-btn"
+                    onClick={this.previousPageClickHandler}>
                     <svg id="previous-page-btn" width="14px" height="23px" viewBox="0 0 14 23" version="1.1" xmlns="http://www.w3.org/2000/svg">
 
                         <title>Path 181</title>
@@ -76,7 +96,10 @@ class TableFooter extends React.Component {
 
                 <button id="picker-page">{currentPage}</button>
 
-                <button id="punishment-next-page-navigation-btn" className="punishment-page-navigation-btn" onClick={this.showPage}>
+                <button
+                    id="punishment-next-page-navigation-btn"
+                    className="punishment-page-navigation-btn"
+                    onClick={this.nextPageClickHandler}>
                     <svg id="next-page-btn" width="14px" height="23px" viewBox="0 0 14 23" version="1.1" xmlns="http://www.w3.org/2000/svg">
 
                         <title>Path 181 Copy</title>
@@ -93,15 +116,8 @@ class TableFooter extends React.Component {
                     </svg>
                 </button >
 
-                <button id="last-page-button" onClick={this.showPage}>LAST</button>
+                <button id="last-page-button" onClick={this.lastPageClickHandler}>LAST</button>
 
-
-               {/*  <label id="firstPageMark" onClick={this.showPage}>FIRST</label>
-                <label id="decrementPage" onClick={this.showPage}>&nbsp;&lt;&nbsp;</label>
-                <label>{currentPage}</label>
-                <label id="incrementPage" onClick={this.showPage}>&nbsp;&gt;&nbsp;</label>
-                <label id="lastPageMark" onClick={this.showPage}>LAST</label> */}
-              
             </div >
         );
     }

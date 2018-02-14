@@ -175,6 +175,11 @@ class Board extends React.Component {
             if (!this.props.gameInProgress && this.props.showTooltips) this.props.onBoardHover();
         };
 
+        this.startTooltipHover = ev => {
+            console.log('here');
+            if (!this.props.gameInProgress && this.props.showTooltips) this.props.onBoardHover();
+        };
+
         this.boardHoverOut = ev => {
             if (this.props.boardHovered) this.props.onBoardHoverOut();
         };
@@ -404,39 +409,21 @@ class Board extends React.Component {
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
-        const bcgColor = boardTextMistake ? '#f2cbcb' : progress === 100 ? '#80f957' : '';
 
-        let style = {
-            backgroundColor: bcgColor,
-            height: "400px",
-            width: "100%"
-        };
+        let offsetChalkContainer = (!this.props.gameInProgress && this.props.showTooltips && this.props.boardHovered)
+            ? { bottom: 93 + "px" }
+            : null;
 
-        const blurFilter = {
-            "-webkit-filter": "blur(1.5px)",
-            "-moz-filter": "blur(1.5px)",
-            "-o-filter": "blur(1.5px)",
-            "-ms-filter": "blur(1.5px)",
-            "filter": "blur(1.5px)",
-        };
-
-        style = boardTextMistake ? { ...style, ...blurFilter } : style;
-        style = progress === 100 ? { ...style, ...blurFilter } : style;
-
-        const boardTooltipStyle = {
-            "position": 'absolute',
-            "width": "100px",
-            "top": "200px",
-            "left": "50px",
-            backgroundColor: "#d8d8d8",
-            border: "0.5px solid red"
-        }
 
         if (activePunishmentSet) {
             return (
 
                 <div id="board-writing-board-component">
-                    <div id="board-frame">
+                    <div
+                        id="board-frame"
+                        onMouseOver={this.boardHover}
+                        onMouseOut={this.boardHoverOut}>
+
                         <div id="drawing-board">
                             <textarea
                                 id="board-textarea"
@@ -445,13 +432,43 @@ class Board extends React.Component {
                                 onKeyDown={this.boardTextChange}
                                 onFocus={this.boardFocused}
                                 onBlur={this.boardLostFocus}
-                                onMouseOver={this.boardHover}
-                                onMouseOut={this.boardHoverOut}
                                 spellCheck="false"
                             />
+
+                            {this.props.boardHovered ?
+                                <div
+                                    id="click-to-start-element"
+                                    className="hover-dialog" >
+
+                                    <label className="hover-dialog-text">
+                                        CLICK
+                                        <br /> TO START
+                                    </label>
+
+                                    <div className="triangle-hover-box-container">
+
+                                        <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+                                            <title>Triangle 4 Copy</title>
+                                            <desc>Created with Sketch.</desc>
+                                            <defs></defs>
+                                            <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-528.000000, -981.000000)">
+                                                <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
+                                                    <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
+                                                        points="83.5 65 95 79 72 79"></polygon>
+                                                </g>
+                                            </g>
+                                        </svg>
+
+                                    </div>
+
+                                </div> : null}
+
                         </div>
 
-                        <div id="chalk-container">
+                        <div
+                            id="chalk-container"
+                            style={offsetChalkContainer}>
 
                             <ProgressBar
                                 progress={progress}
@@ -477,32 +494,6 @@ class Board extends React.Component {
                                 </g>
                             </svg>
                         </div>
-
-                        {this.props.boardHovered ?
-                            <div id="click-to-start-element" className="hover-dialog">
-                                <label className="hover-dialog-text">
-                                    CLICK
-                                        <br /> TO START
-                                    </label>
-
-                                <div className="triangle-hover-box-container">
-
-                                    <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-                                        <title>Triangle 4 Copy</title>
-                                        <desc>Created with Sketch.</desc>
-                                        <defs></defs>
-                                        <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-528.000000, -981.000000)">
-                                            <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
-                                                <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
-                                                    points="83.5 65 95 79 72 79"></polygon>
-                                            </g>
-                                        </g>
-                                    </svg>
-
-                                </div>
-
-                            </div> : null}
 
                     </div>
 

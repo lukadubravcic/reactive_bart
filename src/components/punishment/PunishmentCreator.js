@@ -245,7 +245,10 @@ class PunishmentCreator extends React.Component {
                                 </fieldset>
 
                                 : <fieldset className="form-row">
-                                    <label className="float-left input-field-name">DEADLINE</label>
+                                    <label 
+                                    className="float-left input-field-name"
+                                    style={{"padding-bottom": "18px"}} >
+                                    DEADLINE</label>
 
                                     <label className="float-left custom-chexbox-container">
                                         <input
@@ -473,9 +476,9 @@ const calendarBtnSvg = (
         <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-762.000000, -1887.000000)">
             <g id="Group" transform="translate(0.000000, 1478.000000)">
                 <g id="Rectangle-4-+-Group" transform="translate(762.000000, 408.000000)">
-                    <rect id="Rectangle-4" fill="#323232" transform="translate(25.000000, 26.000000) scale(1, -1) rotate(-180.000000) translate(-25.000000, -26.000000) "
+                    <rect id="calendar-btn-rect" fill="#323232" transform="translate(25.000000, 26.000000) scale(1, -1) rotate(-180.000000) translate(-25.000000, -26.000000) "
                         x="0" y="1" width="50" height="50"></rect>
-                    <g id="Group" transform="translate(10.000000, 9.000000)" stroke="#FFFFFF" strokeWidth="2">
+                    <g id="calendar-btn-g" transform="translate(10.000000, 9.000000)" stroke="#FFFFFF" strokeWidth="2">
                         <rect id="Rectangle-4" x="1" y="4" width="28" height="28"></rect>
                         <path d="M1.10000038,13 L28.8999996,13" id="Line" strokeLinecap="square"></path>
                         <path d="M8,6.99999981 L8,1" id="Line" strokeLinecap="square"></path>
@@ -491,7 +494,7 @@ const calendarBtnSvg = (
 const decrementBtnSvg = (
     <svg className="creator-range-symbol" width="30px" height="17px" viewBox="0 0 30 17" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-375.000000, -1814.000000)">
-            <g id="Group" transform="translate(0.000000, 1478.000000)" stroke="#FFFFFF" strokeWidth="2">
+            <g id="decrement-btn-g" transform="translate(0.000000, 1478.000000)" stroke="#FFFFFF" strokeWidth="2">
                 <g id="Rectangle-4-+-Path-181" transform="translate(365.000000, 319.000000)">
                     <polyline id="Path-181" points="11 18.423884 24.5661158 31.9899998 38.5561156 18"></polyline>
                 </g>
@@ -503,7 +506,7 @@ const decrementBtnSvg = (
 const incrementBtnSvg = (
     <svg className="creator-range-symbol" width="30px" height="17px" viewBox="0 0 30 17" version="1.1" xmlns="http://www.w3.org/2000/svg" >
         <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-591.000000, -1813.000000)">
-            <g id="Group" transform="translate(0.000000, 1478.000000)" stroke="#FFFFFF" strokeWidth="2">
+            <g id="increment-btn-g" transform="translate(0.000000, 1478.000000)" stroke="#FFFFFF" strokeWidth="2">
                 <g id="Rectangle-4-+-Path-181-Copy" transform="translate(606.000000, 344.000000) rotate(-180.000000) translate(-606.000000, -344.000000) translate(581.000000, 319.000000)">
                     <polyline id="Path-181" points="11 18.423884 24.5661158 31.9899998 38.5561156 18"></polyline>
                 </g>

@@ -7,10 +7,6 @@ const ProgressBar = props => {
     let spongeOffset = Math.floor(836 * (progress/100));
     
 
-    console.log(progress)
-
-    
-
     if (props.hovering) {
         return (
             <div

@@ -96,78 +96,72 @@ class Register extends React.Component {
 
         if (this.props.shownForm === 'register') {
             return (
-                <div className="auth-page">
-                    <div className="container page">
-                        <button
-                            className="btn btn-primary pull-xs-left"
-                            type="button"
-                            onClick={this.props.backToLogin}>
-                            Back to login
-                        </button>
-                        <div className="row">
 
-                            <div className="col-md-6 offset-md-3 col-xs-12">
+                <div className="parent-component header register-header">
+                    <div className="container">
 
-                                <h1 className="text-xs-center bottomMarginToTwenty">Register</h1>
+                        <label className="heading register-heading">New user registration</label>
 
-                                <form onSubmit={this.submitForm(username, email, password, rePassword)}>
-                                    <fieldset>
+                        <form className="register-form" onSubmit={this.submitForm(username, email, password, rePassword)}>
 
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="email"
-                                                placeholder="Email"
-                                                value={email}
-                                                onChange={this.emailChange}
-                                                required />
-                                        </fieldset>
+                            <fieldset className="header-form-row">
+                                <input
+                                    className="text-input"
+                                    type="text"
+                                    placeholder="e-mail"
+                                    value={email}
+                                    onChange={this.emailChange}
+                                    required />
+                            </fieldset>
 
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="text"
-                                                placeholder="Username"
-                                                value={username}
-                                                onChange={this.usernameChange} />
-                                        </fieldset>
+                            <fieldset className="header-form-row">
+                                <input
+                                    className="text-input"
+                                    type="text"
+                                    placeholder="username"
+                                    value={username}
+                                    onChange={this.usernameChange}
+                                    required />
+                                <label className="form-feedback">ALREADY IN USE</label>
+                            </fieldset>
 
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="password"
-                                                placeholder="Password"
-                                                value={password}
-                                                onChange={this.passwordChange}
-                                                required />
-                                        </fieldset>
+                            <fieldset className="header-form-row">
+                                <input
+                                    className="text-input"
+                                    type="password"
+                                    placeholder="password"
+                                    value={password}
+                                    onChange={this.passwordChange}
+                                    required />
+                            </fieldset>
 
-                                        <fieldset className="form-group">
-                                            <input
-                                                className="form-control form-control-lg"
-                                                type="password"
-                                                placeholder="Repeat password"
-                                                value={rePassword}
-                                                onChange={this.rePasswordChange}
-                                                required />
+                            <fieldset className="header-form-row">
+                                <input
+                                    className="text-input"
+                                    type="password"
+                                    placeholder="repeat password"
+                                    value={rePassword}
+                                    onChange={this.rePasswordChange}
+                                    required />
 
-                                            {password !== rePassword && rePassword.length ? <label>Passwords don't match.</label> : null}
-                                        </fieldset>
+                                {password !== rePassword && rePassword.length
+                                    ? <label className="form-feedback">DOESN'T MATCH</label>
+                                    : null}
 
-                                        <button
-                                            ref="registerBtn"
-                                            className="btn btn-lg btn-primary pull-xs-right"
-                                            type="submit">
-                                            Register
-                                        </button>
+                            </fieldset>
 
-                                        {_errMsg ? <label>{_errMsg}</label> : null}
-                                        {serverAnswer ? <label>{serverAnswer}</label> : null}
+                            <fieldset className="header-form-row">
+                                <button
+                                    id="btn-register"
+                                    className="btn-submit"
+                                    ref="registerBtn"
+                                    type="submit">
+                                    REGISTER
+                            </button>
+                            </fieldset>
 
-                                    </fieldset>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
+
                     </div>
                 </div>
             )
@@ -183,3 +177,85 @@ function isMail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
+
+
+
+
+/* const test = (
+
+    <div className="auth-page">
+        <div className="container page">
+            <button
+                className="btn btn-primary pull-xs-left"
+                type="button"
+                onClick={this.props.backToLogin}>
+                Back to login
+        </button>
+            <div className="row">
+
+                <div className="col-md-6 offset-md-3 col-xs-12">
+
+                    <h1 className="text-xs-center bottomMarginToTwenty">Register</h1>
+
+                    <form onSubmit={this.submitForm(username, email, password, rePassword)}>
+                        <fieldset>
+
+                            <fieldset className="form-group">
+                                <input
+                                    className="form-control form-control-lg"
+                                    type="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={this.emailChange}
+                                    required />
+                            </fieldset>
+
+                            <fieldset className="form-group">
+                                <input
+                                    className="form-control form-control-lg"
+                                    type="text"
+                                    placeholder="Username"
+                                    value={username}
+                                    onChange={this.usernameChange} />
+                            </fieldset>
+
+                            <fieldset className="form-group">
+                                <input
+                                    className="form-control form-control-lg"
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={this.passwordChange}
+                                    required />
+                            </fieldset>
+
+                            <fieldset className="form-group">
+                                <input
+                                    className="form-control form-control-lg"
+                                    type="password"
+                                    placeholder="Repeat password"
+                                    value={rePassword}
+                                    onChange={this.rePasswordChange}
+                                    required />
+
+                                {password !== rePassword && rePassword.length ? <label>Passwords don't match.</label> : null}
+                            </fieldset>
+
+                            <button
+                                ref="registerBtn"
+                                className="btn btn-lg btn-primary pull-xs-right"
+                                type="submit">
+                                Register
+                        </button>
+
+                            {_errMsg ? <label>{_errMsg}</label> : null}
+                            {serverAnswer ? <label>{serverAnswer}</label> : null}
+
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+) */

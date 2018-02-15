@@ -135,7 +135,7 @@ textarea {
 /* hover floating info element */
 .hover-dialog {
 	display: inline-block;
-	position: relative;
+	position: absolute;
 
 	z-index: 6;
 }
@@ -463,7 +463,7 @@ fieldset + fieldset {
 
 #click-to-start-element {
 	left: calc(50% - 82px);
-	bottom: calc(50% + 40px);
+	bottom: calc(50% - 40px);
 
 	z-index: 2;
 }
@@ -515,23 +515,14 @@ fieldset + fieldset {
 	animation-name: sponge;
 	animation-duration: 4s;
 	animation-iteration-count: infinite;
+	animation-direction: alternate;
 } 
 
-@keyframes example {
-    0%   {background-color:red; left:0px; top:0px;}
-    25%  {background-color:yellow; left:200px; top:0px;}
-    50%  {background-color:blue; left:200px; top:200px;}
-    75%  {background-color:green; left:0px; top:200px;}
-    100% {background-color:red; left:0px; top:0px;}
+@keyframes sponge {
+    0%   {left:0px; }
+    100% {background-color:green; left:calc(100% - 100px); }
 }
 
-@-webkit-keyframes example {
-    0%   {background-color:red; left:0px; top:0px;}
-    25%  {background-color:yellow; left:200px; top:0px;}
-    50%  {background-color:blue; left:200px; top:200px;}
-    75%  {background-color:green; left:0px; top:200px;}
-    100% {background-color:red; left:0px; top:0px;}
-}
 
 #restart-hover-element {
 	position: absolute;
@@ -1094,6 +1085,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 td {
+	position: relative;
+	display: inline-block;
+
 	padding-top: 22px;
 	padding-bottom: 17px;
 	height: 60px;
@@ -1263,6 +1257,7 @@ td {
 .what-field {
 	width: 312px;
 	padding-left: 19px;
+	padding-right: 16px;
 	display: inline-block;
 }
 
@@ -1270,12 +1265,14 @@ td {
 	display: inline-block;
 	width: 397px;
 	padding-left: 19px;
+	padding-right: 16px;
 }
 
 .ordered-what-field {
 	display: inline-block;
 	width: 300px;
 	padding-left: 19px;
+	padding-right: 16px;
 }
 
 .go-field {

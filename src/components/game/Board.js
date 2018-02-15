@@ -410,10 +410,6 @@ class Board extends React.Component {
         const progress = this.props.progress;
         const boardTextMistake = this.props.boardTextMistake;
 
-        let offsetChalkContainer = (!this.props.gameInProgress && this.props.showTooltips && this.props.boardHovered)
-            ? { bottom: 93 + "px" }
-            : null;
-
 
         if (activePunishmentSet) {
             return (
@@ -467,8 +463,7 @@ class Board extends React.Component {
                         </div>
 
                         <div
-                            id="chalk-container"
-                            style={offsetChalkContainer}>
+                            id="chalk-container">
 
                             <ProgressBar
                                 progress={progress}

@@ -157,7 +157,7 @@ class Stats extends React.Component {
                                                             style={{ width: "420px" }}>
 
                                                             <PieChart
-                                                                  data={this.props.firstGraph}
+                                                                  data={this.props.thirdGraph}
                                                                   lineWidth={100}
                                                                   paddingAngle={0}
                                                                   animate={true}
@@ -171,7 +171,7 @@ class Stats extends React.Component {
                                                             style={{ width: "420px" }}>
 
                                                             <PieChart
-                                                                  data={this.props.secondGraph}
+                                                                  data={this.props.fourthGraph}
                                                                   lineWidth={100}
                                                                   paddingAngle={0}
                                                                   animate={true}
@@ -194,7 +194,7 @@ class Stats extends React.Component {
                                                             style={{ width: "420px" }}>
 
                                                             <PieChart
-                                                                  data={this.props.thirdGraph}
+                                                                  data={this.props.firstGraph}
                                                                   lineWidth={100}
                                                                   paddingAngle={0}
                                                                   animate={true}
@@ -207,7 +207,7 @@ class Stats extends React.Component {
                                                             style={{ width: "420px" }}>
 
                                                             <PieChart
-                                                                  data={this.props.fourthGraph}
+                                                                  data={this.props.secondGraph}
                                                                   lineWidth={100}
                                                                   paddingAngle={0}
                                                                   animate={true}

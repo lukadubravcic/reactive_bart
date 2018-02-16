@@ -4,7 +4,6 @@ const OrderedTabRow = props => {
 
     return (
         <div className="picker-table-header">
-            <hr />
             {
                 props.columns.map((column) => {
                     return (
@@ -12,13 +11,15 @@ const OrderedTabRow = props => {
                             className={column.style}
                             key={column.id}
                             id={column.id}
-                            onClick={() => (column.clickHandler) ? column.clickHandler(column.id): ()=>{}}>
-                            {column.name}
+                            onClick={() => (column.clickHandler) ? column.clickHandler(column.id) : () => { }}>
+
+                            <span className="noselect">
+                                {column.name}
+                            </span>
                         </div>
                     )
                 })
             }
-            <hr />
         </div>
     )
 }

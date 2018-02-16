@@ -77,7 +77,7 @@ class AcceptedTab extends React.Component {
             this.props.changeShownPunishments(firstPage, 1);
         };
 
-        this.loadAndShowAcceptedPunishments = (punishments) => { // poziv kada stigne payload sa accepted punishmentima
+        this.loadAndShowAcceptedPunishments = punishments => { // poziv kada stigne payload sa accepted punishmentima
             this.props.onLoadedAcceptedPunishments(punishments);
             this._showFirstPage();
         };
@@ -87,18 +87,22 @@ class AcceptedTab extends React.Component {
             this._showFirstPage(punishments);
         };
 
-        this.changeElement = (element) => {
-            let ASC = ' (ʌ)';
-            let DESC = ' (v)';
-            let lastFourChars = element.name.substring(element.name.length - 4);
+        this.changeElement = element => {
+            element.name = (
+                <span>
+                    <label>
+                        {element.defaultName}
+                    </label>
+                    {element.sortOrder === 1
+                        ? ascendingSVG
+                        : element.sortOrder === -1
+                            ? descendingSVG
+                            : element.name}
+                </span>
+            )
 
-            if ((lastFourChars === ASC) || (lastFourChars === DESC)) {
-                element.name = element.sortOrder === 1 ? element.name.substring(0, element.name.length - 4) + ASC : element.name.substring(0, element.name.length - 4) + DESC;
-            } else {
-                element.name = element.sortOrder === 1 ? element.name + ASC : element.name + DESC;
-            }
             element.sortOrder *= -1;
-        };
+        }
 
         this.reSortPunishments = id => {
 
@@ -162,7 +166,7 @@ class AcceptedTab extends React.Component {
                 id: 'howManyTimes',
                 fieldName: 'how_many_times',
                 sortOrder: 1,
-                style: 'float-left num-time-field'
+                style: 'float-left num-time-field num-time-field-pad-left'
             },
             {
                 name: 'WHAT',
@@ -280,3 +284,26 @@ function getPunishmentById(id, punishments) {
         }
     } else if (!id) console.log('getPunishmentById(): Theres no id');
 }
+
+
+const descendingSVG = (
+    <svg style={{ marginLeft: "10px" }} width="17px" height="13px" viewBox="0 0 17 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-507.000000, -2786.000000)">
+            <g id="Group" transform="translate(0.000000, 2508.000000)" fill="#FFD75F">
+                <polygon id="Triangle-1" transform="translate(515.500000, 284.214000) rotate(-180.000000) translate(-515.500000, -284.214000) "
+                    points="515.5 278.214 524 290.214 507 290.214"></polygon>
+            </g>
+        </g>
+    </svg>
+)
+
+const ascendingSVG = (
+    <svg style={{ marginLeft: "10px" }} width="17px" height="13px" viewBox="0 0 17 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-507.000000, -2786.000000)">
+            <g id="Group" transform="translate(0.000000, 2508.000000)" fill="#FFD75F">
+                <polygon id="Triangle-1" transform="translate(515.500000, 284.214000) rotate(0) translate(-515.500000, -284.214000) "
+                    points="515.5 278.214 524 290.214 507 290.214"></polygon>
+            </g>
+        </g>
+    </svg>
+)

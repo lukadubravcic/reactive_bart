@@ -4,6 +4,8 @@ import PieChart from 'react-minimal-pie-chart';
 import { checkIfIgnoredPunishment } from '../../helpers/helpers';
 import RankInfo from './RankInfo';
 
+const circleRadius = 210;
+
 const colors = {
       accepted: '#FFA623',
       rejected: '#EA411E',
@@ -94,7 +96,7 @@ class Stats extends React.Component {
                         if (data[prop] > 0) {
                               graphData.push({
                                     value: data[prop],
-                                    key: index,
+                                    key: index + 1,
                                     color: colors[prop]
                               });
                         }
@@ -102,6 +104,101 @@ class Stats extends React.Component {
 
                   return graphData;
             };
+
+            this.getLabel = data => {
+
+                  data = getRadians(data);
+
+                  data = getCoordPoints(data);
+
+                  console.log(data)
+
+                  // translacija coords u 1 quadrant cart.coord sustava
+                  data = data.map(item => {
+                        return {
+                              x: item.x + circleRadius,
+                              y: item.y + circleRadius
+                        }
+                  });
+
+                  // stvaranje HTML elemenata
+
+                  let elements = this.getGraphLabelHTML(data);
+
+                  return elements;
+
+            };
+
+            this.getGraphLabelHTML = coordPoints => {
+
+                  return coordPoints.map((item, index) => {
+
+                        let radiusOffset = 0;
+                        let xOffset = radiusOffset - 70;
+                        let yOffset = radiusOffset - 30;
+
+                        return (
+                              <div
+                                    style={{
+                                          position: 'absolute',
+                                          width: 10 + 'px',
+                                          height: 10 + 'px',
+                                          background: 'black',
+                                          left: item.x + 'px',
+                                          bottom: item.y + 'px'
+                                    }}>
+                              </div>
+                        )
+
+                        /* return (
+                              <div
+                                    className="hover-dialog"
+                                    style={{ left: (coordPair.x + xOffset) + 'px', bottom: (coordPair.y + yOffset) + 'px' }}
+                                    key={index}
+                              >
+                                    <label
+                                          className="hover-dialog-text"
+                                          style={{}}>
+                                          {'STRING'}
+                                    </label>
+                                    <div className="triangle-hover-box-container">
+                                          <svg
+                                                id="triangle-element"
+                                                width="23px"
+                                                height="14px"
+                                                viewBox="0 0 23 14"
+                                                version="1.1"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                xmlnsXlink="http://www.w3.org/1999/xlink">
+
+                                                <g
+                                                      id="page-03"
+                                                      stroke="none"
+                                                      strokeWidth="1"
+                                                      fill="none"
+                                                      fillRule="evenodd"
+                                                      transform="translate(-528.000000, -981.000000)">
+
+                                                      <g
+                                                            id="Fill-2-+-LOG-IN-+-Triangle-4-Copy"
+                                                            transform="translate(456.000000, 916.000000)"
+                                                            fill="#323232">
+
+                                                            <polygon
+                                                                  id="Triangle-4-Copy"
+                                                                  transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000)"
+                                                                  points="83.5 65 95 79 72 79">
+                                                            </polygon>
+                                                      </g>
+                                                </g>
+                                          </svg>
+                                    </div>
+                              </div>
+                        ) */
+                  });
+            }
+
+
       }
 
       componentWillReceiveProps(nextProps) {
@@ -123,8 +220,14 @@ class Stats extends React.Component {
             if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
 
-                        let graphData3 = this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['accepted', 'rejected', 'ignored']);
-                        let graphData4 = this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['completed', 'givenUp', 'failed']);
+                        let graphData3 = [
+                              { value: 5, key: 1, color: "blue" },
+                              { value: 3, key: 2, color: "red" },
+                              { value: 2, key: 3, color: "green" }
+                        ]
+                        /* this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['accepted', 'rejected', 'ignored']); */
+                        let graphData4 = this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['failed', 'givenUp', 'completed']);
+
 
                         this.props.updateReceivedGraphState({ graphData3, graphData4 });
                   }
@@ -138,96 +241,104 @@ class Stats extends React.Component {
       render() {
 
             const usrLoggedIn = Object.keys(this.props.currentUser).length;
+            if (!usrLoggedIn) return null;
 
-            if (usrLoggedIn) {
-                  return (
-                        <div>
-                              <div className="parent-component statz-component-container">
-                                    <div className="container">
-
-                                          <label id="statz-heading" className="heading">Statz</label>
+            let labels = typeof this.props.thirdGraph !== 'undefined' && Object.keys(this.props.thirdGraph).length ? this.getLabel(this.props.thirdGraph) : null;
 
 
-                                          <div className="punishing-others-container">
 
-                                                <label className="statz-group-heading">PUNISHING OTHERS</label>
 
-                                                {this.props.firstGraph ?
-                                                      <div className="float-left graph-container graph1-container"
-                                                            style={{ width: "420px" }}>
+            return (
+                  <div>
+                        <div className="parent-component statz-component-container">
+                              <div className="container">
 
-                                                            <PieChart
-                                                                  data={this.props.thirdGraph}
-                                                                  lineWidth={100}
-                                                                  paddingAngle={0}
-                                                                  animate={true}
-                                                                  animationDuration={3500} />
-                                                      </div>
+                                    <label id="statz-heading" className="heading">Statz</label>
 
-                                                      : null}
 
-                                                {this.props.secondGraph ?
-                                                      <div className="float-right graph-container graph2-container"
-                                                            style={{ width: "420px" }}>
+                                    <div className="punishing-others-container">
 
-                                                            <PieChart
-                                                                  data={this.props.fourthGraph}
-                                                                  lineWidth={100}
-                                                                  paddingAngle={0}
-                                                                  animate={true}
-                                                                  animationDuration={3500} />
-                                                      </div>
-                                                      : null}
+                                          <label className="statz-group-heading">PUNISHING OTHERS</label>
 
-                                                <div className="pun-others-bottom-image-container">
-                                                      {punishingOthersSVG}
+                                          {this.props.thirdGraph ?
+                                                <div className="float-left graph-container graph1-container"
+                                                      style={{ width: "420px" }}>
+
+                                                      {labels.map(label => label)}
+
+                                                      <PieChart
+                                                            data={this.props.thirdGraph}
+                                                            lengthAngle={-360}
+                                                            lineWidth={100}
+                                                            paddingAngle={0}
+                                                            animate={true}
+                                                            animationDuration={3500} />
                                                 </div>
 
-                                          </div>
+                                                : null}
 
-                                          <div className="being-punished-container">
+                                          {this.props.fourthGraph ?
+                                                <div className="float-right graph-container graph2-container"
+                                                      style={{ width: "420px" }}>
 
-                                                <label className="statz-group-heading">ME, BEING PUNISHED</label>
-
-                                                {this.props.thirdGraph ?
-                                                      <div className="float-left graph-container graph1-container"
-                                                            style={{ width: "420px" }}>
-
-                                                            <PieChart
-                                                                  data={this.props.firstGraph}
-                                                                  lineWidth={100}
-                                                                  paddingAngle={0}
-                                                                  animate={true}
-                                                                  animationDuration={3500} />
-                                                      </div>
-                                                      : null}
-
-                                                {this.props.fourthGraph ?
-                                                      <div className="float-right graph-container graph2-container"
-                                                            style={{ width: "420px" }}>
-
-                                                            <PieChart
-                                                                  data={this.props.secondGraph}
-                                                                  lineWidth={100}
-                                                                  paddingAngle={0}
-                                                                  animate={true}
-                                                                  animationDuration={3500} />
-                                                      </div>
-                                                      : null}
-
-                                                <div className="being-punished-bottom-image-container">
-                                                      {beingPunishedSVG}
+                                                      <PieChart
+                                                            data={this.props.fourthGraph}
+                                                            lineWidth={100}
+                                                            paddingAngle={0}
+                                                            animate={true}
+                                                            animationDuration={3500} />
                                                 </div>
+                                                : null}
 
+                                          <div className="pun-others-bottom-image-container">
+                                                {punishingOthersSVG}
                                           </div>
+
+                                    </div>
+
+                                    <div className="being-punished-container">
+
+                                          <label className="statz-group-heading">ME, BEING PUNISHED</label>
+
+                                          {this.props.firstGraph ?
+                                                <div className="float-left graph-container graph1-container"
+                                                      style={{ width: "420px" }}>
+
+                                                      <PieChart
+                                                            data={this.props.firstGraph}
+                                                            lineWidth={100}
+                                                            paddingAngle={0}
+                                                            animate={true}
+                                                            animationDuration={3500} />
+                                                </div>
+                                                : null}
+
+                                          {this.props.secondGraph ?
+                                                <div className="float-right graph-container graph2-container"
+                                                      style={{ width: "420px" }}>
+
+                                                      <PieChart
+                                                            data={this.props.secondGraph}
+                                                            lineWidth={100}
+                                                            paddingAngle={0}
+                                                            animate={true}
+                                                            animationDuration={3500} />
+                                                </div>
+                                                : null}
+
+                                          <div className="being-punished-bottom-image-container">
+                                                {beingPunishedSVG}
+                                          </div>
+
                                     </div>
                               </div>
-
-                              <RankInfo rank={this.props.rank} />
-
                         </div>
-                  )
-            } else return null;
+
+                        <RankInfo rank={this.props.rank} />
+
+                  </div>
+            )
+
       }
 }
 
@@ -299,3 +410,40 @@ const beingPunishedSVG = (
             </g>
       </svg>
 )
+
+
+
+const getRadians = data => {
+
+      let valueSum = 0;
+
+      data.forEach(item => valueSum += item.value);
+
+      return data.map(item => {
+            return {
+                  ...item,
+                  radian: (item.value / valueSum) * (2 * Math.PI)
+            };
+      });
+}
+
+
+const getCoordPoints = data => {
+
+      let tmp = 0;
+
+      return data.map((item, index) => {
+
+
+            let x = Math.floor(circleRadius * Math.cos(tmp + item.radian / 2));
+            let y = Math.floor(circleRadius * Math.sin(tmp + item.radian / 2));
+            console.log(x)
+            tmp += item.radian;
+
+            return {
+                  ...item,
+                  x,
+                  y
+            }
+      });
+}

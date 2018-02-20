@@ -245,10 +245,10 @@ class PunishmentCreator extends React.Component {
                                 </fieldset>
 
                                 : <fieldset className="form-row">
-                                    <label 
-                                    className="float-left input-field-name"
-                                    style={{"padding-bottom": "18px"}} >
-                                    DEADLINE</label>
+                                    <label
+                                        className="float-left input-field-name"
+                                        style={{ paddingBottom: "18px" }} >
+                                        DEADLINE</label>
 
                                     <label className="float-left custom-chexbox-container">
                                         <input
@@ -400,7 +400,7 @@ function isMail(email) {
 
 const creatorBottomSvg = (
     <svg id="form-bottom-props" width="1080px" height="193px" viewBox="0 0 1080 193" version="1.1" xmlns="http://www.w3.org/2000/svg">
-        <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-100.000000, -2315.000000)">
+        <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -2315.000000)">
             <g id="Group" transform="translate(0.000000, 1478.000000)">
                 <g id="form-bottom-props" transform="translate(100.000000, 846.000000)">
                     <polygon id="Fill-7-Copy-6" fill="#A479E1" points="-2.38411233e-13 184 1080 184 1080 164 -2.38411233e-13 164"></polygon>

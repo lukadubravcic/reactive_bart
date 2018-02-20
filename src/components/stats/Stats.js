@@ -28,10 +28,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-      updateOrderedGraphState: (data) => {
+      updateOrderedGraphState: data => {
             dispatch({ type: 'UPDATE_ORDERED_GRAPH_DATA', data });
       },
-      updateReceivedGraphState: (data) => {
+      updateReceivedGraphState: data => {
             dispatch({ type: 'UPDATE_RECEIVED_GRAPH_DATA', data });
       }
 });
@@ -97,7 +97,8 @@ class Stats extends React.Component {
                               graphData.push({
                                     value: data[prop],
                                     key: index + 1,
-                                    color: colors[prop]
+                                    color: colors[prop],
+                                    name: Object.keys(data)[index]
                               });
                         }
                   });
@@ -105,61 +106,47 @@ class Stats extends React.Component {
                   return graphData;
             };
 
-            this.getLabel = data => {
+            this.getGraphLabels = data => {
+
+                  console.log('lab fun')
+                  console.log(data)
 
                   data = getRadians(data);
 
                   data = getCoordPoints(data);
 
-                  console.log(data)
-
-                  // translacija coords u 1 quadrant cart.coord sustava
-                  data = data.map(item => {
-                        return {
-                              x: item.x + circleRadius,
-                              y: item.y + circleRadius
-                        }
-                  });
-
                   // stvaranje HTML elemenata
-
                   let elements = this.getGraphLabelHTML(data);
 
                   return elements;
-
             };
 
             this.getGraphLabelHTML = coordPoints => {
 
                   return coordPoints.map((item, index) => {
 
-                        let radiusOffset = 0;
-                        let xOffset = radiusOffset - 70;
-                        let yOffset = radiusOffset - 30;
+                        let padding = 35;
+                        let xOffset = -((padding + item.name.length * 18) / 2);
 
                         return (
                               <div
-                                    style={{
-                                          position: 'absolute',
-                                          width: 10 + 'px',
-                                          height: 10 + 'px',
-                                          background: 'black',
-                                          left: item.x + 'px',
-                                          bottom: item.y + 'px'
-                                    }}>
-                              </div>
-                        )
-
-                        /* return (
-                              <div
                                     className="hover-dialog"
-                                    style={{ left: (coordPair.x + xOffset) + 'px', bottom: (coordPair.y + yOffset) + 'px' }}
+                                    style={{
+                                          left: (item.x + xOffset) + 'px',
+                                          bottom: item.y + 'px',
+                                          opacity: 0,
+                                          animationDelay: 3.5 + 's',
+                                          animationDuration: 1 + 's'
+                                    }}
                                     key={index}
                               >
                                     <label
                                           className="hover-dialog-text"
-                                          style={{}}>
-                                          {'STRING'}
+                                          style={{
+                                                color: item.color,
+                                                textTransform: "uppercase"
+                                          }}>
+                                          {item.name}
                                     </label>
                                     <div className="triangle-hover-box-container">
                                           <svg
@@ -194,11 +181,9 @@ class Stats extends React.Component {
                                           </svg>
                                     </div>
                               </div>
-                        ) */
+                        )
                   });
             }
-
-
       }
 
       componentWillReceiveProps(nextProps) {
@@ -207,27 +192,25 @@ class Stats extends React.Component {
                   console.log('test')
             } */
 
-            if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishment
-                  if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments)) { // odlucuje o triggeru klasifikacije
+            if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
+                  if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
 
-                        let graphData1 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['accepted', 'rejected', 'ignored']);
-                        let graphData2 = this.getGraphData(this.clasifyPunishments(nextProps.pastPunishments), ['completed', 'givenUp', 'failed']);
+                        let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
+
+                        let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
+                        let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
 
                         this.props.updateOrderedGraphState({ graphData1, graphData2 });
                   }
             }
 
-            if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
-                  if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
+            if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishments
+                  if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments)) { // odlucuje o triggeru klasifikacije
 
-                        let graphData3 = [
-                              { value: 5, key: 1, color: "blue" },
-                              { value: 3, key: 2, color: "red" },
-                              { value: 2, key: 3, color: "green" }
-                        ]
-                        /* this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['accepted', 'rejected', 'ignored']); */
-                        let graphData4 = this.getGraphData(this.clasifyPunishments(nextProps.orderedPunishments), ['failed', 'givenUp', 'completed']);
+                        let classificationResults = this.clasifyPunishments(nextProps.pastPunishments);
 
+                        let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
+                        let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
 
                         this.props.updateReceivedGraphState({ graphData3, graphData4 });
                   }
@@ -241,13 +224,16 @@ class Stats extends React.Component {
       render() {
 
             const usrLoggedIn = Object.keys(this.props.currentUser).length;
+
             if (!usrLoggedIn) return null;
 
-            let labels = typeof this.props.thirdGraph !== 'undefined' && Object.keys(this.props.thirdGraph).length ? this.getLabel(this.props.thirdGraph) : null;
+            let firstGraphLabels = typeof this.props.firstGraph !== 'undefined' && Object.keys(this.props.firstGraph).length ? this.getGraphLabels(this.props.firstGraph) : null;
+            let secondGraphLabels = typeof this.props.secondGraph !== 'undefined' && Object.keys(this.props.secondGraph).length ? this.getGraphLabels(this.props.secondGraph) : null;
+            let thirdGraphLabels = typeof this.props.thirdGraph !== 'undefined' && Object.keys(this.props.thirdGraph).length ? this.getGraphLabels(this.props.thirdGraph) : null;
+            let fourthGraphLabels = typeof this.props.fourthGraph !== 'undefined' && Object.keys(this.props.fourthGraph).length ? this.getGraphLabels(this.props.fourthGraph) : null;
 
-
-
-
+            console.log('state: ')
+            console.log(this.props.secondGraph)
             return (
                   <div>
                         <div className="parent-component statz-component-container">
@@ -260,14 +246,14 @@ class Stats extends React.Component {
 
                                           <label className="statz-group-heading">PUNISHING OTHERS</label>
 
-                                          {this.props.thirdGraph ?
+                                          {this.props.firstGraph ?
                                                 <div className="float-left graph-container graph1-container"
                                                       style={{ width: "420px" }}>
 
-                                                      {labels.map(label => label)}
+                                                      {firstGraphLabels.map(label => label)}
 
                                                       <PieChart
-                                                            data={this.props.thirdGraph}
+                                                            data={this.props.firstGraph}
                                                             lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
@@ -277,12 +263,14 @@ class Stats extends React.Component {
 
                                                 : null}
 
-                                          {this.props.fourthGraph ?
+                                          {this.props.secondGraph ?
                                                 <div className="float-right graph-container graph2-container"
                                                       style={{ width: "420px" }}>
 
+                                                      {secondGraphLabels.map(label => label)}
+
                                                       <PieChart
-                                                            data={this.props.fourthGraph}
+                                                            data={this.props.secondGraph}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
@@ -300,12 +288,14 @@ class Stats extends React.Component {
 
                                           <label className="statz-group-heading">ME, BEING PUNISHED</label>
 
-                                          {this.props.firstGraph ?
+                                          {this.props.thirdGraph ?
                                                 <div className="float-left graph-container graph1-container"
                                                       style={{ width: "420px" }}>
 
+                                                      {thirdGraphLabels.map(label => label)}
+
                                                       <PieChart
-                                                            data={this.props.firstGraph}
+                                                            data={this.props.thirdGraph}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
@@ -313,12 +303,14 @@ class Stats extends React.Component {
                                                 </div>
                                                 : null}
 
-                                          {this.props.secondGraph ?
+                                          {this.props.fourthGraph ?
                                                 <div className="float-right graph-container graph2-container"
                                                       style={{ width: "420px" }}>
 
+                                                      {fourthGraphLabels.map(label => label)}
+
                                                       <PieChart
-                                                            data={this.props.secondGraph}
+                                                            data={this.props.fourthGraph}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
@@ -354,7 +346,6 @@ function comparePunishments(pun1, pun2) {
 };
 
 function getGraphProperties(classificationResults, neededProperties) {
-
       return Object.assign({}, ...Object.keys(classificationResults).map(property => {
 
             if (neededProperties.indexOf(property) > -1) return { [property]: classificationResults[property] };
@@ -432,18 +423,106 @@ const getCoordPoints = data => {
 
       let tmp = 0;
 
+      // pomak prema centru kruznice (da labeli nisu na samom rubu)
+      const offsetToCenter = 20;
+
+      const xCircleCenter = circleRadius;
+      const yCircleCenter = circleRadius;
+
       return data.map((item, index) => {
 
+            // izracunati koordinate i translacija u 1 quadrant cart.coord sustava
+            let x = Math.floor(circleRadius * Math.cos(tmp + item.radian / 2)) + circleRadius;
+            let y = Math.floor(circleRadius * Math.sin(tmp + item.radian / 2)) + circleRadius;
 
-            let x = Math.floor(circleRadius * Math.cos(tmp + item.radian / 2));
-            let y = Math.floor(circleRadius * Math.sin(tmp + item.radian / 2));
-            console.log(x)
+            let quadrant = getQuardrant(tmp + item.radian / 2);
+
             tmp += item.radian;
+
+            let hypotenuse = distanceBetweenPoints(xCircleCenter, yCircleCenter, x, y);
+
+            let x3 = xCircleCenter;
+            let y3 = y;
+
+            let a = Math.abs(x3 - x);
+            let b = Math.abs(yCircleCenter - y3);
+
+            let offsetedHypotenuse = hypotenuse - 20;
+
+            let d = (offsetedHypotenuse * a) / hypotenuse;
+            let x4 = xCircleCenter - d;
+
+            let e = (offsetedHypotenuse * b) / hypotenuse;
+            let y4 = yCircleCenter - e;
+
+            let offsetedX_InThirdQuadrant = x4;
+            let offsetedY_InThirdQuadrant = y4;
+
+            let finalCoords = placePointInQuardrant(offsetedX_InThirdQuadrant, offsetedY_InThirdQuadrant, quadrant);
 
             return {
                   ...item,
-                  x,
-                  y
+                  x: Math.floor(finalCoords.x),
+                  y: Math.floor(finalCoords.y)
             }
       });
+}
+
+const distanceBetweenPoints = (x1, y1, x2, y2) => {
+
+      let xAxisDistance = Math.abs(x1 - x2);
+      let yAxisDistance = Math.abs(y1 - y2);
+
+      return Math.sqrt(xAxisDistance ** 2 + yAxisDistance ** 2);
+}
+
+// default kvadrant je 3, pa je potreban pomak, koristi globalno definiran radijus kruznice
+const placePointInQuardrant = (x, y, quadrant) => {
+
+      switch (quadrant) {
+            case 1:
+                  return {
+                        x: 2 * circleRadius - x,
+                        y: 2 * circleRadius - y
+                  };
+            case 2:
+                  return {
+                        x,
+                        y: 2 * circleRadius - y
+                  };
+            case 3:
+                  return {
+                        x,
+                        y
+                  };
+            case 4:
+                  return {
+                        x: 2 * circleRadius - x,
+                        y
+                  };
+            default:
+                  return null;
+      }
+}
+
+
+const getQuardrant = radianAngle => {
+
+      const firstQuadrantBorder = Math.PI / 2;
+      const secondQuadrantBorder = Math.PI;
+      const thirdQuadrantBorder = 1.5 * Math.PI;
+      const fourthQuadrantBorder = 2 * Math.PI;
+
+      switch (true) {
+            case (radianAngle <= firstQuadrantBorder):
+                  return 1;
+            case (radianAngle <= secondQuadrantBorder):
+                  return 2;
+            case (radianAngle <= thirdQuadrantBorder):
+                  return 3
+            case (radianAngle <= fourthQuadrantBorder):
+                  return 4;
+            default:
+                  return null;
+      }
 }

@@ -240,8 +240,8 @@ class Login extends React.Component {
                                 <title>Line Copy 2</title>
                                 <desc>Created with Sketch.</desc>
                                 <defs></defs>
-                                <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1120.000000, -32.000000)"
-                                    stroke-linecap="square">
+                                <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-1120.000000, -32.000000)"
+                                    strokeLinecap="square">
                                     <path d="M1121,53 L1121,33" id="Line-Copy-2" stroke="#979797"></path>
                                 </g>
                             </svg>

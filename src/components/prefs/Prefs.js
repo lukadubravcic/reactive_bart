@@ -127,27 +127,13 @@ class Prefs extends React.Component {
 export default connect(mapStateToProps, mapDispatchToProps)(Prefs);
 
 
-
-/* const implmnt = (
-
-    <div className="prefs-bottom-image-container">
-                {bottomSVG}
-            </div>
-
-        </div>
-
-    </div>
-
-) */
-
-
 const bottomSVG = (
     <svg id="prefs-bottom-image" width="1080px" height="234px" viewBox="0 0 1080 234" version="1.1" xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink">
         <title>Group 13</title>
         <desc>Created with Sketch.</desc>
         <defs></defs>
-        <g id="pref-img" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-100.000000, -5423.000000)">
+        <g id="pref-img" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -5423.000000)">
             <g id="Group-Copy-9" transform="translate(0.000000, 5242.000000)">
                 <g id="Group-13" transform="translate(100.000000, 181.000000)">
                     <polygon id="Fill-7-Copy-9" fill="#2B80B2" points="-2.38411233e-13 234 1080 234 1080 214 -2.38411233e-13 214"></polygon>

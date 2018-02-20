@@ -477,7 +477,7 @@ class Board extends React.Component {
                                 <title>krede na ploci</title>
                                 <desc>Created with Sketch.</desc>
                                 <defs></defs>
-                                <g id="page-01" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-226.000000, -918.000000)">
+                                <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-226.000000, -918.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="krede-na-ploci" transform="translate(226.000000, 768.000000)">
                                             <polygon id="kreda" fill="#FEFEFE" points="0.34306 22 38.34306 22 38.34306 13 0.34306 13"></polygon>

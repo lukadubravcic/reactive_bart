@@ -178,7 +178,7 @@ class Game extends React.Component {
                                 <title>knjige ispod ploce</title>
                                 <desc>Created with Sketch.</desc>
                                 <defs></defs>
-                                <g id="page-01" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-827.000000, -971.000000)">
+                                <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-827.000000, -971.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="knjige-ispod-ploce" transform="translate(827.000000, 821.000000)">
                                             <g id="Group" transform="translate(0.000000, 64.000000)">
@@ -235,7 +235,7 @@ class Game extends React.Component {
                                 <title>biljka sa policom</title>
                                 <desc>Created with Sketch.</desc>
                                 <defs></defs>
-                                <g id="page-01" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1067.000000, -180.000000)">
+                                <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-1067.000000, -180.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="biljka-sa-policom" transform="translate(1067.000000, 30.000000)">
                                             <polygon id="polica" fill="#2B80B2" points="0 237 190 237 190 217 0 217"></polygon>

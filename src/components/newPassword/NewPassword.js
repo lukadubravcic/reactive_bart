@@ -81,6 +81,7 @@ class NewPassword extends React.Component {
         const newPassword = this.props.newPassword;
         const reNewPassword = this.props.reNewPassword;
         const errMsg = this.props._errMsg;
+        console.log(errMsg)
         const formValid = currentPassword.length
             && newPassword.length
             && !this.currentPasswordValidationMessage
@@ -90,52 +91,76 @@ class NewPassword extends React.Component {
             && currentPassword !== newPassword;
 
         return (
-            <div className="container">
-                <form onSubmit={this.submitNewPassword(currentPassword, newPassword, reNewPassword)}>
-                    <label>Set your new password</label>
+            <div className="parent-component header register-header">
+                <div className="container">
 
-                    <br />
+                    <label className="heading register-heading">Change your password</label>
 
-                    <input
-                        id='currentPassword'
-                        type="password"
-                        placeholder="Current password"
-                        onChange={this.currentPasswordChange}
-                        value={currentPassword}
-                        required />
-                    {this.currentPasswordValidationMessage ? <label>&nbsp;{this.currentPasswordValidationMessage}</label> : null}
-                    <br />
+                    <form
+                        className="register-form"
+                        onSubmit={this.submitNewPassword(currentPassword, newPassword, reNewPassword)}>
 
-                    <input
-                        id='newPassword'
-                        type="password"
-                        placeholder="New password"
-                        onChange={this.newPasswordChange}
-                        value={newPassword}
-                        required />
-                    {this.newPasswordValidationMessage ? <label>&nbsp;{this.newPasswordValidationMessage}</label> : null}
-                    <br />
+                        <fieldset className="header-form-row">
+                            <input
+                                className="text-input"
+                                id='currentPassword'
+                                type="password"
+                                placeholder="Current password"
+                                onChange={this.currentPasswordChange}
+                                value={currentPassword}
+                                required />
 
-                    <input
-                        id="reNewPassword"
-                        type="password"
-                        placeholder="Confirm new password"
-                        onChange={this.reNewPasswordChange}
-                        value={reNewPassword}
-                        required />
+                            {this.currentPasswordValidationMessage
+                                ? <label className="form-feedback">{this.currentPasswordValidationMessage}</label>
+                                : null}
+                        </fieldset>
 
-                    <br />
+                        <fieldset className="header-form-row">
+                            <input
+                                id='newPassword'
+                                className="text-input"
+                                type="password"
+                                placeholder="New password"
+                                onChange={this.newPasswordChange}
+                                value={newPassword}
+                                required />
 
-                    <button
-                        ref="changePasswordBtn"
-                        type="submit"
-                        className="btn btn-lg btn-primary"
-                        disabled={!formValid}>
-                        Set new password
-                    </button>
-                    {errMsg ? (<label>{errMsg}</label>) : null}
-                </form>
-            </div >
+                            {this.newPasswordValidationMessage
+                                ? <label className="form-feedback">{this.newPasswordValidationMessage}</label>
+                                : null}
+                        </fieldset>
+
+                        <fieldset className="header-form-row">
+                            <input
+                                id="reNewPassword"
+                                className="text-input"
+                                type="password"
+                                placeholder="Confirm new password"
+                                onChange={this.reNewPasswordChange}
+                                value={reNewPassword}
+                                required />
+                        </fieldset>
+
+                        <fieldset className="header-form-row">
+                            <button
+                                id="btn-register"
+                                className="btn-submit"
+                                ref="changePasswordBtn"
+                                type="submit"
+                                disabled={!formValid}>
+                                Set new password
+                            </button>
+
+                            {errMsg
+                                ? <label className="form-feedback">{errMsg}</label>
+                                : null}
+                        </fieldset>
+
+
+
+                    </form>
+                </div>
+            </div>
         )
     }
 }

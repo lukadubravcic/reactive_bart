@@ -9,11 +9,16 @@ const defaultState = {
     _errMsg: null,
     serverAnswer: null,
     showSetNewPasswordComponent: false,
-    showResetPasswordForm: false
+    showResetPasswordForm: false,
+
+    test: 'start'
 }
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'SHOW_LOGIN_FORM':
+            return { ...state, test: 'login' }
+
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
         case 'REGISTER_LOGIN_TOGGLE':

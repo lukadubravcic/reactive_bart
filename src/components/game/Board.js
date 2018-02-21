@@ -294,17 +294,25 @@ class Board extends React.Component {
         this.writeStartingSentence = () => {
 
             const write = i => {
+                console.log(this.activeWriteTimeout);
+                let counterHitsLastChar = this.punishmentExplanation.length <= i;
 
-                if (this.punishmentExplanation.length <= i && !this.props.showSetNewPasswordComponent) {
-                    this.activeWriteTimeout = setTimeout(() => {
-                        //this.props.setStartingSentence(this.props.startingSentence + this.clickToStartMessage);
+                if (counterHitsLastChar && !this.props.showSetNewPasswordComponent) {
+                    this.activeWriteTimeout = clearTimeout(this.activeWriteTimeout);
+                    console.log(this.activeWriteTimeout);
+                    this.props.boardDisabledStatus(false);
+                    /* this.activeWriteTimeout = setTimeout(() => {
+                       
                         this.props.boardDisabledStatus(false);
-                    }, 100);
+                    }, 100);   */
                     return;
                 }
-                i === 0 ? this.props.setStartingSentence(this.punishmentExplanation[i])
-                    : this.props.setStartingSentence(this.props.startingSentence + this.punishmentExplanation[i]);
+
+                this.props.setStartingSentence(this.punishmentExplanation.substr(0, i + 1));
+                /* i === 0 ? this.props.setStartingSentence(this.punishmentExplanation[i])
+                    : this.props.setStartingSentence(this.props.startingSentence + this.punishmentExplanation[i]); */
                 i++;
+
                 this.activeWriteTimeout = setTimeout(() => {
                     write(i);
                 }, Math.floor(Math.random() * 150) + 30);
@@ -361,14 +369,18 @@ class Board extends React.Component {
             // incijalni setup
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
+            this.punishment = this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.trim() : this.punishment;
             this.punishmentId = this.props.activePunishment.uid;
             this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'Gazzilion' : this.props.activePunishment.how_many_times;
 
-            this.punishmentExplanation = `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times "' : 'x "')}${(this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.substring(0, this.punishment.length - 1) : this.punishment)}": `;
+            this.punishmentExplanation = `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times "' : 'x "')}${this.punishment}": `;
 
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
             this.writeStartingSentence();
+            
+
+            this.punishment += ' ';
         };
     }
 
@@ -380,8 +392,8 @@ class Board extends React.Component {
 
     componentDidUpdate(prevProps) {
 
-        if (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)
-            || Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid === prevProps.activePunishment.uid) && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write)) { // postavljena nova kazna
+        if ((Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid))
+            || (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid === prevProps.activePunishment.uid) && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write))) { // postavljena nova kazna
             // console.log('%cTRUE', 'background: yellow; color: green')
 
             if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
@@ -408,10 +420,10 @@ class Board extends React.Component {
         const startingSentence = this.props.startingSentence;
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
-        const boardTextMistake = this.props.boardTextMistake;
 
 
         if (activePunishmentSet) {
+
             return (
 
                 <div id="board-writing-board-component">
@@ -421,15 +433,16 @@ class Board extends React.Component {
                         onMouseOut={this.boardHoverOut}>
 
                         <div id="drawing-board">
-                            <textarea
+                            <div
                                 id="board-textarea"
-                                value={startingSentence + boardText}
+                                tabIndex="1"
                                 disabled={this.props.boardDisabled}
                                 onKeyDown={this.boardTextChange}
                                 onFocus={this.boardFocused}
-                                onBlur={this.boardLostFocus}
-                                spellCheck="false"
-                            />
+                                onBlur={this.boardLostFocus}>
+
+                                <span style={{color: "yellow"}}>{startingSentence}</span>{boardText}
+                            </div>
 
                             {this.props.boardHovered ?
                                 <div
@@ -448,7 +461,7 @@ class Board extends React.Component {
                                             <title>Triangle 4 Copy</title>
                                             <desc>Created with Sketch.</desc>
                                             <defs></defs>
-                                            <g id="page-03" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-528.000000, -981.000000)">
+                                            <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-528.000000, -981.000000)">
                                                 <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
                                                     <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
                                                         points="83.5 65 95 79 72 79"></polygon>

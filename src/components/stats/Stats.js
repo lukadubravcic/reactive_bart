@@ -108,9 +108,6 @@ class Stats extends React.Component {
 
             this.getGraphLabels = data => {
 
-                  console.log('lab fun')
-                  console.log(data)
-
                   data = getRadians(data);
 
                   data = getCoordPoints(data);
@@ -232,8 +229,6 @@ class Stats extends React.Component {
             let thirdGraphLabels = typeof this.props.thirdGraph !== 'undefined' && Object.keys(this.props.thirdGraph).length ? this.getGraphLabels(this.props.thirdGraph) : null;
             let fourthGraphLabels = typeof this.props.fourthGraph !== 'undefined' && Object.keys(this.props.fourthGraph).length ? this.getGraphLabels(this.props.fourthGraph) : null;
 
-            console.log('state: ')
-            console.log(this.props.secondGraph)
             return (
                   <div>
                         <div className="parent-component statz-component-container">
@@ -271,6 +266,7 @@ class Stats extends React.Component {
 
                                                       <PieChart
                                                             data={this.props.secondGraph}
+                                                            lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
@@ -296,6 +292,7 @@ class Stats extends React.Component {
 
                                                       <PieChart
                                                             data={this.props.thirdGraph}
+                                                            lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
@@ -311,6 +308,7 @@ class Stats extends React.Component {
 
                                                       <PieChart
                                                             data={this.props.fourthGraph}
+                                                            lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
@@ -347,7 +345,6 @@ function comparePunishments(pun1, pun2) {
 
 function getGraphProperties(classificationResults, neededProperties) {
       return Object.assign({}, ...Object.keys(classificationResults).map(property => {
-
             if (neededProperties.indexOf(property) > -1) return { [property]: classificationResults[property] };
       }));
 }

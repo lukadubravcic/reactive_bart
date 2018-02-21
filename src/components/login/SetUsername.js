@@ -75,7 +75,7 @@ class SetUsername extends React.Component {
             ev.preventDefault();
             let punishment = this.createOnUsernameSetPunishment(username.trim());
 
-           
+
 
             if (Object.keys(this.props.currentUser).length) {
                 punishment && this.props.onSubmit(username, punishment);
@@ -91,30 +91,43 @@ class SetUsername extends React.Component {
         const errMsg = this.props._errMsg;
 
         return (
-            <div className="container">
-                <form onSubmit={this.submitUsername(username)}>
-                    <label>We're missing your name</label>
+            <div className="parent-component header">
+                <div className="container">
 
-                    <br />
+                    <label id="set-username-heading" className="heading">
+                        We’re missing your name
+                    </label>
 
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        onChange={this.usernameChange}
-                        value={username}
-                        required />
-                   
-                    {errMsg ? (<label>{errMsg}</label>) : null}
-                    <br />
+                    <form
+                        className="set-username-form"
+                        onSubmit={this.submitUsername(username)}>
 
-                    <button
-                        type="submit"
-                        disabled={!!this.validationMessage}>
-                        Set username
-                    </button>
-                </form>
+                        <fieldset className="header-form-row">
+                            <input
+                                className="text-input"
+                                type="text"
+                                placeholder="Username"
+                                onChange={this.usernameChange}
+                                value={username}
+                                required />
 
-                <br />
+                            {errMsg
+                                ? <label className="form-feedback">{errMsg}</label>
+                                : null}
+
+                        </fieldset>
+
+                        <fieldset className="header-form-row">
+                            <button
+                                className="btn-submit btn-set-username"
+                                type="submit"
+                                disabled={!!this.validationMessage}>
+                                SET USERNAME
+                            </button>
+                        </fieldset>
+                      
+                    </form>
+                </div>
             </div>
         )
     }

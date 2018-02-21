@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Top from './components/user/Top';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
 import Game from './components/game/Game';
@@ -172,6 +173,7 @@ class App extends React.Component {
 
         return (
             <div>
+                <Top />
                 <Login />
                 {userLoggedInAndChangePasswordForm
                     ? <NewPassword />

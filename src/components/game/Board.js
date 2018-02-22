@@ -258,6 +258,7 @@ class Board extends React.Component {
                 else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
 
                 if (!this.validateKey(key, transformedBoardText)) {
+                    this.props.updateBoardValue(transformedBoardText)
                     this.incorrectBoardEntry();
                     return;
                 }

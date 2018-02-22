@@ -17,11 +17,15 @@ const defaultState = {
     gameInProgress: false,
     boardFocused: false,
     boardHovered: false,
+    boardDisabled: true,
     spongeHovered: false,
     timeSpent: 0,
-    startingSentence: '',
+    startingSentenceFirstPart: '',
+    startingSentenceSecondPart: '',
+    startingSentenceThirdPart: '',
     cheating: false,
-    guestPunishment: null
+    guestPunishment: null,
+    startSentenceBeingWritten: true,
 };
 
 export default (state = defaultState, action) => {
@@ -29,7 +33,12 @@ export default (state = defaultState, action) => {
     switch (action.type) {
 
         case 'STARTING_SENTANCE_CHANGED':
-            return { ...state, startingSentence: action.value }
+            return {
+                ...state,
+                startingSentenceFirstPart: action.stringArray[0],
+                startingSentenceSecondPart: action.stringArray[1],
+                startingSentenceThirdPart: action.stringArray[2]
+            }
         case 'UPDATE_BOARD_VALUE':
             return { ...state, boardValue: action.value };
         case 'TOGGLE_BOARD_DISABLED_STATUS':
@@ -111,6 +120,11 @@ export default (state = defaultState, action) => {
             return { ...state, guestPunishment: action.punishment };
         case 'INVITED_GUEST_PUNISHMENT_LOADED':
             return { ...state, guestPunishment: action.punishment };
+        case 'START_SENTENCE_WRITING_START':
+            return { ...state, startSentenceBeingWritten: true };
+        case 'START_SENTENCE_WRITING_FINISHED':
+            return { ...state, startSentenceBeingWritten: false };
+
         default:
             return state;
     }

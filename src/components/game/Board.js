@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import agent from '../../agent';
 
 import ProgressBar from './ProgressBar';
+import CompletedStamp from './CompletedStamp';
+import FailedStamp from './FailedStamp';
 
 import cheatingCheck from '../../helpers/cheatingCheck';
 import { API_ROOT } from '../../constants/constants';
@@ -23,8 +25,14 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    setStartingSentence: value => {
-        dispatch({ type: 'STARTING_SENTANCE_CHANGED', value })
+    startingSentenceWritingStarted: () => {
+        dispatch({ type: 'START_SENTENCE_WRITING_START' });
+    },
+    startingSentenceWritingFinished: () => {
+        dispatch({ type: 'START_SENTENCE_WRITING_FINISHED' });
+    },
+    setStartingSentence: stringArray => {
+        dispatch({ type: 'STARTING_SENTANCE_CHANGED', stringArray });
     },
     updateBoardValue: value => {
         dispatch({ type: 'UPDATE_BOARD_VALUE', value });
@@ -121,7 +129,7 @@ class Board extends React.Component {
         }
 
         this.spongeClick = ev => {
-            console.log('sponge click');
+
             // nema reseta ako je kazna obavljena
             if (this.props.progress < 100) {
 
@@ -153,17 +161,9 @@ class Board extends React.Component {
         };
 
         this.boardFocused = ev => {
+            console.log('being focused')
             ev.preventDefault();
-            // this.trimClickToStartMessage();
             this.props.onBoardFocus();
-        };
-
-        this.trimClickToStartMessage = () => {
-
-            if (this.props.startingSentence.includes(this.clickToStartMessage)) {
-
-                this.props.setStartingSentence(this.props.startingSentence.substring(0, this.props.startingSentence.length - this.clickToStartMessage.length));
-            }
         };
 
         this.boardLostFocus = ev => {
@@ -172,11 +172,6 @@ class Board extends React.Component {
         };
 
         this.boardHover = ev => {
-            if (!this.props.gameInProgress && this.props.showTooltips) this.props.onBoardHover();
-        };
-
-        this.startTooltipHover = ev => {
-            console.log('here');
             if (!this.props.gameInProgress && this.props.showTooltips) this.props.onBoardHover();
         };
 
@@ -198,8 +193,6 @@ class Board extends React.Component {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
             }
-
-            console.log('Punishment completed!');
         };
 
         this.removeActivePunishmentFromAccepted = () => {
@@ -290,37 +283,6 @@ class Board extends React.Component {
             }
         };
 
-        // rekurzivno ispisvanje pocetne recenice i dodavanje vec napisanih znakova (ako ih ima)
-        this.writeStartingSentence = () => {
-
-            const write = i => {
-                console.log(this.activeWriteTimeout);
-                let counterHitsLastChar = this.punishmentExplanation.length <= i;
-
-                if (counterHitsLastChar && !this.props.showSetNewPasswordComponent) {
-                    this.activeWriteTimeout = clearTimeout(this.activeWriteTimeout);
-                    console.log(this.activeWriteTimeout);
-                    this.props.boardDisabledStatus(false);
-                    /* this.activeWriteTimeout = setTimeout(() => {
-                       
-                        this.props.boardDisabledStatus(false);
-                    }, 100);   */
-                    return;
-                }
-
-                this.props.setStartingSentence(this.punishmentExplanation.substr(0, i + 1));
-                /* i === 0 ? this.props.setStartingSentence(this.punishmentExplanation[i])
-                    : this.props.setStartingSentence(this.props.startingSentence + this.punishmentExplanation[i]); */
-                i++;
-
-                this.activeWriteTimeout = setTimeout(() => {
-                    write(i);
-                }, Math.floor(Math.random() * 150) + 30);
-            }
-
-            write(0);
-        };
-
         this.calculateProgress = (boardText, punishment, howManyTimes) => {
             let progress = Math.floor((boardText.length / ((punishment.length * howManyTimes) - 1)) * 100);
             if (progress > 100) return 100;
@@ -363,24 +325,64 @@ class Board extends React.Component {
             this.punishmentInit();
         };
 
+        // rekurzivno ispisvanje pocetne recenice i dodavanje vec napisanih znakova (ako ih ima)
+        this.writeStartingSentence = (textArray = []) => {
+
+            let sentenceString = ['', ''];
+
+            const ghostWrite = (textArray, i = 0, j = 0) => {
+
+                let lastElementHit = textArray.length <= j;
+                let randomTypeTime = Math.floor(Math.random() * 150) + 30;
+
+                if (lastElementHit) {
+                    this.activeWriteTimeout = clearTimeout(this.activeWriteTimeout);
+                    this.props.startingSentenceWritingFinished();
+                    this.props.boardDisabledStatus(false);
+
+                    return;
+                }
+
+                let counterHitsLastChar = textArray[j].length <= i;
+
+                if (counterHitsLastChar) {
+                    j++;
+                    i = 0;
+                } else {
+                    sentenceString[j] += textArray[j][i];
+                    this.props.setStartingSentence(sentenceString);
+                    i++;
+                }
+
+                this.activeWriteTimeout = setTimeout(() => {
+                    ghostWrite(textArray, i, j);
+                }, randomTypeTime);
+            }
+
+            ghostWrite(textArray, 0, 0);
+        };
+
         this.punishmentInit = () => {
 
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
             // incijalni setup
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
-            this.punishment = this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.trim() : this.punishment;
+            //this.punishment = this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.trim() : this.punishment;
             this.punishmentId = this.props.activePunishment.uid;
             this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'Gazzilion' : this.props.activePunishment.how_many_times;
 
-            this.punishmentExplanation = `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times "' : 'x "')}${this.punishment}": `;
+            let punishmentExplanation = [
+                `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times ' : 'x ')}`,
+                `${this.punishment}`
+            ];
 
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
-            this.writeStartingSentence();
-            
 
-            this.punishment += ' ';
+            this.props.startingSentenceWritingStarted();
+            this.writeStartingSentence(punishmentExplanation);
+            // this.punishment += ' ';
         };
     }
 
@@ -418,8 +420,13 @@ class Board extends React.Component {
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
 
         const startingSentence = this.props.startingSentence;
+        const startingSentenceFirstPart = this.props.startingSentenceFirstPart;
+        const startingSentenceSecondPart = this.props.startingSentenceSecondPart;
+        const startingSentenceThirdPart = this.props.startingSentenceThirdPart;
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
+        const isPunishmentFailed = this.props.boardTextMistake;
+        const makeFocusable = this.props.startSentenceBeingWritten ? {} : { tabIndex: "1" }
 
 
         if (activePunishmentSet) {
@@ -435,14 +442,21 @@ class Board extends React.Component {
                         <div id="drawing-board">
                             <div
                                 id="board-textarea"
-                                tabIndex="1"
+                                className="noselect"
+                                {...makeFocusable}
                                 disabled={this.props.boardDisabled}
                                 onKeyDown={this.boardTextChange}
                                 onFocus={this.boardFocused}
                                 onBlur={this.boardLostFocus}>
 
-                                <span style={{color: "yellow"}}>{startingSentence}</span>{boardText}
+                                {startingSentenceFirstPart}
+                                <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
+                                {startingSentenceThirdPart}
+                                {boardText}
                             </div>
+
+                            {progress === 100 ? <CompletedStamp /> : null}
+                            {isPunishmentFailed ? <FailedStamp /> : null}
 
                             {this.props.boardHovered ?
                                 <div
@@ -512,7 +526,91 @@ class Board extends React.Component {
             )
         } else {
             return (
-                <h3>Loading...</h3>
+                <div id="board-writing-board-component">
+                    <div
+                        id="board-frame"
+                        onMouseOver={this.boardHover}
+                        onMouseOut={this.boardHoverOut}>
+
+                        <div id="drawing-board">
+                            <div
+                                id="board-textarea"
+                                tabIndex="1"
+                                disabled={null}
+                                onKeyDown={null}
+                                onFocus={null}
+                                onBlur={null}>
+
+                                {startingSentenceFirstPart}
+                                <span style={{ color: '#FFBC24' }}>{startingSentenceSecondPart}</span>
+                                {startingSentenceThirdPart}
+                                {boardText}
+                            </div>
+
+                            {this.props.boardHovered ?
+                                <div
+                                    id="click-to-start-element"
+                                    className="hover-dialog" >
+
+                                    <label className="hover-dialog-text">
+                                        CLICK
+                                        <br /> TO START
+                                    </label>
+
+                                    <div className="triangle-hover-box-container">
+
+                                        <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+                                            <title>Triangle 4 Copy</title>
+                                            <desc>Created with Sketch.</desc>
+                                            <defs></defs>
+                                            <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-528.000000, -981.000000)">
+                                                <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
+                                                    <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
+                                                        points="83.5 65 95 79 72 79"></polygon>
+                                                </g>
+                                            </g>
+                                        </svg>
+
+                                    </div>
+
+                                </div> : null}
+
+                        </div>
+
+                        <div
+                            id="chalk-container">
+
+                            <ProgressBar
+                                progress={0}
+                                spongeClick={() => { }}
+                                onHover={() => { }}
+                                onHoverOut={() => { }}
+                                hovering={() => { }}
+                            />
+
+                            <svg id="board-chalks" width="486px" height="22px" viewBox="0 0 486 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <title>krede na ploci</title>
+                                <desc>Created with Sketch.</desc>
+                                <defs></defs>
+                                <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-226.000000, -918.000000)">
+                                    <g id="Ploca" transform="translate(0.000000, 150.000000)">
+                                        <g id="krede-na-ploci" transform="translate(226.000000, 768.000000)">
+                                            <polygon id="kreda" fill="#FEFEFE" points="0.34306 22 38.34306 22 38.34306 13 0.34306 13"></polygon>
+                                            <polygon id="zuta-kreda" fill="#FFD75F" transform="translate(45.343060, 11.273000) rotate(20.000000) translate(-45.343060, -11.273000) "
+                                                points="26.34306 15.7730005 64.34306 15.7730005 64.34306 6.77300048 26.34306 6.77300048"></polygon>
+                                            <polygon id="Fill-15" fill="#FEFEFE" points="448 22 486 22 486 13 448 13"></polygon>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+
+                    </div>
+
+                    <div id="board-shelf"></div>
+
+                </div>
             )
         }
     }

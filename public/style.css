@@ -489,6 +489,7 @@ fieldset + fieldset {
 }
 
 #board-textarea {
+
 	background: transparent;
 	border: 0 none;
 	width: 100%;
@@ -518,7 +519,7 @@ fieldset + fieldset {
 
 	position: relative;
 	display: inline-block;
-	bottom: 39px;
+	bottom: 35px;
 
 	margin-left: 15px;
 }
@@ -531,17 +532,8 @@ fieldset + fieldset {
 	z-index: 4;
 
 	background: #FFBC24;
-
-	animation-name: sponge;
-	animation-duration: 4s;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
 } 
 
-@keyframes sponge {
-    0%   {left:0px; }
-    100% {background-color:green; left:calc(100% - 100px); }
-}
 
 
 #restart-hover-element {
@@ -652,8 +644,36 @@ fieldset + fieldset {
 	display: inline-block;
 	position: absolute;
 
+	z-index: 10;
+
 	left: 286px;
 	top: 183px;
+
+	animation-name: stamp-hit;
+	animation-delay:0.2s;
+	animation-duration: 0.6s;
+	animation-fill-mode: forwards;
+	opacity: 0;
+}
+
+@keyframes stamp-hit{
+	0% {
+	opacity: 0;
+	transform-origin: 50% 50%;
+	transform: rotate(-15deg) scale(10);
+	}
+
+	10% {
+	opacity:.50;	
+	
+	transform: rotate(-2deg) scale(5);
+	transition: all .3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+	}
+
+	100% {
+	opacity:1;
+	transform: rotate(0deg) scale(1);
+	}
 }
 
 .board-stamps-completed-container {

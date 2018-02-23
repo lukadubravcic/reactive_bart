@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../agent'
-import SetUsername from './SetUsername';
-import ResetPassword from './ResetPassword';
+/* import SetUsername from './SetUsername';
+import ResetPassword from './ResetPassword'; */
 
 
 const PASSWORD_MAX_LEN = 20;
@@ -31,8 +31,7 @@ const mapDispatchToProps = dispatch => ({
 
         let dataToSend = {};
 
-        if (isMail(loginWhom)) dataToSend.email = loginWhom;
-        else dataToSend.username = loginWhom;
+        isMail(loginWhom) ? dataToSend.email = loginWhom : dataToSend.username = loginWhom;
 
         dataToSend.password = password;
 
@@ -163,19 +162,8 @@ class Login extends React.Component {
             && this.props.common.guestUser.username === null;
         // const formValid = this.emailValidationError === null && this.passwordValidationError === null && email !== '' && password !== '';
 
-        if (window.canRunAds === undefined) {
-            // adblock active
-            return (
-                <div className="container">
-                    <nav className="navbar">
-                        <div className="container">
-                            <h1 className="navbar-brand">{this.props.common.appName}</h1>
-                        </div>
-                    </nav>
-                    <h3>Can't login while using Adblock, please disable it.</h3>
-                </div>
-            )
-        } else if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
+
+        if (this.props.common.token === null && this.props.auth.shownForm === 'login') {
             return (
 
                 <div className="parent-component header">
@@ -249,9 +237,9 @@ class Login extends React.Component {
 
                         <label className="float-right user-identity">{this.props.username ? this.props.username : this.props.email}</label>
 
-                        {this.props.username ? null : <SetUsername />}
+                        {/* this.props.username ? null : <SetUsername /> */}
 
-                        {showSetNewPasswordComponent ?
+                        {/* showSetNewPasswordComponent ?  
                             <button
                                 onClick={this.hideChangePasswordForm}>
                                 Return to game
@@ -260,7 +248,7 @@ class Login extends React.Component {
                                 onClick={this.showChangePasswordForm}>
                                 Change Password
                         </button>
-                        }
+                         */}
 
                     </div>
                 </div >

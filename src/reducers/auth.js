@@ -10,19 +10,26 @@ const defaultState = {
     serverAnswer: null,
     showSetNewPasswordComponent: false,
     showResetPasswordForm: false,
-
-    test: 'start'
+    elementToDisplay: 'start'
 }
 
 export default (state = defaultState, action) => {
     switch (action.type) {
         case 'SHOW_LOGIN_FORM':
-            return { ...state, test: 'login' }
+            return { ...state, elementToDisplay: 'login' };
+        case 'APP_LOAD':
+            return { ...state, elementToDisplay: 'loggedIn' };
+        case 'CHANGE_SHOWN_TOP_ELEMENT':
+            return { ...state, elementToDisplay: action.element };
 
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
         case 'REGISTER_LOGIN_TOGGLE':
-            return { ...defaultState, shownForm: state.shownForm === 'login' ? 'register' : 'login' };
+            return {
+                ...defaultState,
+                shownForm: state.shownForm === 'login' ? 'register' : 'login',
+                elementToDisplay: 'register'
+            };
         case 'REGISTER':
             return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
         case 'REGISTER_MAIL_INVALID':
@@ -34,7 +41,7 @@ export default (state = defaultState, action) => {
         case 'REGISTER_EXISTING_MAIL':
             return { ...state, shownForm: 'login', loginWhom: state.email, password: defaultState.password, _errMsg: action.errMsg };
         case 'LOGIN':
-            return { ...defaultState };
+            return { ...defaultState, elementToDisplay: 'loggedIn' };
         case 'LOGIN_ATTEMPT':
             return { ...state, _errMsg: defaultState._errMsg, password: defaultState.password };
         case 'LOGIN_FAILED':
@@ -57,6 +64,8 @@ export default (state = defaultState, action) => {
             return { ...state, loginWhom: action.guestUser.email };
         case 'INVITED_GUEST_PUNISHMENT_LOADED':
             return { ...state, shownForm: 'register', email: action.guestUser.email };
+        case 'USERNAME_SET':
+            return { ...state, elementToDisplay: 'thanks' };
         case 'USERNAME_SET_AS_GUEST':
             return { ...state, loginWhom: action.user.username };
         case 'SPECIAL_LOGOUT':

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import agent from '../../agent';
+import agent from '../../../agent';
 
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;

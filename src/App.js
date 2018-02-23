@@ -9,7 +9,7 @@ import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
-import NewPassword from './components/newPassword/NewPassword';
+/* import NewPassword from './components/newPassword/NewPassword'; */
 import Footer from './components/Footer';
 
 import agent from './agent';
@@ -143,6 +143,7 @@ class App extends React.Component {
                 console.log('nextProps.common.currentUser._id ' + typeof nextProps.common.currentUser._id)
                 console.log('userIdFromURL ' + typeof nextProps.auth.userIdFromURL)
                 console.log('isUrlPunOwnedByLoggedUser ' + isUrlPunOwnedByLoggedUser)
+
                 agent.Auth.logout();
                 agent.setToken(0);
                 window.localStorage.removeItem('token');
@@ -167,9 +168,22 @@ class App extends React.Component {
 
     render() {
 
-        const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
+        // const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
 
         return (
+            <div>
+                <Top />
+                <Game />
+                <PunishmentCreator />
+                <PunishmentSelectorTable />
+                <Stats />
+                <Prefs />
+                <Footer />
+            </div>
+        );
+
+
+        /* return (
             <div>
                 <Top />
                 <Login />
@@ -195,7 +209,7 @@ class App extends React.Component {
                 }
                 <Footer />
             </div>
-        );
+        ); */
     }
 }
 

@@ -1,20 +1,33 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import agent from '../../agent';
 
 import StartToolbar from './StartToolbar';
-import Login from '../login/Login';
+import LoginTest from './login/LoginTest';
 import LoggedInToolbar from './LoggedInToolbar';
-import NewPassword from '../newPassword/NewPassword';
-import SetUsername from '../login/SetUsername';
+import NewPassword from './newPassword/NewPassword';
+import SetUsername from './login/SetUsername';
+import UsernameThanks from './UsernameThanks';
+import AdblockerDisabled from './AdblockerDisabled';
 
 
 const mapStateToProps = state => ({
     common: state.common,
-    auth: state.auth
+    auth: state.auth,
+    activePunishment: state.game.activePunishment,
+    timeSpent: state.game.timeSpent,
+    gameInProgress: state.game.gameInProgress
 });
 
 const mapDispatchToProps = dispatch => ({
-    showLoginForm: () => dispatch({ type: 'SHOW_LOGIN_FORM' })
+    showLoginForm: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
+    onLogout: () => {
+        dispatch({ type: 'LOGOUT' });
+        localStorage.removeItem('token');
+        agent.Auth.logout();
+        agent.setToken(0)
+    },
+    updateElementToDisplay: element => dispatch({ type: 'CHANGE_SHOWN_TOP_ELEMENT', element })
 });
 
 
@@ -45,77 +58,133 @@ class Top extends React.Component {
             this.props.showLoginForm();
         }
 
+        this.getElementToDisplay = () => {
+
+            if (window.canRunAds === undefined) return <AdblockerDisabled />;
+
+            const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;
+            let elementToDisplay = this.props.auth.elementToDisplay;
+
+            let element = null;
+            let key = 1;
+
+            if (userLoggedIn) {
+
+                let username = this.props.common.currentUser.username
+                    ? this.props.common.currentUser.username
+                    : this.props.common.currentUser.email;
+                let usernameNotSet = typeof this.props.common.currentUser.username === 'undefined'
+                    || this.props.common.currentUser.username === null
+                    || this.props.common.currentUser.username === '';
+
+                let header = null;
+                let content = null;
+
+                header = <LoggedInToolbar username={username} handleLogout={this.handleLogout} />;
+
+                if (usernameNotSet && elementToDisplay === 'loggedIn') elementToDisplay = 'setUsername';
+
+                switch (elementToDisplay) {
+                    case 'changePassword':
+                        element = <NewPassword />;
+                        break;
+                    case 'setUsername':
+                        element = <SetUsername />;
+                        break;
+                    case 'thanks':
+                        element = <UsernameThanks />;
+                        break;
+                    case 'loggedIn':
+                        element = null;
+                }
+
+                return (
+                    <div>
+                        {header}
+                        {element}
+                    </div>
+                )
+
+            } else { // user nije logiran
+                switch (elementToDisplay) {
+                    case 'start':
+                        element = <StartToolbar btnClickCallback={this.showLogin} />;
+                        break;
+                    case 'login':
+                        element = <LoginTest />;
+                        break;
+                    default:
+                        element = <StartToolbar btnClickCallback={this.showLogin} />;
+                }
+                return element;
+            }
+
+            return null;
+        }
+
+        this.handleLogout = ev => {
+
+            if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
+                this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
+            }
+
+            this.props.onLogout();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+
+        const usernameSetPunishmentActive = specialOrRandomPunishmentIsActive(this.props.activePunishment)
+            && this.props.activePunishment.type === "USERNAME_SET";
+        const isNextPunSpecialOrRandom = specialOrRandomPunishmentIsActive(nextProps.activePunishment);
+        const nextPunNotUsernameSet = (isNextPunSpecialOrRandom && nextProps.activePunishment.type !== 'USERNAME_SET')
+            || !specialOrRandomPunishmentIsActive(nextProps.activePunishment);
+
+        if (usernameSetPunishmentActive && nextPunNotUsernameSet) {
+            // hide thanks section
+            this.props.updateElementToDisplay('loggedIn');
+        }
+
+
     }
 
     render() {
 
-        const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;
+        const elements = this.getElementToDisplay();
+
+        return elements;
+
+        /* const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;
         const elementToDisplay = this.props.auth.test;
 
         let username = null;
+        let renderElement = this.getElementToDisplay(elementToDisplay);
 
-        let renderElement = null;
+        if (!userLoggedIn) return renderElement;
+        let usernameNotSet = typeof this.props.common.currentUser.username === 'undefined'
+            || this.props.common.currentUser.username === null
+            || this.props.common.currentUser.username === '';
 
 
+        username = this.props.common.currentUser.username
+            ? this.props.common.currentUser.username
+            : this.props.common.currentUser.email;
 
-        switch (elementToDisplay) {
-            case 'start':
-                renderElement = (
-                    <div>
-                        <StartToolbar btnClickCallback={this.showLogin} />
-                    </div>
-                );
-                break;
-            case 'login':
-                renderElement = (
-                    <Login />
-                );
-                break;
-            case 'changePassword':
-                renderElement = (
-                    <NewPassword />
-                );
-                break;
-            case 'setUsername':
-                renderElement = (
-                    <SetUsername />
-                );
-                break;
-            case 'thanks':
-                renderElement = (
-                    <div class="parent-component header">
+        return (
+            <div>
+                <LoggedInToolbar username={username} handleLogout={this.handleLogout} />
+                {usernameNotSet ? <SetUsername /> : null}
+                {renderElement}
+            </div>
+        ) */
 
-                        <div class="container">
 
-                            <label class="heading username-set-heading">
-                                Thanks! Let me punish you in return.
-                                <br /> It's optional. Really.
-                            </label>
-                        </div>
-                    </div>
-                );
-                break;
-        }
-
-        if (userLoggedIn) {
-
-            username = this.props.common.currentUser.username ? this.props.common.currentUser.username : this.props.common.currentUser.email;
-
-            return (
-                <div>
-                    <LoggedInToolbar username={username} />
-                    {renderElement}
-                </div>
-            )
-
-        } else {
-            return (
-                <div>
-                    {renderElement}
-                </div>
-            )
-        }
     }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Top);
+
+
+function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
+    return punishment.created ? false : true;
+}

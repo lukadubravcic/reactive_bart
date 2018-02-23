@@ -4,7 +4,7 @@ const LoggedInToolbar = props => (
     <div className="user-loggedin-top-component">
         <div className="container">
 
-            <button className="float-right logout-button" onClick={()=>{console.log('LOGOUT clicked')}}>LOG OUT</button>
+            <button className="float-right logout-button" onClick={props.handleLogout}>LOG OUT</button>
 
             <div className="float-right delimiter-container">
                 <svg id="user-loggedin-top-delimiter" width="2px" height="22px" viewBox="0 0 2 22" version="1.1" xmlns="http://www.w3.org/2000/svg">

@@ -249,6 +249,36 @@ fieldset + fieldset {
 	display: inline-block;
 	padding-right: 27px;
 	padding-left: 27px; 
+	margin-left: 29px;
+}
+
+#password-change-btn-container {
+	position: absolute;
+	display: none;	
+	z-index: 20;
+
+	left: 0;
+	top: 31px;
+
+	width: 200px;
+
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+
+	background-color: rgba(81, 81, 81, 0.9);
+}
+
+#password-change-btn {
+	display: inline-block;
+	position: relative;
+	font-family: "Montserrat-Light";
+	font-size: 17px;
+	background-color: transparent;
+}
+
+#password-change-btn:hover{
+	color: #00BBD6;
 }
 
 .register-heading {
@@ -308,7 +338,9 @@ fieldset + fieldset {
 	position: relative;
 
 	padding-right: 26px;
-	margin-top: 29px;
+	padding-left: 10px;
+	padding-top: 5px;
+	margin-top: 24px;
 		
 	font-family: "Montserrat-Light";
 	font-size: 20px;
@@ -319,6 +351,11 @@ fieldset + fieldset {
 
 .user-identity:hover {
 	color: #00BBD6;
+	background-color: rgba(81, 81, 81, 0.9);
+}
+
+.user-identity:hover #password-change-btn-container {
+	display: inline-block;
 }
 
 .delimiter-container {

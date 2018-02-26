@@ -5,6 +5,7 @@
   "dependencies": {
     "moment": "^2.19.1",
     "react": "^15.6.1",
+    "react-calendar": "^2.13.0",
     "react-datepicker": "^0.55.0",
     "react-dom": "^15.6.1",
     "react-minimal-pie-chart": "^3.0.1",

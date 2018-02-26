@@ -11,7 +11,7 @@ const mapDispatchToProps = dispatch => ({
     onEmailChange: value => dispatch({ type: 'UPDATE_FIELD_AUTH', key: 'email', value }),
     submitResetPassword: (email, enableForm) => {
         dispatch({ type: 'RESET_PASSWORD_ATTEMPT' });
-        agent.Auth.forgotPassword(email).then((payload) => {
+        agent.Auth.forgotPassword(email).then(payload => {
             if (payload !== null) {
                 if (typeof payload.message !== "undefined") {
                     dispatch({ type: 'RESET_PASSWORD_ANSWER', errMsg: payload.message });
@@ -59,36 +59,51 @@ class ResetPassword extends React.Component {
         const serverMsg = this.props._errMsg;
 
         return (
-            <div>
-                <form onSubmit={this.submitForm(email)}>
-                    <h3>Reset your password</h3>
-                    <fieldset>
-                        <fieldset className="form-group">
+
+            <div className="parent-component header register-header">
+                <div className="container">
+
+                    <label className="heading register-heading">Reset your password</label>
+
+                    <form
+                        className="register-form"
+                        onSubmit={this.submitForm(email)}>
+
+                        <fieldset className="header-form-row">
                             <input
-                                className="form-control form-control-lg"
-                                type="email"
-                                placeholder="Email"
+                                className="text-input"
+                                type="text"
+                                placeholder="e-mail"
                                 value={email}
                                 onChange={this.emailChange}
                                 required />
                         </fieldset>
 
-                        <button
-                            ref="backBtn"
-                            onClick={this.props.backToLogin}
-                            type="button">
-                            Back to login
-                        </button>
-                        <button
-                            ref="pwdResetBtn"
-                            type="submit">
-                            Reset
-                        </button>
+                        <fieldset className="header-form-row">
+                            <button
+                                className="btn-submit"
+                                ref="backBtn"
+                                onClick={this.props.backToLogin}>
 
-                        {serverMsg ? <label>{serverMsg}</label> : null}
-                    </fieldset>
-                </form>
+                                BACK TO LOGIN
+                            </button>
+                            <button
+                                id="btn-register"
+                                className="btn-submit margin-left-small"
+                                ref="pwdResetBtn"
+                                type="submit">
+
+                                RESET
+                            </button>
+
+                            {serverMsg ? <label className="form-feedback">{serverMsg}</label> : null}
+                        </fieldset>
+
+                    </form>
+
+                </div>
             </div>
+
         );
     }
 }

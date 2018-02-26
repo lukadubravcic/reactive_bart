@@ -5,6 +5,8 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import { trimExcessSpaces } from '../../helpers/helpers';
 
+import DateElement from './DateElement';
+
 import 'react-datepicker/dist/react-datepicker.css';
 
 const PUNISHMENT_MAX_LENGTH = 100;
@@ -158,159 +160,156 @@ class PunishmentCreator extends React.Component {
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
 
-        if (usrLoggedIn && window.canRunAds) {
 
-            return (
 
-                <div id="creator-component-container" className="parent-component">
+        return (
 
-                    <div className="container">
+            <div id="creator-component-container" className={usrLoggedIn && window.canRunAds ? 'parent-component' : 'parent-component greyscale-filter'}>
 
-                        <div id="creator-heading-container">
-                            <h1 id="creator-heading">Your turn to punish someone!</h1>
-                        </div>
+                {usrLoggedIn && window.canRunAds ? null : <div id="form-overlay"></div>}
 
-                        <form
-                            id="pun-creation-form"
-                            onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField)}
-                        >
+                <div className="container">
 
+                    <div id="creator-heading-container">
+                        <h1 id="creator-heading">Your turn to punish someone!</h1>
+                    </div>
+
+                    <form
+                        id="pun-creation-form"
+                        disabled={!(usrLoggedIn && window.canRunAds)}
+                        onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField)}>
+
+                        <fieldset className="form-row">
+                            <label className="float-left input-field-name">WHOM</label>
+                            <input
+                                id="whom-input"
+                                className="float-left text-input"
+                                type="text"
+                                placeholder="e-mail/username"
+                                value={whomField}
+                                onChange={this.changeWhom}
+                                required
+                            />
+                            <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label>
+                        </fieldset>
+
+                        <fieldset className="form-row">
+                            <label className="float-left input-field-name">HOW MANY TIMES</label>
+                            <button
+                                id="decrement-button"
+                                className="float-left btn-range"
+                                type="button"
+                                onClick={this.decrementHowManyTimes}
+                            >
+                                {decrementBtnSvg}
+                            </button>
+
+                            <input
+                                id="how-many-times-input"
+                                className="float-left text-input"
+                                type="number"
+                                min="1"
+                                max="999"
+                                placeholder="999"
+                                value={howManyTimesField}
+                                onChange={this.changeHowManyTimes}
+                                required
+                            />
+
+                            <button
+                                id="increment-button"
+                                className="float-left btn-range"
+                                type="button"
+                                onClick={this.incrementHowManyTimes}
+                            >
+                                {incrementBtnSvg}
+                            </button>
+                        </fieldset>
+
+                        {deadlineChecked ?
                             <fieldset className="form-row">
-                                <label className="float-left input-field-name">WHOM</label>
-                                <input
-                                    id="whom-input"
-                                    className="float-left text-input"
-                                    type="text"
-                                    placeholder="e-mail/username"
-                                    value={whomField}
-                                    onChange={this.changeWhom}
-                                    required
-                                />
-                                <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label>
+                                <label className="float-left input-field-name">DEADLINE</label>
+
+                                <label className="float-left custom-chexbox-container">
+                                    <input
+                                        type="checkbox"
+                                        checked={deadlineChecked}
+                                        onChange={this.toggleDeadlineCheckbox}
+                                    />
+                                    <span id="checkmark"></span>
+                                </label>
+
+                                <DateElement />
+
                             </fieldset>
 
-                            <fieldset className="form-row">
-                                <label className="float-left input-field-name">HOW MANY TIMES</label>
-                                <button
-                                    id="decrement-button"
-                                    className="float-left btn-range"
-                                    type="button"
-                                    onClick={this.decrementHowManyTimes}
-                                >
-                                    {decrementBtnSvg}
+                            : <fieldset className="form-row">
+                                <label
+                                    className="float-left input-field-name"
+                                    style={{ paddingBottom: "18px" }} >
+                                    DEADLINE</label>
+
+                                <label className="float-left custom-chexbox-container">
+                                    <input
+                                        type="checkbox"
+                                        checked={deadlineChecked}
+                                        onChange={this.toggleDeadlineCheckbox}
+                                    />
+                                    <span id="checkmark"></span>
+                                </label>
+
+                            </fieldset>
+                        }
+
+
+                        <fieldset className="form-row">
+                            <label className="float-left input-field-name">WHAT TO WRITE</label>
+                            <input
+                                id="what-to-write-input"
+                                className="float-left text-input"
+                                type="text"
+                                placeholder="One line."
+                                value={whatToWriteField}
+                                onChange={this.changeWhatToWrite}
+                                required
+                            />
+                        </fieldset>
+
+                        <fieldset id="why-form-row" className="form-row">
+                            <label className="float-left input-field-name">WHY</label>
+                            <textarea
+                                id="why-input"
+                                className="float-left text-input"
+                                type="text"
+                                placeholder="Feel free to explain your reasons."
+                                value={whyField}
+                                onChange={this.changeWhy}
+                                required>
+                            </textarea>
+                        </fieldset>
+
+                        <fieldset className="form-row">
+                            <button
+                                id="btn-pun-submit"
+                                className="float-left btn-submit"
+                                ref="submitPunishmentBtn"
+                                type="submit">PUNISH
                                 </button>
+                            <label id="form-submit-feedback" className="float-left form-feedback">PLEASE ENTER REQUIRED FIELDS.</label>
+                        </fieldset>
 
-                                <input
-                                    id="how-many-times-input"
-                                    className="float-left text-input"
-                                    type="number"
-                                    min="1"
-                                    max="999"
-                                    placeholder="999"
-                                    value={howManyTimesField}
-                                    onChange={this.changeHowManyTimes}
-                                    required
-                                />
+                    </form>
 
-                                <button
-                                    id="increment-button"
-                                    className="float-left btn-range"
-                                    type="button"
-                                    onClick={this.incrementHowManyTimes}
-                                >
-                                    {incrementBtnSvg}
-                                </button>
-                            </fieldset>
-
-                            {deadlineChecked ?
-                                <fieldset className="form-row">
-                                    <label className="float-left input-field-name">DEADLINE</label>
-
-                                    <label className="float-left custom-chexbox-container">
-                                        <input
-                                            type="checkbox"
-                                            checked={deadlineChecked}
-                                            onChange={this.toggleDeadlineCheckbox}
-                                        />
-                                        <span id="checkmark"></span>
-                                    </label>
-
-                                    <input id="day-picker" className="float-left text-input" type="text" placeholder="dd" required />
-                                    <input id="month-picker" className="float-left text-input" type="text" placeholder="mm" required />
-                                    <input id="year-picker" className="float-left text-input" type="text" placeholder="yyyy" required />
-
-                                    <button id="btn-calendar" type="button">
-                                        {calendarBtnSvg}
-                                    </button>
-                                </fieldset>
-
-                                : <fieldset className="form-row">
-                                    <label
-                                        className="float-left input-field-name"
-                                        style={{ paddingBottom: "18px" }} >
-                                        DEADLINE</label>
-
-                                    <label className="float-left custom-chexbox-container">
-                                        <input
-                                            type="checkbox"
-                                            checked={deadlineChecked}
-                                            onChange={this.toggleDeadlineCheckbox}
-                                        />
-                                        <span id="checkmark"></span>
-                                    </label>
-
-                                </fieldset>
-                            }
-
-
-                            <fieldset className="form-row">
-                                <label className="float-left input-field-name">WHAT TO WRITE</label>
-                                <input
-                                    id="what-to-write-input"
-                                    className="float-left text-input"
-                                    type="text"
-                                    placeholder="One line."
-                                    value={whatToWriteField}
-                                    onChange={this.changeWhatToWrite}
-                                    required
-                                />
-                            </fieldset>
-
-                            <fieldset id="why-form-row" className="form-row">
-                                <label className="float-left input-field-name">WHY</label>
-                                <textarea
-                                    id="why-input"
-                                    className="float-left text-input"
-                                    type="text"
-                                    placeholder="Feel free to explain your reasons."
-                                    value={whyField}
-                                    onChange={this.changeWhy}
-                                    required>
-                                </textarea>
-                            </fieldset>
-
-                            <fieldset className="form-row">
-                                <button
-                                    id="btn-pun-submit"
-                                    className="float-left btn-submit"
-                                    ref="submitPunishmentBtn"
-                                    type="submit">PUNISH
-                                </button>
-                                <label id="form-submit-feedback" className="float-left form-feedback">PLEASE ENTER REQUIRED FIELDS.</label>
-                            </fieldset>
-
-                        </form>
-
-                        <div id="form-bottom-props-container">
-                            {creatorBottomSvg}
-                        </div >
-
+                    <div id="form-bottom-props-container">
+                        {creatorBottomSvg}
                     </div >
+
                 </div >
+            </div >
 
-            )
+        )
 
-        } else return (
+        /* } else return (
 
             <div id="creator-component-container" className="parent-component greyscale-filter">
 
@@ -357,7 +356,7 @@ class PunishmentCreator extends React.Component {
 
                             <button id="btn-calendar" type="button">
                                 {calendarBtnSvg}
-                            </button>
+                            </button> 
                         </fieldset>
 
                         <fieldset className="form-row">
@@ -384,7 +383,7 @@ class PunishmentCreator extends React.Component {
                 </div >
             </div >
 
-        )
+        ) */
     }
 }
 

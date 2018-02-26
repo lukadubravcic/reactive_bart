@@ -109,6 +109,11 @@ class LoginTest extends React.Component {
             this.refs.loginBtn.removeAttribute('disabled');
         }
 
+        this.showResetPasswordForm = ev => {
+            ev.preventDefault();
+            this.props.showResetPasswordForm();
+        }
+
     }
 
     render() {
@@ -152,12 +157,12 @@ class LoginTest extends React.Component {
 
                         <fieldset className="header-form-row">
                             <button className="btn-submit" ref="loginBtn" type="submit">LOG IN</button>
-                            <a id="forgot-password" className="link" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
+                            <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
                         </fieldset>
 
                         {errMsg ? (<label className="form-feedback">{errMsg}</label>) : null}
 
-                        <a onClick={this.showRegisterForm}>
+                        <a onClick={()=>({})}>
                             <u className="a">Create account</u>
                         </a>
                     </form>

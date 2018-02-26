@@ -3,12 +3,13 @@ import { connect } from 'react-redux';
 import agent from '../../agent';
 
 import StartToolbar from './StartToolbar';
-import LoginTest from './login/LoginTest';
+import Login from './login/Login';
 import LoggedInToolbar from './LoggedInToolbar';
 import NewPassword from './newPassword/NewPassword';
 import SetUsername from './login/SetUsername';
 import UsernameThanks from './UsernameThanks';
 import AdblockerDisabled from './AdblockerDisabled';
+import ResetPassword from './login/ResetPassword';
 
 
 const mapStateToProps = state => ({
@@ -21,6 +22,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     showLoginForm: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
+    showChangePasswordForm: () => dispatch({ type: 'SHOW_CHANGE_PASSWORD_FORM' }),
     onLogout: () => {
         dispatch({ type: 'LOGOUT' });
         localStorage.removeItem('token');
@@ -58,6 +60,11 @@ class Top extends React.Component {
             this.props.showLoginForm();
         }
 
+        this.showChangePassword = ev => {
+            ev.preventDefault();
+            this.props.showChangePasswordForm();
+        }
+
         this.getElementToDisplay = () => {
 
             if (window.canRunAds === undefined) return <AdblockerDisabled />;
@@ -80,7 +87,7 @@ class Top extends React.Component {
                 let header = null;
                 let content = null;
 
-                header = <LoggedInToolbar username={username} handleLogout={this.handleLogout} />;
+                header = <LoggedInToolbar username={username} handleLogout={this.handleLogout} btnShowForm={this.showChangePassword} />;
 
                 if (usernameNotSet && elementToDisplay === 'loggedIn') elementToDisplay = 'setUsername';
 
@@ -111,7 +118,10 @@ class Top extends React.Component {
                         element = <StartToolbar btnClickCallback={this.showLogin} />;
                         break;
                     case 'login':
-                        element = <LoginTest />;
+                        element = <Login />;
+                        break;
+                    case 'resetPassword':
+                        element = <ResetPassword />;
                         break;
                     default:
                         element = <StartToolbar btnClickCallback={this.showLogin} />;

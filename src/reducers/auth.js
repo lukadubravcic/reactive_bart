@@ -15,10 +15,14 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
-        case 'SHOW_LOGIN_FORM':
-            return { ...state, elementToDisplay: 'login' };
         case 'APP_LOAD':
             return { ...state, elementToDisplay: 'loggedIn' };
+        case 'SHOW_LOGIN_FORM':
+            return { ...state, elementToDisplay: 'login' };
+        case 'SHOW_CHANGE_PASSWORD_FORM':
+            return { ...state, elementToDisplay: 'changePassword' };
+        case 'SHOW_RESET_PASSWORD_FORM':
+            return { ...state, elementToDisplay: 'resetPassword' };
         case 'CHANGE_SHOWN_TOP_ELEMENT':
             return { ...state, elementToDisplay: action.element };
 
@@ -46,12 +50,11 @@ export default (state = defaultState, action) => {
             return { ...state, _errMsg: defaultState._errMsg, password: defaultState.password };
         case 'LOGIN_FAILED':
             return { ...state, _errMsg: action.errMsg };
-        case 'SHOW_CHANGE_PASSWORD_FORM':
-            return { ...state, showSetNewPasswordComponent: action.value };
-        case 'SHOW_RESET_PASSWORD_FORM':
-            return { ...state, showResetPasswordForm: true };
+        /*  case 'SHOW_CHANGE_PASSWORD_FORM':
+             return { ...state, showSetNewPasswordComponent: action.value }; */
+
         case 'HIDE_RESET_PASSWORD_FORM':
-            return { ...defaultState };
+            return { ...defaultState, elementToDisplay: 'login' };
         case 'RESET_PASSWORD_ATTEMPT':
             return { ...state, _errMsg: null };
         case 'RESET_PASSWORD_ANSWER':

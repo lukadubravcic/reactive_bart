@@ -81,7 +81,6 @@ class NewPassword extends React.Component {
         const newPassword = this.props.newPassword;
         const reNewPassword = this.props.reNewPassword;
         const errMsg = this.props._errMsg;
-        console.log(errMsg)
         const formValid = currentPassword.length
             && newPassword.length
             && !this.currentPasswordValidationMessage
@@ -143,7 +142,7 @@ class NewPassword extends React.Component {
 
                         <fieldset className="header-form-row">
                             <button
-                                id="btn-register"
+
                                 className="btn-submit"
                                 ref="changePasswordBtn"
                                 type="submit"

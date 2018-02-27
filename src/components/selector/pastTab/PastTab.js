@@ -141,7 +141,7 @@ class PastTab extends React.Component {
                 id: 'howManyTimes',
                 fieldName: 'how_many_times',
                 sortOrder: 1,
-                style: 'float-left past-num-time-field'
+                style: 'float-left num-time-field num-time-field-pad-left'
             },
             {
                 name: 'WHAT',

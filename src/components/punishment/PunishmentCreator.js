@@ -45,23 +45,20 @@ const mapDispatchToProps = dispatch => ({
         key: 'deadlineChecked',
         value
     }),
-    onDeadlineDateChange: value => dispatch({
-        type: 'UPDATE_FIELD_PUNISH_CREATE',
-        key: 'deadlineDate',
-        value
-    }),
+    setErrMsg: msg => dispatch({ type: 'SHOW_ERR_MESSAGE', msg }),
     onSubmit: (submitData, orderedPunishments, enableSubmit) => {
         // agent magic
         dispatch({ type: 'SUBMITING_NEW_PUNISHMENT' });
-        agent.Punishment.createPunishment(submitData).then((payload) => {
+        agent.Punishment.createPunishment(submitData).then(payload => {
 
-            let newOrderedPunishments = orderedPunishments.length > 0 ? JSON.parse(JSON.stringify(orderedPunishments)) : [];
+            let newOrderedPunishments = orderedPunishments.length > 0
+                ? JSON.parse(JSON.stringify(orderedPunishments))
+                : [];
             newOrderedPunishments.unshift(payload);
 
             if (!payload.errorMsg) {
                 dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg: 'Request sent!' });
-            }
-            else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });
+            } else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });
 
             enableSubmit();
         });
@@ -124,21 +121,25 @@ class PunishmentCreator extends React.Component {
             if (this.props.howManyTimes > 1) this.props.onChangeHowManyTimes(this.props.howManyTimes - 1);
         }
 
-        this.deadlineDateChange = date => {
-            this.props.onDeadlineDateChange(moment(date).toDate().valueOf());
-        }
-
         this.toggleDeadlineCheckbox = ev => {
             this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
         }
 
-        this.submitForm = (whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField) => ev => {
+        this.submitForm = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField) => ev => {
             ev.preventDefault();
+
+            if (deadlineChecked && !this.props.deadlineValid) {
+                this.props.setErrMsg('Invalid deadline.');
+                return;
+            }
+
             this.refs.submitPunishmentBtn.setAttribute('disabled', 'true');
             let submitData = {};
             isMail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
-            submitData.deadlineDate = deadlineChecked ? deadlineDate : null;
+            submitData.deadlineDate = deadlineChecked
+                ? new Date(this.props.yearField, this.props.monthField, this.props.dayField)
+                : null;
             submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
             submitData.why = trimExcessSpaces(whyField);
 
@@ -177,7 +178,7 @@ class PunishmentCreator extends React.Component {
                     <form
                         id="pun-creation-form"
                         disabled={!(usrLoggedIn && window.canRunAds)}
-                        onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, deadlineDate, whatToWriteField, whyField)}>
+                        onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField)}>
 
                         <fieldset className="form-row">
                             <label className="float-left input-field-name">WHOM</label>
@@ -295,7 +296,11 @@ class PunishmentCreator extends React.Component {
                                 ref="submitPunishmentBtn"
                                 type="submit">PUNISH
                                 </button>
-                            <label id="form-submit-feedback" className="float-left form-feedback">PLEASE ENTER REQUIRED FIELDS.</label>
+
+                            {this.props._errMsg !== null
+                                ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg}</label>
+                                : null}
+
                         </fieldset>
 
                     </form>

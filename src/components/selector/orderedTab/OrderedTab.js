@@ -149,7 +149,7 @@ class OrderedTab extends React.Component {
                 id: 'howManyTimes',
                 fieldName: 'how_many_times',
                 sortOrder: 1,
-                style: 'float-left ordered-num-time-field'
+                style: 'float-left num-time-field num-time-field-pad-left'
             },
             {
                 name: 'WHAT',
@@ -198,7 +198,7 @@ class OrderedTab extends React.Component {
                             {
                                 shownPunishments.map(punishment => {
                                     return (
-                                        <OrderedTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
+                                        <OrderedTabRow punishment={punishment} key={punishment.uid || Date.now()} id={punishment.uid} />
                                     )
                                 })
                             }

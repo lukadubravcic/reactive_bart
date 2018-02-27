@@ -10,6 +10,7 @@ const defaultState = {
     dayField: '',
     monthField: '',
     yearField: '',
+    deadlineValid: false,
     _errMsg: null
 };
 
@@ -21,12 +22,16 @@ export default (state = defaultState, action) => {
             return { ...state, deadlineChecked: !state.deadlineChecked };
         case 'UPDATE_DEADLINE_FIELD':
             return { ...state, [action.field]: action.value };
+        case 'UPDATE_DEADLINE_VALIDITY':
+            return { ...state, deadlineValid: action.value };
         case 'PUNISHMENT_CREATED':
             return { ...defaultState, _errMsg: action.msg };
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _errMsg: action.msg };
         case 'SUBMITING_NEW_PUNISHMENT':
-            return { ...state, _errMsg: defaultState._errMsg }
+            return { ...state, _errMsg: defaultState._errMsg };
+        case 'SHOW_ERR_MESSAGE':
+            return { ...state, _errMsg: action.msg };
         case 'LOGOUT':
             return defaultState;
         default:

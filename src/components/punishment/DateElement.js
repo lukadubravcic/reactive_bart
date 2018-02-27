@@ -25,12 +25,14 @@ import Calendar from 'react-calendar';
 //         - prenijeti date-picker iz modula i modificirati css
 //         - modifikacija da se aktivira na btn, bez text-fielda
 
+
 const mapStateToProps = state => ({
     ...state.punishmentCreation
 });
 
 const mapDispatchToProps = dispatch => ({
-    updateFieldValue: (value, key) => dispatch({ type: 'UPDATE_DEADLINE_FIELD', field: key, value })
+    updateFieldValue: (value, key) => dispatch({ type: 'UPDATE_DEADLINE_FIELD', field: key, value }),
+    changeDeadlineValidity: value => dispatch({ type: 'UPDATE_DEADLINE_VALIDITY', value })
 });
 
 
@@ -39,42 +41,103 @@ class DateElement extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            validDeadline: true,
+            calendarShown: false
+        };
+
         this.showCalendar = ev => {
             ev.preventDefault();
-            console.log('pokazi date-picker');
-        }
+            this.setState({ calendarShown: !this.state.calendarShown });
+        };
 
         this.dayChange = ev => {
             let day = parseInt(ev.target.value);
-            console.log(day)
-            if (typeof day == NaN) console.log('NANNANANNAN')
-            this.props.updateFieldValue(day, 'dayField');
 
-            console.log(validateDay(day))
-        }
+            if (isNaN(day)) day = '';
+
+            this.props.updateFieldValue(day, 'dayField');
+            this.validateTime({
+                day,
+                month: this.props.monthField,
+                year: this.props.yearField
+            });
+        };
 
         this.monthChange = ev => {
             let month = parseInt(ev.target.value);
+
+            if (isNaN(month)) month = '';
+
             this.props.updateFieldValue(month, 'monthField');
-
-            console.log(validateMonth(month))
-
-        }
+            this.validateTime({
+                day: this.props.dayField,
+                month,
+                year: this.props.yearField
+            });
+        };
 
         this.yearChange = ev => {
-            
             let year = parseInt(ev.target.value);
-            this.props.updateFieldValue(year, 'yearField');
 
-            console.log(validateYear(year))
-        }
+            if (isNaN(year)) year = '';
+
+            this.props.updateFieldValue(year, 'yearField');
+            this.validateTime({
+                day: this.props.dayField,
+                month: this.props.monthField,
+                year
+            });
+        };
+
+        this.validateTime = timeData => {
+
+            let yearSet = timeData.year !== '';
+            let monthSet = timeData.month !== '';
+            let daySet = timeData.day !== '';
+
+            let validYear = yearSet ? validateYear(timeData.year) : true;
+            let validMonth = monthSet ? validateMonth(timeData.month) : true;
+            let validDay = daySet ? validateDay(timeData.day, timeData.month, timeData.year) : true;
+
+            if ((yearSet && monthSet && daySet) && (validYear && validMonth && validDay)) {
+                // provjera jel deadline veci od trenutnog datuma (barem + 1 dan)
+                let deadlineDate = new Date(timeData.year, timeData.month - 1, timeData.day)
+                let now = new Date();
+
+                this.setState({ validDeadline: (deadlineDate > now) });
+                this.props.changeDeadlineValidity((deadlineDate > now));
+            } else {
+                this.setState({ validDeadline: (validYear && validMonth && validDay) });
+                this.props.changeDeadlineValidity((validYear && validMonth && validDay));
+            }
+        };
+
+        this.onCalendarChange = selectedDate => {
+
+            this.props.updateFieldValue(selectedDate.getFullYear(), 'yearField');
+            this.props.updateFieldValue(selectedDate.getMonth(), 'monthField');
+            this.props.updateFieldValue(selectedDate.getDate(), 'dayField');
+            this.props.changeDeadlineValidity(true);
+
+            this.setState({ calendarShown: false });
+        };
     }
 
+
     render() {
+        const deadlineStyle = this.state.validDeadline ? {} : { backgroundColor: 'rgb(247, 200, 234)' };
+
+        let now = new Date();
+        let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+        const maxDate = new Date(2100, 1, 1);
+
+
         return (
             <div>
                 <input id="day-picker"
                     className="float-left text-input"
+                    style={deadlineStyle}
                     type="text"
                     placeholder="dd"
                     value={this.props.dayField}
@@ -83,6 +146,7 @@ class DateElement extends React.Component {
 
                 <input id="month-picker"
                     className="float-left text-input"
+                    style={deadlineStyle}
                     type="text"
                     placeholder="mm"
                     value={this.props.monthField}
@@ -91,19 +155,47 @@ class DateElement extends React.Component {
 
                 <input id="year-picker"
                     className="float-left text-input"
+                    style={deadlineStyle}
                     type="text"
                     placeholder="yyyy"
                     value={this.props.yearField}
                     onChange={this.yearChange}
                     required />
 
-                <button
-                    id="btn-calendar"
-                    type="button"
-                    onClick={this.showCalendar}>
 
-                    {calendarBtnSvg}
-                </button>
+                <div
+                    style={{
+                        display: 'inline-block',
+                        position: 'relative'
+                    }}>
+
+                    <button
+                        id="btn-calendar"
+                        type="button"
+                        onClick={this.showCalendar}>
+
+                        {calendarBtnSvg}
+                    </button>
+
+                    {this.state.calendarShown ?
+                        <div
+                            style={{
+                                position: 'absolute',
+                                zIndex: '20',
+                                top: '10px',
+                                left: '100%'
+                            }}>
+
+                            <Calendar
+                                onChange={this.onCalendarChange}
+                                value={tomorrow}
+                                minDate={tomorrow}
+                                maxDate={maxDate} />
+                        </div>
+                        : null}
+
+                </div>
+
             </div>
         );
     }
@@ -142,25 +234,19 @@ function isLeapYear(year) {
     return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
 }
 
-function validateDay(day, month = null, year = null) {
-
-    if (typeof day !== 'number'
-        && typeof month !== 'number'
-        && typeof year !== 'number') return false;
-
+function validateDay(day, month = '', year = '') {
+    if (typeof day !== 'number') return false;
     if (day < 1 || day > 31) return false;
 
-    if (month === null && year === null) {
+    if (month === '' && year === '') {
         return true;
 
-    } else if (month !== null && year === null) {
+    } else if (month !== '' && year === '') { // ako je postavaljen mjesec
         return (day <= daysPerMonth[month - 1])
 
-    } else if (month !== null && year !== null) {
-        // provjera ako je godina prijestupna        
+    } else if (month !== '' && year !== '') { // ako je postavljen i mjesec i godina
         const monthData = isLeapYear(year) ? leapYearDaysPerMonth : daysPerMonth;
-
-        return (day > monthData[month - 1]);
+        return (day <= monthData[month - 1]);
     }
 }
 

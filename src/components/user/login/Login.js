@@ -2,6 +2,11 @@ import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../../agent';
 
+// prilikom gubitka fokusa na polje username/mail, ako nije prazno:
+//  - pingaj be api i provjeri jel user postoji:
+//      - ako postoji, nista se ne mijenja
+//      - ako ne postoji, promjeni login na register formu i ostavi unesene podatke
+
 
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;
@@ -9,13 +14,13 @@ const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MI
 
 
 const mapStateToProps = state => ({
-    ...state,
+    ...state.auth,
     username: state.common.currentUser.username,
     email: state.common.currentUser.email,
     activePunishment: state.game.activePunishment,
     timeSpent: state.game.timeSpent,
     gameInProgress: state.game.gameInProgress,
-    showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
+    // showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -69,8 +74,8 @@ const mapDispatchToProps = dispatch => ({
             }
         });
     },
-    onShowRegisterForm: () => {
-        dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
+    showRegisterForm: (key = '', value = '') => {
+        dispatch({ type: 'SHOW_REGISTER_FORM', key, value });
     },
     showPasswordSetForm: value => {
         dispatch({ type: 'SHOW_CHANGE_PASSWORD_FORM', value });
@@ -84,6 +89,14 @@ const mapDispatchToProps = dispatch => ({
 class LoginTest extends React.Component {
     constructor() {
         super();
+
+        this.test = null;
+
+        this.state = {
+            height: null,
+            opacity: 1,
+            mainDivClasses: classes.base
+        }
 
         this.passwordValidationError = null;
 
@@ -114,20 +127,82 @@ class LoginTest extends React.Component {
             this.props.showResetPasswordForm();
         }
 
+        this.whomLostFocus = ev => {
+            ev.preventDefault();
+            let fieldValue = ev.target.value;
+            //setTimeout(this.checkIfExistingUser(this.props.loginWhom), 2000);
+            return this.setState({ mainDivClasses: this.state.mainDivClasses + classes.animate });
+
+            if (fieldValue.length === 0) return;
+
+            this.checkIfExistingUser(fieldValue);
+
+        }
+
+        this.checkIfExistingUser = async (value) => {            
+
+            let response = await agent.Auth.checkIfUserExists(value);
+
+            if (response.exist !== false) return;
+            let key = isMail(value) ? 'email' : 'username';
+            this.props.showRegisterForm(key, value);
+
+        }
+
+        this.testHover = ev => {
+            ev.preventDefault();
+
+            return this.setState({ mainDivClasses: this.state.mainDivClasses + classes.animate });
+        }
+
+        /* this.x = null;
+        this.fun = elem => {
+            const offset = 4;
+
+            this.x = setInterval(() => {
+
+                if (elem.clientHeight - offset > 0) {
+                    this.setState({
+                        height: elem.clientHeight - offset,
+                        opacity: this.state.opacity - 0.01
+                    });
+                } else {
+                    clearInterval(this.x);
+                    this.setState({
+                        height: 0,
+                        opacity: 0
+                    });
+                }
+            }, 10)
+        } */
+
+    }
+
+
+    componentDidMount() {
+        this.setState({ height: this.test.clientHeight });
+        // this.fun(this.test)
+
     }
 
     render() {
 
-        const loginWhom = this.props.auth.loginWhom;
-        const password = this.props.auth.password;
-        const errMsg = this.props.auth._errMsg;
+        const loginWhom = this.props.loginWhom;
+        const password = this.props.password;
+        const errMsg = this.props._errMsg;
+
+        console.log(this.state.mainDivClasses)
 
         return (
 
-            <div className="parent-component header">
+            <div
+                ref={elem => this.test = elem}
+                style={this.state.height !== null ? { ...this.state } : {}}
+                className={this.state.mainDivClasses} >
+
                 <div className="container">
 
-                    <label className="heading">Log in</label>
+                    <label className="heading" onMouseOver={this.testHover} >Log in</label>
 
                     <form id="login-form" onSubmit={this.submitForm(loginWhom, password)}>
                         <fieldset className="header-form-row">
@@ -137,6 +212,7 @@ class LoginTest extends React.Component {
                                 value={loginWhom}
                                 placeholder="e-mail/username"
                                 onChange={this.loginWhomChange}
+                                onBlur={this.whomLostFocus}
                                 required />
                         </fieldset>
 
@@ -153,8 +229,6 @@ class LoginTest extends React.Component {
 
                         </fieldset>
 
-
-
                         <fieldset className="header-form-row">
                             <button className="btn-submit" ref="loginBtn" type="submit">LOG IN</button>
                             <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
@@ -162,13 +236,10 @@ class LoginTest extends React.Component {
 
                         {errMsg ? (<label className="form-feedback">{errMsg}</label>) : null}
 
-                        <a onClick={()=>({})}>
-                            <u className="a">Create account</u>
-                        </a>
                     </form>
 
                 </div>
-            </div>
+            </div >
         );
     }
 }
@@ -184,4 +255,10 @@ function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nem
 function isMail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+}
+
+
+const classes = {
+    base: 'parent-component login',
+    animate: ' login-to-register'
 }

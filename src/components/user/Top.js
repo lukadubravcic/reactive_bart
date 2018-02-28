@@ -10,6 +10,7 @@ import SetUsername from './login/SetUsername';
 import UsernameThanks from './UsernameThanks';
 import AdblockerDisabled from './AdblockerDisabled';
 import ResetPassword from './login/ResetPassword';
+import Register from '../register/Register';
 
 
 const mapStateToProps = state => ({
@@ -123,6 +124,9 @@ class Top extends React.Component {
                     case 'resetPassword':
                         element = <ResetPassword />;
                         break;
+                    case 'register':
+                        element = <Register />;
+                        break;
                     default:
                         element = <StartToolbar btnClickCallback={this.showLogin} />;
                 }
@@ -161,7 +165,7 @@ class Top extends React.Component {
     render() {
 
         const elements = this.getElementToDisplay();
-
+        
         return elements;
 
         /* const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;

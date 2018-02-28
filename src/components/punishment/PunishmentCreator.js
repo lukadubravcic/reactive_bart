@@ -180,7 +180,10 @@ class PunishmentCreator extends React.Component {
                         disabled={!(usrLoggedIn && window.canRunAds)}
                         onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField)}>
 
-                        <fieldset className="form-row">
+                        <fieldset
+                            className="form-row"
+                            disabled={!(usrLoggedIn && window.canRunAds)}>
+
                             <label className="float-left input-field-name">WHOM</label>
                             <input
                                 id="whom-input"
@@ -194,7 +197,10 @@ class PunishmentCreator extends React.Component {
                             <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label>
                         </fieldset>
 
-                        <fieldset className="form-row">
+                        <fieldset
+                            className="form-row"
+                            disabled={!(usrLoggedIn && window.canRunAds)}>
+
                             <label className="float-left input-field-name">HOW MANY TIMES</label>
                             <button
                                 id="decrement-button"
@@ -228,7 +234,10 @@ class PunishmentCreator extends React.Component {
                         </fieldset>
 
                         {deadlineChecked ?
-                            <fieldset className="form-row">
+                            <fieldset
+                                className="form-row"
+                                disabled={!(usrLoggedIn && window.canRunAds)}>
+
                                 <label className="float-left input-field-name">DEADLINE</label>
 
                                 <label className="float-left custom-chexbox-container">
@@ -244,7 +253,10 @@ class PunishmentCreator extends React.Component {
 
                             </fieldset>
 
-                            : <fieldset className="form-row">
+                            : <fieldset
+                                className="form-row"
+                                disabled={!(usrLoggedIn && window.canRunAds)}>
+
                                 <label
                                     className="float-left input-field-name"
                                     style={{ paddingBottom: "18px" }} >
@@ -263,7 +275,10 @@ class PunishmentCreator extends React.Component {
                         }
 
 
-                        <fieldset className="form-row">
+                        <fieldset
+                            className="form-row"
+                            disabled={!(usrLoggedIn && window.canRunAds)}>
+
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input
                                 id="what-to-write-input"
@@ -276,7 +291,10 @@ class PunishmentCreator extends React.Component {
                             />
                         </fieldset>
 
-                        <fieldset id="why-form-row" className="form-row">
+                        <fieldset id="why-form-row"
+                            className="form-row"
+                            disabled={!(usrLoggedIn && window.canRunAds)}>
+
                             <label className="float-left input-field-name">WHY</label>
                             <textarea
                                 id="why-input"
@@ -289,7 +307,10 @@ class PunishmentCreator extends React.Component {
                             </textarea>
                         </fieldset>
 
-                        <fieldset className="form-row">
+                        <fieldset
+                            className="form-row"
+                            disabled={!(usrLoggedIn && window.canRunAds)}>
+                            
                             <button
                                 id="btn-pun-submit"
                                 className="float-left btn-submit"

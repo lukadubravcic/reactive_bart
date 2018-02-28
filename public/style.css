@@ -194,10 +194,24 @@ fieldset + fieldset {
 }
 
 .header {
-	width: 100%;
 	min-width: 1280px;	
 
-	background: #C4ACE4;
+	background-color: #C4ACE4;
+} 
+
+.login {
+	min-width: 1280px;	
+
+	background-color: #C4ACE4;
+	
+	transition: height 2s, background-color 2s;	
+}
+
+
+.login-to-register {
+	height: 670px !important;
+	background-color: #FFA623 !important;	
+	
 }
 
 .register-header {
@@ -249,6 +263,9 @@ fieldset + fieldset {
 	display: inline-block;
 	padding-right: 27px;
 	padding-left: 27px; 
+}
+
+#btn-additional {
 	margin-left: 29px;
 }
 
@@ -290,6 +307,7 @@ fieldset + fieldset {
 
 	margin-top: 50px;
 }
+
 
 .register-form {
 	display: inline-block;

@@ -88,7 +88,7 @@ class ResetPassword extends React.Component {
                                 BACK TO LOGIN
                             </button>
                             <button
-                                id="btn-register"
+                                id="btn-additional"
                                 className="btn-submit margin-left-small"
                                 ref="pwdResetBtn"
                                 type="submit">

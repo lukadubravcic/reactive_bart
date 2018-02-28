@@ -45,10 +45,7 @@ const mapDispatchToProps = dispatch => ({
             }
         }, err => console.log(err));
     },
-
-    backToLogin: () => {
-        dispatch({ type: 'REGISTER_LOGIN_TOGGLE' });
-    }
+    backToLogin: () => dispatch({ type: 'SHOW_LOGIN_FORM' })
 });
 
 class Register extends React.Component {
@@ -94,78 +91,83 @@ class Register extends React.Component {
         const _errMsg = this.props._errMsg;
         const serverAnswer = this.props.serverAnswer;
 
-        if (this.props.shownForm === 'register') {
-            return (
+        return (
 
-                <div className="parent-component header register-header">
-                    <div className="container">
+            <div className="parent-component header register-header">
+                <div className="container">
 
-                        <label className="heading register-heading">New user registration</label>
+                    <label className="heading register-heading">New user registration</label>
 
-                        <form className="register-form" onSubmit={this.submitForm(username, email, password, rePassword)}>
+                    <form className="register-form" onSubmit={this.submitForm(username, email, password, rePassword)}>
 
-                            <fieldset className="header-form-row">
-                                <input
-                                    className="text-input"
-                                    type="text"
-                                    placeholder="e-mail"
-                                    value={email}
-                                    onChange={this.emailChange}
-                                    required />
-                            </fieldset>
+                        <fieldset className="header-form-row">
+                            <input
+                                className="text-input"
+                                type="text"
+                                placeholder="e-mail"
+                                value={email}
+                                onChange={this.emailChange}
+                                required />
+                        </fieldset>
 
-                            <fieldset className="header-form-row">
-                                <input
-                                    className="text-input"
-                                    type="text"
-                                    placeholder="username"
-                                    value={username}
-                                    onChange={this.usernameChange}
-                                    required />
-                                <label className="form-feedback">ALREADY IN USE</label>
-                            </fieldset>
+                        <fieldset className="header-form-row">
+                            <input
+                                className="text-input"
+                                type="text"
+                                placeholder="username"
+                                value={username}
+                                onChange={this.usernameChange}
+                                required />
+                            {/* <label className="form-feedback">ALREADY IN USE</label> */}
+                        </fieldset>
 
-                            <fieldset className="header-form-row">
-                                <input
-                                    className="text-input"
-                                    type="password"
-                                    placeholder="password"
-                                    value={password}
-                                    onChange={this.passwordChange}
-                                    required />
-                            </fieldset>
+                        <fieldset className="header-form-row">
+                            <input
+                                className="text-input"
+                                type="password"
+                                placeholder="password"
+                                value={password}
+                                onChange={this.passwordChange}
+                                required />
+                        </fieldset>
 
-                            <fieldset className="header-form-row">
-                                <input
-                                    className="text-input"
-                                    type="password"
-                                    placeholder="repeat password"
-                                    value={rePassword}
-                                    onChange={this.rePasswordChange}
-                                    required />
+                        <fieldset className="header-form-row">
+                            <input
+                                className="text-input"
+                                type="password"
+                                placeholder="repeat password"
+                                value={rePassword}
+                                onChange={this.rePasswordChange}
+                                required />
 
-                                {password !== rePassword && rePassword.length
-                                    ? <label className="form-feedback">DOESN'T MATCH</label>
-                                    : null}
+                            {password !== rePassword && rePassword.length
+                                ? <label className="form-feedback">DOESN'T MATCH</label>
+                                : null}
 
-                            </fieldset>
+                        </fieldset>
 
-                            <fieldset className="header-form-row">
-                                <button
-                                    id="btn-register"
-                                    className="btn-submit"
-                                    ref="registerBtn"
-                                    type="submit">
-                                    REGISTER
+                        <fieldset className="header-form-row">
+                            <button
+                                id="btn-register"
+                                className="btn-submit"
+                                ref="registerBtn"
+                                type="submit">
+                                REGISTER
                             </button>
-                            </fieldset>
+                            <button
+                                id="btn-additional"
+                                className="btn-submit"
+                                type="button"
+                                onClick={this.props.backToLogin}>
+                                BACK TO LOGIN
+                            </button>
+                        </fieldset>
 
-                        </form>
+                    </form>
 
-                    </div>
                 </div>
-            )
-        } else { return null; }
+            </div>
+        )
     }
 }
 

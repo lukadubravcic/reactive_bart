@@ -41,7 +41,8 @@ const Auth = {
 	setUsernameAsGuest: (username, email) => requests.post('/users/guestUsername', { username, email }),
 	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),
 	forgotPassword: email => requests.post('/users/forgot', { email }),
-	getPunishmentAsGuest: (userId, punishmentId) => requests.post('/users/guest', { userId, punishmentId })
+	getPunishmentAsGuest: (userId, punishmentId) => requests.post('/users/guest', { userId, punishmentId }),
+	checkIfUserExists: identity => requests.post('/users/exist', { identity })
 };
 
 const Punishment = {

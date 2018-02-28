@@ -5,10 +5,9 @@ const defaultState = {
     email: '',
     password: '',
     rePassword: '',
-    shownForm: 'login',
     _errMsg: null,
     serverAnswer: null,
-    showSetNewPasswordComponent: false,
+    // showSetNewPasswordComponent: false,
     showResetPasswordForm: false,
     elementToDisplay: 'start'
 }
@@ -18,7 +17,7 @@ export default (state = defaultState, action) => {
         case 'APP_LOAD':
             return { ...state, elementToDisplay: 'loggedIn' };
         case 'SHOW_LOGIN_FORM':
-            return { ...state, elementToDisplay: 'login' };
+            return { ...defaultState, elementToDisplay: 'login' };
         case 'SHOW_CHANGE_PASSWORD_FORM':
             return { ...state, elementToDisplay: 'changePassword' };
         case 'SHOW_RESET_PASSWORD_FORM':
@@ -28,12 +27,8 @@ export default (state = defaultState, action) => {
 
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
-        case 'REGISTER_LOGIN_TOGGLE':
-            return {
-                ...defaultState,
-                shownForm: state.shownForm === 'login' ? 'register' : 'login',
-                elementToDisplay: 'register'
-            };
+        case 'SHOW_REGISTER_FORM':
+            return { ...state, elementToDisplay: 'register', [action.key]: action.value };
         case 'REGISTER':
             return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
         case 'REGISTER_MAIL_INVALID':

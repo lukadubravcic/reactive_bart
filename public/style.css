@@ -33,6 +33,22 @@ textarea {
 									supported by Chrome and Opera */
   }
 
+.fieldset-padding-top-tran {
+	transition: padding-top 0.5s;
+}
+
+.opacity-tran {
+	transition: opacity 0.5s;
+}
+
+.opacity-tran-fast {
+	transition: opacity 0.2s;
+}
+
+.height-tran {
+	transition: height 0.5s;
+}
+
 
 #test {
 	position: absolute;
@@ -62,6 +78,8 @@ textarea {
 .container {
 	width: 1280px;
 	height: 100%;
+
+	opacity: 1;
 
 	margin: auto;
 	display: block;
@@ -203,16 +221,11 @@ fieldset + fieldset {
 	min-width: 1280px;	
 
 	background-color: #C4ACE4;
+	opacity: 1;
 	
-	transition: height 2s, background-color 2s;	
+	transition: height 0.5s, background-color 0.5s;	
 }
 
-
-.login-to-register {
-	height: 670px !important;
-	background-color: #FFA623 !important;	
-	
-}
 
 .register-header {
 	background: #FFA623;

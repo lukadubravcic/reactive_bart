@@ -48,10 +48,42 @@ const mapDispatchToProps = dispatch => ({
     backToLogin: () => dispatch({ type: 'SHOW_LOGIN_FORM' })
 });
 
+
+const animationDuration = 2000; // 2s
+
+const animStyles = {
+    opacityStyle: { opacity: 1 },
+    parentContainerStyle: {
+        height: 490 + 'px',
+        backgroundColor: '#C4ACE4'
+    },
+    fieldsetsToHide: {
+        height: 0 + 'px',
+    },
+    fieldsets: {
+        marginBottom: 90 + 'px'
+    }
+
+};
+
+
 class Register extends React.Component {
 
     constructor() {
         super();
+
+        this.emailInput = null;
+        this.usernameInput = null;
+        this.parentContainer = null;
+        this.fieldsetElement = null;
+
+        this.state = {
+            opacityStyle: { opacity: 0 },
+            parentContainerStyle: {},
+            fieldsetsToHide: {},
+            fieldsets: { marginBottom: 0 },
+            formDisabled: true
+        }
 
         this.usernameChange = ev => {
             this.props.onUsernameChange(ev.target.value);
@@ -79,49 +111,115 @@ class Register extends React.Component {
         this.enableSubmit = () => {
             this.refs.registerBtn.removeAttribute("disabled");
         }
+
+        this.backToLogin = ev => {
+            ev.preventDefault();
+
+            this.animateDismounting();
+
+            setTimeout(() => {
+                this.props.backToLogin();
+            }, animationDuration);
+
+        }
+
+        this.animateMounting = () => {
+
+            this.setState({
+                opacityStyle: { ...this.state.opacityStyle, ...animStyles.opacityStyle },
+                formDisabled: false
+            });
+        }
+
+        this.animateDismounting = () => {
+
+            this.setState({
+                /* parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerStyle }, */
+                fieldsets: { ...this.state.fieldsets, ...animStyles.fieldsets }
+            })
+
+        };
     }
 
-    componentDidMount() { }
+    componentDidMount() {
+        this.setState({
+            parentContainerStyle: { height: this.parentContainer.clientHeight },
+            fieldsets: { height: this.fieldsetElement.clientHeight }
+        });
+
+        requestAnimationFrame(() => {
+            this.animateMounting();
+            this.props.email !== '' ? this.usernameInput.focus() : this.emailInput.focus();
+        });
+    }
+
 
     render() {
+
         const username = this.props.username;
         const email = this.props.email;
         const password = this.props.password;
         const rePassword = this.props.rePassword;
         const _errMsg = this.props._errMsg;
         const serverAnswer = this.props.serverAnswer;
+        const isFormDisabled = this.state.formDisabled;
 
         return (
 
-            <div className="parent-component header register-header">
+            <div
+                ref={elem => this.parentContainer = elem}
+                style={this.state.parentContainerStyle}
+                className="parent-component header register-header height-tran">
+
                 <div className="container">
 
-                    <label className="heading register-heading">New user registration</label>
+                    <label
+                        style={this.state.opacityStyle}
+                        className="heading register-heading opacity-tran-fast">
 
-                    <form className="register-form" onSubmit={this.submitForm(username, email, password, rePassword)}>
+                        New user registration
+                    </label>
 
-                        <fieldset className="header-form-row">
+                    <form
+                        className="register-form"
+                        onSubmit={this.submitForm(username, email, password, rePassword)}
+                        disabled={isFormDisabled}>
+
+                        <fieldset
+                            className="header-form-row"
+                            disabled={isFormDisabled}>
+
                             <input
                                 className="text-input"
                                 type="text"
                                 placeholder="e-mail"
                                 value={email}
                                 onChange={this.emailChange}
+                                ref={elem => this.emailInput = elem}
                                 required />
                         </fieldset>
 
-                        <fieldset className="header-form-row">
+                        <fieldset
+                            ref={elem => this.fieldsetElement = elem}
+                            style={this.state.fieldsets}
+                            className="header-form-row fieldset-top-tran-fast"
+                            disabled={isFormDisabled}>
+
                             <input
                                 className="text-input"
                                 type="text"
                                 placeholder="username"
                                 value={username}
                                 onChange={this.usernameChange}
+                                ref={elem => this.usernameInput = elem}
                                 required />
                             {/* <label className="form-feedback">ALREADY IN USE</label> */}
                         </fieldset>
 
-                        <fieldset className="header-form-row">
+                        <fieldset
+                            className="header-form-row"
+                            disabled={isFormDisabled}>
+
                             <input
                                 className="text-input"
                                 type="password"
@@ -131,8 +229,12 @@ class Register extends React.Component {
                                 required />
                         </fieldset>
 
-                        <fieldset className="header-form-row">
+                        <fieldset
+                            className="header-form-row opacity-tran fieldset-top-tran-fast"
+                            disabled={isFormDisabled}>
+
                             <input
+                                style={this.state.fieldsets}
                                 className="text-input"
                                 type="password"
                                 placeholder="repeat password"
@@ -146,7 +248,11 @@ class Register extends React.Component {
 
                         </fieldset>
 
-                        <fieldset className="header-form-row">
+                        <fieldset
+                            style={this.state.opacityStyle}
+                            className="header-form-row opacity-tran"
+                            disabled={isFormDisabled}>
+
                             <button
                                 id="btn-register"
                                 className="btn-submit"
@@ -158,7 +264,7 @@ class Register extends React.Component {
                                 id="btn-additional"
                                 className="btn-submit"
                                 type="button"
-                                onClick={this.props.backToLogin}>
+                                onClick={this.backToLogin}>
                                 BACK TO LOGIN
                             </button>
                         </fieldset>
@@ -179,85 +285,3 @@ function isMail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
-
-
-
-
-/* const test = (
-
-    <div className="auth-page">
-        <div className="container page">
-            <button
-                className="btn btn-primary pull-xs-left"
-                type="button"
-                onClick={this.props.backToLogin}>
-                Back to login
-        </button>
-            <div className="row">
-
-                <div className="col-md-6 offset-md-3 col-xs-12">
-
-                    <h1 className="text-xs-center bottomMarginToTwenty">Register</h1>
-
-                    <form onSubmit={this.submitForm(username, email, password, rePassword)}>
-                        <fieldset>
-
-                            <fieldset className="form-group">
-                                <input
-                                    className="form-control form-control-lg"
-                                    type="email"
-                                    placeholder="Email"
-                                    value={email}
-                                    onChange={this.emailChange}
-                                    required />
-                            </fieldset>
-
-                            <fieldset className="form-group">
-                                <input
-                                    className="form-control form-control-lg"
-                                    type="text"
-                                    placeholder="Username"
-                                    value={username}
-                                    onChange={this.usernameChange} />
-                            </fieldset>
-
-                            <fieldset className="form-group">
-                                <input
-                                    className="form-control form-control-lg"
-                                    type="password"
-                                    placeholder="Password"
-                                    value={password}
-                                    onChange={this.passwordChange}
-                                    required />
-                            </fieldset>
-
-                            <fieldset className="form-group">
-                                <input
-                                    className="form-control form-control-lg"
-                                    type="password"
-                                    placeholder="Repeat password"
-                                    value={rePassword}
-                                    onChange={this.rePasswordChange}
-                                    required />
-
-                                {password !== rePassword && rePassword.length ? <label>Passwords don't match.</label> : null}
-                            </fieldset>
-
-                            <button
-                                ref="registerBtn"
-                                className="btn btn-lg btn-primary pull-xs-right"
-                                type="submit">
-                                Register
-                        </button>
-
-                            {_errMsg ? <label>{_errMsg}</label> : null}
-                            {serverAnswer ? <label>{serverAnswer}</label> : null}
-
-                        </fieldset>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-) */

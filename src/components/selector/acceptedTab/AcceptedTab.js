@@ -45,6 +45,14 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
 
+        this.state = {
+            tableStyle: { display: 'none' },
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151'
+            }
+        };
+
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
             let newActivePunishment = {};
@@ -214,32 +222,35 @@ class AcceptedTab extends React.Component {
             return (
                 <div>
                     <TableHeader columns={columns} />
+                    <div>
+                        <table
+                            style={this.state.tableStyle}
+                            className="picker-table">
 
-                    <table className="picker-table">
-                        <tbody>
-                            {
-                                shownPunishments.map(punishment => {
+                            <tbody>
+                                {
+                                    shownPunishments.map(punishment => {
 
-                                    if (punishment.uid === activePunishment.uid) {
-                                        return (
-                                            <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment.uid}
-                                                id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
-                                                disabledGo={true} />
-                                        )
-                                    }
-                                    else {
-                                        return (
-                                            <AcceptedTabRow punishment={punishment} key={punishment.uid}
-                                                id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
-                                                disabledGo={false} />
-                                        )
-                                    }
-                                })
-                            }
+                                        if (punishment.uid === activePunishment.uid) {
+                                            return (
+                                                <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment.uid}
+                                                    id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                                    disabledGo={true} />
+                                            )
+                                        }
+                                        else {
+                                            return (
+                                                <AcceptedTabRow punishment={punishment} key={punishment.uid}
+                                                    id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                                    disabledGo={false} />
+                                            )
+                                        }
+                                    })
+                                }
 
-                        </tbody>
-                    </table>
-
+                            </tbody>
+                        </table>
+                    </div>
                     <TableFooter currentPage={currentPage} punishments={this.props.acceptedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
 

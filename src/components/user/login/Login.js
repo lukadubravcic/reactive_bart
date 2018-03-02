@@ -101,6 +101,7 @@ const animStyles = {
         backgroundColor: '#FFA623'
     },
     opacityStyle: { opacity: 0 },
+    fadeInStyle: { opacity: 1 },
     fieldsetUsernameStyle: { paddingTop: 90 + 'px' },
     fieldsetEmailStyle: { paddingTop: 90 + 'px' },
     fieldsetStyle: { paddingTop: 90 + 'px' },
@@ -115,7 +116,7 @@ class LoginTest extends React.Component {
 
         this.state = {
             componentStyle: {},
-            opacityStyle: { opacity: 1 },
+            opacityStyle: { opacity: 0 },
             fieldsetUsernameStyle: { paddingTop: 0 + 'px' },
             fieldsetEmailStyle: { paddingTop: 0 + 'px' },
             fieldsetStyle: { paddingTop: 0 + 'px' },
@@ -189,11 +190,23 @@ class LoginTest extends React.Component {
                 });
             })
         }
+
+        this.animateMounting = () => {
+            this.setState({
+                opacityStyle: { ...this.state.opacityStyle, ...animStyles.fadeInStyle }
+            });
+        }
     }
 
 
     componentDidMount() {
-        this.setState({ componentStyle: { ...this.state.componentStyle, height: this.mainDiv.clientHeight + 'px' } });
+        this.setState({
+            componentStyle: { ...this.state.componentStyle, height: this.mainDiv.clientHeight + 'px' },
+        });
+
+        requestAnimationFrame(() => {
+            this.animateMounting();
+        });
     }
 
 

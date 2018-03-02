@@ -155,7 +155,7 @@ class PunishmentSelectorTable extends React.Component {
 
                 case 'orderedTab':
                     acceptedTabHeader = this.props.showAcceptedTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        ? (<button className="picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
                     pastTabHeader = this.props.showPastTab
                         ? (<button className="picker-tab" id="pastTab" onClick={this.onChangeTab}>PAST</button>)

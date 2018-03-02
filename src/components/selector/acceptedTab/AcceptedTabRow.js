@@ -125,6 +125,7 @@ class AcceptedTabRow extends React.Component {
     render() {
 
         const tableRowClass = 'picker-table-row ' + this.props.style;
+        const isPunSelected = typeof this.props.style !== 'undefined';
 
         let orderingUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 13);
         let deadlineUserField = this.props.punishment.deadline !== null
@@ -175,14 +176,14 @@ class AcceptedTabRow extends React.Component {
                     {whatToWriteUserField.content}
                 </td>
                 <td className="go-field">
-                    {this.props.disabledGo
-                        ? null
-                        : <button
-                            className="picker-btn picker-btn-go"
-                            onClick={this.props.onGoClick(this.props.id)}>
-                            GO
-                        </button>
-                    }
+                    <button
+                        style={isPunSelected ? { opacity: 0 } : { opacity: 1 }}
+                        className="picker-btn picker-btn-go"
+                        disabled={this.props.disabledGo}
+                        onClick={this.props.onGoClick(this.props.id)}>
+                        GO
+                    </button>
+
                 </td>
                 <td className="giveup-field">
                     <button

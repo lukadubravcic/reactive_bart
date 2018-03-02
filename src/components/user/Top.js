@@ -56,8 +56,7 @@ class Top extends React.Component {
     constructor() {
         super();
 
-        this.showLogin = ev => {
-            ev.preventDefault();
+        this.showLogin = () => {
             this.props.showLoginForm();
         }
 

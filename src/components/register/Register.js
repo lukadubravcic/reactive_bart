@@ -49,21 +49,23 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-const animationDuration = 2000; // 2s
+const animationDuration = 500; // 2s
 
 const animStyles = {
     opacityStyle: { opacity: 1 },
+    opacityDownStyle: { opacity: 0 },
     parentContainerStyle: {
         height: 490 + 'px',
         backgroundColor: '#C4ACE4'
     },
     fieldsetsToHide: {
         height: 0 + 'px',
+        marginTop: 0,
+        opacity: 0
     },
     fieldsets: {
         marginBottom: 90 + 'px'
     }
-
 };
 
 
@@ -79,8 +81,8 @@ class Register extends React.Component {
 
         this.state = {
             opacityStyle: { opacity: 0 },
-            parentContainerStyle: {},
-            fieldsetsToHide: {},
+            parentContainerStyle: { backgroundColor: '#FFA623' },
+            fieldsetsToHide: { opacity: 1 },
             fieldsets: { marginBottom: 0 },
             formDisabled: true
         }
@@ -134,11 +136,13 @@ class Register extends React.Component {
         this.animateDismounting = () => {
 
             this.setState({
-                /* parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerStyle }, */
-                fieldsets: { ...this.state.fieldsets, ...animStyles.fieldsets }
-            })
-
-        };
+                parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerStyle },
+                fieldsets: { ...this.state.fieldsets, ...animStyles.fieldsets },
+                fieldsetsToHide: { ...this.state.fieldsetsToHide, ...animStyles.fieldsetsToHide },
+                opacityStyle: { ...this.state.opacityStyle, ...animStyles.opacityDownStyle },
+                formDisabled: true
+            });
+        }
     }
 
     componentDidMount() {
@@ -169,13 +173,13 @@ class Register extends React.Component {
             <div
                 ref={elem => this.parentContainer = elem}
                 style={this.state.parentContainerStyle}
-                className="parent-component header register-header height-tran">
+                className="parent-component header register-header height-tran backgroundcolor-tran">
 
                 <div className="container">
 
                     <label
                         style={this.state.opacityStyle}
-                        className="heading register-heading opacity-tran-fast">
+                        className="heading register-heading opacity-tran">
 
                         New user registration
                     </label>
@@ -186,6 +190,7 @@ class Register extends React.Component {
                         disabled={isFormDisabled}>
 
                         <fieldset
+                            class={this.state.fieldsets}
                             className="header-form-row"
                             disabled={isFormDisabled}>
 
@@ -201,8 +206,8 @@ class Register extends React.Component {
 
                         <fieldset
                             ref={elem => this.fieldsetElement = elem}
-                            style={this.state.fieldsets}
-                            className="header-form-row fieldset-top-tran-fast"
+                            style={this.state.fieldsetsToHide}
+                            className="header-form-row opacity-tran-fast top-margin-tran"
                             disabled={isFormDisabled}>
 
                             <input
@@ -217,6 +222,7 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
+                            class={this.state.fieldsets}
                             className="header-form-row"
                             disabled={isFormDisabled}>
 
@@ -230,11 +236,11 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            className="header-form-row opacity-tran fieldset-top-tran-fast"
+                            style={this.state.fieldsetsToHide}
+                            className="header-form-row opacity-tran-fast top-margin-tran"
                             disabled={isFormDisabled}>
 
                             <input
-                                style={this.state.fieldsets}
                                 className="text-input"
                                 type="password"
                                 placeholder="repeat password"

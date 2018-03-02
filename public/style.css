@@ -31,7 +31,11 @@ textarea {
 		  -ms-user-select: none; /* Internet Explorer/Edge */
 			  user-select: none; /* Non-prefixed version, currently
 									supported by Chrome and Opera */
-  }
+}
+
+.backgroundcolor-tran {
+	transition: background-color 0.5s;
+}
 
 .fieldset-padding-top-tran {
 	transition: padding-top 0.5s;
@@ -47,6 +51,14 @@ textarea {
 
 .height-tran {
 	transition: height 0.5s;
+}
+
+.height-tran-fast {
+	transition: height 0.3s;
+}
+
+.top-margin-tran {
+	transition: margin-top 0.3s linear 0.2s;
 }
 
 
@@ -719,7 +731,7 @@ fieldset + fieldset {
 
 	animation-name: stamp-hit;
 	animation-delay:0.2s;
-	animation-duration: 0.6s;
+	animation-duration: 0.3s;
 	animation-fill-mode: forwards;
 	opacity: 0;
 }
@@ -735,7 +747,7 @@ fieldset + fieldset {
 	opacity:.50;	
 	
 	transform: rotate(-2deg) scale(5);
-	transition: all .3s cubic-bezier(0.6, 0.04, 0.98, 0.335);
+	transition: all .3s linear;
 	}
 
 	100% {
@@ -1142,6 +1154,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .picker-component-container {
 	min-width: 1280px;
+	transition: background-color 1s;
 }
 
 .picker-accepted-color {
@@ -1187,6 +1200,15 @@ input[type=number]::-webkit-outer-spin-button {
 	line-height: 20px;	
 
 	border-collapse: collapse;
+
+	animation-name: picker-table-anim;
+	animation-duration: 1s;
+	animation-fill-mode: forwards;
+}
+
+@keyframes picker-table-anim {
+    from { opacity: 0;}
+    to { opacity: 1;}
 }
 
 td {
@@ -1249,6 +1271,14 @@ td {
 	color: #FEFEFE;	
 	opacity: 1;	
 	background: #515151;
+
+	animation-name: picker-tab-option-fadein;
+	animation-duration: 0.5s;
+}
+
+@keyframes picker-tab-option-fadein {
+	from {opacity: 0};
+	to {opacity: 1};
 }
 
 
@@ -1259,7 +1289,16 @@ td {
 	font-size: 17px;
 	color: #FEFEFE;
 	letter-spacing: 5px;
+	
+	animation-name: table-header-fadein-anim;
+	animation-duration: 1s;
 }
+
+@keyframes table-header-fadein-anim {
+	from {opacity: 0};
+	to {opacity: 1}
+}
+
 
 .picker-table-header {
 	display: block;
@@ -1271,17 +1310,23 @@ td {
 	background: #515151;
 }
 
-
-.picker-table-row:last-child {
+/* .picker-table-row:last-child {
 	border-bottom: 10px solid #515151;
-}
+} */
 
 .picker-table-row:last-child td {
 	border-bottom: none;
 }
 
 .picker-selected-row {
-	background: #FFD75F;
+	animation-name: select-row-anim;
+	animation-duration: 0.5s;
+	animation-fill-mode: forwards;
+}
+
+@keyframes select-row-anim {
+	from { background-color: transparent;}
+    to { background-color: #FFD75F;}
 }
 
 .picker-table-row td {
@@ -1494,6 +1539,8 @@ td.ordered-status-field {
 
 .picker-btn-go {
 	color: #FFD75F;
+	opacity: 1;
+	transition: opacity 0.5s;
 }
 
 .picker-btn-giveup {

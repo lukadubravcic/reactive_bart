@@ -57,6 +57,10 @@ textarea {
 	transition: height 0.3s;
 }
 
+.height-opacity-tran-fast {
+	transition: opacity 0.2s, height 0.3s 0.2s; 
+}
+
 .top-margin-tran {
 	transition: margin-top 0.3s linear 0.2s;
 }
@@ -127,7 +131,7 @@ textarea {
 	padding-left: 26px;	
 }
 
-.text-input:focus {
+.input-wrong-entry {
     /* outline: 10px solid #C41696; */
 	border: 10px solid #C41696;
 	padding-left: 16px;	

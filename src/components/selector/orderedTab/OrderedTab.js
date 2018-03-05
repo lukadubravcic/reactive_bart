@@ -29,10 +29,30 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
+
+const animationDuration = 500;
+
+const animStyles = {
+    tableVisible: { display: 'inline-block' }
+}
+
+
 class OrderedTab extends React.Component {
 
     constructor() {
         super();
+
+        this.numOfRows = null;
+        this.rowHeight = 60;
+        this.borderThickness = 10;
+        this.state = {
+            tableStyle: { display: 'none' },
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151',
+                transition: 'height 0.5s'
+            }
+        };
 
         this._showFirstPage = (punishments = this.props.orderedPunishments) => {
             let firstPage = [];
@@ -62,7 +82,7 @@ class OrderedTab extends React.Component {
                             : element.name}
                 </span>
             )
-            
+
             element.sortOrder *= -1;
         }
 
@@ -166,19 +186,49 @@ class OrderedTab extends React.Component {
                 style: 'float-left ordered-status-field'
             }
         ];
+
+        this.startAnimation = () => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.setState({
+                        tableContainerStyle: {
+                            ...this.state.tableContainerStyle,
+                            height: this.numOfRows * this.rowHeight + this.borderThickness - 1  // -1 jer zadnji row nema bottom border
+                        },
+                        tableStyle: { display: 'none' }
+                    });
+                });
+            });
+
+            this.showTable();
+        }
+
+        this.showTable = () => {
+            setTimeout(() => {
+                this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
+            }, animationDuration);
+        }
     }
 
     componentDidMount() {
         if (this.props.orderedPunishments !== 'empty' && this.props.orderedPunishments.length > 0) {
             this.updateAndShowOrderedPunishments(this.props.orderedPunishments);
+            this.numOfRows = this.props.orderedPunishments.length > ITEMS_PER_PAGE ? ITEMS_PER_PAGE : this.props.orderedPunishments.length;
+            this.startAnimation();
         }
     }
 
     componentWillReceiveProps(nextProps) {
+
         if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
         } else if (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
+        }
+
+        if (this.props.shownOrderedPunishments.length !== nextProps.shownOrderedPunishments.length) {
+            this.numOfRows = nextProps.shownOrderedPunishments.length;
+            this.startAnimation();
         }
     }
 
@@ -192,19 +242,23 @@ class OrderedTab extends React.Component {
             return (
                 <div>
                     <TableHeader columns={this.columns} />
+                    <div style={this.state.tableContainerStyle}>
 
-                    <table className="picker-table">
-                        <tbody>
-                            {
-                                shownPunishments.map(punishment => {
-                                    return (
-                                        <OrderedTabRow punishment={punishment} key={punishment.uid || Date.now()} id={punishment.uid} />
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </table>
+                        <table
+                            style={this.state.tableStyle}
+                            className="picker-table">
 
+                            <tbody>
+                                {
+                                    shownPunishments.map(punishment => {
+                                        return (
+                                            <OrderedTabRow punishment={punishment} key={punishment.uid || Date.now()} id={punishment.uid} />
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                     <TableFooter currentPage={currentPage} punishments={this.props.orderedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
             )

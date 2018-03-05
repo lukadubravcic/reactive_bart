@@ -17,7 +17,7 @@ export default (state = defaultState, action) => {
         case 'APP_LOAD':
             return { ...state, elementToDisplay: 'loggedIn' };
         case 'SHOW_LOGIN_FORM':
-            return { ...defaultState, elementToDisplay: 'login' };
+            return { ...state, elementToDisplay: 'login' };
         case 'SHOW_CHANGE_PASSWORD_FORM':
             return { ...state, elementToDisplay: 'changePassword' };
         case 'SHOW_RESET_PASSWORD_FORM':

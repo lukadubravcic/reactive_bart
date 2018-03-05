@@ -65,6 +65,14 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
+const animationDuration = 500; // 0.5s
+
+const animStyles = {
+    shownDateComponent: { opacity: 1 },
+    hiddenDateComponent: { opacity: 0 }
+}
+
+
 class PunishmentCreator extends React.Component {
 
     constructor() {
@@ -73,6 +81,14 @@ class PunishmentCreator extends React.Component {
         this.toWhomErrorText = null;
         this.whatToWriteErrorText = null;
         this.whyErrorText = null;
+
+        this.state = {
+            dateElementStyle: {
+                display: 'inline-block',
+                opacity: 0,
+                transition: 'opacity 0.5s'
+            }
+        }
 
         this.changeWhom = ev => {
             this.validateToWhomValue(ev.target.value);
@@ -122,7 +138,16 @@ class PunishmentCreator extends React.Component {
         }
 
         this.toggleDeadlineCheckbox = ev => {
-            this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
+
+            if (!this.props.deadlineChecked) {
+                this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
+                this.animateDateFadeIn();
+            } else {
+                this.animateDateFadeOut();
+                setTimeout(() => {
+                    this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
+                }, animationDuration);
+            }
         }
 
         this.submitForm = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField) => ev => {
@@ -149,6 +174,22 @@ class PunishmentCreator extends React.Component {
         this.enableSubmit = () => {
             this.refs.submitPunishmentBtn.removeAttribute('disabled');
         }
+
+        this.animateDateFadeIn = () => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.setState({ dateElementStyle: { ...this.state.dateElementStyle, ...animStyles.shownDateComponent } });
+                });
+            });
+        }
+
+        this.animateDateFadeOut = () => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.setState({ dateElementStyle: { ...this.state.dateElementStyle, ...animStyles.hiddenDateComponent } });
+                });
+            });
+        }
     }
 
     render() {
@@ -160,8 +201,6 @@ class PunishmentCreator extends React.Component {
         const whyField = this.props.why;
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
-
-
 
         return (
 
@@ -248,9 +287,9 @@ class PunishmentCreator extends React.Component {
                                     />
                                     <span id="checkmark"></span>
                                 </label>
-
-                                <DateElement />
-
+                                <div style={this.state.dateElementStyle}>
+                                    <DateElement />
+                                </div>
                             </fieldset>
 
                             : <fieldset
@@ -310,7 +349,7 @@ class PunishmentCreator extends React.Component {
                         <fieldset
                             className="form-row"
                             disabled={!(usrLoggedIn && window.canRunAds)}>
-                            
+
                             <button
                                 id="btn-pun-submit"
                                 className="float-left btn-submit"

@@ -32,10 +32,31 @@ const mapDispatchToProps = dispatch => ({
     }
 });
 
+
+const animationDuration = 500;
+
+const animStyles = {
+    tableVisible: { display: 'inline-block' }
+}
+
+
+
 class PastTab extends React.Component {
 
     constructor() {
         super();
+
+        this.numOfRows = null;
+        this.rowHeight = 60;
+        this.borderThickness = 10;
+        this.state = {
+            tableStyle: { display: 'none' },
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151',
+                transition: 'height 0.5s'
+            }
+        };
 
         this._showFirstPage = (punishments = this.props.pastPunishments) => {
             let firstPage = [];
@@ -60,7 +81,7 @@ class PastTab extends React.Component {
                             : element.name}
                 </span>
             )
-            
+
             element.sortOrder *= -1;
         }
 
@@ -158,6 +179,28 @@ class PastTab extends React.Component {
                 style: 'float-left status-field'
             }
         ];
+
+        this.startAnimation = () => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.setState({
+                        tableContainerStyle: {
+                            ...this.state.tableContainerStyle,
+                            height: this.numOfRows * this.rowHeight + this.borderThickness - 1
+                        },
+                        tableStyle: { display: 'none' }
+                    });
+                });
+            });
+
+            this.showTable();
+        }
+
+        this.showTable = () => {
+            setTimeout(() => {
+                this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
+            }, animationDuration);
+        }
     }
 
     componentDidMount() {
@@ -165,14 +208,21 @@ class PastTab extends React.Component {
             if (this.props.ignoredPunishmentSet) {
                 this.showIgnoredPunishmentPage(this.props.pastPunishments);
             } else this.updateAndShowPastPunishments(this.props.pastPunishments);
+
+            this.numOfRows = this.props.pastPunishments.length > ITEMS_PER_PAGE ? ITEMS_PER_PAGE : this.props.pastPunishments.length;
+            this.startAnimation();
         }
     }
 
     componentWillReceiveProps(nextProps) {
 
         if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
-
             this.updateAndShowPastPunishments(nextProps.pastPunishments);
+        }
+
+        if (this.props.shownPastPunishments.length !== nextProps.shownPastPunishments.length) {
+            this.numOfRows = nextProps.shownPastPunishments.length;
+            this.startAnimation();
         }
 
     }
@@ -197,30 +247,34 @@ class PastTab extends React.Component {
             return (
                 <div>
                     <TableHeader columns={columns} />
+                    <div style={this.state.tableContainerStyle}>
 
-                    <table className="picker-table">
-                        <tbody>
+                        <table
+                            style={this.state.tableStyle}
+                            className="picker-table">
 
-                            {
-                                shownPunishments.map(punishment => {
+                            <tbody>
 
-                                    if (this.props.punishmentIdFromURL === punishment.uid) {
+                                {
+                                    shownPunishments.map(punishment => {
 
-                                        return (
-                                            <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
-                                        )
+                                        if (this.props.punishmentIdFromURL === punishment.uid) {
 
-                                    } else {
-                                        return (
-                                            <PastTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
-                                        )
-                                    }
-                                })
-                            }
+                                            return (
+                                                <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
+                                            )
 
-                        </tbody>
-                    </table>
+                                        } else {
+                                            return (
+                                                <PastTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
+                                            )
+                                        }
+                                    })
+                                }
 
+                            </tbody>
+                        </table>
+                    </div>
                     <TableFooter currentPage={currentPage} punishments={this.props.pastPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
             )

@@ -10,6 +10,7 @@ import { sortPunishmentsByString, sortPunishmentsByDate, sortPunishmentsByNumber
 import agent from '../../../agent';
 
 import { ITEMS_PER_PAGE } from '../../../constants/constants';
+import { request } from 'https';
 
 
 const mapStateToProps = state => ({
@@ -40,16 +41,26 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
+const animationDuration = 500;
+
+const animStyles = {
+    tableVisible: { display: 'inline-block' }
+}
+
 class AcceptedTab extends React.Component {
 
     constructor() {
         super();
 
+        this.numOfRows = null;
+        this.rowHeight = 60;
+        this.borderThickness = 10;
         this.state = {
             tableStyle: { display: 'none' },
             tableContainerStyle: {
                 height: 0,
-                borderBottom: '10px solid #515151'
+                borderBottom: '10px solid #515151',
+                transition: 'height 0.5s'
             }
         };
 
@@ -85,10 +96,10 @@ class AcceptedTab extends React.Component {
             this.props.changeShownPunishments(firstPage, 1);
         };
 
-        this.loadAndShowAcceptedPunishments = punishments => { // poziv kada stigne payload sa accepted punishmentima
+        /* this.loadAndShowAcceptedPunishments = punishments => { // poziv kada stigne payload sa accepted punishmentima
             this.props.onLoadedAcceptedPunishments(punishments);
             this._showFirstPage();
-        };
+        }; */
 
         this.updateAndShowAcceptedPunishments = punishments => {
             this.props.changeAcceptedPunishments(punishments);
@@ -184,17 +195,46 @@ class AcceptedTab extends React.Component {
                 style: 'float-left what-field'
             }
         ];
+
+        this.startAnimation = () => {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.setState({
+                        tableContainerStyle: {
+                            ...this.state.tableContainerStyle,
+                            height: this.numOfRows * this.rowHeight + this.borderThickness - 1
+                        },
+                        tableStyle: { display: 'none' }
+                    });
+                });
+            });
+
+            this.showTable();
+        }
+
+        this.showTable = () => {
+            setTimeout(() => {
+                this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
+            }, animationDuration);
+        }
     }
 
     componentDidMount() {
         if (this.props.acceptedPunishments !== 'empty' && this.props.acceptedPunishments.length > 0) {
             this.updateAndShowAcceptedPunishments(this.props.acceptedPunishments);
+            this.numOfRows = this.props.acceptedPunishments.length > ITEMS_PER_PAGE ? ITEMS_PER_PAGE : this.props.acceptedPunishments.length;
+            this.startAnimation();
         }
     }
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.acceptedPunishments.length !== this.props.acceptedPunishments.length) {
             this.updateAndShowAcceptedPunishments(nextProps.acceptedPunishments);
+        }
+
+        if (this.props.shownAcceptedPunishments.length !== nextProps.shownAcceptedPunishments.length) {
+            this.numOfRows = nextProps.shownAcceptedPunishments.length;
+            this.startAnimation();
         }
     }
 
@@ -222,7 +262,8 @@ class AcceptedTab extends React.Component {
             return (
                 <div>
                     <TableHeader columns={columns} />
-                    <div>
+                    <div style={this.state.tableContainerStyle}>
+
                         <table
                             style={this.state.tableStyle}
                             className="picker-table">

@@ -93,6 +93,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const registerElementHeight = 670;
+const resetPwdElementHeight = 400;
 const animationDuration = 500; // 0.5s
 
 const animStyles = {
@@ -105,6 +106,20 @@ const animStyles = {
     fieldsetUsernameStyle: { paddingTop: 90 + 'px' },
     fieldsetEmailStyle: { paddingTop: 90 + 'px' },
     fieldsetStyle: { paddingTop: 90 + 'px' },
+
+    // transform to reset pwd
+    componentPwdResetStyle: {
+        height: resetPwdElementHeight + 'px',
+        backgroundColor: '#FFA623'
+    },
+    pwdFieldHide: {
+        opacity: 0,
+        height: 0 + 'px',
+    },
+    btnsTopMarginCollapse: {
+        marginTop: 0 + 'px'
+    }
+
 };
 
 
@@ -113,12 +128,13 @@ class LoginTest extends React.Component {
         super();
 
         this.mainDiv = null;
+        this.pwdFieldset = null;
 
         this.state = {
             componentStyle: {},
             opacityStyle: { opacity: 0 },
             fieldsetUsernameStyle: { paddingTop: 0 + 'px' },
-            fieldsetEmailStyle: { paddingTop: 0 + 'px' },
+            fieldsetEmailStyle: { paddingTop: 0 + 'px', backgroundColor: 'red' },
             fieldsetStyle: { paddingTop: 0 + 'px' },
             formDisabled: false
         }
@@ -149,7 +165,12 @@ class LoginTest extends React.Component {
 
         this.showResetPasswordForm = ev => {
             ev.preventDefault();
-            this.props.showResetPasswordForm();
+
+            this.animateShowResetPassword();
+
+            setTimeout(() => {
+                this.props.showResetPasswordForm();
+            }, animationDuration);
         }
 
         this.whomLostFocus = ev => {
@@ -191,6 +212,26 @@ class LoginTest extends React.Component {
             })
         }
 
+        this.animateShowResetPassword = () => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    componentStyle: {
+                        ...this.state.componentStyle,
+                        ...animStyles.componentPwdResetStyle
+                    },
+                    fieldsetEmailStyle: {
+                        ...this.state.fieldsetEmailStyle,
+                        ...animStyles.pwdFieldHide
+                    },
+                    fieldsetStyle: {
+                        ...this.state.fieldsetStyle,
+                        ...animStyles.btnsTopMarginCollapse
+                    },
+                    opacityStyle: { ...this.state.opacityStyle, opacity: 0 }
+                });
+            });
+        }
+
         this.animateMounting = () => {
             this.setState({
                 opacityStyle: { ...this.state.opacityStyle, ...animStyles.fadeInStyle }
@@ -202,6 +243,7 @@ class LoginTest extends React.Component {
     componentDidMount() {
         this.setState({
             componentStyle: { ...this.state.componentStyle, height: this.mainDiv.clientHeight + 'px' },
+            fieldsetEmailStyle: { ...this.state.fieldsetStyle, height: this.pwdFieldset.clientHeight + 'px' }
         });
 
         requestAnimationFrame(() => {
@@ -255,8 +297,9 @@ class LoginTest extends React.Component {
                         </fieldset>
 
                         <fieldset
+                            ref={elem => this.pwdFieldset = elem}
                             style={this.state.fieldsetEmailStyle}
-                            className="header-form-row fieldset-padding-top-tran"
+                            className="header-form-row height-opacity-tran-fast"
                             disabled={isFormDisabled}>
 
                             <input
@@ -273,7 +316,7 @@ class LoginTest extends React.Component {
 
                         <fieldset
                             style={{ ...this.state.opacityStyle, ...this.state.fieldsetStyle }}
-                            className="header-form-row fieldset-padding-top-tran opacity-tran"
+                            className="header-form-row fieldset-padding-top-tran top-margin-tran opacity-tran"
                             disabled={isFormDisabled}>
 
                             <button className="btn-submit" ref="loginBtn" type="submit">LOG IN</button>

@@ -35,7 +35,6 @@ const mapDispatchToProps = dispatch => ({
     changeDeadlineValidity: value => dispatch({ type: 'UPDATE_DEADLINE_VALIDITY', value })
 });
 
-
 class DateElement extends React.Component {
 
     constructor(props) {
@@ -43,7 +42,7 @@ class DateElement extends React.Component {
 
         this.state = {
             validDeadline: true,
-            calendarShown: false
+            calendarShown: false,            
         };
 
         this.showCalendar = ev => {
@@ -122,6 +121,8 @@ class DateElement extends React.Component {
 
             this.setState({ calendarShown: false });
         };
+
+        
     }
 
 
@@ -131,7 +132,6 @@ class DateElement extends React.Component {
         let now = new Date();
         let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
         const maxDate = new Date(2100, 1, 1);
-
 
         return (
             <div>

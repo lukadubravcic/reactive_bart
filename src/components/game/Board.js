@@ -104,6 +104,8 @@ class Board extends React.Component {
         this.audio.style.display = "none";
         this.audio.src = 'http://www.freesfx.co.uk/rx2/mp3s/6/18460_1464720565.mp3';
 
+        this.writingBoard = null;
+
         this._wrongCharPlace = null;
         this.adblockDetected = false;
         this.cheatDetected = false;
@@ -307,15 +309,7 @@ class Board extends React.Component {
                     xhttp.send(`userId=${this.props.guestUserId}&punishmentId=${this.props.activePunishment.uid}&timeSpent=${this.props.timeSpent}`);
                     xhttp.send();
 
-                    //this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment._id, this.props.timeSpent);
-
                 } else {
-
-                    /* xhttp.open("POST", `${API_ROOT}/punishment/log`, false);
-                    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    xhttp.send(`id=${this.props.activePunishment._id}&timeSpent=${this.props.timeSpent}`);
-                    xhttp.send(); */
-
                     this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
                 }
             }
@@ -388,7 +382,7 @@ class Board extends React.Component {
     }
 
     componentDidMount() {
-        // special snowflake - zahtjeva sinkroni ajax request, te radi browser supporta, mora biti i beforeunload i onunload
+        // special snowflake - zahtjeva sinkroni ajax request
         // window.onunload = window.onbeforeunload
         window.addEventListener("beforeunload", this.handleBeforeunload);
     }
@@ -409,6 +403,9 @@ class Board extends React.Component {
             }
 
             this.activePunishmentChanged();
+            this.writingBoard.scrollIntoView({
+                behavior: 'smooth'
+            });
         } // else console.log('%cfalse', 'color: red')
     }
 
@@ -423,7 +420,8 @@ class Board extends React.Component {
         const startingSentence = this.props.startingSentence;
         const startingSentenceFirstPart = this.props.startingSentenceFirstPart;
         const startingSentenceSecondPart = this.props.startingSentenceSecondPart;
-        const startingSentenceThirdPart = this.props.startingSentenceThirdPart;
+        // const startingSentenceThirdPart = this.props.startingSentenceThirdPart;
+
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const isPunishmentFailed = this.props.boardTextMistake;
@@ -434,7 +432,10 @@ class Board extends React.Component {
 
             return (
 
-                <div id="board-writing-board-component">
+                <div
+                    ref={elem => this.writingBoard = elem}
+                    id="board-writing-board-component">
+                    
                     <div
                         id="board-frame"
                         onMouseOver={this.boardHover}
@@ -442,6 +443,7 @@ class Board extends React.Component {
 
                         <div id="drawing-board">
                             <div
+
                                 id="board-textarea"
                                 className="noselect"
                                 {...makeFocusable}
@@ -452,7 +454,7 @@ class Board extends React.Component {
 
                                 {startingSentenceFirstPart}
                                 <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
-                                {startingSentenceThirdPart}
+                                {/* startingSentenceThirdPart */}
                                 {boardText}
                             </div>
 
@@ -544,7 +546,7 @@ class Board extends React.Component {
 
                                 {startingSentenceFirstPart}
                                 <span style={{ color: '#FFBC24' }}>{startingSentenceSecondPart}</span>
-                                {startingSentenceThirdPart}
+                                {/* startingSentenceThirdPart */}
                                 {boardText}
                             </div>
 

@@ -190,7 +190,7 @@ class Register extends React.Component {
                         disabled={isFormDisabled}>
 
                         <fieldset
-                            class={this.state.fieldsets}
+                            style={this.state.fieldsets}
                             className="header-form-row"
                             disabled={isFormDisabled}>
 
@@ -222,7 +222,7 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            class={this.state.fieldsets}
+                            style={this.state.fieldsets}
                             className="header-form-row"
                             disabled={isFormDisabled}>
 

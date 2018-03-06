@@ -17,7 +17,12 @@ export default (state = defaultState, action) => {
         case 'APP_LOAD':
             return { ...state, elementToDisplay: 'loggedIn' };
         case 'SHOW_LOGIN_FORM':
-            return { ...state, elementToDisplay: 'login' };
+            return {
+                ...state,
+                elementToDisplay: 'login',
+                password: defaultState.password,
+                rePassword: defaultState.rePassword
+            };
         case 'SHOW_CHANGE_PASSWORD_FORM':
             return { ...state, elementToDisplay: 'changePassword' };
         case 'SHOW_RESET_PASSWORD_FORM':
@@ -28,7 +33,13 @@ export default (state = defaultState, action) => {
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
         case 'SHOW_REGISTER_FORM':
-            return { ...state, elementToDisplay: 'register', [action.key]: action.value };
+            return {
+                ...state,
+                elementToDisplay: 'register',
+                [action.key]: action.value,
+                password: defaultState.password,
+                rePassword: defaultState.rePassword
+            };
         case 'REGISTER':
             return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
         case 'REGISTER_MAIL_INVALID':

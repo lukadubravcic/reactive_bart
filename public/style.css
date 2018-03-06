@@ -46,7 +46,7 @@ textarea {
 }
 
 .opacity-tran-fast {
-	transition: opacity 0.2s;
+	transition: opacity 0.3s;
 }
 
 .height-tran {
@@ -57,20 +57,24 @@ textarea {
 	transition: height 0.3s;
 }
 
-.height-opacity-tran-fast {
-	transition: opacity 0.2s, height 0.3s 0.2s; 
+.opacity-03-delay-tran-fast {
+	transition: 0.2s 0.3s;
 }
 
-.height-opacity-margin-top-tran-fast {
-	transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
+.height-opacity-tran-fast {
+	transition: opacity 0.2s, height 0.3s 0.2s; 
 }
 
 .top-margin-tran {
 	transition: margin-top 0.3s linear 0.2s;
 }
 
-.opacity-delay-tran {
-	transition: opacity 0.2s 0.3s;
+.height-bcg-color-tran {
+	transition: height 0.5s, background-color 0.5s;
+}
+
+.fieldset-collapse-tran {
+	transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
 }
 
 

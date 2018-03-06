@@ -49,22 +49,41 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-const animationDuration = 500; // 2s
+const animationDuration = 500; // ms
+const loginHeight = 490;
 
 const animStyles = {
-    opacityStyle: { opacity: 1 },
-    opacityDownStyle: { opacity: 0 },
-    parentContainerStyle: {
-        height: 490 + 'px',
+    //mount styles
+    parentContainerMountStyle: {},
+    labelMountStyle: { opacity: 1 },
+    emailFieldsetMountStyle: { opacity: 1 },
+    usernameFieldsetMountStyle: { opacity: 1 },
+    pwdFieldsetMountStyle: {},
+    rePwdFieldsetMountStyle: { opacity: 1 },
+    btnFieldsetMountStyle: { opacity: 1 },
+
+    // dismount styles
+    parentContainerDismountStyle: {
+        height: loginHeight + 'px',
         backgroundColor: '#C4ACE4'
     },
-    fieldsetsToHide: {
-        height: 0 + 'px',
+    labelDismountStyle: { opacity: 0 },
+    emailFieldsetDismountStyle: {},
+    usernameFieldsetDismountStyle: {},
+    pwdFieldsetDismountStyle: {},
+    rePwdFieldsetDismountStyle: {
+        opacity: 0,
+        height: 0,
         marginTop: 0,
-        opacity: 0
     },
-    fieldsets: {
-        marginBottom: 90 + 'px'
+    btnFieldsetDismountStyle: { opacity: 0 },
+    fieldsetCollapse: {
+        opacity: 0,
+        height: 0,
+        marginTop: 0,
+    },
+    marginTopCollapse: {
+        marginTop: 0
     }
 };
 
@@ -77,13 +96,23 @@ class Register extends React.Component {
         this.emailInput = null;
         this.usernameInput = null;
         this.parentContainer = null;
-        this.fieldsetElement = null;
+
+        this.emailField = null;
+        this.usernameField = null;
+        this.rePwdElement = null;
+
+
 
         this.state = {
-            opacityStyle: { opacity: 0 },
+
             parentContainerStyle: { backgroundColor: '#FFA623' },
-            fieldsetsToHide: { opacity: 1 },
-            fieldsets: { marginBottom: 0 },
+            labelStyle: { opacity: 0 },
+            emailFieldsetStyle: {},
+            usernameFieldsetStyle: {},
+            pwdFieldsetStyle: {},
+            rePwdFieldsetStyle: { opacity: 0, },
+            btnFieldsetStyle: { opacity: 0 },
+
             formDisabled: true
         }
 
@@ -119,36 +148,64 @@ class Register extends React.Component {
 
             this.animateDismounting();
 
-            setTimeout(() => {
-                this.props.backToLogin();
-            }, animationDuration);
-
+            /*  setTimeout(() => {
+                 this.props.backToLogin();
+             }, animationDuration); */
         }
 
         this.animateMounting = () => {
 
+            // fadein username/email (onaj koji je prazan), naslov i btne
+            let emailStyle = { ...this.state.emailFieldsetStyle };
+            let usernameStyle = { ...this.state.usernameFieldsetStyle };
+
+            if (this.props.email.length === 0) emailStyle = { ...emailStyle, ...animStyles.emailFieldsetMountStyle };
+            else usernameStyle = { ...usernameStyle, ...animStyles.usernameFieldsetMountStyle };
+
             this.setState({
-                opacityStyle: { ...this.state.opacityStyle, ...animStyles.opacityStyle },
+                labelStyle: { ...this.state.labelStyle, ...animStyles.labelMountStyle },
+                emailFieldsetStyle: { ...emailStyle },
+                usernameFieldsetStyle: { ...usernameStyle },
+                rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, ...animStyles.rePwdFieldsetMountStyle },
+                btnFieldsetStyle: { ...this.state.btnFieldsetStyle, ...animStyles.btnFieldsetMountStyle },
                 formDisabled: false
             });
         }
 
         this.animateDismounting = () => {
 
+            // Fadeout: naslov, btni, email/username
+            // koji element pomaknuti: 
+            //  - ako redux.email nije prazan (username nevazan) -> email
+            //  - email prazan, redux.username nije prazan -> username
+            //  - oba elementa prazna -> ne postavljaj nista (tj. postavi prazno polje -> email )
+
+            let key = this.props.email.length > 0 ? 'usernameFieldsetStyle' : 'emailFieldsetStyle';
+
             this.setState({
-                parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerStyle },
-                fieldsets: { ...this.state.fieldsets, ...animStyles.fieldsets },
-                fieldsetsToHide: { ...this.state.fieldsetsToHide, ...animStyles.fieldsetsToHide },
-                opacityStyle: { ...this.state.opacityStyle, ...animStyles.opacityDownStyle },
+                parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerDismountStyle },
+
+                [key]: key === 'usernameFieldStyle'
+                    ? { ...this.state[key], ...animStyles.fieldsetCollapse }
+                    : { ...this.state.usernameFieldsetStyle, ...animStyles.marginTopCollapse },
+
+
+                labelStyle: { ...this.state.labelStyle, ...animStyles.labelDismountStyle },
+                rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, ...animStyles.rePwdFieldsetDismountStyle },
+                btnFieldsetStyle: { ...this.state.btnFieldsetStyle, ...animStyles.btnFieldsetDismountStyle },
                 formDisabled: true
             });
+            console.log(this.state.usernameFieldsetStyle)
         }
     }
 
     componentDidMount() {
+
         this.setState({
-            parentContainerStyle: { height: this.parentContainer.clientHeight },
-            fieldsets: { height: this.fieldsetElement.clientHeight }
+            parentContainerStyle: { ...this.state.parentContainerStyle, height: this.parentContainer.clientHeight },
+            emailFieldsetStyle: { ...this.state.emailFieldsetStyle, height: this.emailField.clientHeight },
+            usernameFieldsetStyle: { ...this.state.usernameFieldsetStyle, height: this.usernameField.clientHeight },
+            rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, height: this.rePwdElement.clientHeight,/*  marginTop: this.rePwdElement.cli */ }
         });
 
         requestAnimationFrame(() => {
@@ -178,7 +235,7 @@ class Register extends React.Component {
                 <div className="container">
 
                     <label
-                        style={this.state.opacityStyle}
+                        style={this.state.labelStyle}
                         className="heading register-heading opacity-tran">
 
                         New user registration
@@ -190,8 +247,9 @@ class Register extends React.Component {
                         disabled={isFormDisabled}>
 
                         <fieldset
-                            style={this.state.fieldsets}
-                            className="header-form-row"
+                            ref={elem => this.emailField = elem}
+                            style={this.state.emailFieldsetStyle}
+                            className="header-form-row fieldset-collapse-tran"
                             disabled={isFormDisabled}>
 
                             <input
@@ -205,9 +263,9 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            ref={elem => this.fieldsetElement = elem}
-                            style={this.state.fieldsetsToHide}
-                            className="header-form-row opacity-tran-fast top-margin-tran"
+                            ref={elem => this.usernameField = elem}
+                            style={this.state.usernameFieldsetStyle}
+                            className="header-form-row fieldset-collapse-tran"
                             disabled={isFormDisabled}>
 
                             <input
@@ -222,7 +280,7 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            style={this.state.fieldsets}
+                            style={this.state.pwdFieldsetStyle}
                             className="header-form-row"
                             disabled={isFormDisabled}>
 
@@ -236,8 +294,9 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            style={this.state.fieldsetsToHide}
-                            className="header-form-row opacity-tran-fast top-margin-tran"
+                            ref={elem => this.rePwdElement = elem}
+                            style={this.state.rePwdFieldsetStyle}
+                            className="header-form-row fieldset-collapse-tran"
                             disabled={isFormDisabled}>
 
                             <input
@@ -255,8 +314,8 @@ class Register extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            style={this.state.opacityStyle}
-                            className="header-form-row opacity-tran"
+                            style={this.state.btnFieldsetStyle}
+                            className="header-form-row opacity-03-delay-tran-fast"
                             disabled={isFormDisabled}>
 
                             <button

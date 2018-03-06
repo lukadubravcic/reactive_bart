@@ -195,7 +195,7 @@ class LoginTest extends React.Component {
 
             setTimeout(() => {
                 this.props.showRegisterForm(key, value);
-            }, animationDuration)
+            }, animationDuration);
         }
 
         this.animateChangeToRegister = key => {
@@ -224,12 +224,14 @@ class LoginTest extends React.Component {
                         ...this.state.fieldsetEmailStyle,
                         ...animStyles.pwdFieldHide
                     },
-                    opacityStyle: { ...this.state.opacityStyle, opacity: 0 }
+                    opacityStyle: { ...this.state.opacityStyle, opacity: 0 },
+                    formDisabled: true
                 });
             });
         }
 
         this.animateMounting = () => {
+            console.log('here')
             this.setState({
                 opacityStyle: { ...this.state.opacityStyle, ...animStyles.fadeInStyle }
             });
@@ -244,7 +246,7 @@ class LoginTest extends React.Component {
         });
 
         requestAnimationFrame(() => {
-            this.animateMounting();
+                this.animateMounting();
         });
     }
 
@@ -296,7 +298,7 @@ class LoginTest extends React.Component {
                         <fieldset
                             ref={elem => this.pwdFieldset = elem}
                             style={this.state.fieldsetEmailStyle}
-                            className="header-form-row height-opacity-margin-top-tran-fast"
+                            className="header-form-row fieldset-padding-top-tran"
                             disabled={isFormDisabled}>
 
                             <input

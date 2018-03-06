@@ -31,10 +31,49 @@ const mapDispatchToProps = dispatch => ({
     backToLogin: () => dispatch({ type: 'HIDE_RESET_PASSWORD_FORM' })
 });
 
+
+const animationDuration = 500;
+const loginHeight = 490;
+
+const animStyles = {
+    labelMountStyle: {
+        opacity: 1
+    },
+    btnFieldsetMountStyle: {
+        opacity: 1
+    },
+    componentContainerDismountStyle: {
+        height: loginHeight + 'px',
+        backgroundColor: '#C4ACE4'
+    },
+    labelDismountStyle: {
+        opacity: 0
+    },
+    emailFieldsetDismountStyle: {
+        height: 160 + 'px'  // visina dva fieldseta
+    }
+}
+
+
+
 class ResetPassword extends React.Component {
 
     constructor() {
         super();
+
+        this.parentContainer = null;
+        this.emailFieldset = null;
+
+        this.state = {
+            componentContainerStyle: {},
+            labelStyle: {
+                opacity: 0
+            },
+            emailFieldsetStyle: {},
+            btnFieldsetStyle: {
+                opacity: 0
+            }
+        }
 
         this.emailChange = event => {
             this.props.onEmailChange(event.target.value);
@@ -51,25 +90,77 @@ class ResetPassword extends React.Component {
             this.refs.pwdResetBtn.removeAttribute('disabled');
             this.refs.backBtn.removeAttribute('disabled');
         }
+
+        this.backToLogin = ev => {
+            ev.preventDefault();
+
+            requestAnimationFrame(() => {
+                this.animateDismounting();
+            });
+
+            setTimeout(() => {
+                this.props.backToLogin();
+            }, animationDuration);
+        }
+
+        this.animateMounting = () => {
+            this.setState({
+                labelStyle: { ...this.state.labelStyle, ...animStyles.labelMountStyle },
+                btnFieldset: { ...this.state.btnFieldset, ...animStyles.btnFieldsetMountStyle }
+            });
+        }
+
+        this.animateDismounting = () => {
+            this.setState({
+                componentContainerStyle: { ...this.state.componentContainerStyle, ...animStyles.componentContainerDismountStyle },
+                labelStyle: { ...this.state.labelStyle, ...animStyles.labelDismountStyle },
+                emailFieldsetStyle: { ...this.state.emailFieldsetStyle, ...animStyles.emailFieldsetDismountStyle }
+            })
+        }
+    }
+
+    componentDidMount() {
+
+        this.setState({
+            componentContainerStyle: { ...this.state.componentContainerStyle, height: this.parentContainer.clientHeight + 'px' },
+            emailFieldsetStyle: { ...this.state.emailFieldsetStyle, height: this.emailFieldset.clientHeight + 'px' }
+        });
+
+        requestAnimationFrame(() => {
+            this.animateMounting();
+        });
     }
 
     render() {
 
-        const email = this.props.email;
+        const email = this.props.loginWhom;
         const serverMsg = this.props._errMsg;
 
         return (
 
-            <div className="parent-component header register-header">
+            <div
+                ref={elem => this.parentContainer = elem}
+                style={this.state.componentContainerStyle}
+                className="parent-component header register-header height-bcg-color-tran">
+
                 <div className="container">
 
-                    <label className="heading register-heading">Reset your password</label>
+                    <label
+                        style={this.state.labelStyle}
+                        className="heading register-heading opacity-tran-fast">
+
+                        Reset your password
+                    </label>
 
                     <form
                         className="register-form"
                         onSubmit={this.submitForm(email)}>
 
-                        <fieldset className="header-form-row">
+                        <fieldset
+                            ref={elem => this.emailFieldset = elem}
+                            style={this.state.emailFieldsetStyle}
+                            className="header-form-row height-tran-fast">
+
                             <input
                                 className="text-input"
                                 type="text"
@@ -79,11 +170,14 @@ class ResetPassword extends React.Component {
                                 required />
                         </fieldset>
 
-                        <fieldset className="header-form-row">
+                        <fieldset
+                            style={this.state.btnFieldset}
+                            className="header-form-row opacity-03-delay-tran-fast">
+
                             <button
                                 className="btn-submit"
                                 ref="backBtn"
-                                onClick={this.props.backToLogin}>
+                                onClick={this.backToLogin}>
 
                                 BACK TO LOGIN
                             </button>

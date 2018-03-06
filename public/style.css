@@ -61,8 +61,16 @@ textarea {
 	transition: opacity 0.2s, height 0.3s 0.2s; 
 }
 
+.height-opacity-margin-top-tran-fast {
+	transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
+}
+
 .top-margin-tran {
 	transition: margin-top 0.3s linear 0.2s;
+}
+
+.opacity-delay-tran {
+	transition: opacity 0.2s 0.3s;
 }
 
 

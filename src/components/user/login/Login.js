@@ -115,6 +115,7 @@ const animStyles = {
     pwdFieldHide: {
         opacity: 0,
         height: 0 + 'px',
+        marginTop: 0 + 'px'
     },
     btnsTopMarginCollapse: {
         marginTop: 0 + 'px'
@@ -223,10 +224,6 @@ class LoginTest extends React.Component {
                         ...this.state.fieldsetEmailStyle,
                         ...animStyles.pwdFieldHide
                     },
-                    fieldsetStyle: {
-                        ...this.state.fieldsetStyle,
-                        ...animStyles.btnsTopMarginCollapse
-                    },
                     opacityStyle: { ...this.state.opacityStyle, opacity: 0 }
                 });
             });
@@ -299,7 +296,7 @@ class LoginTest extends React.Component {
                         <fieldset
                             ref={elem => this.pwdFieldset = elem}
                             style={this.state.fieldsetEmailStyle}
-                            className="header-form-row height-opacity-tran-fast"
+                            className="header-form-row height-opacity-margin-top-tran-fast"
                             disabled={isFormDisabled}>
 
                             <input
@@ -316,7 +313,7 @@ class LoginTest extends React.Component {
 
                         <fieldset
                             style={{ ...this.state.opacityStyle, ...this.state.fieldsetStyle }}
-                            className="header-form-row fieldset-padding-top-tran top-margin-tran opacity-tran"
+                            className="header-form-row opacity-delay-tran"
                             disabled={isFormDisabled}>
 
                             <button className="btn-submit" ref="loginBtn" type="submit">LOG IN</button>

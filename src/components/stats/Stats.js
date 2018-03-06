@@ -334,6 +334,7 @@ class Stats extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stats);
 
+
 function comparePunishments(pun1, pun2) {
       // iterate trough object properties
       for (let prop in pun1) {
@@ -444,7 +445,7 @@ const getCoordPoints = data => {
             let a = Math.abs(x3 - x);
             let b = Math.abs(yCircleCenter - y3);
 
-            let offsetedHypotenuse = hypotenuse - 20;
+            let offsetedHypotenuse = hypotenuse - offsetToCenter;
 
             let d = (offsetedHypotenuse * a) / hypotenuse;
             let x4 = xCircleCenter - d;

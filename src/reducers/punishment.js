@@ -27,14 +27,14 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     switch (action.type) {
-        case 'UPDATE_FIELD_PUNISH_CREATE':
-            return { ...state, [action.key]: action.value };
-        case 'TOGGLE_PUNISHMENT_DEADLINE_CKECKBOX':
-            return { ...state, deadlineChecked: !state.activePunishment.deadlineChecked };
-        case 'PUNISHMENT_CREATED':
-            return { ...state, _message: action.msg, orderedPunishments: action.newOrderedPunishments };
-        case 'PUNISHMENT_CREATED_ERROR':
-            return { ...state, _message: action.msg };
+        // case 'UPDATE_FIELD_PUNISH_CREATE':
+        //     return { ...state, [action.key]: action.value };
+        // case 'TOGGLE_PUNISHMENT_DEADLINE_CKECKBOX':
+        //     return { ...state, deadlineChecked: !state.activePunishment.deadlineChecked };
+        // case 'PUNISHMENT_CREATED':
+        //     return { ...state, _message: action.msg, orderedPunishments: action.newOrderedPunishments };
+        // case 'PUNISHMENT_CREATED_ERROR':
+        //     return { ...state, _message: action.msg };
         case 'SET_ACTIVE_PUNISHMENT':
             return { ...state, ignoredPunishmentSet: action.ignoredPunishmentSet ? action.ignoredPunishmentSet : defaultState.ignoredPunishmentSet };
         case 'GIVE_UP_ON_PUNISHMENT':

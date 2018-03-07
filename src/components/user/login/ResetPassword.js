@@ -76,6 +76,7 @@ class ResetPassword extends React.Component {
         }
 
         this.emailChange = event => {
+            console.log(event.target.value)
             this.props.onEmailChange(event.target.value);
         }
 
@@ -133,7 +134,8 @@ class ResetPassword extends React.Component {
 
     render() {
 
-        const email = this.props.loginWhom;
+        const email = this.props.email;
+        const validMail = email.length > 0 ? isMail(email) : true;
         const serverMsg = this.props._errMsg;
 
         return (
@@ -162,11 +164,12 @@ class ResetPassword extends React.Component {
                             className="header-form-row height-tran-fast">
 
                             <input
-                                className="text-input"
+                                className={`text-input ${validMail ? "" : "input-wrong-entry"}`}
                                 type="text"
                                 placeholder="e-mail"
                                 value={email}
                                 onChange={this.emailChange}
+                                spellCheck="false"
                                 required />
                         </fieldset>
 
@@ -185,7 +188,8 @@ class ResetPassword extends React.Component {
                                 id="btn-additional"
                                 className="btn-submit margin-left-small"
                                 ref="pwdResetBtn"
-                                type="submit">
+                                type="submit"
+                                disabled={!validMail}>
 
                                 RESET
                             </button>
@@ -203,3 +207,9 @@ class ResetPassword extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);
+
+
+function isMail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}

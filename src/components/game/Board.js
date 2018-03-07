@@ -379,6 +379,13 @@ class Board extends React.Component {
             this.writeStartingSentence(punishmentExplanation);
             // this.punishment += ' ';
         };
+
+        this.setBoardInViewport = () => {
+            // focusaj board nakon odredenog vremena
+            setTimeout(() => {
+                this.writingBoard.scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+        }
     }
 
     componentDidMount() {
@@ -403,10 +410,8 @@ class Board extends React.Component {
             }
 
             this.activePunishmentChanged();
-            this.writingBoard.scrollIntoView({
-                behavior: 'smooth'
-            });
-        } // else console.log('%cfalse', 'color: red')
+            this.setBoardInViewport();
+        }
     }
 
     componentWillUnmount() {
@@ -435,15 +440,15 @@ class Board extends React.Component {
                 <div
                     ref={elem => this.writingBoard = elem}
                     id="board-writing-board-component">
-                    
+
                     <div
                         id="board-frame"
                         onMouseOver={this.boardHover}
                         onMouseOut={this.boardHoverOut}>
 
                         <div id="drawing-board">
-                            <div
 
+                            <div
                                 id="board-textarea"
                                 className="noselect"
                                 {...makeFocusable}

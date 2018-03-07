@@ -150,7 +150,6 @@ class App extends React.Component {
                 this.props.handleInvitedGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
                 this.props.specialLogout();
             }
-
         }
 
 

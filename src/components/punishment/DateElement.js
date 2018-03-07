@@ -42,7 +42,7 @@ class DateElement extends React.Component {
 
         this.state = {
             validDeadline: true,
-            calendarShown: false,            
+            calendarShown: false,
         };
 
         this.showCalendar = ev => {
@@ -115,14 +115,12 @@ class DateElement extends React.Component {
         this.onCalendarChange = selectedDate => {
 
             this.props.updateFieldValue(selectedDate.getFullYear(), 'yearField');
-            this.props.updateFieldValue(selectedDate.getMonth(), 'monthField');
+            this.props.updateFieldValue(selectedDate.getMonth() + 1, 'monthField');
             this.props.updateFieldValue(selectedDate.getDate(), 'dayField');
             this.props.changeDeadlineValidity(true);
 
             this.setState({ calendarShown: false });
         };
-
-        
     }
 
 
@@ -136,8 +134,7 @@ class DateElement extends React.Component {
         return (
             <div>
                 <input id="day-picker"
-                    className="float-left text-input"
-                    style={deadlineStyle}
+                    className={`float-left text-input ${this.state.validDeadline ? "" : "input-wrong-entry"}`}
                     type="text"
                     placeholder="dd"
                     value={this.props.dayField}
@@ -145,8 +142,7 @@ class DateElement extends React.Component {
                     required />
 
                 <input id="month-picker"
-                    className="float-left text-input"
-                    style={deadlineStyle}
+                    className={`float-left text-input ${this.state.validDeadline ? "" : "input-wrong-entry"}`}
                     type="text"
                     placeholder="mm"
                     value={this.props.monthField}
@@ -154,14 +150,12 @@ class DateElement extends React.Component {
                     required />
 
                 <input id="year-picker"
-                    className="float-left text-input"
-                    style={deadlineStyle}
+                    className={`float-left text-input ${this.state.validDeadline ? "" : "input-wrong-entry"}`}
                     type="text"
                     placeholder="yyyy"
                     value={this.props.yearField}
                     onChange={this.yearChange}
                     required />
-
 
                 <div
                     style={{

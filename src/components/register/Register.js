@@ -101,26 +101,41 @@ class Register extends React.Component {
         this.usernameField = null;
         this.rePwdElement = null;
 
-
-
         this.state = {
 
             parentContainerStyle: { backgroundColor: '#FFA623' },
             labelStyle: { opacity: 0 },
-            emailFieldsetStyle: {},
-            usernameFieldsetStyle: {},
+            emailFieldsetStyle: { opacity: 1 },
+            usernameFieldsetStyle: { opacity: 1 },
             pwdFieldsetStyle: {},
             rePwdFieldsetStyle: { opacity: 0, },
             btnFieldsetStyle: { opacity: 0 },
 
-            formDisabled: true
+            formDisabled: true,
+
+            validEmailField: true,
+            validUsernameField: true,
+            validPasswordField: true,
+
+            emailExist: false,
+            usernameExist: false
         }
 
         this.usernameChange = ev => {
+            if (ev.target.value.length > 0 && !validateUsername(ev.target.value)) {
+                this.setState({ validUsernameField: false });
+            } else this.setState({ validUsernameField: true });
+
+            this.setState({ usernameExist: false });
             this.props.onUsernameChange(ev.target.value);
         };
 
         this.emailChange = ev => {
+            if (ev.target.value.length > 0 && !isMail(ev.target.value)) {
+                this.setState({ validEmailField: false });
+            } else this.setState({ validEmailField: true });
+
+            this.setState({ emailExist: false });
             this.props.onEmailChange(ev.target.value);
         };
 
@@ -148,9 +163,9 @@ class Register extends React.Component {
 
             this.animateDismounting();
 
-            /*  setTimeout(() => {
-                 this.props.backToLogin();
-             }, animationDuration); */
+            setTimeout(() => {
+                this.props.backToLogin();
+            }, animationDuration);
         }
 
         this.animateMounting = () => {
@@ -174,28 +189,48 @@ class Register extends React.Component {
 
         this.animateDismounting = () => {
 
-            // Fadeout: naslov, btni, email/username
-            // koji element pomaknuti: 
-            //  - ako redux.email nije prazan (username nevazan) -> email
-            //  - email prazan, redux.username nije prazan -> username
-            //  - oba elementa prazna -> ne postavljaj nista (tj. postavi prazno polje -> email )
+            let emailDismStyle = { ...this.state.emailFieldsetStyle };
+            let usernameDismStyle = { ...this.state.usernameFieldsetStyle };
 
-            let key = this.props.email.length > 0 ? 'usernameFieldsetStyle' : 'emailFieldsetStyle';
+            // postavi dismount stilove -> ako postoji unesen email
+            if (this.props.email.length > 0) {
+                usernameDismStyle = { ...usernameDismStyle, ...animStyles.fieldsetCollapse };
+            } else {
+                emailDismStyle = { ...emailDismStyle, ...animStyles.fieldsetCollapse };
+                usernameDismStyle = { ...usernameDismStyle, ...animStyles.marginTopCollapse };
+            }
 
             this.setState({
                 parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerDismountStyle },
-
-                [key]: key === 'usernameFieldStyle'
-                    ? { ...this.state[key], ...animStyles.fieldsetCollapse }
-                    : { ...this.state.usernameFieldsetStyle, ...animStyles.marginTopCollapse },
-
-
+                emailFieldsetStyle: { ...emailDismStyle },
+                usernameFieldsetStyle: { ...usernameDismStyle },
                 labelStyle: { ...this.state.labelStyle, ...animStyles.labelDismountStyle },
                 rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, ...animStyles.rePwdFieldsetDismountStyle },
                 btnFieldsetStyle: { ...this.state.btnFieldsetStyle, ...animStyles.btnFieldsetDismountStyle },
                 formDisabled: true
             });
-            console.log(this.state.usernameFieldsetStyle)
+        }
+
+        this.onEmailBlur = async ev => {
+            ev.preventDefault();
+
+            if (this.props.email.length === 0) return;
+
+            let { exist } = await agent.Auth.checkIfUserExists(this.props.email);
+
+            if (!exist) return this.setState({ emailExist: false });
+            return this.setState({ emailExist: true });
+        }
+
+        this.onUsernameBlur = async ev => {
+            ev.preventDefault();
+
+            if (this.props.username.length === 0) return;
+
+            let { exist } = await agent.Auth.checkIfUserExists(this.props.username);
+
+            if (!exist) return this.setState({ usernameExist: false });
+            return this.setState({ usernameExist: true });
         }
     }
 
@@ -205,7 +240,7 @@ class Register extends React.Component {
             parentContainerStyle: { ...this.state.parentContainerStyle, height: this.parentContainer.clientHeight },
             emailFieldsetStyle: { ...this.state.emailFieldsetStyle, height: this.emailField.clientHeight },
             usernameFieldsetStyle: { ...this.state.usernameFieldsetStyle, height: this.usernameField.clientHeight },
-            rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, height: this.rePwdElement.clientHeight,/*  marginTop: this.rePwdElement.cli */ }
+            rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, height: this.rePwdElement.clientHeight }
         });
 
         requestAnimationFrame(() => {
@@ -253,13 +288,17 @@ class Register extends React.Component {
                             disabled={isFormDisabled}>
 
                             <input
-                                className="text-input"
+                                ref={elem => this.emailInput = elem}
+                                className={`text-input ${!this.state.validEmailField || this.state.emailExist ? "input-wrong-entry" : ""}`}
                                 type="text"
                                 placeholder="e-mail"
                                 value={email}
                                 onChange={this.emailChange}
-                                ref={elem => this.emailInput = elem}
+                                onBlur={this.onEmailBlur}
                                 required />
+
+                            {this.state.emailExist ? <label className="form-feedback">ALREADY IN USE</label> : null}
+                            {this.state.validEmailField ? null : <label className="form-feedback">INVALID E-MAIL</label>}
                         </fieldset>
 
                         <fieldset
@@ -269,14 +308,15 @@ class Register extends React.Component {
                             disabled={isFormDisabled}>
 
                             <input
-                                className="text-input"
+                                className={`text-input ${!this.state.validUsernameField || this.state.usernameExist ? "input-wrong-entry" : ""}`}
                                 type="text"
                                 placeholder="username"
                                 value={username}
                                 onChange={this.usernameChange}
                                 ref={elem => this.usernameInput = elem}
                                 required />
-                            {/* <label className="form-feedback">ALREADY IN USE</label> */}
+                            {this.state.usernameExist ? <label className="form-feedback">ALREADY IN USE</label> : null}
+                            {this.state.validUsernameField ? null : <label className="form-feedback">INVALID USERNAME</label>}
                         </fieldset>
 
                         <fieldset
@@ -349,4 +389,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(Register);
 function isMail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+};
+
+
+function validatePassword(password) {
+    const pwdRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{2,20}$/;
+
+    if (pwdRegex.test(password)) {
+        return true;
+
+    } else return false // '3 to 20 characters, contain at least one numeric, uppercase and lowercase character.';
+};
+
+function validateUsername(username) {
+    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9-_\.]{2,20}$/;
+
+    if (usernameRegex.test(username)) {
+        return true;
+
+    } else return false // '3 to 20 characters (no white-space).';
 }

@@ -87,10 +87,29 @@ class PunishmentCreator extends React.Component {
                 display: 'inline-block',
                 opacity: 0,
                 transition: 'opacity 0.5s'
-            }
+            },
+            showTryMailTooltip: false,
+            whatToWriteFieldValid: true,
+            whyFieldValid: true
+        }
+
+        this.onWhomBlur = async ev => {
+            ev.preventDefault();
+
+            // provjeri jel unesen username (!isMail):
+            //  - ako je, provjeri jel postoji:
+            //      - postoji - nista
+            //      - ne postoji - poruka "try email instead"
+
+            if (isMail(this.props.whom) || this.props.whom.length === 0) return this.setState({ showTryMailTooltip: false });
+
+
+            let { exist } = await agent.Auth.checkIfUserExists(this.props.whom);
+            if (!exist) return this.setState({ showTryMailTooltip: true });
         }
 
         this.changeWhom = ev => {
+            this.setState({ showTryMailTooltip: false });
             this.validateToWhomValue(ev.target.value);
             this.props.onChangeWhom(ev.target.value);
         }
@@ -111,9 +130,11 @@ class PunishmentCreator extends React.Component {
         this.changeWhatToWrite = ev => {
             if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
                 this.whatToWriteErrorText = null;
+                this.setState({ whatToWriteFieldValid: true });
             } else {
                 // warning da je text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
-                this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.'
+                this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.';
+                this.setState({ whatToWriteFieldValid: false });
             }
             this.props.onChangeWhatToWrite(ev.target.value);
         }
@@ -121,8 +142,10 @@ class PunishmentCreator extends React.Component {
         this.changeWhy = ev => {
             if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0 || ev.target.value.length === 0) {
                 this.whyErrorText = null;
+                this.setState({ whyFieldValid: true });
             } else {
-                this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.'
+                this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.';
+                this.setState({ whyFieldValid: false });
             }
             this.props.onChangeWhy(ev.target.value);
         }
@@ -226,14 +249,16 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHOM</label>
                             <input
                                 id="whom-input"
-                                className="float-left text-input"
+                                className={`float-left text-input ${this.state.showTryMailTooltip ? "input-wrong-entry" : ""}`}
                                 type="text"
                                 placeholder="e-mail/username"
                                 value={whomField}
                                 onChange={this.changeWhom}
+                                onBlur={this.onWhomBlur}
+                                spellCheck="false"
                                 required
                             />
-                            <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label>
+                            {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label> : null}
                         </fieldset>
 
                         <fieldset
@@ -321,7 +346,7 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input
                                 id="what-to-write-input"
-                                className="float-left text-input"
+                                className={`float-left text-input ${this.state.whatToWriteFieldValid ? "" : "input-wrong-entry"}`}
                                 type="text"
                                 placeholder="One line."
                                 value={whatToWriteField}
@@ -337,7 +362,7 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHY</label>
                             <textarea
                                 id="why-input"
-                                className="float-left text-input"
+                                className={`float-left text-input ${this.state.whyFieldValid ? "" : "input-wrong-entry"}`}
                                 type="text"
                                 placeholder="Feel free to explain your reasons."
                                 value={whyField}
@@ -375,79 +400,79 @@ class PunishmentCreator extends React.Component {
         )
 
         /* } else return (
-
+    
             <div id="creator-component-container" className="parent-component greyscale-filter">
-
+    
                 <div id="form-overlay"></div>
-
+    
                 <div className="container">
-
+    
                     <div id="creator-heading-container">
                         <h1 id="creator-heading">Your turn to punish someone!</h1>
                     </div>
-
+    
                     <form id="pun-creation-form">
-
+    
                         <fieldset className="form-row">
                             <label className="float-left input-field-name">WHOM</label>
                             <input id="whom-input" className="float-left text-input" type="text" placeholder="e-mail/username" required />
                             <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label>
                         </fieldset>
-
+    
                         <fieldset className="form-row">
                             <label className="float-left input-field-name">HOW MANY TIMES</label>
                             <button id="decrement-button" className="float-left btn-range" type="button">
                                 {decrementBtnSvg}
                             </button>
-
+    
                             <input id="how-many-times-input" className="float-left text-input" type="number" min="1" max="999" placeholder="999" required />
-
+    
                             <button id="increment-button" className="float-left btn-range" type="button">
                                 {incrementBtnSvg}
                             </button>
                         </fieldset>
-
+    
                         <fieldset className="form-row">
                             <label className="float-left input-field-name">DEADLINE</label>
-
+    
                             <label className="float-left custom-chexbox-container">
                                 <input type="checkbox" />
                                 <span id="checkmark"></span>
                             </label>
-
+    
                             <input id="day-picker" className="float-left text-input" type="text" placeholder="dd" required />
                             <input id="month-picker" className="float-left text-input" type="text" placeholder="mm" required />
                             <input id="year-picker" className="float-left text-input" type="text" placeholder="yyyy" required />
-
+    
                             <button id="btn-calendar" type="button">
                                 {calendarBtnSvg}
                             </button> 
                         </fieldset>
-
+    
                         <fieldset className="form-row">
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input id="what-to-write-input" className="float-left text-input" type="text" placeholder="One line." required />
                         </fieldset>
-
+    
                         <fieldset id="why-form-row" className="form-row">
                             <label className="float-left input-field-name">WHY</label>
                             <textarea id="why-input" className="float-left text-input" type="text" placeholder="Feel free to explain your reasons." required></textarea>
                         </fieldset>
-
+    
                         <fieldset className="form-row">
                             <button id="btn-pun-submit" className="float-left btn-submit" type="submit">PUNISH</button>
                             <label id="form-submit-feedback" className="float-left form-feedback">PLEASE ENTER REQUIRED FIELDS.</label>
                         </fieldset>
-
+    
                     </form>
-
+    
                     <div id="form-bottom-props-container">
                         {creatorBottomSvg}
                     </div >
-
+    
                 </div >
             </div >
-
+    
         ) */
     }
 }

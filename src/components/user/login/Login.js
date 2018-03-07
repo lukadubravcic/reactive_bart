@@ -13,8 +13,6 @@ import agent from '../../../agent';
 //         - promjena pozadinske 
 //         - fadeout elemenata komponente
 
-
-
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;
 const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MIN_LEN + ' and ' + PASSWORD_MAX_LEN + ' characters long.';
@@ -124,12 +122,13 @@ const animStyles = {
 };
 
 
-class LoginTest extends React.Component {
+class Login extends React.Component {
     constructor() {
         super();
 
         this.mainDiv = null;
         this.pwdFieldset = null;
+        this.whomField = null;
 
         this.state = {
             componentStyle: {},
@@ -166,7 +165,6 @@ class LoginTest extends React.Component {
 
         this.showResetPasswordForm = ev => {
             ev.preventDefault();
-
             this.animateShowResetPassword();
 
             setTimeout(() => {
@@ -231,7 +229,6 @@ class LoginTest extends React.Component {
         }
 
         this.animateMounting = () => {
-            console.log('here')
             this.setState({
                 opacityStyle: { ...this.state.opacityStyle, ...animStyles.fadeInStyle }
             });
@@ -246,7 +243,8 @@ class LoginTest extends React.Component {
         });
 
         requestAnimationFrame(() => {
-                this.animateMounting();
+            this.animateMounting();
+            this.whomField.focus();
         });
     }
 
@@ -286,12 +284,14 @@ class LoginTest extends React.Component {
                             disabled={isFormDisabled}>
 
                             <input
+                                ref={elem => this.whomField = elem}
                                 className="text-input"
                                 type="text"
                                 value={loginWhom}
                                 placeholder="e-mail/username"
                                 onChange={this.loginWhomChange}
                                 onBlur={this.whomLostFocus}
+                                spellCheck="false"
                                 required />
                         </fieldset>
 
@@ -302,14 +302,15 @@ class LoginTest extends React.Component {
                             disabled={isFormDisabled}>
 
                             <input
-                                className="text-input"
+                                className={`text-input ${this.passwordValidationError ? "input-wrong-entry" : ""}`}
                                 type="password"
                                 placeholder="password"
                                 value={password}
                                 onChange={this.passwordChange}
                                 required />
 
-                            {this.passwordValidationError ? <label className="form-feedback">{this.passwordValidationError}</label> : null}
+
+                            {errMsg ? (<label className="form-feedback">{errMsg}</label>) : null}
 
                         </fieldset>
 
@@ -322,8 +323,6 @@ class LoginTest extends React.Component {
                             <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
                         </fieldset>
 
-                        {errMsg ? (<label className="form-feedback">{errMsg}</label>) : null}
-
                     </form>
 
                 </div>
@@ -333,7 +332,7 @@ class LoginTest extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginTest);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 
 function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property

@@ -20,13 +20,18 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 elementToDisplay: 'login',
+                loginWhom: state.email !== '' ? state.email : state.username,
                 password: defaultState.password,
                 rePassword: defaultState.rePassword
             };
         case 'SHOW_CHANGE_PASSWORD_FORM':
             return { ...state, elementToDisplay: 'changePassword' };
         case 'SHOW_RESET_PASSWORD_FORM':
-            return { ...state, elementToDisplay: 'resetPassword' };
+            return {
+                ...state,
+                elementToDisplay: 'resetPassword',
+                email: state.loginWhom
+            };
         case 'CHANGE_SHOWN_TOP_ELEMENT':
             return { ...state, elementToDisplay: action.element };
 
@@ -37,6 +42,8 @@ export default (state = defaultState, action) => {
                 ...state,
                 elementToDisplay: 'register',
                 [action.key]: action.value,
+                email: action.key === 'username' ? defaultState.email : action.value,
+                username: action.key === 'email' ? defaultState.username : action.value,
                 password: defaultState.password,
                 rePassword: defaultState.rePassword
             };

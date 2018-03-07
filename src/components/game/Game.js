@@ -152,10 +152,12 @@ class Game extends React.Component {
         // console.log(activePunishmentNotSet)
         // nema usera ili se desio logout ili invited user
         if ((guestPunishmentLoaded && appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
+            console.log("this.changeActivePunishmentNotLoggedIn")
             this.changeActivePunishmentNotLoggedIn();
 
             // ima usera
         } else if ((userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) || (userLoggedIn && activePunishmentGivenUpWhileNotDone)) {
+            console.log("this.changeActivePunishmentLoggedIn")
             this.changeActivePunishmentLoggedIn();
         }
 

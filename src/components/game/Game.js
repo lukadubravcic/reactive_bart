@@ -55,7 +55,7 @@ class Game extends React.Component {
                 } else return;
 
             } else if (this.props.guestPunishment) { // invited user
-
+                
                 if (checkIfIgnoredPunishment(this.props.guestPunishment)) {
                     let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
                     specialPunishment && this.props.setActivePunishment(specialPunishment, false);
@@ -75,8 +75,7 @@ class Game extends React.Component {
         }
 
         this.changeActivePunishmentLoggedIn = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
-
-
+ 
             if (window.canRunAds === undefined) { // adblocker detektiran
 
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
@@ -87,7 +86,7 @@ class Game extends React.Component {
                 } else return;
 
             } else if (this.props.punishmentIdFromURL) { // kazna sa url-a                
-
+                
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
 
                 if (punishmentInURL) {  // kazna je aktivna
@@ -96,7 +95,7 @@ class Game extends React.Component {
                 } else { // kazna nije pronadena u accepted
 
                     punishmentInURL = getByValue(this.props.pastPunishments, this.props.punishmentIdFromURL) // pronadi je u past kaznama
-
+                   
                     if (punishmentInURL && checkIfIgnoredPunishment(punishmentInURL)) { // ako je u past kaznama i status = ignored
 
                         let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
@@ -144,29 +143,50 @@ class Game extends React.Component {
         const userJustLoggedOut = Object.keys(prevProps.activePunishment).length > 0 && Object.keys(this.props.activePunishment).length === 0 && !userLoggedIn;
         const cheating = !prevProps.cheating && this.props.cheating;
         const guestPunishmentLoaded = this.props.punishmentIdFromURL ? !this.props.guestDataLoadingInProgress : true;
+        const guestPunAvail = this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length > 0;
         // detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
         const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.progress < 100;
         // console.log('givenUp: ' + activePunishmentGivenUp);
         // console.log('userLoggedIn: ' + (typeof this.props.currentUser._id !== 'undefined'))
 
-        // console.log(activePunishmentNotSet)
-        // nema usera ili se desio logout ili invited user
-        if ((guestPunishmentLoaded && appFinishedLoadingUserNotFound && randomAndSpecialPunishmentsLoaded && activePunishmentNotSet) || userJustLoggedOut) {
-            console.log("this.changeActivePunishmentNotLoggedIn")
+        if (cheating) this.setCheatingPunishment();
+
+        /* console.log('-------------------')
+        console.log("userLoggedIn  " + userLoggedIn)
+        console.log("randomAndSpecialPunishmentsLoaded  " + randomAndSpecialPunishmentsLoaded)
+        console.log("acceptedAndPastPunishmentsLoaded  " + acceptedAndPastPunishmentsLoaded)
+        console.log("activePunishmentNotSet  " + activePunishmentNotSet)
+        console.log("userLoggedIn  " + userLoggedIn)
+        console.log("activePunishmentGivenUpWhileNotDone  " + activePunishmentGivenUpWhileNotDone) */
+
+        // slucaj kada user nije logan a setupana je guest kazna
+        if (!userLoggedIn && guestPunAvail && activePunishmentNotSet && randomAndSpecialPunishmentsLoaded) {
+            console.log('postavi guest kaznu')
+            this.changeActivePunishmentNotLoggedIn();
+        }
+
+        else if ((guestPunishmentLoaded
+            && appFinishedLoadingUserNotFound
+            && randomAndSpecialPunishmentsLoaded
+            && activePunishmentNotSet)
+            || userJustLoggedOut) {
+
             this.changeActivePunishmentNotLoggedIn();
 
             // ima usera
-        } else if ((userLoggedIn && randomAndSpecialPunishmentsLoaded && acceptedAndPastPunishmentsLoaded && activePunishmentNotSet) || (userLoggedIn && activePunishmentGivenUpWhileNotDone)) {
-            console.log("this.changeActivePunishmentLoggedIn")
-            this.changeActivePunishmentLoggedIn();
-        }
+        } else if ((userLoggedIn
+            && randomAndSpecialPunishmentsLoaded
+            && acceptedAndPastPunishmentsLoaded
+            && activePunishmentNotSet)
+            || (userLoggedIn
+                && activePunishmentGivenUpWhileNotDone)) {
 
-        if (cheating) {
-            this.setCheatingPunishment();
+            this.changeActivePunishmentLoggedIn();
         }
     }
 
     render() {
+
         return (
             <div id="board-component-container" className="parent-component">
                 <div className="container">
@@ -228,7 +248,7 @@ class Game extends React.Component {
 
                         </div>
                     </div>
-                    
+
                     <div className="right-side-col">
 
                         <div id="plant-board-right-container">

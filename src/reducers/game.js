@@ -111,7 +111,11 @@ export default (state = defaultState, action) => {
         case 'GAME_UNMOUNT':
             return defaultState;
         case 'SPECIAL_LOGOUT':
-            return { ...defaultState, guestPunishment: state.guestPunishment, punishmentIdFromURL: state.punishmentIdFromURL };
+            return {
+                ...defaultState,
+                guestPunishment: state.guestPunishment,
+                punishmentIdFromURL: state.punishmentIdFromURL
+            };
         case 'LOGOUT':
             return defaultState;
         case 'CHEATING_DETECTED':

@@ -99,6 +99,7 @@ class PunishmentSelectorTable extends React.Component {
 
         this._handleOrderedPunFromAgent = payload => {
 
+           
             if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
 
                 this.props.setOrderedPunishments(payload.orderedPunishments);

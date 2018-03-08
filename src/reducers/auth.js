@@ -79,7 +79,7 @@ export default (state = defaultState, action) => {
         case 'GUEST_PUNISHMENT_LOADED':
             return { ...state, loginWhom: action.guestUser.email };
         case 'INVITED_GUEST_PUNISHMENT_LOADED':
-            return { ...state, shownForm: 'register', email: action.guestUser.email };
+            return { ...state, elementToDisplay: 'register', email: action.guestUser.email };
         case 'USERNAME_SET':
             return { ...state, elementToDisplay: 'thanks' };
         case 'USERNAME_SET_AS_GUEST':

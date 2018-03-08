@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Top from './components/user/Top';
-import Login from './components/login/Login';
-import Register from './components/register/Register';
+// import Login from './components/login/Login';
+// import Register from './components/register/Register';
 import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
@@ -46,7 +46,7 @@ const mapDispatchToProps = dispatch => ({
             });
         }
     },
-    handleInvitedGuest: (userId, punishmentId) => {
+    handleGuest: (userId, punishmentId) => {
         dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
         agent.Auth.getPunishmentAsGuest(userId, punishmentId).then(payload => {
             if (payload) {
@@ -61,11 +61,12 @@ const mapDispatchToProps = dispatch => ({
                     && payload.guestUser !== null
                     && Object.keys(payload.guestUser).length) {
 
-                    console.log(payload);
                     if (payload.guestUser.confirmed !== null) {
+
                         dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
 
                     } else {
+
                         dispatch({ type: 'INVITED_GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
                     }
                 }
@@ -108,9 +109,10 @@ class App extends React.Component {
             if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 
         } else if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
+
             this.props.setUserIdFromUrl(queryStringData.uid);
-            this.props.handleInvitedGuest(queryStringData.uid, queryStringData.id);
-            window.localStorage.removeItem('token');
+            this.props.handleGuest(queryStringData.uid, queryStringData.id);
+            // window.localStorage.removeItem('token');
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
@@ -132,23 +134,24 @@ class App extends React.Component {
         const userIdFromUrlExist = nextProps.auth.userIdFromURL !== null;
         const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id == nextProps.auth.userIdFromURL;
 
-        // ako je user logiran, a postavljena
+        // ako je user logiran, a kazna nije njegova, logout te postavi tu kaznu
 
         if (userLoggedIn) {
 
             if (nextProps.auth.userIdFromURL !== null && !isUrlPunOwnedByLoggedUser) {
 
-                console.log('HERE')
+                /* console.log('HERE')
                 console.log('compare ids ' + (nextProps.common.currentUser._id == nextProps.auth.userIdFromURL))
                 console.log('nextProps.common.currentUser._id ' + typeof nextProps.common.currentUser._id)
                 console.log('userIdFromURL ' + typeof nextProps.auth.userIdFromURL)
-                console.log('isUrlPunOwnedByLoggedUser ' + isUrlPunOwnedByLoggedUser)
+                console.log('isUrlPunOwnedByLoggedUser ' + isUrlPunOwnedByLoggedUser) */
 
                 agent.Auth.logout();
                 agent.setToken(0);
                 window.localStorage.removeItem('token');
-                this.props.handleInvitedGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
                 this.props.specialLogout();
+                this.props.handleGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
+
             }
         }
 

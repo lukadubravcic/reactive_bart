@@ -202,6 +202,7 @@ class Stats extends React.Component {
             }
 
             if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishments
+
                   if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments)) { // odlucuje o triggeru klasifikacije
 
                         let classificationResults = this.clasifyPunishments(nextProps.pastPunishments);
@@ -224,10 +225,18 @@ class Stats extends React.Component {
 
             if (!usrLoggedIn) return null;
 
-            let firstGraphLabels = typeof this.props.firstGraph !== 'undefined' && Object.keys(this.props.firstGraph).length ? this.getGraphLabels(this.props.firstGraph) : null;
-            let secondGraphLabels = typeof this.props.secondGraph !== 'undefined' && Object.keys(this.props.secondGraph).length ? this.getGraphLabels(this.props.secondGraph) : null;
-            let thirdGraphLabels = typeof this.props.thirdGraph !== 'undefined' && Object.keys(this.props.thirdGraph).length ? this.getGraphLabels(this.props.thirdGraph) : null;
-            let fourthGraphLabels = typeof this.props.fourthGraph !== 'undefined' && Object.keys(this.props.fourthGraph).length ? this.getGraphLabels(this.props.fourthGraph) : null;
+            let firstGraphLabels = typeof this.props.firstGraph !== 'undefined' && this.props.firstGraph !== null && Object.keys(this.props.firstGraph).length
+                  ? this.getGraphLabels(this.props.firstGraph)
+                  : null;
+            let secondGraphLabels = typeof this.props.secondGraph !== 'undefined' && this.props.secondGraph !== null && Object.keys(this.props.secondGraph).length
+                  ? this.getGraphLabels(this.props.secondGraph)
+                  : null;
+            let thirdGraphLabels = typeof this.props.thirdGraph !== 'undefined' && this.props.thirdGraph !== null && Object.keys(this.props.thirdGraph).length
+                  ? this.getGraphLabels(this.props.thirdGraph)
+                  : null;            
+            let fourthGraphLabels = typeof this.props.fourthGraph !== 'undefined' && this.props.fourthGraph !== null && Object.keys(this.props.fourthGraph).length
+                  ? this.getGraphLabels(this.props.fourthGraph)
+                  : null;
 
             return (
                   <div>

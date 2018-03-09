@@ -42,6 +42,7 @@ class OrderedTab extends React.Component {
     constructor() {
         super();
 
+        this.dismountDelayTimer = null;
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
@@ -204,7 +205,7 @@ class OrderedTab extends React.Component {
         }
 
         this.showTable = () => {
-            setTimeout(() => {
+            this.dismountDelayTimer = setTimeout(() => {
                 this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
             }, animationDuration);
         }
@@ -220,16 +221,23 @@ class OrderedTab extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
+        console.log('hereordered')
+
+        if ((this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0)
+            || (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length)) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
-        } else if (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length) {
-            this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
+            console.log('promjena ordered velicine')
         }
+
 
         if (this.props.shownOrderedPunishments.length !== nextProps.shownOrderedPunishments.length) {
             this.numOfRows = nextProps.shownOrderedPunishments.length;
             this.startAnimation();
         }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.dismountDelayTimer);
     }
 
     render() {

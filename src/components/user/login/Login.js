@@ -310,7 +310,7 @@ class Login extends React.Component {
                                 required />
 
 
-                            {errMsg ? (<label className="form-feedback">{errMsg}</label>) : null}
+                            {errMsg ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>) : null}
 
                         </fieldset>
 

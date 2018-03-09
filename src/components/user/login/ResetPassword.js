@@ -194,7 +194,7 @@ class ResetPassword extends React.Component {
                                 RESET
                             </button>
 
-                            {serverMsg ? <label className="form-feedback">{serverMsg}</label> : null}
+                            {serverMsg ? <label className="form-feedback">{serverMsg.toUpperCase()}</label> : null}
                         </fieldset>
 
                     </form>

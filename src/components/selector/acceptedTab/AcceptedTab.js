@@ -52,6 +52,7 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
 
+        this.dismountDelayTimer = null;
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
@@ -213,7 +214,7 @@ class AcceptedTab extends React.Component {
         }
 
         this.showTable = () => {
-            setTimeout(() => {
+            this.dismountDelayTimer = setTimeout(() => {
                 this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
             }, animationDuration);
         }
@@ -236,6 +237,10 @@ class AcceptedTab extends React.Component {
             this.numOfRows = nextProps.shownAcceptedPunishments.length;
             this.startAnimation();
         }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.dismountDelayTimer);
     }
 
     /* componentDidUpdate(prevProps) {

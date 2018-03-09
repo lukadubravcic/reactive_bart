@@ -51,7 +51,7 @@ export default (state = defaultState, action) => {
                 activePunishment: action.punishment,
                 gameInProgress: defaultState.gameInProgress,
                 timerValue: defaultState.timerValue,
-                // punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
+                punishmentIdFromURL: action.ignoredPunishmentSet ? state.punishmentIdFromURL : defaultState.punishmentIdFromURL,
                 boardTextMistake: defaultState.boardTextMistake,
                 boardValue: defaultState.boardValue,
                 progress: defaultState.progress,

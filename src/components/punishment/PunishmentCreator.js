@@ -383,7 +383,7 @@ class PunishmentCreator extends React.Component {
                                 </button>
 
                             {this.props._errMsg !== null
-                                ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg}</label>
+                                ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg.toUpperCase()}</label>
                                 : null}
 
                         </fieldset>

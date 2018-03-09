@@ -99,7 +99,7 @@ class PunishmentSelectorTable extends React.Component {
 
         this._handleOrderedPunFromAgent = payload => {
 
-           
+
             if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
 
                 this.props.setOrderedPunishments(payload.orderedPunishments);
@@ -212,6 +212,11 @@ class PunishmentSelectorTable extends React.Component {
         if (nextProps.acceptedPunishments.length === 0) {
 
             this.props.setAcceptedHeaderVisibility(false);
+            if (nextProps.pastPunishments.length > 0) {
+                this.selectTab('pastTab');
+            } else if( nextProps.orderedPunishments.length > 0) {
+                this.selectTab('orderedTab');
+            }
 
         } else if (nextProps.acceptedPunishments.length) {
 
@@ -243,12 +248,18 @@ class PunishmentSelectorTable extends React.Component {
 
         const userLoggedIn = this.props.user._id;
         const adblockerOrCheatDetected = window.canRunAds === undefined || this.props.cheating;
+        const showComponent =
+            (this.props.acceptedPunishments !== 'empty'
+                && this.props.acceptedPunishments.length > 0)
+            || (this.props.pastPunishments !== 'empty'
+                && this.props.pastPunishments.length > 0)
+            || (this.props.orderedPunishments !== 'empty'
+                && this.props.orderedPunishments.length > 0);
 
         let shownTab = null;
         let selectorParentCSS = 'parent-component picker-component-container'
 
-
-        if (userLoggedIn && !adblockerOrCheatDetected) {
+        if (showComponent && userLoggedIn && !adblockerOrCheatDetected) {
 
             const tableTabNamesElement = this.setHeaderTabsElement(this.props.selectedTab);
 
@@ -293,9 +304,9 @@ class PunishmentSelectorTable extends React.Component {
 
                         </div>
 
-                            <div id="picker-bottom-image-container">
-                                {componentBottomImage}
-                            </div>
+                        <div id="picker-bottom-image-container">
+                            {componentBottomImage}
+                        </div>
 
                     </div>
                 </div>

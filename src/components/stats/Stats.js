@@ -233,7 +233,7 @@ class Stats extends React.Component {
                   : null;
             let thirdGraphLabels = typeof this.props.thirdGraph !== 'undefined' && this.props.thirdGraph !== null && Object.keys(this.props.thirdGraph).length
                   ? this.getGraphLabels(this.props.thirdGraph)
-                  : null;            
+                  : null;
             let fourthGraphLabels = typeof this.props.fourthGraph !== 'undefined' && this.props.fourthGraph !== null && Object.keys(this.props.fourthGraph).length
                   ? this.getGraphLabels(this.props.fourthGraph)
                   : null;
@@ -265,7 +265,7 @@ class Stats extends React.Component {
                                                             animationDuration={3500} />
                                                 </div>
 
-                                                : null}
+                                                : noDataLeftGraph}
 
                                           {this.props.secondGraph ?
                                                 <div className="float-right graph-container graph2-container"
@@ -281,7 +281,7 @@ class Stats extends React.Component {
                                                             animate={true}
                                                             animationDuration={3500} />
                                                 </div>
-                                                : null}
+                                                : noDataRightGraph}
 
                                           <div className="pun-others-bottom-image-container">
                                                 {punishingOthersSVG}
@@ -307,7 +307,7 @@ class Stats extends React.Component {
                                                             animate={true}
                                                             animationDuration={3500} />
                                                 </div>
-                                                : null}
+                                                : noDataLeftGraph}
 
                                           {this.props.fourthGraph ?
                                                 <div className="float-right graph-container graph2-container"
@@ -323,7 +323,7 @@ class Stats extends React.Component {
                                                             animate={true}
                                                             animationDuration={3500} />
                                                 </div>
-                                                : null}
+                                                : noDataRightGraph}
 
                                           <div className="being-punished-bottom-image-container">
                                                 {beingPunishedSVG}
@@ -342,23 +342,6 @@ class Stats extends React.Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stats);
-
-
-function comparePunishments(pun1, pun2) {
-      // iterate trough object properties
-      for (let prop in pun1) {
-
-            if (pun1[prop] !== pun2[prop]) return false;
-      }
-      return true;
-};
-
-function getGraphProperties(classificationResults, neededProperties) {
-      return Object.assign({}, ...Object.keys(classificationResults).map(property => {
-            if (neededProperties.indexOf(property) > -1) return { [property]: classificationResults[property] };
-      }));
-}
-
 
 
 const punishingOthersSVG = (
@@ -409,6 +392,81 @@ const beingPunishedSVG = (
       </svg>
 )
 
+const noDataRightGraph = (
+      <div className="float-right graph-container graph2-container"
+            style={{ width: "420px", filter: "grayscale(95%)" }}>
+
+            <label
+                  className="hover-dialog-text"
+                  style={{
+                        position: "absolute",
+                        color: "white",
+                        textTransform: "uppercase",
+                        top: "210px",
+                        left: "60px"
+                  }}>
+
+                  <span>NOT ENOUGH DATA</span>
+            </label>
+
+            <PieChart
+                  data={[
+                        { value: 1, color: colors.accepted },
+                        { value: 1, color: colors.rejected },
+                        { value: 1, color: colors.ignored }
+                  ]}
+                  lengthAngle={-360}
+                  lineWidth={100}
+                  paddingAngle={0}
+                  animate={false} />
+      </div >
+)
+
+const noDataLeftGraph = (
+      <div className="float-left graph-container graph1-container"
+            style={{ width: "420px", filter: "grayscale(95%)" }}>
+
+            <label
+                  className="hover-dialog-text"
+                  style={{
+                        position: "absolute",
+                        color: "white",
+                        textTransform: "uppercase",
+                        top: "210px",
+                        left: "60px"
+                  }}>
+
+                  <span>NOT ENOUGH DATA</span>
+            </label>
+
+            <PieChart
+                  data={[
+                        { value: 1, color: colors.accepted },
+                        { value: 1, color: colors.rejected },
+                        { value: 1, color: colors.ignored }
+                  ]}
+                  lengthAngle={-360}
+                  lineWidth={100}
+                  paddingAngle={0}
+                  animate={false} />
+      </div >
+)
+
+
+function comparePunishments(pun1, pun2) {
+      // iterate trough object properties
+      for (let prop in pun1) {
+
+            if (pun1[prop] !== pun2[prop]) return false;
+      }
+      return true;
+};
+
+function getGraphProperties(classificationResults, neededProperties) {
+      return Object.assign({}, ...Object.keys(classificationResults).map(property => {
+            if (neededProperties.indexOf(property) > -1) return { [property]: classificationResults[property] };
+      }));
+}
 
 
 const getRadians = data => {

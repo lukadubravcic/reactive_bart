@@ -163,7 +163,6 @@ class Board extends React.Component {
         };
 
         this.boardFocused = ev => {
-            console.log('being focused')
             ev.preventDefault();
             this.props.onBoardFocus();
         };
@@ -410,7 +409,8 @@ class Board extends React.Component {
             }
 
             this.activePunishmentChanged();
-            this.setBoardInViewport();
+
+            !specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.setBoardInViewport();
         }
     }
 

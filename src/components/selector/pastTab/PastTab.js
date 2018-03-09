@@ -46,6 +46,7 @@ class PastTab extends React.Component {
     constructor() {
         super();
 
+        this.dismountDelayTimer = null;
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
@@ -86,11 +87,9 @@ class PastTab extends React.Component {
         }
 
         this.showIgnoredPunishmentPage = punishments => {
-
             let pageNum = getPunishmentPageNumber(this.props.punishmentIdFromURL, this.props.pastPunishments);
 
             this.props.changeShownPunishments(getPageElements(pageNum, punishments), pageNum);
-
         };
 
         this.updateAndShowPastPunishments = punishments => {
@@ -197,7 +196,7 @@ class PastTab extends React.Component {
         }
 
         this.showTable = () => {
-            setTimeout(() => {
+            this.dismountDelayTimer = setTimeout(() => {
                 this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
             }, animationDuration);
         }
@@ -224,7 +223,6 @@ class PastTab extends React.Component {
             this.numOfRows = nextProps.shownPastPunishments.length;
             this.startAnimation();
         }
-
     }
 
     componentWillUpdate(prevProps) {
@@ -235,13 +233,18 @@ class PastTab extends React.Component {
         }
     }
 
+    componentWillUnmount() {
+        clearTimeout(this.dismountDelayTimer);
+    }
+
     render() {
 
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownPastPunishments;
         const columns = this.columns;
 
-        const styleMarkIgnored = 'picker-selected-row'
+        const styleMarkIgnored = 'picker-selected-row';
+
 
         if (shownPunishments !== 'empty') {
             return (
@@ -258,7 +261,8 @@ class PastTab extends React.Component {
                                 {
                                     shownPunishments.map(punishment => {
 
-                                        if (this.props.punishmentIdFromURL === punishment.uid) {
+                                        if (parseInt(this.props.punishmentIdFromURL) === punishment.uid) {
+
 
                                             return (
                                                 <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
@@ -300,8 +304,9 @@ function getPunishmentPageNumber(targetId, punishments) {
     let targetIndex = null;
 
     for (let i = 0; i < punishments.length; i++) {
-
-        if (punishments[i].uid === targetId) targetIndex = i + 1;
+        if (punishments[i].uid === parseInt(targetId)) {
+            targetIndex = i + 1;
+        }
     }
 
     let pageNum = Math.ceil(targetIndex / ITEMS_PER_PAGE);

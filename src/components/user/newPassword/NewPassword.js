@@ -151,7 +151,7 @@ class NewPassword extends React.Component {
                             </button>
 
                             {errMsg
-                                ? <label className="form-feedback">{errMsg}</label>
+                                ? <label className="form-feedback">{errMsg.toUpperCase()}</label>
                                 : null}
                         </fieldset>
 

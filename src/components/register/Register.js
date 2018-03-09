@@ -372,6 +372,9 @@ class Register extends React.Component {
                                 onClick={this.backToLogin}>
                                 BACK TO LOGIN
                             </button>
+
+                            {this.props.errMsg}
+                            {this.props.serverAnswer}
                         </fieldset>
 
                     </form>

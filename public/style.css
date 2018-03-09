@@ -1095,10 +1095,6 @@ input[type=number]::-webkit-outer-spin-button {
 	resize: none;
 }
 
-#why-input:focus {
-	padding-top: 10px;
-}
-
 #btn-pun-submit {
 	width: 172px;
 

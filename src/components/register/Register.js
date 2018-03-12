@@ -373,7 +373,7 @@ class Register extends React.Component {
                                 BACK TO LOGIN
                             </button>
 
-                            {this.props.errMsg}
+                            {this.props._errMsg}
                             {this.props.serverAnswer}
                         </fieldset>
 

@@ -137,21 +137,12 @@ class App extends React.Component {
         // ako je user logiran, a kazna nije njegova, logout te postavi tu kaznu
 
         if (userLoggedIn) {
-
             if (nextProps.auth.userIdFromURL !== null && !isUrlPunOwnedByLoggedUser) {
-
-                /* console.log('HERE')
-                console.log('compare ids ' + (nextProps.common.currentUser._id == nextProps.auth.userIdFromURL))
-                console.log('nextProps.common.currentUser._id ' + typeof nextProps.common.currentUser._id)
-                console.log('userIdFromURL ' + typeof nextProps.auth.userIdFromURL)
-                console.log('isUrlPunOwnedByLoggedUser ' + isUrlPunOwnedByLoggedUser) */
-
                 agent.Auth.logout();
                 agent.setToken(0);
                 window.localStorage.removeItem('token');
                 this.props.specialLogout();
                 this.props.handleGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
-
             }
         }
 
@@ -183,35 +174,6 @@ class App extends React.Component {
                 <Footer />
             </div>
         );
-
-
-        /* return (
-            <div>
-                <Top />
-                <Login />
-                {userLoggedInAndChangePasswordForm
-                    ? <NewPassword />
-                    : <div>
-                        <Register />
-                        {
-                            this.props.common.guestAccessMsg
-                                ? (
-                                    <div className='container'>
-                                        <label>{this.props.common.guestAccessMsg}</label>
-                                    </div>
-                                )
-                                : null
-                        }
-                        <Game />
-                        <PunishmentCreator />
-                        <PunishmentSelectorTable />
-                        <Stats />
-                        <Prefs />
-                    </div>
-                }
-                <Footer />
-            </div>
-        ); */
     }
 }
 

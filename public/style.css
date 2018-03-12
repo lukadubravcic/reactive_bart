@@ -135,7 +135,8 @@ textarea {
 	box-shadow: inset 0 1px 5px 0 #929292;
 	border-radius: 8px; 
 
-	font-family: 'Montserrat-Light';
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 24px;
 	color: #515151;
 	letter-spacing: 1px;	
@@ -153,14 +154,14 @@ textarea {
 	display: inline-block;
 	position: relative;
 
-	font-family: "Montserrat-Regular";
+	font-family: 'Montserrat', sans-serif;
 	font-size: 16px;
 	color: #FFFFFF;
 	letter-spacing: 5px;	
 }
 
 .link {
-	font-family: "Montserrat-Regular";
+	font-family: 'Montserrat', sans-serif;
 	font-size: 16px;
 	color: #FFFFFF;
 	letter-spacing: 5px;	
@@ -180,7 +181,7 @@ textarea {
 	margin-top: 50px;
 	margin-left: 100px;
 
-	font-family: "Love Ya Like A Sister";
+	font-family: 'Love Ya Like A Sister', cursive;
 	font-size: 70px;
 	color: #FEFEFE;
 	letter-spacing: 4px;
@@ -218,7 +219,8 @@ textarea {
 	padding: 11px 15px 11px 20px;
 
 	background: #323232;
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 18px;
 	color: #FFFFFF;
 	letter-spacing: 5.73px;
@@ -278,7 +280,8 @@ fieldset + fieldset {
 
 	background-color: #323232;
 
-	font-family: "Montserrat-Light", Times, serif;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-weight: lighter;
 	font-size: 24px;
 	letter-spacing: 5px;
@@ -330,7 +333,8 @@ fieldset + fieldset {
 #password-change-btn {
 	display: inline-block;
 	position: relative;
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 17px;
 	background-color: transparent;
 }
@@ -401,7 +405,8 @@ fieldset + fieldset {
 	padding-top: 5px;
 	margin-top: 24px;
 		
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 20px;
 	color: #515151;
 	letter-spacing: 0;
@@ -410,11 +415,11 @@ fieldset + fieldset {
 
 .user-identity:hover {
 	color: #00BBD6;
-	background-color: rgba(81, 81, 81, 0.9);
+	/* background-color: rgba(81, 81, 81, 0.9); */
 }
 
 .user-identity:hover #password-change-btn-container {
-	display: inline-block;
+	/* display: inline-block; */
 }
 
 .delimiter-container {
@@ -438,7 +443,8 @@ fieldset + fieldset {
 	padding-right: 46px;
 	padding-left: 24px;
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 16px;
 	color: #D2D2D2;
 	letter-spacing: 2px;
@@ -496,7 +502,7 @@ fieldset + fieldset {
 	width: 78px;
 
 	background: #234F78;
-	font-family: "Share Tech Mono";
+	font-family: 'Share Tech Mono', monospace;
 	font-size: 54px;
 	color: #FEFEFE;
 }
@@ -599,7 +605,7 @@ fieldset + fieldset {
 	padding-left: 36px;
 	padding-right: 54px;
 	
-	font-family: "Margarine-Regular";
+	font-family: 'Margarine', cursive;
 	font-size: 36px;
 	color: #FFFFFF;
 	line-height: 46px;
@@ -801,7 +807,8 @@ fieldset + fieldset {
 	
 	padding-left: 36px;
 	
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 20px;
 	color: #FEFEFE;
 	letter-spacing: 5px;
@@ -851,7 +858,7 @@ fieldset + fieldset {
 
 	margin-top: 9px;
 
-	font-family: "Love Ya Like A Sister";
+	font-family: 'Love Ya Like A Sister', cursive;
 	font-size: 70px;
 	font-weight: lighter;
 	color: #FEFEFE;
@@ -885,7 +892,8 @@ fieldset + fieldset {
 	position: relative;
 	margin-top: 22px;	/* not by design */
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 26px;
 	color: #FEFEFE;
 	letter-spacing: 0;
@@ -1130,7 +1138,7 @@ input[type=number]::-webkit-outer-spin-button {
 	min-width: 1280px;	
 
 	background: #515151;
-	font-family: "Montserrat-Regular";
+	font-family: 'Montserrat', sans-serif;
 }
 
 #cr-kreativni {
@@ -1205,7 +1213,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 	margin-top: -1px;
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 22px;
 	color: #515151;
 	letter-spacing: 1px;
@@ -1255,7 +1264,8 @@ td {
 	opacity: 0.35;
 	background: transparent;
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 30px;	
 	color: #FEFEFE;
 	letter-spacing: 2px;
@@ -1297,7 +1307,8 @@ td {
 /* table header row */
 
 .picker-table-header > div {
-	font-family: "Montserrat-Bold";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
 	font-size: 17px;
 	color: #FEFEFE;
 	letter-spacing: 5px;
@@ -1470,7 +1481,8 @@ td {
 
 td.status-field,
 td.ordered-status-field {
-	font-family: "Montserrat-Bold";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
 	font-size: 18px;	
 	letter-spacing: 0.82px;
 	line-height: 20px;
@@ -1538,7 +1550,8 @@ td.ordered-status-field {
 	height: 40px;
 
 	background: #323232;
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 18px;
 	letter-spacing: 5.73px;
 
@@ -1578,7 +1591,7 @@ td.ordered-status-field {
 	position: relative;
 
 
-	font-family: "Montserrat-Regular";
+	font-family: 'Montserrat', sans-serif;
 	font-size: 16px;
 	color: #FFFFFF;
 	letter-spacing: 5px;
@@ -1661,7 +1674,8 @@ td.ordered-status-field {
 
 	padding-top: 13px;
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 30px;
 	color: #FEFEFE;
 	letter-spacing: 2px;
@@ -1737,7 +1751,7 @@ td.ordered-status-field {
 }
 
 #user-rank {
-	font-family: "ShareTechMono-Regular";
+	font-family: 'Share Tech Mono', monospace;
 	font-size: 70px;
 	color: #FFBC24;
 }
@@ -1755,7 +1769,8 @@ td.ordered-status-field {
 	width: calc(100% - 200px);
 	margin: 0 auto;
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 24px;
 	color: #C4ACE4;
 	letter-spacing: 1px;
@@ -1880,7 +1895,8 @@ td.ordered-status-field {
 	top: 4px;
 	padding-left: 21px;	
 
-	font-family: "Montserrat-Light";
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
 	font-size: 26px;
 	color: #FEFEFE;
 	letter-spacing: 0;

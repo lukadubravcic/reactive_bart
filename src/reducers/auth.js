@@ -48,7 +48,7 @@ export default (state = defaultState, action) => {
                 rePassword: defaultState.rePassword
             };
         case 'REGISTER':
-            return { ...defaultState, shownForm: state.shownForm, serverAnswer: action.serverAnswer };
+            return { ...defaultState, elementToDisplay: state.elementToDisplay, serverAnswer: action.serverAnswer };
         case 'REGISTER_MAIL_INVALID':
             return { ...state, username: state.email, email: defaultState.email, _errMsg: action.errMsg };
         case 'REGISTER_ATTEMPT':

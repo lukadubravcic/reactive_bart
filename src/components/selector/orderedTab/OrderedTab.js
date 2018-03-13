@@ -221,15 +221,11 @@ class OrderedTab extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        console.log('hereordered')
-
         if ((this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0)
             || (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length)) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
-            console.log('promjena ordered velicine')
         }
-
-
+        
         if (this.props.shownOrderedPunishments.length !== nextProps.shownOrderedPunishments.length) {
             this.numOfRows = nextProps.shownOrderedPunishments.length;
             this.startAnimation();

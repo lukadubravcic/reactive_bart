@@ -146,7 +146,6 @@ class App extends React.Component {
             }
         }
 
-
         /*   if (nextProps.auth.userIdFromURL !== null && userLoggedIn && !isUrlPunOwnedByLoggedUser) { // user je logiran, no pristupa tudim kaznama putem accept linka -> logout
   
               console.log('ULAZ');
@@ -160,9 +159,6 @@ class App extends React.Component {
     }
 
     render() {
-
-        // const userLoggedInAndChangePasswordForm = this.props.auth.showSetNewPasswordComponent && Object.keys(this.props.common.currentUser).keys;
-
         return (
             <div>
                 <Top />

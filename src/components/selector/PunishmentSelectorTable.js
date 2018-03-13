@@ -210,11 +210,11 @@ class PunishmentSelectorTable extends React.Component {
     componentWillReceiveProps(nextProps) {
 
         if (nextProps.acceptedPunishments.length === 0) {
-
+            // slucaj gdje nema accepted kazni
             this.props.setAcceptedHeaderVisibility(false);
-            if (nextProps.pastPunishments.length > 0) {
+            if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
                 this.selectTab('pastTab');
-            } else if( nextProps.orderedPunishments.length > 0) {
+            } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
                 this.selectTab('orderedTab');
             }
 

@@ -98,6 +98,7 @@ class App extends React.Component {
 
         // hendlaj invited usera kao guesta
         let queryStringData = getQueryStringData();
+        console.log(queryStringData)
 
         // id kazne
 

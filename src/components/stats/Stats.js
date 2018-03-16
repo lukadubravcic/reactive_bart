@@ -265,7 +265,7 @@ class Stats extends React.Component {
                                                             animationDuration={3500} />
                                                 </div>
 
-                                                : noDataLeftGraph}
+                                                : null/* noDataLeftGraph */}
 
                                           {this.props.secondGraph ?
                                                 <div className="float-right graph-container graph2-container"
@@ -281,7 +281,7 @@ class Stats extends React.Component {
                                                             animate={true}
                                                             animationDuration={3500} />
                                                 </div>
-                                                : noDataRightGraph}
+                                                : null/* noDataRightGraph */}
 
                                           <div className="pun-others-bottom-image-container">
                                                 {punishingOthersSVG}
@@ -418,7 +418,8 @@ const noDataRightGraph = (
                   lengthAngle={-360}
                   lineWidth={100}
                   paddingAngle={0}
-                  animate={false} />
+                  animate={true}
+                  animationDuration={0} />
       </div >
 )
 
@@ -448,7 +449,8 @@ const noDataLeftGraph = (
                   lengthAngle={-360}
                   lineWidth={100}
                   paddingAngle={0}
-                  animate={false} />
+                  animate={true}
+                  animationDuration={0} />
       </div >
 )
 

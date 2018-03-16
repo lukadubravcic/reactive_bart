@@ -83,8 +83,9 @@ class AcceptedTab extends React.Component {
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea
-            let filteredPunishments = this.props.acceptedPunishments.filter((punishment) => {
-                return punishment.uid === id ? null : punishment;
+
+            let filteredPunishments = this.props.acceptedPunishments.filter(punishment => {
+                return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
             });
             this.props.giveUpPunishment(id, filteredPunishments);
         };

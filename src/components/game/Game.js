@@ -85,10 +85,10 @@ class Game extends React.Component {
 
                 } else return;
 
-            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a                
+            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a            
 
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
-
+                console.log(punishmentInURL)
                 if (punishmentInURL) {  // kazna je aktivna
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));
 
@@ -145,10 +145,8 @@ class Game extends React.Component {
         const guestPunishmentLoaded = this.props.punishmentIdFromURL ? !this.props.guestDataLoadingInProgress : true;
         const guestPunAvail = this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length > 0;
         // detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
-        const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.progress < 100;
-        // console.log('givenUp: ' + activePunishmentGivenUp);
-        // console.log('userLoggedIn: ' + (typeof this.props.currentUser._id !== 'undefined'))
-
+        const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.punishmentProgress < 100;
+      
         if (cheating) this.setCheatingPunishment();
 
         // slucaj kada user nije logan a setupana je guest kazna
@@ -285,10 +283,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Game);
 
 function getByValue(arr, uid) {
 
-    uid = typeof uid !== 'number' ? parseInt(uid) : uid;
-
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
-        if (arr[i].uid === uid) return arr[i];
+        if (decodeURIComponent(arr[i].uid) === decodeURIComponent(uid)) return arr[i];
     }
     return null;
 }

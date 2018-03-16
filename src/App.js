@@ -29,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
         if (token) {
             agent.setToken(token);
             dispatch({ type: 'LOADING_IN_PROGRESS' })
-            agent.Auth.current().then((payload) => {
+            agent.Auth.current().then(payload => {
                 if (payload !== null) {
                     dispatch({
                         type: 'APP_LOAD',
@@ -37,7 +37,7 @@ const mapDispatchToProps = dispatch => ({
                         rank: payload.rank,
                         pref: typeof payload.pref !== 'undefined' ? payload.pref : null,
                         user: {
-                            _id: payload._id,
+                            _id: decodeURIComponent(payload._id),
                             email: payload.email,
                             username: payload.username
                         }
@@ -48,10 +48,11 @@ const mapDispatchToProps = dispatch => ({
     },
     handleGuest: (userId, punishmentId) => {
         dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
-        agent.Auth.getPunishmentAsGuest(userId, punishmentId).then(payload => {
+
+        agent.Auth.getPunishmentAsGuest(encodeURIComponent(userId), encodeURIComponent(punishmentId)).then(payload => {
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
-                    console.log(payload.msg)
+
                     dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: payload.msg });
 
                 } else if (
@@ -60,6 +61,8 @@ const mapDispatchToProps = dispatch => ({
                     && Object.keys(payload.guestPunishment).length
                     && payload.guestUser !== null
                     && Object.keys(payload.guestUser).length) {
+
+                    payload.guestUser.uid = decodeURIComponent(payload.guestUser.uid);
 
                     if (payload.guestUser.confirmed !== null) {
 
@@ -98,14 +101,12 @@ class App extends React.Component {
 
         // hendlaj invited usera kao guesta
         let queryStringData = getQueryStringData();
-        console.log(queryStringData)
-
-        // id kazne
 
         let token = window.localStorage.getItem('token');
 
         if (token) {
             this.props.onLoad(token);
+    
             if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
             if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 

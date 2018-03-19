@@ -265,7 +265,7 @@ class Stats extends React.Component {
                                                             animationDuration={3500} />
                                                 </div>
 
-                                                : null/* noDataLeftGraph */}
+                                                : noDataLeftGraph}
 
                                           {this.props.secondGraph ?
                                                 <div className="float-right graph-container graph2-container"
@@ -281,7 +281,7 @@ class Stats extends React.Component {
                                                             animate={true}
                                                             animationDuration={3500} />
                                                 </div>
-                                                : null/* noDataRightGraph */}
+                                                : noDataRightGraph}
 
                                           <div className="pun-others-bottom-image-container">
                                                 {punishingOthersSVG}
@@ -409,17 +409,11 @@ const noDataRightGraph = (
                   <span>NOT ENOUGH DATA</span>
             </label>
 
-            <PieChart
-                  data={[
-                        { value: 1, color: colors.accepted },
-                        { value: 1, color: colors.rejected },
-                        { value: 1, color: colors.ignored }
-                  ]}
-                  lengthAngle={-360}
-                  lineWidth={100}
-                  paddingAngle={0}
-                  animate={true}
-                  animationDuration={0} />
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: "block" }}>
+                  <path d="M 75 50 A 25 25 0 0 0 37.50000000000001 28.34936490538903" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#FFA623" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
+                  <path d="M 37.50000000000001 28.34936490538903 A 25 25 0 0 0 37.499999999999986 71.65063509461096" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#EA411E" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
+                  <path d="M 37.499999999999986 71.65063509461096 A 25 25 0 0 0 75 50.00000000000001" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#00BBD6" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
+            </svg>
       </div >
 )
 
@@ -440,18 +434,14 @@ const noDataLeftGraph = (
                   <span>NOT ENOUGH DATA</span>
             </label>
 
-            <PieChart
-                  data={[
-                        { value: 1, color: colors.accepted },
-                        { value: 1, color: colors.rejected },
-                        { value: 1, color: colors.ignored }
-                  ]}
-                  lengthAngle={-360}
-                  lineWidth={100}
-                  paddingAngle={0}
-                  animate={true}
-                  animationDuration={0} />
+            <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: "block" }}>
+                  <path d="M 75 50 A 25 25 0 0 0 37.50000000000001 28.34936490538903" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#FFA623" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
+                  <path d="M 37.50000000000001 28.34936490538903 A 25 25 0 0 0 37.499999999999986 71.65063509461096" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#EA411E" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
+                  <path d="M 37.499999999999986 71.65063509461096 A 25 25 0 0 0 75 50.00000000000001" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#00BBD6" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
+            </svg>
       </div >
+
+
 )
 
 

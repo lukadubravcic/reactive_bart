@@ -77,7 +77,7 @@ export default (state = defaultState, action) => {
         case 'USERID_IN_URL':
             return { ...state, userIdFromURL: action.id };
         case 'GUEST_PUNISHMENT_LOADED':
-            return { ...state, loginWhom: action.guestUser.email };
+            return { ...state, loginWhom: action.guestUser.email, elementToDisplay: 'login' };
         case 'INVITED_GUEST_PUNISHMENT_LOADED':
             return { ...state, elementToDisplay: 'register', email: action.guestUser.email };
         case 'USERNAME_SET':

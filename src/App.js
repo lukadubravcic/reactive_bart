@@ -52,7 +52,7 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.getPunishmentAsGuest(encodeURIComponent(userId), encodeURIComponent(punishmentId)).then(payload => {
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
-
+                    console.log(payload.msg);
                     dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: payload.msg });
 
                 } else if (

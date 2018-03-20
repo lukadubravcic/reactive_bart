@@ -11,6 +11,7 @@ import UsernameThanks from './UsernameThanks';
 import AdblockerDisabled from './AdblockerDisabled';
 import ResetPassword from './login/ResetPassword';
 import Register from '../register/Register';
+import ServerMessage from './ServerMessage';
 
 
 const mapStateToProps = state => ({
@@ -75,6 +76,14 @@ class Top extends React.Component {
             let element = null;
             let key = 1;
 
+            let message = this.props.common.guestAccessMsg;
+            let messageComponent = null;
+
+            if (message !== null) {
+                messageComponent = <ServerMessage message={message} />
+                console.log('dawdaw')
+            }
+
             if (userLoggedIn) {
 
                 let username = this.props.common.currentUser.username
@@ -109,6 +118,7 @@ class Top extends React.Component {
                     <div>
                         {header}
                         {element}
+                        {messageComponent}
                     </div>
                 )
 
@@ -129,7 +139,12 @@ class Top extends React.Component {
                     default:
                         element = <StartToolbar btnClickCallback={this.showLogin} />;
                 }
-                return element;
+                return (
+                    <div>
+                        {element}
+                        {messageComponent}
+                    </div>
+                );
             }
 
             return null;
@@ -157,14 +172,12 @@ class Top extends React.Component {
             // hide thanks section
             this.props.updateElementToDisplay('loggedIn');
         }
-
-
     }
 
     render() {
 
         const elements = this.getElementToDisplay();
-        
+
         return elements;
 
         /* const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;

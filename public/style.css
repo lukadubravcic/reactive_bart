@@ -50,7 +50,7 @@ textarea {
 }
 
 .height-tran {
-	transition: height 2s;
+	transition: height 0.5s;
 }
 
 .height-tran-fast {

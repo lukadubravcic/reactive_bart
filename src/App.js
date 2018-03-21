@@ -15,7 +15,9 @@ import Footer from './components/Footer';
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
+import { isNumber } from 'util';
 
+const defaultMsgDuration = 5000;
 
 const mapStateToProps = state => ({
     common: state.common,
@@ -53,7 +55,14 @@ const mapDispatchToProps = dispatch => ({
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
                     console.log(payload.msg);
-                    dispatch({ type: 'GUEST_PUNISHMENT_INVALID', msg: payload.msg });
+
+                    const msgDuration = typeof payload.time !== 'undefined' && payload.time !== null ? payload.time : defaultMsgDuration;
+
+                    dispatch({
+                        type: 'GUEST_PUNISHMENT_INVALID',
+                        msg: payload.msg,
+                        msgDuration
+                    });
 
                 } else if (
                     typeof payload.guestPunishment !== 'undefined'
@@ -106,7 +115,7 @@ class App extends React.Component {
 
         if (token) {
             this.props.onLoad(token);
-    
+
             if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
             if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
 

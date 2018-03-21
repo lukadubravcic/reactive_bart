@@ -8,6 +8,7 @@ const defaultState = {
     rank: null,
     guestDataLoadingInProgress: false,
     guestAccessMsg: null,
+    msgDuration: null,
     guestUser: null
 }
 
@@ -30,7 +31,7 @@ export default (state = defaultState, action) => {
         case 'GUEST_PUNISHMENT_LOADING':
             return { ...state, guestDataLoadingInProgress: true }
         case 'GUEST_PUNISHMENT_INVALID':
-            return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestAccessMsg: action.msg };
+            return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestAccessMsg: action.msg, msgDuration: action.msgDuration };
         case 'UPDATE_SET_USERNAME_FIELD':
             return { ...state, usernameSet: action.value };
         case 'USERNAME_SET':
@@ -42,7 +43,9 @@ export default (state = defaultState, action) => {
         case 'SET_USERNAME_ERROR':
             return { ...state, _errMsg: action.errMsg };
         case 'PUNISHMENT_MARKED_DONE':
-            return { ...state, rank: action.newRank }
+            return { ...state, rank: action.newRank };
+        case 'REMOVE_GUEST_ACCESS_MSG':
+            return { ...state, guestAccessMsg: defaultState.guestAccessMsg, msgDuration: defaultState.msgDuration };
         default:
             return state;
     }

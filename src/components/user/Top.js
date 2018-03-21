@@ -31,7 +31,8 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.logout();
         agent.setToken(0)
     },
-    updateElementToDisplay: element => dispatch({ type: 'CHANGE_SHOWN_TOP_ELEMENT', element })
+    updateElementToDisplay: element => dispatch({ type: 'CHANGE_SHOWN_TOP_ELEMENT', element }),
+    removeMsg: () => dispatch({ type: 'REMOVE_GUEST_ACCESS_MSG' })
 });
 
 
@@ -80,8 +81,7 @@ class Top extends React.Component {
             let messageComponent = null;
 
             if (message !== null) {
-                messageComponent = <ServerMessage message={message} />
-                console.log('dawdaw')
+                messageComponent = <ServerMessage message={message} removeMsg={this.props.removeMsg} displayTime={this.props.common.msgDuration}/>
             }
 
             if (userLoggedIn) {

@@ -2,9 +2,6 @@ import React from 'react';
 import agent from '../../agent';
 import { connect } from 'react-redux';
 
-import stopwatchimg from '../../assets/stopwatch02.png';
-import clockimg from '../../assets/clock01.png';
-
 import Stopwatch from './Stopwatch';
 import Clock from './Clock';
 

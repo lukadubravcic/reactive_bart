@@ -1,38 +1,63 @@
+
+
 import React from 'react';
 
 const animStyles = {
     parentContainerStyle: {
-        height: 170 + "px",
+        height: 0 + "px",
+    },
+    textContainerStyle: {
+        opacity: 0
     }
 };
+
+const animationDuration = 500;
 
 class ServerMessage extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.parentContainerRef = null;
+
+        this.dismountTimeout = null;
+        this.dismountAnimationTimeout = null;
 
         this.state = {
             parentContainerStyle: {
-                /* height: 0 + "px", */
-                backgroundColor: "#00BBD6"
+                height: 170 + "px",
+                backgroundColor: "#f44242"
+            },
+            textContainerStyle: {
+                paddingBottom: "50px",
+                opacity: 1,
+                transition: "opacity 0.25s"
             }
-        }
+        };
 
-        this.animateMounting = () => {
-            this.setState({
-                parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerStyle }
+        this.animateDismount = () => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.parentContainerStyle },
+                    textContainerStyle: { ...this.state.textContainerStyle, ...animStyles.textContainerStyle }
+                });
             });
+            this.removeGuestMessage();
+        };
+
+        this.removeGuestMessage = () => {
+            this.dismountTimeout = setTimeout(() => {
+                this.props.removeMsg();
+            }, animationDuration);
         }
     }
 
     componentDidMount() {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                this.animateMounting();
-            });
-        });
+        this.dismountAnimationTimeout = setTimeout(this.animateDismount, this.props.displayTime);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.dismountAnimationTimeout);
+        clearTimeout(this.dismountTimeout);
     }
 
     render() {
@@ -43,9 +68,11 @@ class ServerMessage extends React.Component {
                 style={this.state.parentContainerStyle}
                 className="parent-component header height-tran">
 
-                <div className="container">
+                <div
+                    className="container">
+
                     <label
-                        style={{ paddingBottom: "50px" }}
+                        style={this.state.textContainerStyle}
                         className="heading message-heading">
                         {this.props.message}
                     </label>

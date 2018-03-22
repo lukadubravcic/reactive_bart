@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import { checkIfIgnoredPunishment } from '../../helpers/helpers';
 
+const defaultMsgDuration = 5000;
 
 const mapStateToProps = state => ({
     ...state.punishment,
@@ -27,6 +28,15 @@ const mapDispatchToProps = dispatch => ({
     },
     gameUnmount: () => {
         dispatch({ type: 'GAME_UNMOUNT' });
+    },
+    faultyPunishmentSet: msg => {
+        let msgDuration = defaultMsgDuration;
+
+        dispatch({
+            type: 'GUEST_PUNISHMENT_INVALID',
+            msg: msg,
+            msgDuration
+        });
     }
 });
 
@@ -85,11 +95,12 @@ class Game extends React.Component {
 
                 } else return;
 
-            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a            
+            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a        
 
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
-                console.log(punishmentInURL)
+
                 if (punishmentInURL) {  // kazna je aktivna
+
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));
 
                 } else { // kazna nije pronadena u accepted
@@ -101,8 +112,13 @@ class Game extends React.Component {
                         let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
                         specialPunishment && this.props.setActivePunishment(specialPunishment, true);
 
-                    } else { // pristup kazni koja se ne moze izvrsiti, prebaci na random
+                        // slucaj kada kaznu nije moguce pokrenuti niti je ignored, tj. kazna je accepted no done, givenup ili failed
+                    } else if (typeof punishmentInURL.done !== 'undefined' && punishmentInURL.done !== null) { // zatrazena zavrsena kazna
+                        this.props.faultyPunishmentSet('Accesing completed punishment.')
+                        let randomPunishment = getRandomPunishment(this.props.randomPunishments);
+                        this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
 
+                    } else { // pristup kazni koja se ne moze izvrsiti, prebaci na random
                         let randomPunishment = getRandomPunishment(this.props.randomPunishments);
                         this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
                     }
@@ -146,7 +162,7 @@ class Game extends React.Component {
         const guestPunAvail = this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length > 0;
         // detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
         const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.punishmentProgress < 100;
-      
+
         if (cheating) this.setCheatingPunishment();
 
         // slucaj kada user nije logan a setupana je guest kazna
@@ -326,4 +342,21 @@ function getRandomPunishment(punishments) {
         const randIndex = Math.floor(Math.random() * punishments.length);
         return punishments[randIndex];
     }
+}
+
+
+
+// slucaj kada kaznu nije moguce pokrenuti niti je ignored, tj. kazna je accepted no done, givenup ili failed
+function nekafunckija(punishment) {
+
+
+
+}
+
+
+function getPunishmentStatus(punishment) {
+    if (typeof punishment.given_up !== 'undefined' && punishment.given_up !== null) return 'given_up';
+    else if (typeof punishment.done !== 'undefined' && punishment.done !== null) return 'done';
+    else if (typeof punishment.failed !== 'undefined' && punishment.failed !== null) return 'failed';
+    else return null;
 }

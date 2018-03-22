@@ -143,11 +143,14 @@ class App extends React.Component {
 
         const userLoggedIn = !!Object.keys(nextProps.common.currentUser).length;
         const userIdFromUrlExist = nextProps.auth.userIdFromURL !== null;
-        const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id == nextProps.auth.userIdFromURL;
+        const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id === nextProps.auth.userIdFromURL;
 
         // ako je user logiran, a kazna nije njegova, logout te postavi tu kaznu
-
         if (userLoggedIn) {
+
+            /* console.log("nextProps.auth.userIdFromURL !== null: " + (nextProps.auth.userIdFromURL !== null));
+            console.log("!isUrlPunOwnedByLoggedUser: " + !isUrlPunOwnedByLoggedUser); */
+
             if (nextProps.auth.userIdFromURL !== null && !isUrlPunOwnedByLoggedUser) {
                 agent.Auth.logout();
                 agent.setToken(0);
@@ -156,17 +159,6 @@ class App extends React.Component {
                 this.props.handleGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
             }
         }
-
-        /*   if (nextProps.auth.userIdFromURL !== null && userLoggedIn && !isUrlPunOwnedByLoggedUser) { // user je logiran, no pristupa tudim kaznama putem accept linka -> logout
-  
-              console.log('ULAZ');
-  
-              window.localStorage.removeItem('token');
-              agent.Auth.logout();
-              agent.setToken(0);
-  
-              this.props.specialLogout();
-          } */
     }
 
     render() {

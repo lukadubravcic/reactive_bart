@@ -62,10 +62,30 @@ class SetUsername extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            usernameValid: null,
+            usernameExist: false
+        }
+
         this.usernameChange = ev => {
             ev.preventDefault();
-            this.props.onUsernameChange(ev.target.value);
+            let username = ev.target.value;
+
+            if (username.length > 0) this.setState({ usernameValid: validateUsername(username) });
+            else this.setState({ usernameValid: true });
+
+            if (this.state.usernameValid) this.checkIfExistingUser(username);
+
+            this.props.onUsernameChange(username);
+
         };
+
+        this.checkIfExistingUser = async (value) => {
+
+            let response = await agent.Auth.checkIfUserExists(value);
+
+            if (typeof response.exist !== 'undefined') this.setState({ usernameExist: !!response.exist });
+        }
 
         this.createOnUsernameSetPunishment = username => {
             return getFromSpecialPunishments('USERNAME_SET', username, this.props.specialPunishments);
@@ -74,8 +94,6 @@ class SetUsername extends React.Component {
         this.submitUsername = username => ev => {
             ev.preventDefault();
             let punishment = this.createOnUsernameSetPunishment(username.trim());
-
-
 
             if (Object.keys(this.props.currentUser).length) {
                 punishment && this.props.onSubmit(username, punishment);
@@ -89,6 +107,8 @@ class SetUsername extends React.Component {
 
         const username = this.props.usernameSet;
         const errMsg = this.props._errMsg;
+        const formEnabled = username.length > 0 && this.state.usernameValid === true && this.state.usernameExist === false;
+        const wrongEntry = this.state.usernameValid === false || this.state.usernameExist === true;
 
         return (
             <div className="parent-component header">
@@ -104,12 +124,16 @@ class SetUsername extends React.Component {
 
                         <fieldset className="header-form-row">
                             <input
-                                className="text-input"
+                                className={`text-input ${wrongEntry ? "input-wrong-entry" : ""}`}
                                 type="text"
                                 placeholder="Username"
                                 onChange={this.usernameChange}
                                 value={username}
                                 required />
+
+                            {this.state.usernameExist
+                                ? <label className="form-feedback">USERNAME TAKEN</label>
+                                : null}
 
                             {errMsg
                                 ? <label className="form-feedback">{errMsg.toUpperCase()}</label>
@@ -121,11 +145,11 @@ class SetUsername extends React.Component {
                             <button
                                 className="btn-submit btn-set-username"
                                 type="submit"
-                                disabled={!!this.validationMessage}>
+                                disabled={!formEnabled}>
                                 SET USERNAME
                             </button>
                         </fieldset>
-                      
+
                     </form>
                 </div>
             </div>
@@ -149,9 +173,19 @@ function getFromSpecialPunishments(type, username, specialPunishments) {
             result = JSON.parse(JSON.stringify(specialPunishments[i]));
             result.what_to_write += username;
             result.what_to_write.trim();
+            if (result.what_to_write[result.what_to_write.length - 1] !== ' ') result.what_to_write += ' ';
             return result;
         }
     }
 
     return null;
+}
+
+function validateUsername(username) {
+    const usernameRegex = /^[a-zA-Z][a-zA-Z0-9-_\.]{2,20}$/;
+
+    if (usernameRegex.test(username)) {
+        return true;
+
+    } else return false // '3 to 20 characters (no white-space).';
 }

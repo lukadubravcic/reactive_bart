@@ -13,7 +13,7 @@ const animStyles = {
 
 const animationDuration = 500;
 
-class ServerMessage extends React.Component {
+class InformationFlasher extends React.Component {
 
     constructor(props) {
         super(props);
@@ -45,9 +45,11 @@ class ServerMessage extends React.Component {
         };
 
         this.removeGuestMessage = () => {
-            this.dismountTimeout = setTimeout(() => {
-                this.props.removeMsg();
-            }, animationDuration);
+            if (this.props.removeMsg !== null) {
+                this.dismountTimeout = setTimeout(() => {
+                    this.props.removeMsg();
+                }, animationDuration);
+            }
         }
     }
 
@@ -82,4 +84,4 @@ class ServerMessage extends React.Component {
     }
 }
 
-export default ServerMessage;
+export default InformationFlasher;

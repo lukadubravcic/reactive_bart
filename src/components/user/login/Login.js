@@ -179,7 +179,6 @@ class Login extends React.Component {
             if (fieldValue.length === 0) return;
 
             this.checkIfExistingUser(fieldValue);
-
         }
 
         this.checkIfExistingUser = async (value) => {

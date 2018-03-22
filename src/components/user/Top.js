@@ -11,8 +11,7 @@ import UsernameThanks from './UsernameThanks';
 import AdblockerDisabled from './AdblockerDisabled';
 import ResetPassword from './login/ResetPassword';
 import Register from '../register/Register';
-import ServerMessage from './ServerMessage';
-
+import InformationFlasher from './InformationFlasher';
 
 const mapStateToProps = state => ({
     common: state.common,
@@ -81,7 +80,7 @@ class Top extends React.Component {
             let messageComponent = null;
 
             if (message !== null) {
-                messageComponent = <ServerMessage message={message} removeMsg={this.props.removeMsg} displayTime={this.props.common.msgDuration}/>
+                messageComponent = <InformationFlasher message={message} removeMsg={this.props.removeMsg} displayTime={this.props.common.msgDuration} />
             }
 
             if (userLoggedIn) {
@@ -108,7 +107,7 @@ class Top extends React.Component {
                         element = <SetUsername />;
                         break;
                     case 'thanks':
-                        element = <UsernameThanks />;
+                        element = <UsernameThanks unmountCallback={this.props.updateElementToDisplay} />;
                         break;
                     case 'loggedIn':
                         element = null;

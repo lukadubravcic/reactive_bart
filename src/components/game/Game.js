@@ -47,92 +47,83 @@ class Game extends React.Component {
 
         this.setCheatingPunishment = () => {
             let cheatingPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('CHEAT_DETECTED', this.props.specialPunishments));
-
-            if (cheatingPunishment) {
-                this.props.setActivePunishment(cheatingPunishment);
-            }
+            if (cheatingPunishment) this.props.setActivePunishment(cheatingPunishment);
         }
 
         this.changeActivePunishmentNotLoggedIn = () => {
-
             if (window.canRunAds === undefined) { // adblocker detektiran
-
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
-
                 if (specialPunishment) {
                     this.props.setActivePunishment(specialPunishment);
-
                 } else return;
-
             } else if (this.props.guestPunishment) { // invited user
-
                 if (checkIfIgnoredPunishment(this.props.guestPunishment)) {
                     let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
                     specialPunishment && this.props.setActivePunishment(specialPunishment, false);
-
                 } else {
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(this.props.guestPunishment));
                 }
-
             } else if (this.props.punishmentIdFromURL) {
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
                 this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment), true);
-
             } else {
-                let randomPunishment = getRandomPunishment(this.props.randomPunishments);
-                this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
+                this.setRandomActivePunishment();
             }
         }
 
         this.changeActivePunishmentLoggedIn = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
 
             if (window.canRunAds === undefined) { // adblocker detektiran
-
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
-
                 if (specialPunishment) {
                     this.props.setActivePunishment(specialPunishment);
-
                 } else return;
-
             } else if (this.props.punishmentIdFromURL) { // kazna sa url-a        
-
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
-
                 if (punishmentInURL) {  // kazna je aktivna
-
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));
-
                 } else { // kazna nije pronadena u accepted
-
                     punishmentInURL = getByValue(this.props.pastPunishments, this.props.punishmentIdFromURL) // pronadi je u past kaznama
-
-                    if (punishmentInURL && checkIfIgnoredPunishment(punishmentInURL)) { // ako je u past kaznama i status = ignored
-
-                        let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
-                        specialPunishment && this.props.setActivePunishment(specialPunishment, true);
-
-                        // slucaj kada kaznu nije moguce pokrenuti niti je ignored, tj. kazna je accepted no done, givenup ili failed
-                    } else if (typeof punishmentInURL.done !== 'undefined' && punishmentInURL.done !== null) { // zatrazena zavrsena kazna
-                        this.props.faultyPunishmentSet('Accesing completed punishment.')
-                        let randomPunishment = getRandomPunishment(this.props.randomPunishments);
-                        this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
-
-                    } else { // pristup kazni koja se ne moze izvrsiti, prebaci na random
-                        let randomPunishment = getRandomPunishment(this.props.randomPunishments);
-                        this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
-                    }
+                    this.handleFaultyAcceptedPunishment(punishmentInURL);
                 }
-
             } else { // ako ne postoji postavi random punishment
-
-                let randomPunishment = getRandomPunishment(this.props.randomPunishments);
-
-                if (randomPunishment) {
-                    this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
-                }
+                this.setRandomActivePunishment();
             }
-        };
+        }
+
+        this.setRandomActivePunishment = () => {
+            let randomPunishment = getRandomPunishment(this.props.randomPunishments);
+            this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(randomPunishment));
+        }
+
+        this.handleFaultyAcceptedPunishment = punishment => {
+            //provjera ignorea
+            if (punishment && checkIfIgnoredPunishment(punishment)) {
+                let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
+                if (specialPunishment) return this.props.setActivePunishment(specialPunishment, true);
+            }
+            // dobiti status kazne
+            let punishmentStatus = getAcceptedPunishmentStatus(punishment);
+            // dobiti poruku
+            let warningMsg = null;
+            switch (punishmentStatus) {
+                case 'given_up':
+                    warningMsg = 'Accessing given up punishment.';
+                    break;
+                case 'done':
+                    warningMsg = 'Accessing completed punishment.';
+                    break;
+                case 'failed':
+                    warningMsg = 'Accessing failed punishment.';
+                    break;
+                default:
+                    warningMsg = 'Invalid punishment.';
+                    break;
+            }
+            // postavi poruku i random kaznu
+            this.props.faultyPunishmentSet(warningMsg);
+            this.setRandomActivePunishment();
+        }
     }
 
     componentDidMount() {
@@ -158,34 +149,38 @@ class Game extends React.Component {
         const acceptedAndPastPunishmentsLoaded = this.props.acceptedPunishments !== 'empty' && this.props.pastPunishments !== 'empty';
         const userJustLoggedOut = Object.keys(prevProps.activePunishment).length > 0 && Object.keys(this.props.activePunishment).length === 0 && !userLoggedIn;
         const cheating = !prevProps.cheating && this.props.cheating;
-        const guestPunishmentLoaded = this.props.punishmentIdFromURL ? !this.props.guestDataLoadingInProgress : true;
+        const guestPunishmentLoaded = !this.props.guestDataLoadingInProgress;
         const guestPunAvail = this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length > 0;
         // detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
         const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.punishmentProgress < 100;
 
         if (cheating) this.setCheatingPunishment();
-
         // slucaj kada user nije logan a setupana je guest kazna
-        if (!userLoggedIn && guestPunAvail && activePunishmentNotSet && randomAndSpecialPunishmentsLoaded) {
-            this.changeActivePunishmentNotLoggedIn();
-        }
-
-        else if ((guestPunishmentLoaded
-            && appFinishedLoadingUserNotFound
+        if (
+            !userLoggedIn
+            && guestPunishmentLoaded
+            && guestPunAvail
+            && activePunishmentNotSet
             && randomAndSpecialPunishmentsLoaded
-            && activePunishmentNotSet)
-            || userJustLoggedOut) {
-
+        ) {
             this.changeActivePunishmentNotLoggedIn();
-
+        } else if (
+            (guestPunishmentLoaded
+                && appFinishedLoadingUserNotFound
+                && randomAndSpecialPunishmentsLoaded
+                && activePunishmentNotSet)
+            || userJustLoggedOut
+        ) {
+            this.changeActivePunishmentNotLoggedIn();
             // ima usera
-        } else if ((userLoggedIn
-            && randomAndSpecialPunishmentsLoaded
-            && acceptedAndPastPunishmentsLoaded
-            && activePunishmentNotSet)
+        } else if (
+            (userLoggedIn
+                && randomAndSpecialPunishmentsLoaded
+                && acceptedAndPastPunishmentsLoaded
+                && activePunishmentNotSet)
             || (userLoggedIn
-                && activePunishmentGivenUpWhileNotDone)) {
-
+                && activePunishmentGivenUpWhileNotDone)
+        ) {
             this.changeActivePunishmentLoggedIn();
         }
     }
@@ -318,7 +313,6 @@ function getSpecialPunishment(type, specialPunishments) {
     return null;
 }
 
-
 function addSpacingToPunishmentWhatToWrite(punishment) {
 
     if (punishment.what_to_write[punishment.what_to_write.length - 1] === ' ') {
@@ -344,17 +338,7 @@ function getRandomPunishment(punishments) {
     }
 }
 
-
-
-// slucaj kada kaznu nije moguce pokrenuti niti je ignored, tj. kazna je accepted no done, givenup ili failed
-function nekafunckija(punishment) {
-
-
-
-}
-
-
-function getPunishmentStatus(punishment) {
+function getAcceptedPunishmentStatus(punishment) {
     if (typeof punishment.given_up !== 'undefined' && punishment.given_up !== null) return 'given_up';
     else if (typeof punishment.done !== 'undefined' && punishment.done !== null) return 'done';
     else if (typeof punishment.failed !== 'undefined' && punishment.failed !== null) return 'failed';

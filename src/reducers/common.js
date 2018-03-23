@@ -27,6 +27,7 @@ export default (state = defaultState, action) => {
         case 'APP_LOAD':
             return { ...state, token: action.token || null, currentUser: action.user, loadInProgress: defaultState.loadInProgress, rank: action.rank };
         case 'GUEST_PUNISHMENT_LOADED':
+            console.log('guest pun loaded')
             return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestUser: action.guestUser };
         case 'GUEST_PUNISHMENT_LOADING':
             return { ...state, guestDataLoadingInProgress: true }

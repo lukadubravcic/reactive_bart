@@ -74,11 +74,8 @@ const mapDispatchToProps = dispatch => ({
                     payload.guestUser.uid = decodeURIComponent(payload.guestUser.uid);
 
                     if (payload.guestUser.confirmed !== null) {
-
                         dispatch({ type: 'GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
-
                     } else {
-
                         dispatch({ type: 'INVITED_GUEST_PUNISHMENT_LOADED', punishment: payload.guestPunishment, guestUser: payload.guestUser });
                     }
                 }

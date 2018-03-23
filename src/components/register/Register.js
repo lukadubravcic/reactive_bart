@@ -118,14 +118,15 @@ class Register extends React.Component {
             validPasswordField: true,
 
             emailExist: false,
-            usernameExist: false
+            usernameExist: false,
+
+            showPwdInvalidHoverElement: false,
         }
 
         this.usernameChange = ev => {
             if (ev.target.value.length > 0 && !validateUsername(ev.target.value)) {
                 this.setState({ validUsernameField: false });
             } else this.setState({ validUsernameField: true });
-
             this.setState({ usernameExist: false });
             this.props.onUsernameChange(ev.target.value);
         };
@@ -134,12 +135,14 @@ class Register extends React.Component {
             if (ev.target.value.length > 0 && !isMail(ev.target.value)) {
                 this.setState({ validEmailField: false });
             } else this.setState({ validEmailField: true });
-
             this.setState({ emailExist: false });
             this.props.onEmailChange(ev.target.value);
         };
 
         this.passwordChange = ev => {
+            if (ev.target.value.length > 0 && !validatePassword(ev.target.value)) {
+                this.setState({ validPasswordField: false });
+            } else this.setState({ validPasswordField: true, showPwdInvalidHoverElement: false });
             this.props.onPasswordChange(ev.target.value);
         };
 
@@ -169,7 +172,6 @@ class Register extends React.Component {
         }
 
         this.animateMounting = () => {
-
             // fadein username/email (onaj koji je prazan), naslov i btne
             let emailStyle = { ...this.state.emailFieldsetStyle };
             let usernameStyle = { ...this.state.usernameFieldsetStyle };
@@ -191,7 +193,6 @@ class Register extends React.Component {
 
             let emailDismStyle = { ...this.state.emailFieldsetStyle };
             let usernameDismStyle = { ...this.state.usernameFieldsetStyle };
-
             // postavi dismount stilove -> ako postoji unesen email
             if (this.props.email.length > 0) {
                 usernameDismStyle = { ...usernameDismStyle, ...animStyles.fieldsetCollapse };
@@ -213,24 +214,28 @@ class Register extends React.Component {
 
         this.onEmailBlur = async ev => {
             ev.preventDefault();
-
             if (this.props.email.length === 0) return;
-
             let { exist } = await agent.Auth.checkIfUserExists(this.props.email);
-
             if (!exist) return this.setState({ emailExist: false });
             return this.setState({ emailExist: true });
         }
 
         this.onUsernameBlur = async ev => {
             ev.preventDefault();
-
             if (this.props.username.length === 0) return;
-
             let { exist } = await agent.Auth.checkIfUserExists(this.props.username);
-
             if (!exist) return this.setState({ usernameExist: false });
             return this.setState({ usernameExist: true });
+        }
+
+        this.showPwdInvalidElement = ev => {
+            ev.preventDefault();
+            this.setState({ showPwdInvalidHoverElement: true });
+        }
+
+        this.hidePwdInvalidElement = ev => {
+            ev.preventDefault();
+            this.setState({ showPwdInvalidHoverElement: false });
         }
     }
 
@@ -249,16 +254,21 @@ class Register extends React.Component {
         });
     }
 
-
     render() {
-
         const username = this.props.username;
         const email = this.props.email;
         const password = this.props.password;
         const rePassword = this.props.rePassword;
         const _errMsg = this.props._errMsg;
         const serverAnswer = this.props.serverAnswer;
+        const passwordWrongEntryWarning = '3 to 20 characters, contain at least one numeric digit, one uppercase and lowercase letter.';
         const isFormDisabled = this.state.formDisabled;
+        const isSubmitDisabled =
+            this.state.formDisabled
+            || this.state.usernameExist
+            || !this.state.validEmailField
+            || !this.state.validUsernameField
+            || !this.state.validPasswordField;
 
         return (
 
@@ -313,8 +323,8 @@ class Register extends React.Component {
                                 placeholder="username"
                                 value={username}
                                 onChange={this.usernameChange}
-                                ref={elem => this.usernameInput = elem}
-                                required />
+                                onBlur={this.onUsernameBlur}
+                                ref={elem => this.usernameInput = elem} />
                             {this.state.usernameExist ? <label className="form-feedback">ALREADY IN USE</label> : null}
                             {this.state.validUsernameField ? null : <label className="form-feedback">INVALID USERNAME</label>}
                         </fieldset>
@@ -325,12 +335,48 @@ class Register extends React.Component {
                             disabled={isFormDisabled}>
 
                             <input
-                                className="text-input"
+                                className={`text-input ${!this.state.validPasswordField ? "input-wrong-entry" : ""}`}
                                 type="password"
                                 placeholder="password"
                                 value={password}
                                 onChange={this.passwordChange}
                                 required />
+                            {!this.state.validPasswordField
+                                ? <label
+                                    className="form-feedback"
+                                    onMouseOver={this.showPwdInvalidElement}
+                                    onMouseOut={this.hidePwdInvalidElement}>
+                                    <u>UNACCETABLE</u>
+
+                                    {this.state.showPwdInvalidHoverElement
+                                        ? <div
+                                            style={{
+                                                position: "absolute",
+                                                width: 500 + "px",
+                                                right: -160 + "px",
+                                                bottom: 25 + "px",
+                                            }}
+                                            className="hover-dialog" >
+
+                                            <label className="hover-dialog-text">
+                                                {passwordWrongEntryWarning}
+                                            </label>
+
+                                            <div className="triangle-hover-box-container">
+                                                <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                    <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-528.000000, -981.000000)">
+                                                        <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
+                                                            <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
+                                                                points="83.5 65 95 79 72 79"></polygon>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        : null}
+
+                                </label>
+                                : null}
                         </fieldset>
 
                         <fieldset
@@ -340,7 +386,7 @@ class Register extends React.Component {
                             disabled={isFormDisabled}>
 
                             <input
-                                className="text-input"
+                                className={`text-input ${password !== rePassword && rePassword.length ? "input-wrong-entry" : ""}`}
                                 type="password"
                                 placeholder="repeat password"
                                 value={rePassword}
@@ -355,14 +401,14 @@ class Register extends React.Component {
 
                         <fieldset
                             style={this.state.btnFieldsetStyle}
-                            className="header-form-row opacity-03-delay-tran-fast"
-                            disabled={isFormDisabled}>
+                            className="header-form-row opacity-03-delay-tran-fast">
 
                             <button
                                 id="btn-register"
                                 className="btn-submit"
                                 ref="registerBtn"
-                                type="submit">
+                                type="submit"
+                                disabled={isFormDisabled || isSubmitDisabled}>
                                 REGISTER
                             </button>
                             <button
@@ -372,9 +418,14 @@ class Register extends React.Component {
                                 onClick={this.backToLogin}>
                                 BACK TO LOGIN
                             </button>
-
-                            {this.props._errMsg}
-                            {this.props.serverAnswer}
+                            {this.props._errMsg
+                                ?
+                                <label className="form-feedback">{this.props._errMsg.toUpperCase()}</label>
+                                : null}
+                            {this.props.serverAnswer
+                                ?
+                                <label className="form-feedback">{this.props.serverAnswer.toUpperCase()}</label>
+                                : null}
                         </fieldset>
 
                     </form>

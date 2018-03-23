@@ -224,6 +224,18 @@ class PunishmentCreator extends React.Component {
         const whyField = this.props.why;
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
+        const submitDisabled =
+            this.state.showTryMailTooltip
+            || (
+                deadlineChecked
+                && !this.props.deadlineValid
+                && this.props.yearField.length === 0
+                && this.props.monthField.length === 0
+                && this.props.dayField.length === 0
+            )
+            || !this.state.whatToWriteFieldValid
+            || !this.state.whyFieldValid;
+        console.log(submitDisabled)
 
         return (
 
@@ -353,6 +365,9 @@ class PunishmentCreator extends React.Component {
                                 onChange={this.changeWhatToWrite}
                                 required
                             />
+                            {!this.state.whatToWriteFieldValid
+                                ? <label id="form-submit-feedback" className="float-left form-feedback">TOO LONG!</label>
+                                : null}
                         </fieldset>
 
                         <fieldset id="why-form-row"
@@ -369,6 +384,9 @@ class PunishmentCreator extends React.Component {
                                 onChange={this.changeWhy}
                                 required>
                             </textarea>
+                            {!this.state.whyFieldValid
+                                ? <label id="form-submit-feedback" style={{ marginTop: 160 + "px" }} className="float-left form-feedback">TOO LONG!</label>
+                                : null}
                         </fieldset>
 
                         <fieldset
@@ -379,8 +397,10 @@ class PunishmentCreator extends React.Component {
                                 id="btn-pun-submit"
                                 className="float-left btn-submit"
                                 ref="submitPunishmentBtn"
-                                type="submit">PUNISH
-                                </button>
+                                type="submit"
+                                disabled={submitDisabled}>
+                                PUNISH
+                            </button>
 
                             {this.props._errMsg !== null
                                 ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg.toUpperCase()}</label>
@@ -396,84 +416,7 @@ class PunishmentCreator extends React.Component {
 
                 </div >
             </div >
-
         )
-
-        /* } else return (
-    
-            <div id="creator-component-container" className="parent-component greyscale-filter">
-    
-                <div id="form-overlay"></div>
-    
-                <div className="container">
-    
-                    <div id="creator-heading-container">
-                        <h1 id="creator-heading">Your turn to punish someone!</h1>
-                    </div>
-    
-                    <form id="pun-creation-form">
-    
-                        <fieldset className="form-row">
-                            <label className="float-left input-field-name">WHOM</label>
-                            <input id="whom-input" className="float-left text-input" type="text" placeholder="e-mail/username" required />
-                            <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label>
-                        </fieldset>
-    
-                        <fieldset className="form-row">
-                            <label className="float-left input-field-name">HOW MANY TIMES</label>
-                            <button id="decrement-button" className="float-left btn-range" type="button">
-                                {decrementBtnSvg}
-                            </button>
-    
-                            <input id="how-many-times-input" className="float-left text-input" type="number" min="1" max="999" placeholder="999" required />
-    
-                            <button id="increment-button" className="float-left btn-range" type="button">
-                                {incrementBtnSvg}
-                            </button>
-                        </fieldset>
-    
-                        <fieldset className="form-row">
-                            <label className="float-left input-field-name">DEADLINE</label>
-    
-                            <label className="float-left custom-chexbox-container">
-                                <input type="checkbox" />
-                                <span id="checkmark"></span>
-                            </label>
-    
-                            <input id="day-picker" className="float-left text-input" type="text" placeholder="dd" required />
-                            <input id="month-picker" className="float-left text-input" type="text" placeholder="mm" required />
-                            <input id="year-picker" className="float-left text-input" type="text" placeholder="yyyy" required />
-    
-                            <button id="btn-calendar" type="button">
-                                {calendarBtnSvg}
-                            </button> 
-                        </fieldset>
-    
-                        <fieldset className="form-row">
-                            <label className="float-left input-field-name">WHAT TO WRITE</label>
-                            <input id="what-to-write-input" className="float-left text-input" type="text" placeholder="One line." required />
-                        </fieldset>
-    
-                        <fieldset id="why-form-row" className="form-row">
-                            <label className="float-left input-field-name">WHY</label>
-                            <textarea id="why-input" className="float-left text-input" type="text" placeholder="Feel free to explain your reasons." required></textarea>
-                        </fieldset>
-    
-                        <fieldset className="form-row">
-                            <button id="btn-pun-submit" className="float-left btn-submit" type="submit">PUNISH</button>
-                            <label id="form-submit-feedback" className="float-left form-feedback">PLEASE ENTER REQUIRED FIELDS.</label>
-                        </fieldset>
-    
-                    </form>
-    
-                    <div id="form-bottom-props-container">
-                        {creatorBottomSvg}
-                    </div >
-    
-                </div >
-            </div >
-    
-        ) */
     }
 }
 

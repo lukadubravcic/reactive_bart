@@ -52,7 +52,8 @@ class AcceptedTab extends React.Component {
     constructor() {
         super();
 
-        this.dismountDelayTimer = null;
+        this.containerElement = null;
+        this.updateTableVisibilityTimeout = null;
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
@@ -201,7 +202,7 @@ class AcceptedTab extends React.Component {
         this.startAnimation = () => {
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    this.setState({
+                    this.containerElement !== null && this.setState({
                         tableContainerStyle: {
                             ...this.state.tableContainerStyle,
                             height: this.numOfRows * this.rowHeight + this.borderThickness - 1
@@ -215,8 +216,8 @@ class AcceptedTab extends React.Component {
         }
 
         this.showTable = () => {
-            this.dismountDelayTimer = setTimeout(() => {
-                this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
+            this.updateTableVisibilityTimeout = setTimeout(() => {
+                this.containerElement !== null && this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
             }, animationDuration);
         }
     }
@@ -241,18 +242,8 @@ class AcceptedTab extends React.Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(this.dismountDelayTimer);
+        clearTimeout(this.updateTableVisibilityTimeout);
     }
-
-    /* componentDidUpdate(prevProps) {
-        console.log(!Object.keys(prevProps.activePunishment).length)
-        if (!Object.keys(prevProps.activePunishment).length &&
-            !Object.keys(this.props.activePunishment).length &&
-            this.props.randomPunishments !== 'empty' &&
-            Object.keys(this.props.specialPunishments).length){
-                console.log('ulaz')
-                this.changeActivePunishment();} // startup setanje aktivne kazne
-    } */
 
     render() {
 
@@ -266,7 +257,7 @@ class AcceptedTab extends React.Component {
 
         if (shownPunishments !== 'empty') {
             return (
-                <div>
+                <div ref={elem => this.containerElement = elem}>
                     <TableHeader columns={columns} />
                     <div style={this.state.tableContainerStyle}>
 

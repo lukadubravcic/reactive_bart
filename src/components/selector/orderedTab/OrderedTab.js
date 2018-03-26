@@ -42,7 +42,8 @@ class OrderedTab extends React.Component {
     constructor() {
         super();
 
-        this.dismountDelayTimer = null;
+        this.containerElement = null;
+        this.updateTableVisibilityTimeout = null;
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
@@ -191,7 +192,7 @@ class OrderedTab extends React.Component {
         this.startAnimation = () => {
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    this.setState({
+                    this.containerElement !== null && this.setState({
                         tableContainerStyle: {
                             ...this.state.tableContainerStyle,
                             height: this.numOfRows * this.rowHeight + this.borderThickness - 1  // -1 jer zadnji row nema bottom border
@@ -205,8 +206,8 @@ class OrderedTab extends React.Component {
         }
 
         this.showTable = () => {
-            this.dismountDelayTimer = setTimeout(() => {
-                this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
+            this.updateTableVisibilityTimeout = setTimeout(() => {
+                this.containerElement !== null && this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
             }, animationDuration);
         }
     }
@@ -225,7 +226,7 @@ class OrderedTab extends React.Component {
             || (this.props.orderedPunishments.length !== nextProps.orderedPunishments.length)) {
             this.updateAndShowOrderedPunishments(nextProps.orderedPunishments);
         }
-        
+
         if (this.props.shownOrderedPunishments.length !== nextProps.shownOrderedPunishments.length) {
             this.numOfRows = nextProps.shownOrderedPunishments.length;
             this.startAnimation();
@@ -233,7 +234,7 @@ class OrderedTab extends React.Component {
     }
 
     componentWillUnmount() {
-        clearTimeout(this.dismountDelayTimer);
+        clearTimeout(this.updateTableVisibilityTimeout);
     }
 
     render() {
@@ -244,7 +245,7 @@ class OrderedTab extends React.Component {
 
         if (shownPunishments !== 'empty') {
             return (
-                <div>
+                <div ref={elem => this.containerElement = elem}>
                     <TableHeader columns={this.columns} />
                     <div style={this.state.tableContainerStyle}>
 

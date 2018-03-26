@@ -156,7 +156,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
+            <div style={{ overflowX: "hidden" }} >
                 <Top />
                 <Game />
                 <PunishmentCreator />

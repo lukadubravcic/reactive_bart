@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
     guestPunishment: state.game.guestPunishment,
     guestDataLoadingInProgress: state.common.guestDataLoadingInProgress,
     userIdFromURL: state.auth.userIdFromURL,
-    punishmentProgress: state.game.progress
+    punishmentProgress: state.game.progress,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -46,6 +46,7 @@ class Game extends React.Component {
         super();
 
         this.writingBoard = null;
+        this.boardInViewportTimeout = null;
 
         this.setCheatingPunishment = () => {
             let cheatingPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('CHEAT_DETECTED', this.props.specialPunishments));
@@ -53,6 +54,7 @@ class Game extends React.Component {
         }
 
         this.changeActivePunishmentNotLoggedIn = () => {
+
             if (window.canRunAds === undefined) { // adblocker detektiran
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
                 if (specialPunishment) {
@@ -129,7 +131,7 @@ class Game extends React.Component {
 
         this.setBoardInViewport = () => {
             // focusaj board nakon odredenog vremena
-            setTimeout(() => {
+            this.boardInViewportTimeout = setTimeout(() => {
                 this.writingBoard.scrollIntoView({ behavior: 'smooth' });
             }, 800);
         }
@@ -144,6 +146,7 @@ class Game extends React.Component {
 
     componentWillUnmount() {
         this.props.gameUnmount();
+        clearTimeout(this.boardInViewportTimeout);
     }
 
     componentDidUpdate(prevProps) {
@@ -193,7 +196,13 @@ class Game extends React.Component {
             this.changeActivePunishmentLoggedIn();
         }
 
-        if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.writingBoard !== null) this.setBoardInViewport();
+        if (
+            Object.keys(this.props.activePunishment).length
+            && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)
+            && !specialOrRandomPunishmentIsActive(this.props.activePunishment)
+        ) {
+            this.setBoardInViewport();
+        }
     }
 
     render() {

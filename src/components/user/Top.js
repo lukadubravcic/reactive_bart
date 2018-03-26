@@ -31,7 +31,11 @@ const mapDispatchToProps = dispatch => ({
         agent.setToken(0)
     },
     updateElementToDisplay: element => dispatch({ type: 'CHANGE_SHOWN_TOP_ELEMENT', element }),
-    removeMsg: () => dispatch({ type: 'REMOVE_GUEST_ACCESS_MSG' })
+    removeMsg: () => dispatch({ type: 'REMOVE_GUEST_ACCESS_MSG' }),
+    logPunishmentTry: (id, timeSpent) => {
+        agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
+        dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
+    },
 });
 
 

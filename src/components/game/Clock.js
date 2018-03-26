@@ -32,5 +32,6 @@ function get12HourTime(hours) {
 
     if (hour < 10) return "0" + hour;
     else if (hour <= 12) return hour;
-    else return '0' + (hour - 12); // hour > 12
+    else if (hour <= 21) return '0' + (hour - 12);
+    else return hour - 12; // hour > 12
 }

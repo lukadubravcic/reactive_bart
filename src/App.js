@@ -107,17 +107,13 @@ class App extends React.Component {
 
         // hendlaj invited usera kao guesta
         let queryStringData = getQueryStringData();
-
         let token = window.localStorage.getItem('token');
 
         if (token) {
             this.props.onLoad(token);
-
             if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
             if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
-
         } else if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
-
             this.props.setUserIdFromUrl(queryStringData.uid);
             this.props.handleGuest(queryStringData.uid, queryStringData.id);
             // window.localStorage.removeItem('token');

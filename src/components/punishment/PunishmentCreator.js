@@ -235,7 +235,6 @@ class PunishmentCreator extends React.Component {
             )
             || !this.state.whatToWriteFieldValid
             || !this.state.whyFieldValid;
-        console.log(submitDisabled)
 
         return (
 

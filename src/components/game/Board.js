@@ -188,7 +188,6 @@ class Board extends React.Component {
 
         this.activePunishmentDone = () => {
             this.props.onBoardLostFocus();
-
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 return;
             } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {

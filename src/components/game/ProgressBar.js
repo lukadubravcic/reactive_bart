@@ -4,25 +4,27 @@ const ProgressBar = props => {
 
 
     const progress = props.progress;
-    let spongeOffset = Math.floor(836 * (progress / 100));
+    let spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
     const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {};
+    const hoverText = progress !== 100 ? 'RESTART' : 'RANDOM PUNISHMENT';
 
-    if (props.hovering) {
-        return (
-            <div
-                id="sponge"
-                style={{ left: spongeOffset }}
-                onClick={props.spongeClick}
-                onMouseOver={props.onHover}
-                onMouseOut={props.onHoverOut}
-            >
+    return (
+        <div
+            id="sponge"
+            className="tran-all"
+            style={{ left: spongeOffset }}
+            onClick={props.spongeClick}
+            onMouseOver={props.onHover}
+            onMouseOut={props.onHoverOut}
+        >
+            {props.hovering ?
                 <div
                     style={finishedPunishmentHoverOffsetStyle}
                     id="restart-hover-element"
                     className="hover-dialog">
 
                     <label className="hover-dialog-text">
-                        {progress !== 100 ? 'RESTART' : 'RANDOM PUNISHMENT'}
+                        {hoverText}
                     </label>
 
                     <div className="triangle-hover-box-container">
@@ -38,22 +40,9 @@ const ProgressBar = props => {
 
                     </div>
                 </div >
-            </div >
-        )
-
-    } else {
-        return (
-
-            <div
-                id="sponge"
-                style={{ left: spongeOffset }}
-                onClick={props.spongeClick}
-                onMouseOver={props.onHover}
-                onMouseOut={props.onHoverOut}
-            ></div>
-
-        );
-    }
+                : null}
+        </div >
+    )
 }
 
 export default ProgressBar;

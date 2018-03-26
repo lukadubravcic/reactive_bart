@@ -33,6 +33,10 @@ textarea {
 									supported by Chrome and Opera */
 }
 
+.tran-all {
+	transition: all 1s;
+}
+
 .backgroundcolor-tran {
 	transition: background-color 0.5s;
 }
@@ -635,8 +639,6 @@ fieldset + fieldset {
 
 	background: #FFBC24;
 } 
-
-
 
 #restart-hover-element {
 	position: absolute;

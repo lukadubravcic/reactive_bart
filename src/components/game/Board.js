@@ -104,11 +104,15 @@ class Board extends React.Component {
         this.audio.style.display = "none";
         this.audio.src = 'http://www.freesfx.co.uk/rx2/mp3s/6/18460_1464720565.mp3';
 
-        this.writingBoard = null;
-
         this._wrongCharPlace = null;
         this.adblockDetected = false;
         this.cheatDetected = false;
+
+        this.cursorTimeout = null;
+
+        this.state = {
+            boardCursor: '|',
+        }
 
         this.incorrectBoardEntry = () => {
             /*  if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
@@ -165,11 +169,13 @@ class Board extends React.Component {
         this.boardFocused = ev => {
             ev.preventDefault();
             this.props.onBoardFocus();
+            this.boardCursorToggle();
         };
 
         this.boardLostFocus = ev => {
             ev.preventDefault();
             this.props.onBoardLostFocus();
+            this.stopBoardCursorToggling();
         };
 
         this.boardHover = ev => {
@@ -181,15 +187,12 @@ class Board extends React.Component {
         };
 
         this.activePunishmentDone = () => {
-
             this.props.onBoardLostFocus();
 
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 return;
-
             } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
-
             } else {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
                 this.removeActivePunishmentFromAccepted();
@@ -362,7 +365,7 @@ class Board extends React.Component {
             // incijalni setup
             this.props.gameReset();
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
-            //this.punishment = this.punishment[this.punishment.length - 1] === ' ' ? this.punishment.trim() : this.punishment;
+            if (this.punishment[this.punishment.length - 1] !== ' ') this.punishment = this.punishment + ' ';
             this.punishmentId = this.props.activePunishment.uid;
             this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'Gazzilion' : this.props.activePunishment.how_many_times;
 
@@ -376,14 +379,18 @@ class Board extends React.Component {
 
             this.props.startingSentenceWritingStarted();
             this.writeStartingSentence(punishmentExplanation);
-            // this.punishment += ' ';
         };
 
-        this.setBoardInViewport = () => {
-            // focusaj board nakon odredenog vremena
-            setTimeout(() => {
-                this.writingBoard.scrollIntoView({ behavior: 'smooth' });
-            }, 800);
+        this.stopBoardCursorToggling = () => {
+            clearInterval(this.cursorInterval);
+            this.cursorInterval = null;
+        }
+
+        this.boardCursorToggle = () => {
+            const toggleInterval = 500;
+            this.cursorInterval = setInterval(() => {
+                this.setState({ boardCursor: this.state.boardCursor === ' ' ? '|' : ' ' });
+            }, toggleInterval);
         }
     }
 
@@ -409,13 +416,12 @@ class Board extends React.Component {
             }
 
             this.activePunishmentChanged();
-
-            !specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.setBoardInViewport();
         }
     }
 
     componentWillUnmount() {
         if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
+        if (this.cursorInterval) clearTimeout(this.cursorInterval);
     }
 
     render() {
@@ -437,9 +443,7 @@ class Board extends React.Component {
 
             return (
 
-                <div
-                    ref={elem => this.writingBoard = elem}
-                    id="board-writing-board-component">
+                <div id="board-writing-board-component">
 
                     <div
                         id="board-frame"
@@ -461,6 +465,7 @@ class Board extends React.Component {
                                 <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
                                 {/* startingSentenceThirdPart */}
                                 {boardText}
+                                { this.cursorInterval && this.props.gameInProgress ? this.state.boardCursor : null }
                             </div>
 
                             {progress === 100 ? <CompletedStamp /> : null}
@@ -509,9 +514,6 @@ class Board extends React.Component {
                             />
 
                             <svg id="board-chalks" width="486px" height="22px" viewBox="0 0 486 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                <title>krede na ploci</title>
-                                <desc>Created with Sketch.</desc>
-                                <defs></defs>
                                 <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-226.000000, -918.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="krede-na-ploci" transform="translate(226.000000, 768.000000)">

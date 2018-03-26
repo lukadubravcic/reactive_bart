@@ -45,6 +45,8 @@ class Game extends React.Component {
     constructor() {
         super();
 
+        this.writingBoard = null;
+
         this.setCheatingPunishment = () => {
             let cheatingPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('CHEAT_DETECTED', this.props.specialPunishments));
             if (cheatingPunishment) this.props.setActivePunishment(cheatingPunishment);
@@ -124,6 +126,13 @@ class Game extends React.Component {
             this.props.faultyPunishmentSet(warningMsg);
             this.setRandomActivePunishment();
         }
+
+        this.setBoardInViewport = () => {
+            // focusaj board nakon odredenog vremena
+            setTimeout(() => {
+                this.writingBoard.scrollIntoView({ behavior: 'smooth' });
+            }, 800);
+        }
     }
 
     componentDidMount() {
@@ -183,6 +192,8 @@ class Game extends React.Component {
         ) {
             this.changeActivePunishmentLoggedIn();
         }
+
+        if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.writingBoard !== null) this.setBoardInViewport();
     }
 
     render() {
@@ -190,7 +201,9 @@ class Game extends React.Component {
         return (
             <div id="board-component-container" className="parent-component">
                 <div className="container">
-                    <div className="left-side-col">
+                    <div
+                        ref={elem => this.writingBoard = elem}
+                        className="left-side-col">
                         <Timer />
                         <Board />
 
@@ -343,4 +356,9 @@ function getAcceptedPunishmentStatus(punishment) {
     else if (typeof punishment.done !== 'undefined' && punishment.done !== null) return 'done';
     else if (typeof punishment.failed !== 'undefined' && punishment.failed !== null) return 'failed';
     else return null;
+}
+
+
+function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
+    return punishment.created ? false : true;
 }

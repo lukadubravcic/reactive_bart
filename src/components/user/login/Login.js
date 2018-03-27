@@ -43,7 +43,7 @@ const mapDispatchToProps = dispatch => ({
 
         agent.Auth.login({ ...dataToSend }).then(payload => {
 
-            enableSubmit();
+            // enableSubmit();
 
             if (payload === null) {
                 // TODO: alert - neispravan login
@@ -85,14 +85,14 @@ const mapDispatchToProps = dispatch => ({
     showPasswordSetForm: value => {
         dispatch({ type: 'SHOW_CHANGE_PASSWORD_FORM', value });
     },
-    showResetPasswordForm: () => {
-        dispatch({ type: 'SHOW_RESET_PASSWORD_FORM' });
-    }
+    showResetPasswordForm: () => dispatch({ type: 'SHOW_RESET_PASSWORD_FORM' }),
+    clearDisplayMessage: () => dispatch({ type: 'CLEAR_FORM_MSG' }),
 });
 
 const registerElementHeight = 670;
 const resetPwdElementHeight = 400;
 const animationDuration = 500; // 0.5s
+const formMsgDuration = 5000; // 5s
 
 const animStyles = {
     componentStyle: {
@@ -118,7 +118,6 @@ const animStyles = {
     btnsTopMarginCollapse: {
         marginTop: 0 + 'px'
     }
-
 };
 
 
@@ -129,6 +128,9 @@ class Login extends React.Component {
         this.mainDiv = null;
         this.pwdFieldset = null;
         this.whomField = null;
+        this.formMsgTimeout = null;
+        this.whomFieldId = 'WHOM_FIELD';
+        this.forgotPasswordLinkId = 'forgot-password';
 
         this.state = {
             componentStyle: {},
@@ -136,7 +138,12 @@ class Login extends React.Component {
             fieldsetUsernameStyle: { paddingTop: 0 + 'px' },
             fieldsetEmailStyle: { paddingTop: 0 + 'px', backgroundColor: 'red' },
             fieldsetStyle: { paddingTop: 0 + 'px' },
-            formDisabled: false
+            formDisabled: false,
+
+            submitBtnDisabled: false,
+            showFormMsg: false,
+
+            whomFieldFocused: false,
         }
 
         this.passwordValidationError = null;
@@ -146,8 +153,13 @@ class Login extends React.Component {
         }
 
         this.passwordChange = event => {
-
-            if (event.target.value.length < PASSWORD_MIN_LEN || event.target.value.length > PASSWORD_MAX_LEN) this.passwordValidationError = PASSWORD_VALIDATION_ERROR_TEXT;
+            if (
+                event.target.value.length !== 0
+                && (event.target.value.length < PASSWORD_MIN_LEN
+                    || event.target.value.length > PASSWORD_MAX_LEN)
+            ) {
+                this.passwordValidationError = PASSWORD_VALIDATION_ERROR_TEXT;
+            }
             else this.passwordValidationError = null;
 
             this.props.onPasswordChange(event.target.value);
@@ -155,48 +167,53 @@ class Login extends React.Component {
 
         this.submitForm = (loginWhom, password) => ev => {
             ev.preventDefault();
-            this.refs.loginBtn.setAttribute('disabled', 'true');
+            // this.refs.loginBtn.setAttribute('disabled', 'true');
+            this.disableSubmit();
             this.props.onSubmit(loginWhom, password, this.enableSubmit);
         }
 
-        this.enableSubmit = () => {
-            this.refs.loginBtn.removeAttribute('disabled');
-        }
-
-        this.showResetPasswordForm = ev => {
-            ev.preventDefault();
+        this.showResetPasswordForm = () => {
+            // ev.preventDefault();
             this.animateShowResetPassword();
-
             setTimeout(() => {
                 this.props.showResetPasswordForm();
             }, animationDuration);
         }
 
-        this.whomLostFocus = ev => {
-            ev.preventDefault();
-            let fieldValue = ev.target.value;
-
+        this.whomLostFocus = () => {
+            this.unfocusWhomField();
+            let fieldValue = this.props.loginWhom;
             if (fieldValue.length === 0) return;
-
             this.checkIfExistingUser(fieldValue);
         }
 
-        this.checkIfExistingUser = async (value) => {
+        this.focusingWhomField = ev => {
+            this.setState({ whomFieldFocused: true });
+        }
 
+        this.unfocusWhomField = () => {
+            this.setState({ whomFieldFocused: false });
+        }
+
+        this.parentClickHandler = ev => {
+            if (ev.target.id === this.forgotPasswordLinkId) {
+                this.showResetPasswordForm();
+            } else if (this.state.whomFieldFocused && ev.target.id !== this.whomFieldId) {
+                this.whomLostFocus();
+            } else return;
+        }
+
+        this.checkIfExistingUser = async (value) => {
             let response = await agent.Auth.checkIfUserExists(value);
             let key = isMail(value) ? 'email' : 'username';
-
             if (response.exist !== false) return;
-
             this.animateChangeToRegister(key);
-
             setTimeout(() => {
                 this.props.showRegisterForm(key, value);
             }, animationDuration);
         }
 
         this.animateChangeToRegister = key => {
-
             let fsToChange = key === 'email' ? 'fieldsetEmailStyle' : 'fieldsetUsernameStyle';
 
             requestAnimationFrame(() => {
@@ -207,7 +224,7 @@ class Login extends React.Component {
                     fieldsetStyle: { ...this.state.fieldsetStyle, ...animStyles.fieldsetStyle },
                     formDisabled: true
                 });
-            })
+            });
         }
 
         this.animateShowResetPassword = () => {
@@ -232,8 +249,24 @@ class Login extends React.Component {
                 opacityStyle: { ...this.state.opacityStyle, ...animStyles.fadeInStyle }
             });
         }
-    }
 
+        this.enableSubmit = () => {
+            this.setState({ submitBtnDisabled: false });
+        }
+
+        this.disableSubmit = () => {
+            this.setState({ submitBtnDisabled: true });
+        }
+
+        this.displayFormMessage = () => {
+            this.setState({ showFormMsg: true });
+            this.formMsgTimeout = setTimeout(() => {
+                this.setState({ showFormMsg: false });
+                this.props.clearDisplayMessage();
+                this.enableSubmit();
+            }, formMsgDuration)
+        }
+    }
 
     componentDidMount() {
         this.setState({
@@ -247,6 +280,15 @@ class Login extends React.Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps._errMsg === null && this.props._errMsg !== null) {
+            this.displayFormMessage();
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.formMsgTimeout);
+    }
 
     render() {
 
@@ -254,13 +296,17 @@ class Login extends React.Component {
         const password = this.props.password;
         const errMsg = this.props._errMsg;
         const isFormDisabled = this.state.formDisabled;
+        const submitBtnStyle = this.state.submitBtnDisabled
+            ? { opacity: 0.5, pointerEvents: "none" }
+            : { opacity: 1 };
 
         return (
 
             <div
                 ref={elem => this.mainDiv = elem}
                 style={this.state.componentStyle}
-                className="parent-component login">
+                className="parent-component login"
+                onFocus={this.parentClickHandler}>
 
                 <div
                     className="container">
@@ -284,12 +330,14 @@ class Login extends React.Component {
 
                             <input
                                 ref={elem => this.whomField = elem}
+                                id={this.whomFieldId}
                                 className="text-input"
                                 type="text"
                                 value={loginWhom}
                                 placeholder="e-mail/username"
                                 onChange={this.loginWhomChange}
-                                onBlur={this.whomLostFocus}
+                                onFocus={this.focusingWhomField}
+                                /* onBlur={this.whomLostFocus} */
                                 spellCheck="false"
                                 required />
                         </fieldset>
@@ -307,10 +355,6 @@ class Login extends React.Component {
                                 value={password}
                                 onChange={this.passwordChange}
                                 required />
-
-
-                            {errMsg ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>) : null}
-
                         </fieldset>
 
                         <fieldset
@@ -318,8 +362,15 @@ class Login extends React.Component {
                             className="header-form-row opacity-delay-tran"
                             disabled={isFormDisabled}>
 
-                            <button className="btn-submit" ref="loginBtn" type="submit">LOG IN</button>
+                            <button
+                                style={submitBtnStyle}
+                                className="btn-submit opacity-tran"
+                                type="submit"
+                                disabled={this.state.submitBtnDisabled}>
+                                LOG IN
+                            </button>
                             <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
+                            {this.state.showFormMsg ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>) : null}
                         </fieldset>
 
                     </form>

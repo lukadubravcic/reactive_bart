@@ -164,15 +164,13 @@ class Register extends React.Component {
             this.setState({ submitBtnDisabled: false });
         }
 
-        this.disableSubmit = () =>{
+        this.disableSubmit = () => {
             this.setState({ submitBtnDisabled: true });
         }
 
         this.backToLogin = ev => {
             ev.preventDefault();
-
             this.animateDismounting();
-
             setTimeout(() => {
                 this.props.backToLogin();
             }, animationDuration);
@@ -301,7 +299,7 @@ class Register extends React.Component {
             || this.state.submitBtnDisabled;
         const submitBtnStyle = this.state.submitBtnDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
-            : { opacity: 1 }
+            : { opacity: 1 };
 
         return (
 

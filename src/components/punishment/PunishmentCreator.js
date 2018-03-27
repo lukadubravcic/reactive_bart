@@ -433,10 +433,10 @@ class PunishmentCreator extends React.Component {
 
                     <div id="form-bottom-props-container">
                         {creatorBottomSvg}
-                    </div >
+                    </div>
 
-                </div >
-            </div >
+                </div>
+            </div>
         )
     }
 }

@@ -84,6 +84,8 @@ export default (state = defaultState, action) => {
             return { ...state, elementToDisplay: 'thanks' };
         case 'USERNAME_SET_AS_GUEST':
             return { ...state, loginWhom: action.user.username };
+        case 'CLEAR_FORM_MSG':
+            return { ...state, _errMsg: defaultState._errMsg, serverAnswer: defaultState.serverAnswer };
         case 'SPECIAL_LOGOUT':
             return { ...defaultState, userIdFromURL: state.userIdFromURL };
         case 'LOGOUT':

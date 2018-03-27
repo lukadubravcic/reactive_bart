@@ -24,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
 
         agent.Auth.register(username, email, password).then(payload => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
-            enableSubmit();
+            // enableSubmit();
 
             const isMailValid = isMail(email);
 
@@ -45,11 +45,13 @@ const mapDispatchToProps = dispatch => ({
             }
         }, err => console.log(err));
     },
-    backToLogin: () => dispatch({ type: 'SHOW_LOGIN_FORM' })
+    backToLogin: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
+    clearDisplayMessage: () => dispatch({ type: 'CLEAR_FORM_MSG' }),
 });
 
 
 const animationDuration = 500; // ms
+const formMsgDuration = 5000; // 5s
 const loginHeight = 490;
 
 const animStyles = {
@@ -96,13 +98,12 @@ class Register extends React.Component {
         this.emailInput = null;
         this.usernameInput = null;
         this.parentContainer = null;
-
+        this.formMsgTimeout = null;
         this.emailField = null;
         this.usernameField = null;
         this.rePwdElement = null;
 
         this.state = {
-
             parentContainerStyle: { backgroundColor: '#FFA623' },
             labelStyle: { opacity: 0 },
             emailFieldsetStyle: { opacity: 1 },
@@ -112,6 +113,7 @@ class Register extends React.Component {
             btnFieldsetStyle: { opacity: 0 },
 
             formDisabled: true,
+            submitBtnDisabled: false,
 
             validEmailField: true,
             validUsernameField: true,
@@ -121,6 +123,7 @@ class Register extends React.Component {
             usernameExist: false,
 
             showPwdInvalidHoverElement: false,
+            showFormMessage: false,
         }
 
         this.usernameChange = ev => {
@@ -150,15 +153,19 @@ class Register extends React.Component {
 
         this.submitForm = (username, email, password, rePassword) => ev => {
             ev.preventDefault();
-
+            this.disableSubmit();
             if (password === rePassword) {
-                this.refs.registerBtn.setAttribute("disabled", "disabled");
+                // this.refs.registerBtn.setAttribute("disabled", "disabled");
                 this.props.onSubmit(username, email, password, this.enableSubmit);
             }
         }
 
         this.enableSubmit = () => {
-            this.refs.registerBtn.removeAttribute("disabled");
+            this.setState({ submitBtnDisabled: false });
+        }
+
+        this.disableSubmit = () =>{
+            this.setState({ submitBtnDisabled: true });
         }
 
         this.backToLogin = ev => {
@@ -237,6 +244,15 @@ class Register extends React.Component {
             ev.preventDefault();
             this.setState({ showPwdInvalidHoverElement: false });
         }
+
+        this.displayFormMessage = () => {
+            this.setState({ showFormMsg: true });
+            this.formMsgTimeout = setTimeout(() => {
+                this.setState({ showFormMsg: false });
+                this.props.clearDisplayMessage();
+                this.enableSubmit();
+            }, formMsgDuration)
+        }
     }
 
     componentDidMount() {
@@ -254,6 +270,19 @@ class Register extends React.Component {
         });
     }
 
+    componentDidUpdate(prevProps) {
+        if (
+            (prevProps._errMsg === null && this.props._errMsg !== null)
+            || (prevProps.serverAnswer === null && this.props.serverAnswer !== null)
+        ) {
+            this.displayFormMessage();
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.formMsgTimeout);
+    }
+
     render() {
         const username = this.props.username;
         const email = this.props.email;
@@ -268,7 +297,11 @@ class Register extends React.Component {
             || this.state.usernameExist
             || !this.state.validEmailField
             || !this.state.validUsernameField
-            || !this.state.validPasswordField;
+            || !this.state.validPasswordField
+            || this.state.submitBtnDisabled;
+        const submitBtnStyle = this.state.submitBtnDisabled
+            ? { opacity: 0.5, pointerEvents: "none" }
+            : { opacity: 1 }
 
         return (
 
@@ -404,9 +437,9 @@ class Register extends React.Component {
                             className="header-form-row opacity-03-delay-tran-fast">
 
                             <button
+                                style={submitBtnStyle}
                                 id="btn-register"
-                                className="btn-submit"
-                                ref="registerBtn"
+                                className="btn-submit opacity-tran"
                                 type="submit"
                                 disabled={isFormDisabled || isSubmitDisabled}>
                                 REGISTER
@@ -418,11 +451,11 @@ class Register extends React.Component {
                                 onClick={this.backToLogin}>
                                 BACK TO LOGIN
                             </button>
-                            {this.props._errMsg
+                            {this.props._errMsg && this.state.showFormMsg
                                 ?
                                 <label className="form-feedback">{this.props._errMsg.toUpperCase()}</label>
                                 : null}
-                            {this.props.serverAnswer
+                            {this.props.serverAnswer && this.state.showFormMsg
                                 ?
                                 <label className="form-feedback">{this.props.serverAnswer.toUpperCase()}</label>
                                 : null}

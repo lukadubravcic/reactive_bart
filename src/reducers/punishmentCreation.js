@@ -32,6 +32,8 @@ export default (state = defaultState, action) => {
             return { ...state, _errMsg: defaultState._errMsg };
         case 'SHOW_ERR_MESSAGE':
             return { ...state, _errMsg: action.msg };
+        case 'CLEAR_DISPLAY_MSG':
+            return { ...state, _errMsg: null }
         case 'LOGOUT':
             return defaultState;
         default:

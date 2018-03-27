@@ -62,10 +62,12 @@ const mapDispatchToProps = dispatch => ({
 
             enableSubmit();
         });
-    }
+    },
+    clearDisplayMessage: () => dispatch({ type: 'CLEAR_DISPLAY_MSG' }),
 });
 
 const animationDuration = 500; // 0.5s
+const formMsgDuration = 5000; // 10s
 
 const animStyles = {
     shownDateComponent: { opacity: 1 },
@@ -78,9 +80,10 @@ class PunishmentCreator extends React.Component {
     constructor() {
         super();
 
-        this.toWhomErrorText = null;
-        this.whatToWriteErrorText = null;
-        this.whyErrorText = null;
+        // this.toWhomErrorText = null;
+        // this.whatToWriteErrorText = null;
+        // this.whyErrorText = null;
+        this.formMsgTimeout = null;
 
         this.state = {
             dateElementStyle: {
@@ -90,36 +93,34 @@ class PunishmentCreator extends React.Component {
             },
             showTryMailTooltip: false,
             whatToWriteFieldValid: true,
-            whyFieldValid: true
+            whyFieldValid: true,
+
+            showFormMsg: false,
         }
 
         this.onWhomBlur = async ev => {
             ev.preventDefault();
-
             // provjeri jel unesen username (!isMail):
             //  - ako je, provjeri jel postoji:
             //      - postoji - nista
             //      - ne postoji - poruka "try email instead"
-
             if (isMail(this.props.whom) || this.props.whom.length === 0) return this.setState({ showTryMailTooltip: false });
-
-
             let { exist } = await agent.Auth.checkIfUserExists(this.props.whom);
             if (!exist) return this.setState({ showTryMailTooltip: true });
         }
 
         this.changeWhom = ev => {
             this.setState({ showTryMailTooltip: false });
-            this.validateToWhomValue(ev.target.value);
+            // this.validateToWhomValue(ev.target.value);
             this.props.onChangeWhom(ev.target.value);
         }
 
-        this.validateToWhomValue = value => {
+        /* this.validateToWhomValue = value => {
             if (!isMail(value)) {
                 if (value.length > 30) this.toWhomErrorText = 'Username can\'t be that long. Maximum 30 characters.';
                 else this.toWhomErrorText = null;
             }
-        }
+        } */
 
         this.changeHowManyTimes = ev => {
             if (ev.target.value > MAX_HOW_MANY_TIMES_PUNISHMENT) ev.target.value = MAX_HOW_MANY_TIMES_PUNISHMENT;
@@ -129,11 +130,11 @@ class PunishmentCreator extends React.Component {
 
         this.changeWhatToWrite = ev => {
             if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
-                this.whatToWriteErrorText = null;
+                // this.whatToWriteErrorText = null;
                 this.setState({ whatToWriteFieldValid: true });
             } else {
                 // warning da je text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
-                this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.';
+                // this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.';
                 this.setState({ whatToWriteFieldValid: false });
             }
             this.props.onChangeWhatToWrite(ev.target.value);
@@ -141,10 +142,10 @@ class PunishmentCreator extends React.Component {
 
         this.changeWhy = ev => {
             if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0 || ev.target.value.length === 0) {
-                this.whyErrorText = null;
+                // this.whyErrorText = null;
                 this.setState({ whyFieldValid: true });
             } else {
-                this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.';
+                // this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.';
                 this.setState({ whyFieldValid: false });
             }
             this.props.onChangeWhy(ev.target.value);
@@ -190,7 +191,6 @@ class PunishmentCreator extends React.Component {
                 : null;
             submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
             submitData.why = trimExcessSpaces(whyField);
-
             this.props.onSubmit(submitData, this.props.orderedPunishments, this.enableSubmit);
         }
 
@@ -213,10 +213,27 @@ class PunishmentCreator extends React.Component {
                 });
             });
         }
+
+        this.displayFormMessage = () => {
+            this.setState({ showFormMsg: true });
+            this.formMsgTimeout = setTimeout(() => {
+                this.setState({ showFormMsg: false });
+                this.props.clearDisplayMessage();
+            }, formMsgDuration)
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps._errMsg === null && this.props._errMsg !== null) {
+            this.displayFormMessage();
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.formMsgTimeout);
     }
 
     render() {
-
         const usrLoggedIn = Object.keys(this.props.currentUser).length;
         const whomField = this.props.whom;
         const howManyTimesField = this.props.howManyTimes;
@@ -234,7 +251,11 @@ class PunishmentCreator extends React.Component {
                 && this.props.dayField.length === 0
             )
             || !this.state.whatToWriteFieldValid
-            || !this.state.whyFieldValid;
+            || !this.state.whyFieldValid
+            || this.state.showFormMsg;
+        const submitBtnStyle = this.state.showFormMsg
+            ? { opacity: 0.5, pointerEvents: "none" }
+            : { opacity: 1 }
 
         return (
 
@@ -390,18 +411,19 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn && window.canRunAds)}>
+                            disabled={!(usrLoggedIn && window.canRunAds) || this.state.showFormMsg}>
 
                             <button
+                                style={submitBtnStyle}
                                 id="btn-pun-submit"
-                                className="float-left btn-submit"
+                                className="float-left btn-submit opacity-tran"
                                 ref="submitPunishmentBtn"
                                 type="submit"
                                 disabled={submitDisabled}>
                                 PUNISH
                             </button>
 
-                            {this.props._errMsg !== null
+                            {this.state.showFormMsg
                                 ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg.toUpperCase()}</label>
                                 : null}
 

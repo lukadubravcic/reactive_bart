@@ -172,8 +172,8 @@ class Login extends React.Component {
             this.props.onSubmit(loginWhom, password, this.enableSubmit);
         }
 
-        this.showResetPasswordForm = () => {
-            // ev.preventDefault();
+        this.showResetPasswordForm = ev => {
+            ev.preventDefault();
             this.animateShowResetPassword();
             setTimeout(() => {
                 this.props.showResetPasswordForm();
@@ -193,14 +193,6 @@ class Login extends React.Component {
 
         this.unfocusWhomField = () => {
             this.setState({ whomFieldFocused: false });
-        }
-
-        this.parentClickHandler = ev => {
-            if (ev.target.id === this.forgotPasswordLinkId) {
-                this.showResetPasswordForm();
-            } else if (this.state.whomFieldFocused && ev.target.id !== this.whomFieldId) {
-                this.whomLostFocus();
-            } else return;
         }
 
         this.checkIfExistingUser = async (value) => {
@@ -280,7 +272,7 @@ class Login extends React.Component {
         });
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps._errMsg === null && this.props._errMsg !== null) {
             this.displayFormMessage();
         }
@@ -305,8 +297,7 @@ class Login extends React.Component {
             <div
                 ref={elem => this.mainDiv = elem}
                 style={this.state.componentStyle}
-                className="parent-component login"
-                onFocus={this.parentClickHandler}>
+                className="parent-component login">
 
                 <div
                     className="container">
@@ -337,7 +328,7 @@ class Login extends React.Component {
                                 placeholder="e-mail/username"
                                 onChange={this.loginWhomChange}
                                 onFocus={this.focusingWhomField}
-                                /* onBlur={this.whomLostFocus} */
+                                onBlur={this.whomLostFocus}
                                 spellCheck="false"
                                 required />
                         </fieldset>
@@ -355,6 +346,7 @@ class Login extends React.Component {
                                 value={password}
                                 onChange={this.passwordChange}
                                 required />
+                            {this.state.showFormMsg ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>) : null}
                         </fieldset>
 
                         <fieldset
@@ -370,7 +362,7 @@ class Login extends React.Component {
                                 LOG IN
                             </button>
                             <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
-                            {this.state.showFormMsg ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>) : null}
+
                         </fieldset>
 
                     </form>

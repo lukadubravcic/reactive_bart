@@ -28,11 +28,13 @@ const mapDispatchToProps = dispatch => ({
 
         });
     },
-    backToLogin: () => dispatch({ type: 'HIDE_RESET_PASSWORD_FORM' })
+    backToLogin: () => dispatch({ type: 'HIDE_RESET_PASSWORD_FORM' }),
+    clearDisplayMessage: () => dispatch({ type: 'CLEAR_FORM_MSG' }),
 });
 
 
 const animationDuration = 500;
+const formMsgDuration = 5000;
 const loginHeight = 490;
 
 const animStyles = {
@@ -55,7 +57,6 @@ const animStyles = {
 }
 
 
-
 class ResetPassword extends React.Component {
 
     constructor() {
@@ -72,16 +73,18 @@ class ResetPassword extends React.Component {
             emailFieldsetStyle: {},
             btnFieldsetStyle: {
                 opacity: 0
-            }
+            },
+            showFormMsg: false,
+            submitBtnDisabled: false,
         }
 
         this.emailChange = event => {
-            console.log(event.target.value)
             this.props.onEmailChange(event.target.value);
         }
 
         this.submitForm = email => ev => {
             ev.preventDefault();
+            this.disableSubmitButton();
             this.refs.pwdResetBtn.setAttribute('disabled', 'disabled');
             this.refs.backBtn.setAttribute('disabled', 'disabled');
             this.props.submitResetPassword(email, this.enableForm);
@@ -90,6 +93,14 @@ class ResetPassword extends React.Component {
         this.enableForm = () => {
             this.refs.pwdResetBtn.removeAttribute('disabled');
             this.refs.backBtn.removeAttribute('disabled');
+        }
+
+        this.disableSubmitButton = () => {
+            this.setState({ submitBtnDisabled: true });
+        }
+
+        this.enableSubmitButton = () => {
+            this.setState({ submitBtnDisabled: false });
         }
 
         this.backToLogin = ev => {
@@ -107,7 +118,7 @@ class ResetPassword extends React.Component {
         this.animateMounting = () => {
             this.setState({
                 labelStyle: { ...this.state.labelStyle, ...animStyles.labelMountStyle },
-                btnFieldset: { ...this.state.btnFieldset, ...animStyles.btnFieldsetMountStyle }
+                btnFieldset: { ...this.state.btnFieldset, ...animStyles.btnFieldsetMountStyle },
             });
         }
 
@@ -115,8 +126,17 @@ class ResetPassword extends React.Component {
             this.setState({
                 componentContainerStyle: { ...this.state.componentContainerStyle, ...animStyles.componentContainerDismountStyle },
                 labelStyle: { ...this.state.labelStyle, ...animStyles.labelDismountStyle },
-                emailFieldsetStyle: { ...this.state.emailFieldsetStyle, ...animStyles.emailFieldsetDismountStyle }
-            })
+                emailFieldsetStyle: { ...this.state.emailFieldsetStyle, ...animStyles.emailFieldsetDismountStyle },
+            });
+        }
+
+        this.displayFormMessage = () => {
+            this.setState({ showFormMsg: true });
+            this.formMsgTimeout = setTimeout(() => {
+                this.setState({ showFormMsg: false });
+                this.props.clearDisplayMessage();
+                this.enableSubmitButton();
+            }, formMsgDuration)
         }
     }
 
@@ -124,7 +144,7 @@ class ResetPassword extends React.Component {
 
         this.setState({
             componentContainerStyle: { ...this.state.componentContainerStyle, height: this.parentContainer.clientHeight + 'px' },
-            emailFieldsetStyle: { ...this.state.emailFieldsetStyle, height: this.emailFieldset.clientHeight + 'px' }
+            emailFieldsetStyle: { ...this.state.emailFieldsetStyle, height: this.emailFieldset.clientHeight + 'px' },
         });
 
         requestAnimationFrame(() => {
@@ -132,11 +152,20 @@ class ResetPassword extends React.Component {
         });
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps._errMsg === null && this.props._errMsg !== null) {
+            this.displayFormMessage();
+        }
+    }
+
     render() {
 
         const email = this.props.email;
         const validMail = email.length > 0 ? isMail(email) : true;
         const serverMsg = this.props._errMsg;
+        const submitBtnStyle = this.state.submitBtnDisabled
+            ? { opacity: 0.5, pointerEvents: "none" }
+            : { opacity: 1 };
 
         return (
 
@@ -171,6 +200,8 @@ class ResetPassword extends React.Component {
                                 onChange={this.emailChange}
                                 spellCheck="false"
                                 required />
+
+                            {!validMail ? <label className="form-feedback">ENTER VALID MAIL!</label> : null}
                         </fieldset>
 
                         <fieldset
@@ -178,23 +209,25 @@ class ResetPassword extends React.Component {
                             className="header-form-row opacity-03-delay-tran-fast">
 
                             <button
-                                className="btn-submit"
+                                style={submitBtnStyle}
+                                className="btn-submit opacity-tran"
                                 ref="backBtn"
                                 onClick={this.backToLogin}>
 
                                 BACK TO LOGIN
                             </button>
                             <button
+                                style={submitBtnStyle}
                                 id="btn-additional"
-                                className="btn-submit margin-left-small"
+                                className="btn-submit margin-left-small opacity-tran"
                                 ref="pwdResetBtn"
                                 type="submit"
-                                disabled={!validMail}>
+                                disabled={!validMail && this.state.submitBtnDisabled}>
 
                                 RESET
                             </button>
 
-                            {serverMsg ? <label className="form-feedback">{serverMsg.toUpperCase()}</label> : null}
+                            {this.state.showFormMsg ? <label className="form-feedback">{serverMsg.toUpperCase()}</label> : null}
                         </fieldset>
 
                     </form>

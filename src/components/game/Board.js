@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
@@ -107,11 +108,13 @@ class Board extends React.Component {
         this._wrongCharPlace = null;
         this.adblockDetected = false;
         this.cheatDetected = false;
+        this.textBoard = null;
 
         this.cursorTimeout = null;
 
         this.state = {
-            boardCursor: '|',
+            boardCursor: false,
+            showBoardCursor: false,
         }
 
         this.incorrectBoardEntry = () => {
@@ -260,12 +263,15 @@ class Board extends React.Component {
                 if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
                 else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
 
-                if (!this.validateKey(key, transformedBoardText)) {
+                /* if (!this.validateKey(key, transformedBoardText)) {
                     this.props.updateBoardValue(transformedBoardText)
                     this.incorrectBoardEntry();
                     return;
-                }
+                } */
                 this.props.updateBoardValue(transformedBoardText);
+                if (this.textBoard) {
+                    this.textBoard.scrollTo(0, this.textBoard.scrollHeight);
+                }
                 progress = this.updateProgress(transformedBoardText, this.punishment, this.howManyTimes);
                 if (progress === 100) {
                     // punishment DONE
@@ -329,7 +335,7 @@ class Board extends React.Component {
             const ghostWrite = (textArray, i = 0, j = 0) => {
 
                 let lastElementHit = textArray.length <= j;
-                let randomTypeTime = Math.floor(Math.random() * 150) + 30;
+                let randomTypeTime = Math.floor(Math.random() * 150) + 20;
 
                 if (lastElementHit) {
                     this.activeWriteTimeout = clearTimeout(this.activeWriteTimeout);
@@ -388,7 +394,7 @@ class Board extends React.Component {
         this.boardCursorToggle = () => {
             const toggleInterval = 500;
             this.cursorInterval = setInterval(() => {
-                this.setState({ boardCursor: this.state.boardCursor === ' ' ? '|' : ' ' });
+                this.setState({ boardCursor: !this.state.boardCursor});
             }, toggleInterval);
         }
     }
@@ -427,7 +433,7 @@ class Board extends React.Component {
 
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
 
-        const startingSentence = this.props.startingSentence;
+        // const startingSentence = this.props.startingSentence;
         const startingSentenceFirstPart = this.props.startingSentenceFirstPart;
         const startingSentenceSecondPart = this.props.startingSentenceSecondPart;
         // const startingSentenceThirdPart = this.props.startingSentenceThirdPart;
@@ -437,6 +443,11 @@ class Board extends React.Component {
         const isPunishmentFailed = this.props.boardTextMistake;
         const makeFocusable = this.props.startSentenceBeingWritten ? {} : { tabIndex: "1" }
 
+        const showTextCursor =
+            this.props.gameInProgress
+            && !!this.cursorInterval
+
+        // if (fullLines((startingSentenceFirstPart + startingSentenceSecondPart + boardText))) console.log('hit')
 
         if (activePunishmentSet) {
 
@@ -452,8 +463,9 @@ class Board extends React.Component {
                         <div id="drawing-board">
 
                             <div
+                                ref={elem => this.textBoard = elem}
                                 id="board-textarea"
-                                className="noselect"
+                                className="notnoselect"
                                 {...makeFocusable}
                                 disabled={this.props.boardDisabled}
                                 onKeyDown={this.boardTextChange}
@@ -464,7 +476,8 @@ class Board extends React.Component {
                                 <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
                                 {/* startingSentenceThirdPart */}
                                 {boardText}
-                                { this.cursorInterval && this.props.gameInProgress ? this.state.boardCursor : null }
+                                <span style={this.state.boardCursor ? { opacity: 1 } : { opacity: 0 }}>|</span>
+                               {/*  {showTextCursor ? this.state.boardCursor : null} */}
                             </div>
 
                             {progress === 100 ? <CompletedStamp /> : null}
@@ -664,3 +677,7 @@ function getRandomPunishment(randomPunishments) {
     if (index > randomPunishments.length - 1) return randomPunishments[0];
     else return randomPunishments[index];
 }
+
+
+
+"Write 100x My name is Donald jjjjjjjjjjjjj jjjjj jjjj ii ii ii iiii"

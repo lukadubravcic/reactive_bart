@@ -25,7 +25,7 @@ const defaultState = {
     startingSentenceThirdPart: '',
     cheating: false,
     guestPunishment: null,
-    startSentenceBeingWritten: true,
+    startSentenceBeingWritten: false,
 };
 
 export default (state = defaultState, action) => {

@@ -5,7 +5,8 @@ const ProgressBar = props => {
 
     const progress = props.progress;
     let spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
-    const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {};
+    // pomak kada se label tekst promijeni 
+    const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {}; 
     const hoverText = progress !== 100 ? 'RESTART' : 'RANDOM PUNISHMENT';
 
     return (
@@ -23,7 +24,7 @@ const ProgressBar = props => {
                     id="restart-hover-element"
                     className="hover-dialog">
 
-                    <label className="hover-dialog-text">
+                    <label className="hover-dialog-text noselect">
                         {hoverText}
                     </label>
 

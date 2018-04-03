@@ -401,8 +401,7 @@ class PunishmentCreator extends React.Component {
                                 type="text"
                                 placeholder="Feel free to explain your reasons."
                                 value={whyField}
-                                onChange={this.changeWhy}
-                                required>
+                                onChange={this.changeWhy}>
                             </textarea>
                             {!this.state.whyFieldValid
                                 ? <label id="form-submit-feedback" style={{ marginTop: 160 + "px" }} className="float-left form-feedback">TOO LONG!</label>

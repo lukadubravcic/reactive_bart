@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
@@ -109,6 +108,7 @@ class Board extends React.Component {
         this.adblockDetected = false;
         this.cheatDetected = false;
         this.textBoard = null;
+        this.lastPunishmentPlayedId = null;
 
         this.cursorTimeout = null;
 
@@ -141,7 +141,6 @@ class Board extends React.Component {
 
             // nema reseta ako je kazna obavljena
             if (this.props.progress < 100) {
-
                 this._wrongCharPlace = null;
 
                 if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
@@ -156,7 +155,7 @@ class Board extends React.Component {
                     } else this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
                 }
 
-                this.punishmentInit();
+                this.punishmentInit(false);
             } else if (this.props.progress === 100) { // u slucaju kada je kazna izvrsena (100%) reset tipka ce postaviti random kaznu
 
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
@@ -177,8 +176,8 @@ class Board extends React.Component {
 
         this.boardLostFocus = ev => {
             ev.preventDefault();
-            this.props.onBoardLostFocus();
             this.stopBoardCursorToggling();
+            this.props.onBoardLostFocus();
         };
 
         this.boardHover = ev => {
@@ -248,14 +247,17 @@ class Board extends React.Component {
         }
 
         this.boardStateUpdate = key => {
+            if (!this.props.boardFocused) return;
+
             let boardText = this.props.boardValue.slice();
             let transformedBoardText = '';
             let progress = 0;
 
-            if (cheatingCheck()) {
+            if (!this.cheatDetected && cheatingCheck()) {
                 // set special pun
                 this.cheatDetected = true;
                 this.props.cheatingDetected();
+                this.props.onBoardLostFocus();
             };
 
             if (inArray(key, validKeys) && this._wrongCharPlace === null && this.props.progress < 100) {
@@ -263,11 +265,11 @@ class Board extends React.Component {
                 if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
                 else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);
 
-                /* if (!this.validateKey(key, transformedBoardText)) {
+                if (!this.validateKey(key, transformedBoardText)) {
                     this.props.updateBoardValue(transformedBoardText)
                     this.incorrectBoardEntry();
                     return;
-                } */
+                }
                 this.props.updateBoardValue(transformedBoardText);
                 if (this.textBoard) {
                     this.textBoard.scrollTo(0, this.textBoard.scrollHeight);
@@ -364,7 +366,13 @@ class Board extends React.Component {
             ghostWrite(textArray, 0, 0);
         };
 
-        this.punishmentInit = () => {
+        this.punishmentInit = (punishmentChanged = true) => {
+
+            // treba prepoznati jel prosli init radio sa istom kaznom
+            // ako kazna nije ista, normalni ispis slova 
+            // ako je ista, samo clearaj napisani tekst, opis ostaje, tj (nije potreban "ghost write");
+
+            this.stopBoardCursorToggling();
 
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
             // incijalni setup
@@ -381,20 +389,27 @@ class Board extends React.Component {
 
             this._wrongCharPlace = null;
             this.props.boardDisabledStatus(true);
-
             this.props.startingSentenceWritingStarted();
-            this.writeStartingSentence(punishmentExplanation);
+
+            if (punishmentChanged === false) {
+                
+                this.props.setStartingSentence(punishmentExplanation);
+                this.props.startingSentenceWritingFinished();
+            } else {
+                this.writeStartingSentence(punishmentExplanation);
+            }
         };
 
         this.stopBoardCursorToggling = () => {
             clearInterval(this.cursorInterval);
             this.cursorInterval = null;
+            this.setState({ boardCursor: false});
         }
 
         this.boardCursorToggle = () => {
             const toggleInterval = 500;
             this.cursorInterval = setInterval(() => {
-                this.setState({ boardCursor: !this.state.boardCursor});
+                this.setState({ boardCursor: !this.state.boardCursor });
             }, toggleInterval);
         }
     }
@@ -419,7 +434,7 @@ class Board extends React.Component {
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {
                 this.adblockDetected = true;
             }
-
+            this.stopBoardCursorToggling();
             this.activePunishmentChanged();
         }
     }
@@ -430,23 +445,14 @@ class Board extends React.Component {
     }
 
     render() {
-
         const activePunishmentSet = Object.keys(this.props.activePunishment).length > 0;
-
-        // const startingSentence = this.props.startingSentence;
         const startingSentenceFirstPart = this.props.startingSentenceFirstPart;
         const startingSentenceSecondPart = this.props.startingSentenceSecondPart;
-        // const startingSentenceThirdPart = this.props.startingSentenceThirdPart;
-
         const boardText = this.props.boardValue;
         const progress = this.props.progress;
         const isPunishmentFailed = this.props.boardTextMistake;
-        const makeFocusable = this.props.startSentenceBeingWritten ? {} : { tabIndex: "1" }
-
-        const showTextCursor =
-            this.props.gameInProgress
-            && !!this.cursorInterval
-
+        const makeFocusable = this.props.startSentenceBeingWritten || isPunishmentFailed || progress === 100 ? {} : { tabIndex: "1" };
+        const showTextCursor = this.props.gameInProgress && this.props.boardFocused;
         // if (fullLines((startingSentenceFirstPart + startingSentenceSecondPart + boardText))) console.log('hit')
 
         if (activePunishmentSet) {
@@ -465,7 +471,7 @@ class Board extends React.Component {
                             <div
                                 ref={elem => this.textBoard = elem}
                                 id="board-textarea"
-                                className="notnoselect"
+                                className="noselect"
                                 {...makeFocusable}
                                 disabled={this.props.boardDisabled}
                                 onKeyDown={this.boardTextChange}
@@ -476,19 +482,19 @@ class Board extends React.Component {
                                 <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
                                 {/* startingSentenceThirdPart */}
                                 {boardText}
-                                <span style={this.state.boardCursor ? { opacity: 1 } : { opacity: 0 }}>|</span>
-                               {/*  {showTextCursor ? this.state.boardCursor : null} */}
+                                <wbr />
+                                {showTextCursor ? <span style={this.state.boardCursor ? { opacity: 1 } : { opacity: 0 }}>|</span> : null}
                             </div>
 
                             {progress === 100 ? <CompletedStamp /> : null}
                             {isPunishmentFailed ? <FailedStamp /> : null}
 
-                            {this.props.boardHovered ?
+                            {this.props.boardHovered && this.props.startSentenceBeingWritten === false ?
                                 <div
                                     id="click-to-start-element"
                                     className="hover-dialog" >
 
-                                    <label className="hover-dialog-text">
+                                    <label className="hover-dialog-text noselect">
                                         CLICK
                                         <br /> TO START
                                     </label>
@@ -680,4 +686,4 @@ function getRandomPunishment(randomPunishments) {
 
 
 
-"Write 100x My name is Donald jjjjjjjjjjjjj jjjjj jjjj ii ii ii iiii"
+// "Write 100x My name is Donald jjjjjjjjjjjjj jjjjj jjjj ii ii ii iiii"

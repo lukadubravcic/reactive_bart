@@ -1,17 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import Top from './components/user/Top';
-// import Login from './components/login/Login';
-// import Register from './components/register/Register';
 import Game from './components/game/Game';
 import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
-/* import NewPassword from './components/newPassword/NewPassword'; */
 import Footer from './components/Footer';
-
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
@@ -120,7 +115,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        // prettyURL();
+        prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

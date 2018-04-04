@@ -136,15 +136,13 @@ class Board extends React.Component {
                 this.props.onSpongeHoverOut();
             }
         }
-
+        // restart kazne
         this.spongeClick = ev => {
-
             // nema reseta ako je kazna obavljena
             if (this.props.progress < 100) {
                 this._wrongCharPlace = null;
 
                 if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
-
                     if (this.props.guestPunishment !== null &&
                         Object.keys(this.props.guestPunishment).length &&
                         typeof this.props.guestPunishment.uid !== 'undefined' &&
@@ -156,8 +154,11 @@ class Board extends React.Component {
                 }
 
                 this.punishmentInit(false);
-            } else if (this.props.progress === 100) { // u slucaju kada je kazna izvrsena (100%) reset tipka ce postaviti random kaznu
+                // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
+                this.boardFocused();
+                requestAnimationFrame(() => this.textBoard.focus());
 
+            } else if (this.props.progress === 100) { // u slucaju kada je kazna izvrsena (100%) reset tipka ce postaviti random kaznu
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
                 if (randomPunishment) this.props.setActivePunishment(randomPunishment);
             }
@@ -169,8 +170,9 @@ class Board extends React.Component {
         };
 
         this.boardFocused = ev => {
-            ev.preventDefault();
+            ev && ev.preventDefault();
             this.props.onBoardFocus();
+            this.stopBoardCursorToggling();
             this.boardCursorToggle();
         };
 
@@ -367,11 +369,6 @@ class Board extends React.Component {
         };
 
         this.punishmentInit = (punishmentChanged = true) => {
-
-            // treba prepoznati jel prosli init radio sa istom kaznom
-            // ako kazna nije ista, normalni ispis slova 
-            // ako je ista, samo clearaj napisani tekst, opis ostaje, tj (nije potreban "ghost write");
-
             this.stopBoardCursorToggling();
 
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
@@ -392,7 +389,7 @@ class Board extends React.Component {
             this.props.startingSentenceWritingStarted();
 
             if (punishmentChanged === false) {
-                
+
                 this.props.setStartingSentence(punishmentExplanation);
                 this.props.startingSentenceWritingFinished();
             } else {
@@ -402,15 +399,14 @@ class Board extends React.Component {
 
         this.stopBoardCursorToggling = () => {
             clearInterval(this.cursorInterval);
-            this.cursorInterval = null;
-            this.setState({ boardCursor: false});
+            this.setState({ boardCursor: false });
         }
 
         this.boardCursorToggle = () => {
-            const toggleInterval = 500;
+            const toggleIntervalTime = 500;
             this.cursorInterval = setInterval(() => {
                 this.setState({ boardCursor: !this.state.boardCursor });
-            }, toggleInterval);
+            }, toggleIntervalTime);
         }
     }
 

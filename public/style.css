@@ -9,7 +9,6 @@
 	-webkit-font-smoothing: antialiased;
 
 	-webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
             box-sizing: border-box;
 }
 
@@ -25,8 +24,7 @@ textarea {
 
 .noselect {
 	-webkit-touch-callout: none; /* iOS Safari */
-	  -webkit-user-select: none; /* Safari */
-	   -khtml-user-select: none; /* Konqueror HTML */
+	  -webkit-user-select: none; /* Safari */ /* Konqueror HTML */
 		 -moz-user-select: none; /* Firefox */
 		  -ms-user-select: none; /* Internet Explorer/Edge */
 			  user-select: none; /* Non-prefixed version, currently
@@ -34,50 +32,74 @@ textarea {
 }
 
 .tran-all {
+	-webkit-transition: all 1s;
+	-o-transition: all 1s;
 	transition: all 1s;
 }
 
 .backgroundcolor-tran {
+	-webkit-transition: background-color 0.5s;
+	-o-transition: background-color 0.5s;
 	transition: background-color 0.5s;
 }
 
 .fieldset-padding-top-tran {
+	-webkit-transition: padding-top 0.5s;
+	-o-transition: padding-top 0.5s;
 	transition: padding-top 0.5s;
 }
 
 .opacity-tran {
+	-webkit-transition: opacity 0.5s;
+	-o-transition: opacity 0.5s;
 	transition: opacity 0.5s;
 }
 
 .opacity-tran-fast {
+	-webkit-transition: opacity 0.3s;
+	-o-transition: opacity 0.3s;
 	transition: opacity 0.3s;
 }
 
 .height-tran {
+	-webkit-transition: height 0.5s;
+	-o-transition: height 0.5s;
 	transition: height 0.5s;
 }
 
 .height-tran-fast {
+	-webkit-transition: height 0.3s;
+	-o-transition: height 0.3s;
 	transition: height 0.3s;
 }
 
 .opacity-03-delay-tran-fast {
+	-webkit-transition: 0.2s 0.3s;
+	-o-transition: 0.2s 0.3s;
 	transition: 0.2s 0.3s;
 }
 
 .height-opacity-tran-fast {
+	-webkit-transition: opacity 0.2s, height 0.3s 0.2s;
+	-o-transition: opacity 0.2s, height 0.3s 0.2s;
 	transition: opacity 0.2s, height 0.3s 0.2s; 
 }
 
 .top-margin-tran {
+	-webkit-transition: margin-top 0.3s linear 0.2s;
+	-o-transition: margin-top 0.3s linear 0.2s;
 	transition: margin-top 0.3s linear 0.2s;
 }
 
 .height-bcg-color-tran {
+	-webkit-transition: height 0.5s, background-color 0.5s;
+	-o-transition: height 0.5s, background-color 0.5s;
 	transition: height 0.5s, background-color 0.5s;
 }
 
 .fieldset-collapse-tran {
+	-webkit-transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
+	-o-transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
 	transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
 }
 
@@ -136,7 +158,8 @@ textarea {
 	width: 550px;
 	
 	background: #FFFFFF;
-	box-shadow: inset 0 1px 5px 0 #929292;
+	-webkit-box-shadow: inset 0 1px 5px 0 #929292;
+	        box-shadow: inset 0 1px 5px 0 #929292;
 	border-radius: 8px; 
 
 	font-family: 'Montserrat', sans-serif;
@@ -200,10 +223,20 @@ textarea {
 
 	z-index: 6;
 
-	animation-name: hover-tooltip;
-	animation-duration: 0.3s;
-	animation-direction: normal;
-	animation-fill-mode: forwards;
+	-webkit-animation-name: hover-tooltip;
+
+	        animation-name: hover-tooltip;
+	-webkit-animation-duration: 0.3s;
+	        animation-duration: 0.3s;
+	-webkit-animation-direction: normal;
+	        animation-direction: normal;
+	-webkit-animation-fill-mode: forwards;
+	        animation-fill-mode: forwards;
+} 
+
+@-webkit-keyframes hover-tooltip {
+    0%   {opacity: 0; }
+    100% {opacity: 1; }
 } 
 
 @keyframes hover-tooltip {
@@ -256,6 +289,10 @@ fieldset + fieldset {
 
 	background-color: #C4ACE4;
 	opacity: 1;
+	
+	-webkit-transition: height 0.5s, background-color 0.5s;
+	
+	-o-transition: height 0.5s, background-color 0.5s;
 	
 	transition: height 0.5s, background-color 0.5s;	
 }
@@ -757,30 +794,69 @@ fieldset + fieldset {
 	left: 286px;
 	top: 183px;
 
-	animation-name: stamp-hit;
-	animation-delay:0.2s;
-	animation-duration: 0.3s;
-	animation-fill-mode: forwards;
+	-webkit-animation-name: stamp-hit;
+
+	        animation-name: stamp-hit;
+	-webkit-animation-delay:0.2s;
+	        animation-delay:0.2s;
+	-webkit-animation-duration: 0.3s;
+	        animation-duration: 0.3s;
+	-webkit-animation-fill-mode: forwards;
+	        animation-fill-mode: forwards;
 	opacity: 0;
 }
 
-@keyframes stamp-hit{
+@-webkit-keyframes stamp-hit{
 	0% {
 	opacity: 0;
-	transform-origin: 50% 50%;
-	transform: rotate(-15deg) scale(10);
+	-webkit-transform-origin: 50% 50%;
+	        transform-origin: 50% 50%;
+	-webkit-transform: rotate(-15deg) scale(10);
+	        transform: rotate(-15deg) scale(10);
 	}
 
 	10% {
 	opacity:.50;	
 	
-	transform: rotate(-2deg) scale(5);
+	-webkit-transform: rotate(-2deg) scale(5);	
+	
+	        transform: rotate(-2deg) scale(5);
+	-webkit-transition: all .3s linear;
+	-o-transition: all .3s linear;
 	transition: all .3s linear;
 	}
 
 	100% {
 	opacity:1;
-	transform: rotate(0deg) scale(1);
+	-webkit-transform: rotate(0deg) scale(1);
+	        transform: rotate(0deg) scale(1);
+	}
+}
+
+@keyframes stamp-hit{
+	0% {
+	opacity: 0;
+	-webkit-transform-origin: 50% 50%;
+	        transform-origin: 50% 50%;
+	-webkit-transform: rotate(-15deg) scale(10);
+	        transform: rotate(-15deg) scale(10);
+	}
+
+	10% {
+	opacity:.50;	
+	
+	-webkit-transform: rotate(-2deg) scale(5);	
+	
+	        transform: rotate(-2deg) scale(5);
+	-webkit-transition: all .3s linear;
+	-o-transition: all .3s linear;
+	transition: all .3s linear;
+	}
+
+	100% {
+	opacity:1;
+	-webkit-transform: rotate(0deg) scale(1);
+	        transform: rotate(0deg) scale(1);
 	}
 }
 
@@ -1180,6 +1256,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .picker-component-container {
 	min-width: 1280px;
+	-webkit-transition: background-color 1s;
+	-o-transition: background-color 1s;
 	transition: background-color 1s;
 }
 
@@ -1228,9 +1306,18 @@ input[type=number]::-webkit-outer-spin-button {
 
 	border-collapse: collapse;
 
-	animation-name: picker-table-anim;
-	animation-duration: 1s;
-	animation-fill-mode: forwards;
+	-webkit-animation-name: picker-table-anim;
+
+	        animation-name: picker-table-anim;
+	-webkit-animation-duration: 1s;
+	        animation-duration: 1s;
+	-webkit-animation-fill-mode: forwards;
+	        animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes picker-table-anim {
+    from { opacity: 0;}
+    to { opacity: 1;}
 }
 
 @keyframes picker-table-anim {
@@ -1300,8 +1387,16 @@ td {
 	opacity: 1;	
 	background: #515151;
 
-	animation-name: picker-tab-option-fadein;
-	animation-duration: 0.5s;
+	-webkit-animation-name: picker-tab-option-fadein;
+
+	        animation-name: picker-tab-option-fadein;
+	-webkit-animation-duration: 0.5s;
+	        animation-duration: 0.5s;
+}
+
+@-webkit-keyframes picker-tab-option-fadein {
+	from {opacity: 0};
+	to {opacity: 1};
 }
 
 @keyframes picker-tab-option-fadein {
@@ -1319,8 +1414,16 @@ td {
 	color: #FEFEFE;
 	letter-spacing: 5px;
 	
-	animation-name: table-header-fadein-anim;
-	animation-duration: 1s;
+	-webkit-animation-name: table-header-fadein-anim;
+	
+	        animation-name: table-header-fadein-anim;
+	-webkit-animation-duration: 1s;
+	        animation-duration: 1s;
+}
+
+@-webkit-keyframes table-header-fadein-anim {
+	from {opacity: 0};
+	to {opacity: 1}
 }
 
 @keyframes table-header-fadein-anim {
@@ -1348,9 +1451,17 @@ td {
 }
 
 .picker-selected-row {
-	animation-name: select-row-anim;
-	animation-duration: 0.5s;
-	animation-fill-mode: forwards;
+	-webkit-animation-name: select-row-anim;
+	        animation-name: select-row-anim;
+	-webkit-animation-duration: 0.5s;
+	        animation-duration: 0.5s;
+	-webkit-animation-fill-mode: forwards;
+	        animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes select-row-anim {
+	from { background-color: transparent;}
+    to { background-color: #FFD75F;}
 }
 
 @keyframes select-row-anim {
@@ -1565,12 +1676,15 @@ td.ordered-status-field {
 }
 
 .picker-btn:hover {
-	filter: invert(1);
+	-webkit-filter: invert(1);
+	        filter: invert(1);
 }
 
 .picker-btn-go {
 	color: #FFD75F;
 	opacity: 1;
+	-webkit-transition: opacity 0.5s;
+	-o-transition: opacity 0.5s;
 	transition: opacity 0.5s;
 }
 
@@ -1926,4 +2040,3 @@ td.ordered-status-field {
 
 	left: -50%;
 }
-

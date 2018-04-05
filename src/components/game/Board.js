@@ -272,6 +272,7 @@ class Board extends React.Component {
                     this.incorrectBoardEntry();
                     return;
                 }
+
                 this.props.updateBoardValue(transformedBoardText);
                 if (this.textBoard) {
                     this.textBoard.scrollTo(0, this.textBoard.scrollHeight);

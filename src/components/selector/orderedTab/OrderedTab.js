@@ -33,7 +33,7 @@ const mapDispatchToProps = dispatch => ({
 const animationDuration = 500;
 
 const animStyles = {
-    tableVisible: { display: 'inline-block' }
+    tableVisible: { display: 'inline-block' },
 }
 
 
@@ -257,9 +257,9 @@ class OrderedTab extends React.Component {
 
                             <tbody>
                                 {
-                                    shownPunishments.map(punishment => {
+                                    shownPunishments.map((punishment, index) => {
                                         return (
-                                            <OrderedTabRow punishment={punishment} key={punishment.uid || Date.now()} id={punishment.uid} />
+                                            <OrderedTabRow punishment={punishment} key={punishment.uid || index} id={punishment.uid} />
                                         )
                                     })
                                 }

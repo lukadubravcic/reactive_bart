@@ -72,9 +72,7 @@ class Stats extends React.Component {
             };
 
             this.didPunishmentsChange = (punishments, newPunishments) => {
-
                   if (punishments.length !== newPunishments.length) return true;
-
                   else { // provjeri po kaznama ako se sta mjenja
 
                         for (let i = 0; i < punishments.length; i++) {
@@ -107,11 +105,8 @@ class Stats extends React.Component {
             };
 
             this.getGraphLabels = data => {
-
                   data = getRadians(data);
-
                   data = getCoordPoints(data);
-
                   // stvaranje HTML elemenata
                   let elements = this.getGraphLabelHTML(data);
 
@@ -119,7 +114,6 @@ class Stats extends React.Component {
             };
 
             this.getGraphLabelHTML = coordPoints => {
-
                   return coordPoints.map((item, index) => {
 
                         let padding = 35;
@@ -183,13 +177,21 @@ class Stats extends React.Component {
             }
       }
 
+      componentWillUpdate(prevProps) {
+            console.log(prevProps.fourthGraph)
+            console.log(this.props.fourthGraph)
+            console.log('---------------')
+      }
+
       componentWillReceiveProps(nextProps) {
 
             /* if (this.didPunishmentsChange(this.props.acceptedPunishments, nextProps.acceptedPunishments)) { // odlucuje o triggeru klasifikacije
                   console.log('test')
             } */
+           
 
             if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
+                  // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
 
                         let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
@@ -204,7 +206,6 @@ class Stats extends React.Component {
             if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishments
 
                   if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments)) { // odlucuje o triggeru klasifikacije
-
                         let classificationResults = this.clasifyPunishments(nextProps.pastPunishments);
 
                         let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
@@ -220,7 +221,6 @@ class Stats extends React.Component {
       }
 
       render() {
-
             const usrLoggedIn = Object.keys(this.props.currentUser).length;
 
             if (!usrLoggedIn) return null;
@@ -462,9 +462,7 @@ function getGraphProperties(classificationResults, neededProperties) {
 
 
 const getRadians = data => {
-
       let valueSum = 0;
-
       data.forEach(item => valueSum += item.value);
 
       return data.map(item => {
@@ -477,7 +475,6 @@ const getRadians = data => {
 
 
 const getCoordPoints = data => {
-
       let tmp = 0;
 
       // pomak prema centru kruznice (da labeli nisu na samom rubu)
@@ -535,7 +532,6 @@ const distanceBetweenPoints = (x1, y1, x2, y2) => {
 
 // default kvadrant je 3, pa je potreban pomak, koristi globalno definiran radijus kruznice
 const placePointInQuardrant = (x, y, quadrant) => {
-
       switch (quadrant) {
             case 1:
                   return {

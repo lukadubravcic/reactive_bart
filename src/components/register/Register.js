@@ -377,7 +377,7 @@ class Register extends React.Component {
                                     className="form-feedback"
                                     onMouseOver={this.showPwdInvalidElement}
                                     onMouseOut={this.hidePwdInvalidElement}>
-                                    <u>UNACCETABLE</u>
+                                    <u>UNACCEPTABLE</u>
 
                                     {this.state.showPwdInvalidHoverElement
                                         ? <div

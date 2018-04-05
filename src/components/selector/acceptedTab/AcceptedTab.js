@@ -216,9 +216,11 @@ class AcceptedTab extends React.Component {
         }
 
         this.showTable = () => {
-            this.updateTableVisibilityTimeout = setTimeout(() => {
-                this.containerElement !== null && this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
-            }, animationDuration);
+            requestAnimationFrame(() => {
+                this.updateTableVisibilityTimeout = setTimeout(() => {
+                    this.containerElement !== null && this.setState({ tableStyle: { ...this.state.tableStyle, ...animStyles.tableVisible } });
+                }, animationDuration);
+            });
         }
     }
 

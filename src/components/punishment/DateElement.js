@@ -43,11 +43,15 @@ class DateElement extends React.Component {
         this.state = {
             validDeadline: true,
             calendarShown: false,
+            calendarFocused: false,
         };
 
         this.showCalendar = ev => {
             ev.preventDefault();
-            this.setState({ calendarShown: !this.state.calendarShown });
+            this.setState({
+                calendarShown: !this.state.calendarShown,
+                calendarFocused: true,
+            });
         };
 
         this.dayChange = ev => {
@@ -113,13 +117,17 @@ class DateElement extends React.Component {
         };
 
         this.onCalendarChange = selectedDate => {
-
             this.props.updateFieldValue(selectedDate.getFullYear(), 'yearField');
             this.props.updateFieldValue(selectedDate.getMonth() + 1, 'monthField');
             this.props.updateFieldValue(selectedDate.getDate(), 'dayField');
             this.props.changeDeadlineValidity(true);
 
             this.setState({ calendarShown: false });
+        };
+
+        this.calendarContainerClick = () => {
+            // this.setState({ calendarShown: false });
+            console.log('calendar div blur');
         };
     }
 
@@ -173,18 +181,23 @@ class DateElement extends React.Component {
 
                     {this.state.calendarShown ?
                         <div
+                            ref={elem => this.calendarContainer = elem}
+                            tabIndex="1"
                             style={{
                                 position: 'absolute',
                                 zIndex: '20',
                                 top: '10px',
-                                left: '100%'
-                            }}>
+                                left: '100%',
+                            }}
+                            onClick={this.calendarContainerClick}>
 
                             <Calendar
-                                onChange={this.onCalendarChange}
+                                ref={elem => this.calendar = elem}
+                                onChange={this.hideCalendar}
                                 value={tomorrow}
                                 minDate={tomorrow}
-                                maxDate={maxDate} />
+                                maxDate={maxDate}
+                            />
                         </div>
                         : null}
 

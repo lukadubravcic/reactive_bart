@@ -15,6 +15,7 @@ import { request } from 'https';
 
 const mapStateToProps = state => ({
     acceptedPunishments: state.punishment.acceptedPunishments,
+    pastPunishments: state.punishment.pastPunishments,
     shownAcceptedPunishments: state.punishment.shownAcceptedPunishments,
     currentPage: state.punishment.currentAcceptedPage,
     activePunishment: state.game.activePunishment,
@@ -39,6 +40,9 @@ const mapDispatchToProps = dispatch => ({
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS', punishments, newPage })
     },
+    updatePastPunishments: newPastPunishments => {
+        dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments: newPastPunishments });
+    }
 });
 
 const animationDuration = 500;
@@ -84,10 +88,19 @@ class AcceptedTab extends React.Component {
         };
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea
-
+            let newPastPunishments = JSON.parse(JSON.stringify(this.props.pastPunishments));
             let filteredPunishments = this.props.acceptedPunishments.filter(punishment => {
                 return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
             });
+
+            let hitCounter = false;
+            for (let pun of newPastPunishments) {
+                if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
+                    pun.given_up = new Date().toISOString().slice(0, 19);    
+                    hitCounter = true;
+                }
+            }
+            if (hitCounter) this.props.updatePastPunishments(newPastPunishments);            
             this.props.giveUpPunishment(id, filteredPunishments);
         };
 
@@ -98,11 +111,6 @@ class AcceptedTab extends React.Component {
             }
             this.props.changeShownPunishments(firstPage, 1);
         };
-
-        /* this.loadAndShowAcceptedPunishments = punishments => { // poziv kada stigne payload sa accepted punishmentima
-            this.props.onLoadedAcceptedPunishments(punishments);
-            this._showFirstPage();
-        }; */
 
         this.updateAndShowAcceptedPunishments = punishments => {
             this.props.changeAcceptedPunishments(punishments);

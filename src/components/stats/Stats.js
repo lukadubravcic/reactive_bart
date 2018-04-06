@@ -21,10 +21,10 @@ const mapStateToProps = state => ({
       acceptedPunishments: state.punishment.acceptedPunishments,
       pastPunishments: state.punishment.pastPunishments,
       orderedPunishments: state.punishment.orderedPunishments,
-      firstGraph: state.graphData.firstGraph,
+      /* firstGraph: state.graphData.firstGraph,
       secondGraph: state.graphData.secondGraph,
       thirdGraph: state.graphData.thirdGraph,
-      fourthGraph: state.graphData.fourthGraph
+      fourthGraph: state.graphData.fourthGraph */
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -40,6 +40,13 @@ class Stats extends React.Component {
 
       constructor() {
             super();
+
+            this.state = {
+                  orderedFirstGraphData: null,
+                  orderedSecondGraphData: null,
+                  punishedFirstGraphData: null,
+                  punishedSecondGraphData: null,
+            }
 
             this.clasifyPunishments = punishments => {
 
@@ -177,19 +184,7 @@ class Stats extends React.Component {
             }
       }
 
-      componentWillUpdate(prevProps) {
-            console.log(prevProps.fourthGraph)
-            console.log(this.props.fourthGraph)
-            console.log('---------------')
-      }
-
       componentWillReceiveProps(nextProps) {
-
-            /* if (this.didPunishmentsChange(this.props.acceptedPunishments, nextProps.acceptedPunishments)) { // odlucuje o triggeru klasifikacije
-                  console.log('test')
-            } */
-           
-
             if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
                   // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
@@ -199,7 +194,14 @@ class Stats extends React.Component {
                         let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
                         let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
 
-                        this.props.updateOrderedGraphState({ graphData1, graphData2 });
+                        requestAnimationFrame(() => {
+                              this.setState((prevState, props) => {
+                                    return {
+                                          orderedFirstGraphData: graphData1,
+                                          orderedSecondGraphData: graphData2,
+                                    };
+                              });
+                        });
                   }
             }
 
@@ -211,13 +213,14 @@ class Stats extends React.Component {
                         let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
                         let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
 
-                        this.props.updateReceivedGraphState({ graphData3, graphData4 });
+                        this.setState((prevState, props) => {
+                              return {
+                                    punishedFirstGraphData: graphData3,
+                                    punishedSecondGraphData: graphData4,
+                              };
+                        });
                   }
             }
-
-            /* if (this.props.orderedPunishments === 'empty' && nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) {
-                  //console.log('test')
-            } */
       }
 
       render() {
@@ -225,17 +228,29 @@ class Stats extends React.Component {
 
             if (!usrLoggedIn) return null;
 
-            let firstGraphLabels = typeof this.props.firstGraph !== 'undefined' && this.props.firstGraph !== null && Object.keys(this.props.firstGraph).length
-                  ? this.getGraphLabels(this.props.firstGraph)
+            const graphAnimationDuration = 3500;
+
+            const orderedFirstGraphData = this.state.orderedFirstGraphData;
+            const orderedSecondGraphData = this.state.orderedSecondGraphData;
+            const punishedFirstGraphData = this.state.punishedFirstGraphData;
+            const punishedSecondGraphData = this.state.punishedSecondGraphData;
+
+            const orderedFirstGraphDataValidity = typeof this.state.orderedFirstGraphData !== 'undefined' && this.state.orderedFirstGraphData !== null && Object.keys(this.state.orderedFirstGraphData).length;
+            const orderedSecondGraphDataValidity = typeof this.state.orderedSecondGraphData !== 'undefined' && this.state.orderedSecondGraphData !== null && Object.keys(this.state.orderedSecondGraphData).length;
+            const punishedFirstGraphDataValidity = typeof this.state.punishedFirstGraphData !== 'undefined' && this.state.punishedFirstGraphData !== null && Object.keys(this.state.punishedFirstGraphData).length;
+            const punishedSecondGraphDataValidity = typeof this.state.punishedSecondGraphData !== 'undefined' && this.state.punishedSecondGraphData !== null && Object.keys(this.state.punishedSecondGraphData).length;
+
+            let firstGraphLabels = orderedFirstGraphDataValidity
+                  ? this.getGraphLabels(this.state.orderedFirstGraphData)
                   : null;
-            let secondGraphLabels = typeof this.props.secondGraph !== 'undefined' && this.props.secondGraph !== null && Object.keys(this.props.secondGraph).length
-                  ? this.getGraphLabels(this.props.secondGraph)
+            let secondGraphLabels = orderedSecondGraphDataValidity
+                  ? this.getGraphLabels(this.state.orderedSecondGraphData)
                   : null;
-            let thirdGraphLabels = typeof this.props.thirdGraph !== 'undefined' && this.props.thirdGraph !== null && Object.keys(this.props.thirdGraph).length
-                  ? this.getGraphLabels(this.props.thirdGraph)
+            let thirdGraphLabels = punishedFirstGraphDataValidity
+                  ? this.getGraphLabels(this.state.punishedFirstGraphData)
                   : null;
-            let fourthGraphLabels = typeof this.props.fourthGraph !== 'undefined' && this.props.fourthGraph !== null && Object.keys(this.props.fourthGraph).length
-                  ? this.getGraphLabels(this.props.fourthGraph)
+            let fourthGraphLabels = punishedSecondGraphDataValidity
+                  ? this.getGraphLabels(this.state.punishedSecondGraphData)
                   : null;
 
             return (
@@ -245,41 +260,40 @@ class Stats extends React.Component {
 
                                     <label id="statz-heading" className="heading">Statz</label>
 
-
                                     <div className="punishing-others-container">
 
                                           <label className="statz-group-heading">PUNISHING OTHERS</label>
 
-                                          {this.props.firstGraph ?
+                                          {orderedFirstGraphDataValidity /* || (typeof this.state.orderedFirstGraphData this.state.orderedFirstGraphData.length) */ ?
                                                 <div className="float-left graph-container graph1-container"
                                                       style={{ width: "420px" }}>
 
-                                                      {firstGraphLabels.map(label => label)}
+                                                      {firstGraphLabels && firstGraphLabels.map(label => label)}
 
                                                       <PieChart
-                                                            data={this.props.firstGraph}
+                                                            data={orderedFirstGraphData}
                                                             lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
-                                                            animationDuration={3500} />
+                                                            animationDuration={graphAnimationDuration} />
                                                 </div>
 
                                                 : noDataLeftGraph}
 
-                                          {this.props.secondGraph ?
+                                          {orderedSecondGraphDataValidity ?
                                                 <div className="float-right graph-container graph2-container"
                                                       style={{ width: "420px" }}>
 
-                                                      {secondGraphLabels.map(label => label)}
+                                                      {secondGraphLabels && secondGraphLabels.map(label => label)}
 
                                                       <PieChart
-                                                            data={this.props.secondGraph}
+                                                            data={orderedSecondGraphData}
                                                             lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
-                                                            animationDuration={3500} />
+                                                            animationDuration={graphAnimationDuration} />
                                                 </div>
                                                 : noDataRightGraph}
 
@@ -293,35 +307,35 @@ class Stats extends React.Component {
 
                                           <label className="statz-group-heading">ME, BEING PUNISHED</label>
 
-                                          {this.props.thirdGraph ?
+                                          {punishedFirstGraphDataValidity ?
                                                 <div className="float-left graph-container graph1-container"
                                                       style={{ width: "420px" }}>
 
-                                                      {thirdGraphLabels.map(label => label)}
+                                                      {thirdGraphLabels && thirdGraphLabels.map(label => label)}
 
                                                       <PieChart
-                                                            data={this.props.thirdGraph}
+                                                            data={punishedFirstGraphData}
                                                             lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
-                                                            animationDuration={3500} />
+                                                            animationDuration={graphAnimationDuration} />
                                                 </div>
                                                 : noDataLeftGraph}
 
-                                          {this.props.fourthGraph ?
+                                          {punishedSecondGraphDataValidity ?
                                                 <div className="float-right graph-container graph2-container"
                                                       style={{ width: "420px" }}>
 
-                                                      {fourthGraphLabels.map(label => label)}
+                                                      {fourthGraphLabels && fourthGraphLabels.map(label => label)}
 
                                                       <PieChart
-                                                            data={this.props.fourthGraph}
+                                                            data={punishedSecondGraphData}
                                                             lengthAngle={-360}
                                                             lineWidth={100}
                                                             paddingAngle={0}
                                                             animate={true}
-                                                            animationDuration={3500} />
+                                                            animationDuration={graphAnimationDuration} />
                                                 </div>
                                                 : noDataRightGraph}
 

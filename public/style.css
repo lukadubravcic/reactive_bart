@@ -1339,13 +1339,17 @@ td {
 .picker-nav-container {
 	display: inline-block;
 	position: relative;		
+	width: 100%;
 }
 
 .picker-navigation {
 	display: inline-block;
 	position: relative;
 	
-	padding-left: 284px;	
+	top: 0%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%);
 }
 
 .picker-navigation button {

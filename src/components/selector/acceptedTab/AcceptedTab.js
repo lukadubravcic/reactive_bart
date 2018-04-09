@@ -10,7 +10,6 @@ import { sortPunishmentsByString, sortPunishmentsByDate, sortPunishmentsByNumber
 import agent from '../../../agent';
 
 import { ITEMS_PER_PAGE } from '../../../constants/constants';
-import { request } from 'https';
 
 
 const mapStateToProps = state => ({
@@ -92,17 +91,20 @@ class AcceptedTab extends React.Component {
             let filteredPunishments = this.props.acceptedPunishments.filter(punishment => {
                 return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
             });
+            this.updatePastPunishments(id, newPastPunishments);
+            this.props.giveUpPunishment(id, filteredPunishments);
+        };
 
+        this.updatePastPunishments = (id, newPastPunishments) => {
             let hitCounter = false;
             for (let pun of newPastPunishments) {
                 if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
-                    pun.given_up = new Date().toISOString().slice(0, 19);    
+                    pun.given_up = new Date().toISOString().slice(0, 19);
                     hitCounter = true;
                 }
             }
-            if (hitCounter) this.props.updatePastPunishments(newPastPunishments);            
-            this.props.giveUpPunishment(id, filteredPunishments);
-        };
+            if (hitCounter) this.props.updatePastPunishments(newPastPunishments);
+        }
 
         this._showFirstPage = (punishments = this.props.acceptedPunishments) => {
             let firstPage = [];

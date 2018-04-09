@@ -15,6 +15,8 @@ const colors = {
       failed: '#EA411E'
 };
 
+const graphAnimationDuration = 3500;
+
 const mapStateToProps = state => ({
       currentUser: state.common.currentUser,
       rank: state.common.rank,
@@ -98,14 +100,14 @@ class Stats extends React.Component {
 
                   Object.keys(data).map((prop, index) => {
 
-                        if (data[prop] > 0) {
-                              graphData.push({
-                                    value: data[prop],
-                                    key: index + 1,
-                                    color: colors[prop],
-                                    name: Object.keys(data)[index]
-                              });
-                        }
+                        // if (data[prop] > 0) {
+                        graphData.push({
+                              value: data[prop],
+                              key: index + 1,
+                              color: colors[prop],
+                              name: Object.keys(data)[index]
+                        });
+                        //}
                   });
 
                   return graphData;
@@ -115,14 +117,14 @@ class Stats extends React.Component {
                   data = getRadians(data);
                   data = getCoordPoints(data);
                   // stvaranje HTML elemenata
-                  let elements = this.getGraphLabelHTML(data);
-
-                  return elements;
+                  return this.getGraphLabelHTML(data);
             };
 
             this.getGraphLabelHTML = coordPoints => {
                   return coordPoints.map((item, index) => {
-
+                        if (!item.x || !item.y) {
+                              return null;
+                        }
                         let padding = 35;
                         let xOffset = -((padding + item.name.length * 18) / 2);
 
@@ -197,11 +199,22 @@ class Stats extends React.Component {
                         requestAnimationFrame(() => {
                               this.setState((prevState, props) => {
                                     return {
-                                          orderedFirstGraphData: graphData1,
-                                          orderedSecondGraphData: graphData2,
+                                          orderedFirstGraphData: null,
+                                          orderedSecondGraphData: null,
                                     };
                               });
                         });
+
+                        setTimeout(() => {
+                              requestAnimationFrame(() => {
+                                    this.setState((prevState, props) => {
+                                          return {
+                                                orderedFirstGraphData: graphData1,
+                                                orderedSecondGraphData: graphData2,
+                                          };
+                                    });
+                              });
+                        }, 0);
                   }
             }
 
@@ -213,12 +226,25 @@ class Stats extends React.Component {
                         let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
                         let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
 
-                        this.setState((prevState, props) => {
-                              return {
-                                    punishedFirstGraphData: graphData3,
-                                    punishedSecondGraphData: graphData4,
-                              };
+                        requestAnimationFrame(() => {
+                              this.setState((prevState, props) => {
+                                    return {
+                                          punishedFirstGraphData: null,
+                                          punishedSecondGraphData: null,
+                                    };
+                              });
                         });
+
+                        setTimeout(() => {
+                              requestAnimationFrame(() => {
+                                    this.setState((prevState, props) => {
+                                          return {
+                                                punishedFirstGraphData: graphData3,
+                                                punishedSecondGraphData: graphData4,
+                                          };
+                                    });
+                              });
+                        }, 0);
                   }
             }
       }
@@ -228,17 +254,15 @@ class Stats extends React.Component {
 
             if (!usrLoggedIn) return null;
 
-            const graphAnimationDuration = 3500;
-
             const orderedFirstGraphData = this.state.orderedFirstGraphData;
             const orderedSecondGraphData = this.state.orderedSecondGraphData;
             const punishedFirstGraphData = this.state.punishedFirstGraphData;
             const punishedSecondGraphData = this.state.punishedSecondGraphData;
 
-            const orderedFirstGraphDataValidity = typeof this.state.orderedFirstGraphData !== 'undefined' && this.state.orderedFirstGraphData !== null && Object.keys(this.state.orderedFirstGraphData).length;
-            const orderedSecondGraphDataValidity = typeof this.state.orderedSecondGraphData !== 'undefined' && this.state.orderedSecondGraphData !== null && Object.keys(this.state.orderedSecondGraphData).length;
-            const punishedFirstGraphDataValidity = typeof this.state.punishedFirstGraphData !== 'undefined' && this.state.punishedFirstGraphData !== null && Object.keys(this.state.punishedFirstGraphData).length;
-            const punishedSecondGraphDataValidity = typeof this.state.punishedSecondGraphData !== 'undefined' && this.state.punishedSecondGraphData !== null && Object.keys(this.state.punishedSecondGraphData).length;
+            const orderedFirstGraphDataValidity = validateGraphData(this.state.orderedFirstGraphData);
+            const orderedSecondGraphDataValidity = validateGraphData(this.state.orderedSecondGraphData);
+            const punishedFirstGraphDataValidity = validateGraphData(this.state.punishedFirstGraphData);
+            const punishedSecondGraphDataValidity = validateGraphData(this.state.punishedSecondGraphData);
 
             let firstGraphLabels = orderedFirstGraphDataValidity
                   ? this.getGraphLabels(this.state.orderedFirstGraphData)
@@ -264,8 +288,8 @@ class Stats extends React.Component {
 
                                           <label className="statz-group-heading">PUNISHING OTHERS</label>
 
-                                          {orderedFirstGraphDataValidity /* || (typeof this.state.orderedFirstGraphData this.state.orderedFirstGraphData.length) */ ?
-                                                <div className="float-left graph-container graph1-container"
+                                          {orderedFirstGraphDataValidity
+                                                ? <div className="float-left graph-container graph1-container"
                                                       style={{ width: "420px" }}>
 
                                                       {firstGraphLabels && firstGraphLabels.map(label => label)}
@@ -355,6 +379,8 @@ class Stats extends React.Component {
       }
 }
 
+
+
 export default connect(mapStateToProps, mapDispatchToProps)(Stats);
 
 
@@ -380,10 +406,6 @@ const punishingOthersSVG = (
 
 const beingPunishedSVG = (
       <svg id="being-punished-bottom-image" width="1080px" height="213px" viewBox="0 0 1080 213" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-            <title>Fill 7 Copy 9 + Fill 15 Copy 4 + Group Copy 10</title>
-            <desc>Created with Sketch.</desc>
-            <defs></defs>
             <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -4631.000000)">
                   <g id="Group" transform="translate(0.000000, 3353.000000)">
                         <g id="Fill-7-Copy-9-+-Fill-15-Copy-4-+-Group-Copy-10" transform="translate(100.000000, 1278.000000)">
@@ -454,15 +476,25 @@ const noDataLeftGraph = (
                   <path d="M 37.499999999999986 71.65063509461096 A 25 25 0 0 0 75 50.00000000000001" strokeWidth="50" strokeDasharray="52.35987755982988" strokeDashoffset="104.71975511965977" stroke="#00BBD6" fill="none" style={{ transition: "stroke-dashoffset 1ms ease-out" }}></path>
             </svg>
       </div >
-
-
 )
 
+function validateGraphData(graphData) {
+      if (
+            typeof graphData === 'undefined'
+            || graphData === null
+            || !Object.keys(graphData).length
+      ) {
+            return false;
+      }
+      for (let i = 0; i < graphData.length; i++) {
+            if (graphData[i].value > 0) return true;
+      }
+      return false;
+}
 
 function comparePunishments(pun1, pun2) {
       // iterate trough object properties
       for (let prop in pun1) {
-
             if (pun1[prop] !== pun2[prop]) return false;
       }
       return true;
@@ -474,12 +506,17 @@ function getGraphProperties(classificationResults, neededProperties) {
       }));
 }
 
-
 const getRadians = data => {
       let valueSum = 0;
       data.forEach(item => valueSum += item.value);
 
       return data.map(item => {
+            if (item.value === 0) {
+                  return {
+                        ...item,
+                        radian: null,
+                  }
+            }
             return {
                   ...item,
                   radian: (item.value / valueSum) * (2 * Math.PI)
@@ -487,18 +524,19 @@ const getRadians = data => {
       });
 }
 
-
 const getCoordPoints = data => {
       let tmp = 0;
-
       // pomak prema centru kruznice (da labeli nisu na samom rubu)
       const offsetToCenter = 20;
-
       const xCircleCenter = circleRadius;
       const yCircleCenter = circleRadius;
 
       return data.map((item, index) => {
-
+            if (!item.radian) return {
+                  ...item,
+                  x: null,
+                  y: null,
+            };
             // izracunati koordinate i translacija u 1 quadrant cart.coord sustava
             let x = Math.floor(circleRadius * Math.cos(tmp + item.radian / 2)) + circleRadius;
             let y = Math.floor(circleRadius * Math.sin(tmp + item.radian / 2)) + circleRadius;

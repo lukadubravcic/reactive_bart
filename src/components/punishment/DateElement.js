@@ -40,18 +40,24 @@ class DateElement extends React.Component {
     constructor(props) {
         super(props);
 
+        this.lastFocusedElement = null;
+        this.lastBluredElement = null;
+
+        this.timeoutID = null;
+
         this.state = {
             validDeadline: true,
-            calendarShown: false,
-            calendarFocused: false,
+            isManagingFocus: false,
         };
 
         this.showCalendar = ev => {
             ev.preventDefault();
             this.setState({
-                calendarShown: !this.state.calendarShown,
-                calendarFocused: true,
+                isManagingFocus: true,
             });
+            setTimeout(() => {
+                this.calendarContainer.focus();
+            }, 1);
         };
 
         this.dayChange = ev => {
@@ -121,22 +127,46 @@ class DateElement extends React.Component {
             this.props.updateFieldValue(selectedDate.getMonth() + 1, 'monthField');
             this.props.updateFieldValue(selectedDate.getDate(), 'dayField');
             this.props.changeDeadlineValidity(true);
-
-            this.setState({ calendarShown: false });
+            // sakrij calendar
+            this.setState({ isManagingFocus: false });
         };
 
-        this.calendarContainerClick = () => {
-            // this.setState({ calendarShown: false });
-            console.log('calendar div blur');
+
+        this.onBlur = ev => {
+            let isCalendar = false;
+            if (ev.nativeEvent.relatedTarget !== null) {
+                const string = ev.nativeEvent.relatedTarget.className;
+                const substring = 'calendar';
+                if (string.indexOf(substring) !== -1) {
+                    isCalendar = true;
+                }
+            }
+            // klik van calendar diva
+            if (!isCalendar) {
+                this.timeoutID = setTimeout(() => {
+                    if (this.state.isManagingFocus) {
+                        this.setState({
+                            isManagingFocus: false,
+                        });
+                    }
+                }, 0);
+            }
+        };
+
+        this.onFocus = () => {
+            clearTimeout(this._timeoutID);
+            if (!this.state.isManagingFocus) {
+                this.setState({
+                    isManagingFocus: true,
+                });
+            }
         };
     }
 
-
     render() {
         const deadlineStyle = this.state.validDeadline ? {} : { backgroundColor: 'rgb(247, 200, 234)' };
-
         let now = new Date();
-        let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+        let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
         const maxDate = new Date(2100, 1, 1);
 
         return (
@@ -179,22 +209,23 @@ class DateElement extends React.Component {
                         {calendarBtnSvg}
                     </button>
 
-                    {this.state.calendarShown ?
+                    {this.state.isManagingFocus ?
                         <div
                             ref={elem => this.calendarContainer = elem}
-                            tabIndex="1"
                             style={{
                                 position: 'absolute',
                                 zIndex: '20',
                                 top: '10px',
                                 left: '100%',
+                                outline: 'none',
                             }}
-                            onClick={this.calendarContainerClick}>
+                            tabIndex="1"
+                            autoFocus
+                            onBlur={this.onBlur}
+                            onFocus={this.onFocus} >
 
                             <Calendar
-                                ref={elem => this.calendar = elem}
-                                onChange={this.hideCalendar}
-                                value={tomorrow}
+                                onChange={this.onCalendarChange}
                                 minDate={tomorrow}
                                 maxDate={maxDate}
                             />

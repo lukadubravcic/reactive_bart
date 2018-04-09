@@ -146,7 +146,6 @@ class PastTabRow extends React.Component {
     }
 
     render() {
-
         let punishmentStatus = getPunishmentStatus(this.props.punishment);
         const statusFieldCssClass = `ordered-status-field ${this.getCssClassForStatusField(punishmentStatus)}`;
         const tableRowClass = 'picker-table-row ' + this.props.style;

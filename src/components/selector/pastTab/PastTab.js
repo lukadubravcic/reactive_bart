@@ -21,10 +21,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onLoadedPastPunishments: (punishments) => {
+    onLoadedPastPunishments: punishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments })
     },
-    changePastPunishments: (punishments) => {
+    changePastPunishments: punishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments })
     },
     changeShownPunishments: (punishments, newPage) => {
@@ -219,6 +219,8 @@ class PastTab extends React.Component {
         if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
             this.updateAndShowPastPunishments(nextProps.pastPunishments);
         }
+
+        // TODO: dublja provjera past kazni, te update ovisno o promjeni 
 
         if (this.props.shownPastPunishments.length !== nextProps.shownPastPunishments.length) {
             this.numOfRows = nextProps.shownPastPunishments.length;

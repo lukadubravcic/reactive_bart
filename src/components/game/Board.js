@@ -14,6 +14,7 @@ const UPPERCASE = false;
 const mapStateToProps = state => ({
     ...state.game,
     acceptedPunishments: state.punishment.acceptedPunishments,
+    pastPunishments: state.punishment.pastPunishments,
     currentUser: state.common.currentUser,
     guestUserId: state.auth.userIdFromURL,
     token: state.common.token,
@@ -90,7 +91,9 @@ const mapDispatchToProps = dispatch => ({
     },
     cheatingDetected: () => {
         dispatch({ type: 'CHEATING_DETECTED' });
-    }
+    }, updatePastPunishments: newPastPunishments => {
+        dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments: newPastPunishments });
+    },
 });
 
 class Board extends React.Component {
@@ -198,9 +201,22 @@ class Board extends React.Component {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
             } else {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
+                this.updatePastPunishments(this.props.activePunishment.uid);
                 this.removeActivePunishmentFromAccepted();
             }
         };
+
+        this.updatePastPunishments = id => {
+            let hitCounter = false;
+            let newPastPunishments = JSON.parse(JSON.stringify(this.props.pastPunishments));
+            for (let pun of newPastPunishments) {
+                if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
+                    pun.done = new Date().toISOString().slice(0, 19);
+                    hitCounter = true;
+                }
+            }
+            if (hitCounter) this.props.updatePastPunishments(newPastPunishments);
+        }
 
         this.removeActivePunishmentFromAccepted = () => {
             let filteredAccPunishments = this.props.acceptedPunishments.filter(punishment => {
@@ -390,7 +406,6 @@ class Board extends React.Component {
             this.props.startingSentenceWritingStarted();
 
             if (punishmentChanged === false) {
-
                 this.props.setStartingSentence(punishmentExplanation);
                 this.props.startingSentenceWritingFinished();
             } else {
@@ -680,7 +695,3 @@ function getRandomPunishment(randomPunishments) {
     if (index > randomPunishments.length - 1) return randomPunishments[0];
     else return randomPunishments[index];
 }
-
-
-
-// "Write 100x My name is Donald jjjjjjjjjjjjj jjjjj jjjj ii ii ii iiii"

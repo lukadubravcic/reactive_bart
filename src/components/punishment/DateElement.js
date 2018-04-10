@@ -164,7 +164,6 @@ class DateElement extends React.Component {
     }
 
     render() {
-        const deadlineStyle = this.state.validDeadline ? {} : { backgroundColor: 'rgb(247, 200, 234)' };
         let now = new Date();
         let tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
         const maxDate = new Date(2100, 1, 1);

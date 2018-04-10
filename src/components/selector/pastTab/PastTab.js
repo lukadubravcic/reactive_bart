@@ -202,7 +202,16 @@ class PastTab extends React.Component {
                 }, animationDuration);
             });
         }
+
+        this.didPunishmentsChangeDeep = (nextPastPunishments) => {
+            if (this.props.pastPunishments.length !== nextPastPunishments.length) return true;
+            for (let i = 0; i < this.props.pastPunishments.length; i++) {
+                if (!comparePunishments(this.props.pastPunishments[i], nextPastPunishments[i])) return true;
+            }
+            return false;
+        };
     }
+
 
     componentDidMount() {
         if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) {
@@ -219,9 +228,9 @@ class PastTab extends React.Component {
         if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
             this.updateAndShowPastPunishments(nextProps.pastPunishments);
         }
-
-        // TODO: dublja provjera past kazni, te update ovisno o promjeni 
-
+        if (this.didPunishmentsChangeDeep(nextProps.pastPunishments)) {
+            this.updateAndShowPastPunishments(nextProps.pastPunishments);
+        }
         if (this.props.shownPastPunishments.length !== nextProps.shownPastPunishments.length) {
             this.numOfRows = nextProps.shownPastPunishments.length;
             this.startAnimation();
@@ -255,23 +264,15 @@ class PastTab extends React.Component {
                             className="picker-table">
 
                             <tbody>
-
                                 {
                                     shownPunishments.map(punishment => {
-
                                         if (encodeURIComponent(this.props.punishmentIdFromURL) === punishment.uid) {
-                                            return (
-                                                <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
-                                            )
-
+                                            return <PastTabRow punishment={punishment} style={styleMarkIgnored} key={punishment.uid} id={punishment.uid} />
                                         } else {
-                                            return (
-                                                <PastTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
-                                            )
+                                            return <PastTabRow punishment={punishment} key={punishment.uid} id={punishment.uid} />
                                         }
                                     })
                                 }
-
                             </tbody>
                         </table>
                     </div>
@@ -346,3 +347,13 @@ const ascendingSVG = (
         </g>
     </svg>
 )
+
+function comparePunishments(pun1, pun2) {
+    // iterate trough object properties
+    for (let prop in pun1) {
+        if (pun1[prop] !== pun2[prop]) {
+            return false;
+        }
+    }
+    return true;
+};

@@ -9,7 +9,8 @@ const defaultState = {
     serverAnswer: null,
     // showSetNewPasswordComponent: false,
     showResetPasswordForm: false,
-    elementToDisplay: 'start'
+    elementToDisplay: 'start',
+    forceLogin: false,
 }
 
 export default (state = defaultState, action) => {
@@ -48,7 +49,14 @@ export default (state = defaultState, action) => {
                 rePassword: defaultState.rePassword
             };
         case 'REGISTER':
-            return { ...defaultState, elementToDisplay: state.elementToDisplay, serverAnswer: action.serverAnswer };
+            return {
+                ...defaultState,
+                email: state.email,
+                password: state.password,
+                elementToDisplay: state.elementToDisplay,
+                serverAnswer: action.serverAnswer,
+                forceLogin: action.forceLogin
+            };
         case 'REGISTER_MAIL_INVALID':
             return { ...state, username: state.email, email: defaultState.email, _errMsg: action.errMsg };
         case 'REGISTER_ATTEMPT':
@@ -58,11 +66,11 @@ export default (state = defaultState, action) => {
         case 'REGISTER_EXISTING_MAIL':
             return { ...state, shownForm: 'login', loginWhom: state.email, password: defaultState.password, _errMsg: action.errMsg };
         case 'LOGIN':
-            return { ...defaultState, elementToDisplay: 'loggedIn' };
+            return { ...defaultState, elementToDisplay: 'loggedIn', forceLogin: defaultState.forceLogin };
         case 'LOGIN_ATTEMPT':
-            return { ...state, _errMsg: defaultState._errMsg, password: defaultState.password };
+            return { ...state, _errMsg: defaultState._errMsg, password: defaultState.password, forceLogin: defaultState.forceLogin };
         case 'LOGIN_FAILED':
-            return { ...state, _errMsg: action.errMsg };
+            return { ...state, _errMsg: action.errMsg, forceLogin: defaultState.forceLogin };
         /*  case 'SHOW_CHANGE_PASSWORD_FORM':
              return { ...state, showSetNewPasswordComponent: action.value }; */
 

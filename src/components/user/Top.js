@@ -59,7 +59,7 @@ const mapDispatchToProps = dispatch => ({
 class Top extends React.Component {
 
     constructor() {
-        super();
+        super();        
 
         this.showLogin = () => {
             this.props.showLoginForm();
@@ -164,7 +164,6 @@ class Top extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         const usernameSetPunishmentActive = specialOrRandomPunishmentIsActive(this.props.activePunishment)
             && this.props.activePunishment.type === "USERNAME_SET";
         const isNextPunSpecialOrRandom = specialOrRandomPunishmentIsActive(nextProps.activePunishment);
@@ -178,36 +177,7 @@ class Top extends React.Component {
     }
 
     render() {
-
-        const elements = this.getElementToDisplay();
-
-        return elements;
-
-        /* const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;
-        const elementToDisplay = this.props.auth.test;
-
-        let username = null;
-        let renderElement = this.getElementToDisplay(elementToDisplay);
-
-        if (!userLoggedIn) return renderElement;
-        let usernameNotSet = typeof this.props.common.currentUser.username === 'undefined'
-            || this.props.common.currentUser.username === null
-            || this.props.common.currentUser.username === '';
-
-
-        username = this.props.common.currentUser.username
-            ? this.props.common.currentUser.username
-            : this.props.common.currentUser.email;
-
-        return (
-            <div>
-                <LoggedInToolbar username={username} handleLogout={this.handleLogout} />
-                {usernameNotSet ? <SetUsername /> : null}
-                {renderElement}
-            </div>
-        ) */
-
-
+        return this.getElementToDisplay();
     }
 }
 

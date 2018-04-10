@@ -15,16 +15,16 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    changeSelectedTab: (id) => {
+    changeSelectedTab: id => {
         dispatch({ type: 'SWITCH_SELECTED_PUNISHMENT_TAB', id })
     },
-    setAcceptedPunishments: (punishments) => {
+    setAcceptedPunishments: punishments => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_LOADED', punishments })
     },
-    setOrderedPunishments: (punishments) => {
+    setOrderedPunishments: punishments => {
         dispatch({ type: 'ORDERED_PUNISHMENTS_LOADED', punishments })
     },
-    setPastPunishments: (punishments) => {
+    setPastPunishments: punishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments })
     },
     setAcceptedHeaderVisibility: value => {

@@ -25,21 +25,21 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.register(username, email, password).then(payload => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
             // enableSubmit();
-
             const isMailValid = isMail(email);
 
             if (!isMailValid) {
                 dispatch({ type: 'REGISTER_MAIL_INVALID', errMsg: 'Invalid email.' });
-
             } else if (payload.errMsg === 'User with that email exists.') {
                 dispatch({ type: 'REGISTER_EXISTING_MAIL', errMsg: 'Existing email. Try logging in.' });
-
             } else if (payload && payload.hasOwnProperty('errMsg')) {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: payload.errMsg });
-
             } else if (typeof payload.message !== 'undefined') {
-                dispatch({ type: 'REGISTER', serverAnswer: payload.message });
-
+                let forceLogin = typeof payload.invitedUser !== 'undefined' ? payload.invitedUser : false;
+                dispatch({
+                    type: 'REGISTER',
+                    serverAnswer: payload.message,
+                    forceLogin: forceLogin,
+                });
             } else {
                 dispatch({ type: 'FAILED_REGISTER', errMsg: 'There was an error with register action. Try again.' });
             }
@@ -47,6 +47,41 @@ const mapDispatchToProps = dispatch => ({
     },
     backToLogin: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_FORM_MSG' }),
+    login: (loginWhom, password) => {
+        dispatch({ type: 'LOGIN_ATTEMPT' });
+
+        let dataToSend = {};
+        isMail(loginWhom) ? dataToSend.email = loginWhom : dataToSend.username = loginWhom;
+        dataToSend.password = password;
+
+        agent.Auth.login({ ...dataToSend }).then(payload => {
+            if (typeof payload.message !== "undefined") {
+                dispatch({ type: 'LOGIN_FAILED', errMsg: payload.message });
+                return;
+            }
+            if (typeof payload.token !== 'undefined'
+                && typeof payload.email !== 'undefined'
+                && typeof payload._id !== 'undefined') {
+
+                agent.setToken(payload.token);
+                localStorage.setItem('token', payload.token);
+
+                dispatch({
+                    type: 'LOGIN',
+                    currentUser: {
+                        username: payload.username,
+                        email: payload.email,
+                        _id: payload._id
+                    },
+                    token: payload.token,
+                    prefs: payload.prefs,
+                    rank: payload.rank
+                });
+            } else {
+                dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
+            }
+        });
+    },
 });
 
 
@@ -251,6 +286,12 @@ class Register extends React.Component {
                 this.enableSubmit();
             }, formMsgDuration)
         }
+
+        this.userLogin = () => {
+            this.forceLoginTimeout = setTimeout(() => {
+                this.props.login(this.props.email, this.props.password);
+            }, formMsgDuration);
+        }
     }
 
     componentDidMount() {
@@ -274,6 +315,9 @@ class Register extends React.Component {
             || (prevProps.serverAnswer === null && this.props.serverAnswer !== null)
         ) {
             this.displayFormMessage();
+            if (prevProps.forceLogin === false && this.props.forceLogin === true) {
+                this.userLogin();
+            }
         }
     }
 
@@ -443,10 +487,12 @@ class Register extends React.Component {
                                 REGISTER
                             </button>
                             <button
+                                style={submitBtnStyle}
                                 id="btn-additional"
                                 className="btn-submit"
                                 type="button"
-                                onClick={this.backToLogin}>
+                                onClick={this.backToLogin}
+                                disabled={this.state.submitBtnDisabled}>
                                 BACK TO LOGIN
                             </button>
                             {this.props._errMsg && this.state.showFormMsg

@@ -242,21 +242,22 @@ class PunishmentCreator extends React.Component {
         const whyField = this.props.why;
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
+        const validDeadline = deadlineChecked
+            ? (this.props.deadlineValid
+                && this.props.yearField.length > 0
+                && this.props.monthField.length > 0
+                && this.props.dayField.length > 0)
+            : true;
         const submitDisabled =
-            this.state.showTryMailTooltip
-            || (
-                deadlineChecked
-                && !this.props.deadlineValid
-                && this.props.yearField.length === 0
-                && this.props.monthField.length === 0
-                && this.props.dayField.length === 0
-            )
+            this.props.whom.length === 0
+            || this.state.showTryMailTooltip
+            || !validDeadline
             || !this.state.whatToWriteFieldValid
             || !this.state.whyFieldValid
             || this.state.showFormMsg;
-        const submitBtnStyle = this.state.showFormMsg
+        const submitBtnStyle = this.state.showFormMsg || submitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
-            : { opacity: 1 }
+            : { opacity: 1 };
 
         return (
 
@@ -371,7 +372,6 @@ class PunishmentCreator extends React.Component {
                             </fieldset>
                         }
 
-
                         <fieldset
                             className="form-row"
                             disabled={!(usrLoggedIn && window.canRunAds)}>
@@ -379,14 +379,14 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input
                                 id="what-to-write-input"
-                                className={`float-left text-input ${this.state.whatToWriteFieldValid ? "" : "input-wrong-entry"}`}
+                                className={`float-left text-input ${this.state.whatToWriteFieldValid || whatToWriteField.length === 0 ? "" : "input-wrong-entry"}`}
                                 type="text"
                                 placeholder="One line."
                                 value={whatToWriteField}
                                 onChange={this.changeWhatToWrite}
                                 required
                             />
-                            {!this.state.whatToWriteFieldValid
+                            {whatToWriteField.length > PUNISHMENT_MAX_LENGTH
                                 ? <label id="form-submit-feedback" className="float-left form-feedback">TOO LONG!</label>
                                 : null}
                         </fieldset>

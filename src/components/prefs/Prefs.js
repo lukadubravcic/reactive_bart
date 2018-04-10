@@ -20,14 +20,12 @@ class Prefs extends React.Component {
 
     constructor() {
         super();
-
         this.clickHandler = ev => {
             this.props.updatePref({ [ev.target.name]: !this.props[ev.target.name] });
         };
     }
 
     render() {
-
         const userLoggedIn = Object.keys(this.props.currentUser).length > 0;
         const tooltips = this.props.show_tooltips;
         const notifyTrying = this.props.notify_trying;
@@ -36,17 +34,11 @@ class Prefs extends React.Component {
         const sound = this.props.sound;
 
         if (userLoggedIn) {
-
             return (
-
-                <div className="parent-component prefs-component-container">
-
+                <div id="prefs" className="parent-component prefs-component-container">
                     <div className="container pref-content-container">
-
                         <label id="prefs-heading" className="float-left heading">Prefs</label>
-
                         <div className="float-left prefs-container">
-
                             <div className="prefs-row">
                                 <label className="float-left pref-chexbox-cont">
                                     <input
@@ -58,7 +50,6 @@ class Prefs extends React.Component {
                                 </label>
                                 <label className="pref-name">tooltips</label>
                             </div>
-
                             <div className="prefs-row">
                                 <label className="float-left pref-chexbox-cont">
                                     <input
@@ -70,7 +61,6 @@ class Prefs extends React.Component {
                                 </label>
                                 <label className="pref-name">notify trying</label>
                             </div>
-
                             <div className="prefs-row">
                                 <label className="float-left pref-chexbox-cont">
                                     <input
@@ -82,7 +72,6 @@ class Prefs extends React.Component {
                                 </label>
                                 <label className="pref-name">notify completed</label>
                             </div>
-
                             <div className="prefs-row">
                                 <label className="float-left pref-chexbox-cont">
                                     <input
@@ -94,7 +83,6 @@ class Prefs extends React.Component {
                                 </label>
                                 <label className="pref-name">notify failed</label>
                             </div>
-
                             <div className="prefs-row">
                                 <label className="float-left pref-chexbox-cont">
                                     <input
@@ -106,20 +94,13 @@ class Prefs extends React.Component {
                                 </label>
                                 <label className="pref-name">sound</label>
                             </div>
-
                         </div>
-
                         <div className="prefs-bottom-image-container">
                             {bottomSVG}
                         </div>
-
                     </div>
-
                 </div>
-
-
             );
-
         } else return null;
     }
 }
@@ -130,9 +111,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Prefs);
 const bottomSVG = (
     <svg id="prefs-bottom-image" width="1080px" height="234px" viewBox="0 0 1080 234" version="1.1" xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink">
-        <title>Group 13</title>
-        <desc>Created with Sketch.</desc>
-        <defs></defs>
         <g id="pref-img" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -5423.000000)">
             <g id="Group-Copy-9" transform="translate(0.000000, 5242.000000)">
                 <g id="Group-13" transform="translate(100.000000, 181.000000)">

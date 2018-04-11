@@ -31,7 +31,7 @@ class LoggedInToolbar extends React.Component {
                         </svg>
                     </div>
 
-                    <div
+                    <button
                         className="float-right user-identity noselect"
                         onClick={this.usernameClick} >
                         {this.props.username}
@@ -42,7 +42,7 @@ class LoggedInToolbar extends React.Component {
                                 Change password
                             </button>
                         </div> */}
-                    </div>
+                    </button>
                 </div>
             </div>
         )

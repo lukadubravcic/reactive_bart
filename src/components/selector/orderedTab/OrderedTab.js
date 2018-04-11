@@ -17,16 +17,17 @@ const mapStateToProps = state => ({
     currentPage: state.punishment.currentOrderedPage
 });
 
+
 const mapDispatchToProps = dispatch => ({
-    onLoadedOrderedPunishments: (punishments) => {
+    onLoadedOrderedPunishments: punishments => {
         dispatch({ type: 'ORDERED_PUNISHMENTS_LOADED', punishments })
     },
-    changeOrderedPunishments: (punishments) => {
-        dispatch({ type: 'ORDERED_PUNISHMENTS_CHANGED', punishments })
+    changeOrderedPunishments: (punishments, orderedPunishmentsResorted = false) => {
+        dispatch({ type: 'ORDERED_PUNISHMENTS_CHANGED', punishments, orderedPunishmentsResorted })
     },
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_ORDERED_PUNISHMENTS', punishments, newPage })
-    }
+    },
 });
 
 
@@ -88,15 +89,15 @@ class OrderedTab extends React.Component {
             element.sortOrder *= -1;
         }
 
-        this.updateAndShowOrderedPunishments = punishments => {
-            this.props.changeOrderedPunishments(punishments);
+        this.updateAndShowOrderedPunishments = (punishments, orderedPunishmentsResorted = false) => {
+            this.props.changeOrderedPunishments(punishments, orderedPunishmentsResorted);
             this._showFirstPage(punishments);
         };
 
         this.reSortPunishments = id => {
 
             let sortedPunishments = [];
-            let orderedPunishments = this.props.orderedPunishments
+            let orderedPunishments = this.props.orderedPunishments;
             let element = getByValue(this.columns, id);
 
             switch (id) {
@@ -120,7 +121,7 @@ class OrderedTab extends React.Component {
             }
 
             if (sortedPunishments) {
-                this.updateAndShowOrderedPunishments(sortedPunishments);
+                this.updateAndShowOrderedPunishments(sortedPunishments, true);
                 this.changeElement(element);
                 this._resetElements(element, this.columns);
             }

@@ -107,7 +107,11 @@ class TableFooter extends React.Component {
                     </svg>
                 </button>
 
-                <button id="picker-page">{currentPage}</button>
+                <button
+                    style={{ pointerEvents: "none" }}
+                    id="picker-page">
+                    {currentPage}
+                </button>
 
                 <button
                     style={nextPageBtnDisabled ? disabledStyle : {}}

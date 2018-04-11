@@ -24,8 +24,8 @@ const mapDispatchToProps = dispatch => ({
     onLoadedPastPunishments: punishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments })
     },
-    changePastPunishments: punishments => {
-        dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments })
+    changePastPunishments: (punishments, pastPunishmentsResorted = false) => {
+        dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments, pastPunishmentsResorted })
     },
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_PAST_PUNISHMENTS', punishments, newPage })
@@ -38,7 +38,6 @@ const animationDuration = 500;
 const animStyles = {
     tableVisible: { display: 'inline-block' }
 }
-
 
 
 class PastTab extends React.Component {
@@ -92,9 +91,8 @@ class PastTab extends React.Component {
             this.props.changeShownPunishments(getPageElements(pageNum, punishments), pageNum);
         };
 
-        this.updateAndShowPastPunishments = punishments => {
-
-            this.props.changePastPunishments(punishments);
+        this.updateAndShowPastPunishments = (punishments, pastPunishmentsResorted = false) => {
+            this.props.changePastPunishments(punishments, pastPunishmentsResorted);
             this._showFirstPage(punishments);
         };
 
@@ -119,7 +117,7 @@ class PastTab extends React.Component {
             }
 
             if (sortedPunishments) {
-                this.updateAndShowPastPunishments(sortedPunishments);
+                this.updateAndShowPastPunishments(sortedPunishments, true);
                 this.changeElement(element);
                 this._resetElements(element, this.columns);
             }

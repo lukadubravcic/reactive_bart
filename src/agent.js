@@ -1,8 +1,6 @@
 import superagent from 'superagent';
 
 import { API_ROOT } from './constants/constants';
-import { request } from 'https';
-
 
 const encode = encodeURIComponent;
 

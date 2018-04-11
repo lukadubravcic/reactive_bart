@@ -20,30 +20,30 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onChangeWhom: (value) => dispatch({
+    onChangeWhom: value => dispatch({
         type: 'UPDATE_FIELD_PUNISH_CREATE',
         key: 'whom',
-        value
+        value,
     }),
     onChangeHowManyTimes: value => dispatch({
         type: 'UPDATE_FIELD_PUNISH_CREATE',
         key: 'howManyTimes',
-        value
+        value,
     }),
     onChangeWhatToWrite: value => dispatch({
         type: 'UPDATE_FIELD_PUNISH_CREATE',
         key: 'whatToWrite',
-        value
+        value,
     }),
     onChangeWhy: value => dispatch({
         type: 'UPDATE_FIELD_PUNISH_CREATE',
         key: 'why',
-        value
+        value,
     }),
     onChangeDeadlineCheckbox: value => dispatch({
         type: 'UPDATE_FIELD_PUNISH_CREATE',
         key: 'deadlineChecked',
-        value
+        value,
     }),
     setErrMsg: msg => dispatch({ type: 'SHOW_ERR_MESSAGE', msg }),
     onSubmit: (submitData, orderedPunishments, enableSubmit) => {
@@ -72,7 +72,7 @@ const formMsgDuration = 5000; // 10s
 
 const animStyles = {
     shownDateComponent: { opacity: 1 },
-    hiddenDateComponent: { opacity: 0 }
+    hiddenDateComponent: { opacity: 0 },
 }
 
 
@@ -244,9 +244,9 @@ class PunishmentCreator extends React.Component {
         const deadlineChecked = this.props.deadlineChecked;
         const validDeadline = deadlineChecked
             ? (this.props.deadlineValid
-                && this.props.yearField.length > 0
-                && this.props.monthField.length > 0
-                && this.props.dayField.length > 0)
+                && this.props.yearField !== ''
+                && this.props.monthField !== ''
+                && this.props.dayField !== '')
             : true;
         const submitDisabled =
             this.props.whom.length === 0

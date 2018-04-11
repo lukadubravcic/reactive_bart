@@ -241,7 +241,6 @@ class Board extends React.Component {
                         this.props.wrongBoardEntryWarning(true);
                         // greska
                         return false;
-
                     }
                 }
             } else if (boardText.length === 0) {

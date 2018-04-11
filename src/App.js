@@ -10,7 +10,6 @@ import Footer from './components/Footer';
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
-import { isNumber } from 'util';
 
 const defaultMsgDuration = 5000;
 
@@ -130,7 +129,6 @@ class App extends React.Component {
     componentWillUpdate(nextProps) {
 
         const userLoggedIn = !!Object.keys(nextProps.common.currentUser).length;
-        const userIdFromUrlExist = nextProps.auth.userIdFromURL !== null;
         const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id === nextProps.auth.userIdFromURL;
 
         // ako je user logiran, a kazna nije njegova, logout te postavi tu kaznu
@@ -151,7 +149,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div style={{ overflowX: "hidden" }} >
+            <div>
                 <Top />
                 <Game />
                 <PunishmentCreator />
@@ -168,7 +166,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 
 function prettyURL() {
-
     if (window.history.replaceState) {
         window.history.replaceState({}, "removing query string", window.location.origin);
     }

@@ -23,6 +23,8 @@ const mapStateToProps = state => ({
       acceptedPunishments: state.punishment.acceptedPunishments,
       pastPunishments: state.punishment.pastPunishments,
       orderedPunishments: state.punishment.orderedPunishments,
+      orderedPunishmentsResorted: state.punishment.orderedPunishmentsResorted,
+      pastPunishmentsResorted: state.punishment.pastPunishmentsResorted,
       /* firstGraph: state.graphData.firstGraph,
       secondGraph: state.graphData.secondGraph,
       thirdGraph: state.graphData.thirdGraph,
@@ -35,7 +37,9 @@ const mapDispatchToProps = dispatch => ({
       },
       updateReceivedGraphState: data => {
             dispatch({ type: 'UPDATE_RECEIVED_GRAPH_DATA', data });
-      }
+      },
+      clearOrderedPunishmentsResortedFlag: () => dispatch({ type: 'CLEAR_ORDERED_PUN_RESORTED_FLAG' }),
+      clearPastPunishmentsResortedFlag: () => dispatch({ type: 'CLEAR_PAST_PUN_RESORTED_FLAG' }),
 });
 
 class Stats extends React.Component {
@@ -80,13 +84,17 @@ class Stats extends React.Component {
                   return result;
             };
 
-            this.didPunishmentsChange = (punishments, newPunishments) => {
+
+            // vraca promjenjeno stanje i nakon resorta u tablicama
+            this.didPunishmentsChange = (punishments, newPunishments, punsResorted = false) => {
+                  console.log('resorted: ' + punsResorted)
+                  // console.log('OVDJE: ' + punsResorted)
                   if (punishments.length !== newPunishments.length) return true;
                   else { // provjeri po kaznama ako se sta mjenja
-
                         for (let i = 0; i < punishments.length; i++) {
-
-                              if (!comparePunishments(punishments[i], newPunishments[i])) return true;
+                              if (!comparePunishments(punishments[i], newPunishments[i]) && punsResorted !== true) {
+                                    return true;
+                              }
                         }
                         return false;
                   }
@@ -186,42 +194,118 @@ class Stats extends React.Component {
             }
       }
 
-      componentWillReceiveProps(nextProps) {
-            if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
-                  // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
-                  if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments)) {
 
-                        let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
+      // TODO: Je li potrebno updateati ordered kazne, tablica nadodaje nove kako se kreiraju no te kazne se ne mogu klasificirati
+      // POTENCIJALNI DRUGACIJI PRISTUP: ne provjeravaj promjene na kaznama vec na klasifikacijama
+      // 
 
-                        let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
-                        let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
 
-                        requestAnimationFrame(() => {
-                              this.setState((prevState, props) => {
-                                    return {
-                                          orderedFirstGraphData: null,
-                                          orderedSecondGraphData: null,
-                                    };
-                              });
-                        });
+      /*  componentWillReceiveProps(nextProps) {
+             if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
+                   // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
+                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments, nextProps.orderedPunishmentsResorted)) {
+ 
+                         let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
+                         let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
+                         let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
+ 
+                         requestAnimationFrame(() => {
+                               this.setState((prevState, props) => {
+                                     return {
+                                           orderedFirstGraphData: null,
+                                           orderedSecondGraphData: null,
+                                     };
+                               });
+                         });
+ 
+                         setTimeout(() => {
+                               requestAnimationFrame(() => {
+                                     this.setState((prevState, props) => {
+                                           return {
+                                                 orderedFirstGraphData: graphData1,
+                                                 orderedSecondGraphData: graphData2,
+                                           };
+                                     });
+                               });
+                         }, 0);
+                   }
+                   if (nextProps.orderedPunishmentsResorted) this.props.clearOrderedPunishmentsResortedFlag();
+             }
+ 
+             if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishments
+ 
+                   console.log(this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments, nextProps.pastPunishmentsResorted))
+                   if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments, nextProps.pastPunishmentsResorted)) {
+                         let classificationResults = this.clasifyPunishments(nextProps.pastPunishments);
+ 
+                         let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
+                         let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
+ 
+                         requestAnimationFrame(() => {
+                               this.setState((prevState, props) => {
+                                     return {
+                                           punishedFirstGraphData: null,
+                                           punishedSecondGraphData: null,
+                                     };
+                               });
+                         });
+ 
+                         setTimeout(() => {
+                               requestAnimationFrame(() => {
+                                     this.setState((prevState, props) => {
+                                           return {
+                                                 punishedFirstGraphData: graphData3,
+                                                 punishedSecondGraphData: graphData4,
+                                           };
+                                     });
+                               });
+                         }, 0);
+                   }
+                   if (nextProps.pastPunishmentsResorted) this.props.clearPastPunishmentsResortedFlag();
+             }
+       }
+  */
 
-                        setTimeout(() => {
-                              requestAnimationFrame(() => {
-                                    this.setState((prevState, props) => {
-                                          return {
-                                                orderedFirstGraphData: graphData1,
-                                                orderedSecondGraphData: graphData2,
-                                          };
-                                    });
-                              });
-                        }, 0);
-                  }
-            }
 
-            if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishments
+      componentDidUpdate(prevProps) {
 
-                  if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments)) { // odlucuje o triggeru klasifikacije
-                        let classificationResults = this.clasifyPunishments(nextProps.pastPunishments);
+            /*  if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
+                   // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
+                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments, nextProps.orderedPunishmentsResorted)) {
+ 
+                         let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
+                         let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
+                         let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
+ 
+                         requestAnimationFrame(() => {
+                               this.setState((prevState, props) => {
+                                     return {
+                                           orderedFirstGraphData: null,
+                                           orderedSecondGraphData: null,
+                                     };
+                               });
+                         });
+ 
+                         setTimeout(() => {
+                               requestAnimationFrame(() => {
+                                     this.setState((prevState, props) => {
+                                           return {
+                                                 orderedFirstGraphData: graphData1,
+                                                 orderedSecondGraphData: graphData2,
+                                           };
+                                     });
+                               });
+                         }, 0);
+                   }
+                   if (nextProps.orderedPunishmentsResorted) this.props.clearOrderedPunishmentsResortedFlag();
+             }
+  */
+            if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) { // classify accepted punishments
+
+                  // console.log(this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments, nextProps.pastPunishmentsResorted))
+                  // console.log("past resorted: " + this.props.pastPunishmentsResorted)
+                  if (this.didPunishmentsChange(prevProps.pastPunishments, this.props.pastPunishments, this.props.pastPunishmentsResorted)) {
+                        let classificationResults = this.clasifyPunishments(this.props.pastPunishments);
 
                         let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
                         let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
@@ -245,7 +329,12 @@ class Stats extends React.Component {
                                     });
                               });
                         }, 0);
+                        this.clearPastPunishmentsResortedFlag();
                   }
+            }
+
+            this.clearPastPunishmentsResortedFlag = () => {
+                  if (this.props.pastPunishmentsResorted) this.props.clearPastPunishmentsResortedFlag();
             }
       }
 

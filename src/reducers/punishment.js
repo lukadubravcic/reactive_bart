@@ -1,7 +1,7 @@
 const defaultState = {
     _message: null,
 
-    selectedTab: null, // TODO: ako je tab prazan pogledaj sljedeci -> itd. -> else "No data."
+    selectedTab: null,
 
     acceptedPunishments: 'empty',
     shownAcceptedPunishments: 'empty',
@@ -10,10 +10,12 @@ const defaultState = {
     pastPunishments: 'empty',
     shownPastPunishments: 'empty',
     currentPastPage: 1,
+    pastPunishmentsResorted: false,
 
     orderedPunishments: 'empty',
     shownOrderedPunishments: 'empty',
     currentOrderedPage: 1,
+    orderedPunishmentsResorted: false,
 
     showAcceptedTab: false,
     showPastTab: false,
@@ -56,14 +58,18 @@ export default (state = defaultState, action) => {
         case 'UPDATE_SHOWN_PAST_PUNISHMENTS':
             return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage };
         case 'PAST_PUNISHMENTS_CHANGED':
-            return { ...state, pastPunishments: action.punishments };
+            return { ...state, pastPunishments: action.punishments, pastPunishmentsResorted: action.pastPunishmentsResorted };
+        case 'CLEAR_PAST_PUN_RESORTED_FLAG':
+            return { ...state, pastPunishmentsResorted: defaultState.pastPunishmentsResorted };
 
         case 'ORDERED_PUNISHMENTS_LOADED':
             return { ...state, orderedPunishments: action.punishments };
         case 'UPDATE_SHOWN_ORDERED_PUNISHMENTS':
             return { ...state, shownOrderedPunishments: action.punishments, currentOrderedPage: action.newPage };
         case 'ORDERED_PUNISHMENTS_CHANGED':
-            return { ...state, orderedPunishments: action.punishments };
+            return { ...state, orderedPunishments: action.punishments, orderedPunishmentsResorted: action.orderedPunishmentsResorted };
+        case 'CLEAR_ORDERED_PUN_RESORTED_FLAG':
+            return { ...state, orderedPunishmentsResorted: defaultState.orderedPunishmentsResorted };
 
         case 'ACCEPTED_TAB_HEADER_VISIBILITY_CHANGED':
             return { ...state, showAcceptedTab: action.value };

@@ -17,18 +17,19 @@ const mapStateToProps = state => ({
     shownPastPunishments: state.punishment.shownPastPunishments,
     currentPage: state.punishment.currentPastPage,
     ignoredPunishmentSet: state.punishment.ignoredPunishmentSet,
-    punishmentIdFromURL: state.game.punishmentIdFromURL
+    punishmentIdFromURL: state.game.punishmentIdFromURL,
+    pastPunishmentsResorted: state.punishment.pastPunishmentsResorted
 });
 
 const mapDispatchToProps = dispatch => ({
     onLoadedPastPunishments: punishments => {
-        dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments })
+        dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments });
     },
     changePastPunishments: (punishments, pastPunishmentsResorted = false) => {
-        dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments, pastPunishmentsResorted })
+        dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments, pastPunishmentsResorted });
     },
     changeShownPunishments: (punishments, newPage) => {
-        dispatch({ type: 'UPDATE_SHOWN_PAST_PUNISHMENTS', punishments, newPage })
+        dispatch({ type: 'UPDATE_SHOWN_PAST_PUNISHMENTS', punishments, newPage });
     }
 });
 
@@ -36,8 +37,8 @@ const mapDispatchToProps = dispatch => ({
 const animationDuration = 500;
 
 const animStyles = {
-    tableVisible: { display: 'inline-block' }
-}
+    tableVisible: { display: 'inline-block' },
+};
 
 
 class PastTab extends React.Component {
@@ -55,7 +56,7 @@ class PastTab extends React.Component {
             tableContainerStyle: {
                 height: 0,
                 borderBottom: '10px solid #515151',
-                transition: 'height 0.5s'
+                transition: 'height 0.5s',
             }
         };
 
@@ -118,6 +119,7 @@ class PastTab extends React.Component {
 
             if (sortedPunishments) {
                 this.updateAndShowPastPunishments(sortedPunishments, true);
+                console.log('FROM RESORT PUNS')
                 this.changeElement(element);
                 this._resetElements(element, this.columns);
             }
@@ -222,15 +224,37 @@ class PastTab extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.pastPunishments === 'empty' && nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) {
-            this.updateAndShowPastPunishments(nextProps.pastPunishments);
+    /* componentWillReceiveProps(nextProps) {
+        if (
+            (this.props.pastPunishments === 'empty'
+                && nextProps.pastPunishments !== 'empty'
+                && nextProps.pastPunishments.length > 0)
+            || this.didPunishmentsChangeDeep(prevProps.pastPunishments)
+        ) {
+            this.updateAndShowPastPunishments(this.props.pastPunishments);
         }
-        if (this.didPunishmentsChangeDeep(nextProps.pastPunishments)) {
-            this.updateAndShowPastPunishments(nextProps.pastPunishments);
+         if () {
+             this.updateAndShowPastPunishments(nextProps.pastPunishments);
+         } 
+        if (this.props.shownPastPunishments.length !== prevProps.shownPastPunishments.length) {
+            this.numOfRows = this.props.shownPastPunishments.length;
+            this.startAnimation();
         }
-        if (this.props.shownPastPunishments.length !== nextProps.shownPastPunishments.length) {
-            this.numOfRows = nextProps.shownPastPunishments.length;
+    } */
+
+    componentDidUpdate(prevProps) {
+        if (
+            (prevProps.pastPunishments === 'empty'
+                && this.props.pastPunishments !== 'empty'
+                && this.props.pastPunishments.length > 0)
+            || this.didPunishmentsChangeDeep(prevProps.pastPunishments)
+        ) {
+            if (!this.props.pastPunishmentsResorted) {
+                this.updateAndShowPastPunishments(this.props.pastPunishments);
+            }
+        }
+        if (this.props.shownPastPunishments.length !== prevProps.shownPastPunishments.length) {
+            this.numOfRows = this.props.shownPastPunishments.length;
             this.startAnimation();
         }
     }

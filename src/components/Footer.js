@@ -6,7 +6,16 @@ const Footer = props => {
         <div id="footer-component">
             <div className="container">
 
-                <label id="cr-kreativni">&copy;&nbsp;KREATIVNI ODJEL&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;DIR</label>
+                <label id="cr-kreativni">
+                    &copy;&nbsp;
+                <a
+                        id="kreativni-link"                       
+                        target="_blank"
+                        href="http://www.kreativni.hr/">
+                        KREATIVNI ODJEL
+                </a>
+                    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;DIR
+                </label>
 
                 <div id="social-icons-footer">
                     <svg id="twitter-footer-icon" width="32px" height="26px" viewBox="0 0 32 26" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -29,7 +38,7 @@ const Footer = props => {
                     </svg>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

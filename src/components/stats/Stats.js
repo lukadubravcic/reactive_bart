@@ -54,7 +54,27 @@ class Stats extends React.Component {
                   punishedSecondGraphData: null,
             }
 
-            this.clasifyPunishments = punishments => {
+            // accepted/rejected/ignored
+            this.firstStageClassification = punishments => {
+                  let result = {
+                        accepted: 0,
+                        rejected: 0,
+                        ignored: 0,
+                        givenUp: 0,
+                        completed: 0,
+                        failed: 0
+                  };
+
+                  for (let punishment of punishments) {
+                        if (typeof punishment.accepted !== 'undefined' && punishment.accepted !== null) result.accepted++;
+                        else if (typeof punishment.rejected !== 'undefined' && punishment.rejected !== null) result.rejected++;
+                        else if (typeof punishment.ignored !== 'undefined' && punishment.ignored !== null) result.ignored++;
+                  }
+
+                  return result;
+            }
+
+            this.secondStageClassification = punishments => {
 
                   let result = {
                         accepted: 0,
@@ -87,8 +107,7 @@ class Stats extends React.Component {
 
             // vraca promjenjeno stanje i nakon resorta u tablicama
             this.didPunishmentsChange = (punishments, newPunishments, punsResorted = false) => {
-                  console.log('resorted: ' + punsResorted)
-                  // console.log('OVDJE: ' + punsResorted)
+                  // console.log('resorted: ' + punsResorted)
                   if (punishments.length !== newPunishments.length) return true;
                   else { // provjeri po kaznama ako se sta mjenja
                         for (let i = 0; i < punishments.length; i++) {
@@ -269,52 +288,47 @@ class Stats extends React.Component {
 
       componentDidUpdate(prevProps) {
 
-            /*  if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
-                   // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
-                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments, nextProps.orderedPunishmentsResorted)) {
- 
-                         let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
-                         let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
-                         let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
- 
-                         requestAnimationFrame(() => {
-                               this.setState((prevState, props) => {
-                                     return {
-                                           orderedFirstGraphData: null,
-                                           orderedSecondGraphData: null,
-                                     };
-                               });
-                         });
- 
-                         setTimeout(() => {
-                               requestAnimationFrame(() => {
-                                     this.setState((prevState, props) => {
-                                           return {
-                                                 orderedFirstGraphData: graphData1,
-                                                 orderedSecondGraphData: graphData2,
-                                           };
-                                     });
-                               });
-                         }, 0);
-                   }
-                   if (nextProps.orderedPunishmentsResorted) this.props.clearOrderedPunishmentsResortedFlag();
-             }
-  */
-            if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) { // classify accepted punishments
-
-                  // console.log(this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments, nextProps.pastPunishmentsResorted))
-                  // console.log("past resorted: " + this.props.pastPunishmentsResorted)
-                  if (this.didPunishmentsChange(prevProps.pastPunishments, this.props.pastPunishments, this.props.pastPunishmentsResorted)) {
-                        let classificationResults = this.clasifyPunishments(this.props.pastPunishments);
-
-                        let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
-                        let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
+            if (this.props.orderedPunishments !== 'empty' && this.props.orderedPunishments.length > 0) { // classify ordered punishments
+                  if (prevProps.orderedPunishments.length !== this.props.orderedPunishments.length) {
+                        let firstStageClassificationResults = this.firstStageClassification(this.props.orderedPunishments);
+                        let secondStageClassificationResults = this.secondStageClassification(this.props.orderedPunishments);
+                        let graphData1 = this.getGraphData(firstStageClassificationResults, ['accepted', 'rejected', 'ignored']);
+                        let graphData2 = this.getGraphData(secondStageClassificationResults, ['givenUp', 'completed', 'failed']);
 
                         requestAnimationFrame(() => {
                               this.setState((prevState, props) => {
                                     return {
-                                          punishedFirstGraphData: null,
-                                          punishedSecondGraphData: null,
+                                          orderedFirstGraphData: 'waitHack',
+                                          orderedSecondGraphData: 'waitHack',
+                                    };
+                              });
+                        });
+
+                        setTimeout(() => {
+                              requestAnimationFrame(() => {
+                                    this.setState((prevState, props) => {
+                                          return {
+                                                orderedFirstGraphData: graphData1,
+                                                orderedSecondGraphData: graphData2,
+                                          };
+                                    });
+                              });
+                        }, 0);
+                  }
+            }
+
+            if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) { // classify accepted punishments
+                  if (this.didPunishmentsChange(prevProps.pastPunishments, this.props.pastPunishments, this.props.pastPunishmentsResorted)) {
+                        let firstStageClassificationResults = this.firstStageClassification(this.props.pastPunishments);
+                        let secondStageClassificationResults = this.secondStageClassification(this.props.pastPunishments);
+                        let graphData3 = this.getGraphData(firstStageClassificationResults, ['accepted', 'rejected', 'ignored']);
+                        let graphData4 = this.getGraphData(secondStageClassificationResults, ['completed', 'givenUp', 'failed']);
+
+                        requestAnimationFrame(() => {
+                              this.setState((prevState, props) => {
+                                    return {
+                                          punishedFirstGraphData: 'waitHack',
+                                          punishedSecondGraphData: 'waitHack',
                                     };
                               });
                         });
@@ -326,10 +340,10 @@ class Stats extends React.Component {
                                                 punishedFirstGraphData: graphData3,
                                                 punishedSecondGraphData: graphData4,
                                           };
-                                    });
+                                    }, this.clearPastPunishmentsResortedFlag());
                               });
                         }, 0);
-                        this.clearPastPunishmentsResortedFlag();
+
                   }
             }
 
@@ -353,18 +367,26 @@ class Stats extends React.Component {
             const punishedFirstGraphDataValidity = validateGraphData(this.state.punishedFirstGraphData);
             const punishedSecondGraphDataValidity = validateGraphData(this.state.punishedSecondGraphData);
 
-            let firstGraphLabels = orderedFirstGraphDataValidity
-                  ? this.getGraphLabels(this.state.orderedFirstGraphData)
-                  : null;
-            let secondGraphLabels = orderedSecondGraphDataValidity
-                  ? this.getGraphLabels(this.state.orderedSecondGraphData)
-                  : null;
-            let thirdGraphLabels = punishedFirstGraphDataValidity
-                  ? this.getGraphLabels(this.state.punishedFirstGraphData)
-                  : null;
-            let fourthGraphLabels = punishedSecondGraphDataValidity
-                  ? this.getGraphLabels(this.state.punishedSecondGraphData)
-                  : null;
+            let firstGraphLabels = orderedFirstGraphDataValidity === 'waitHack'
+                  ? null
+                  : orderedFirstGraphDataValidity
+                        ? this.getGraphLabels(this.state.orderedFirstGraphData)
+                        : null;
+            let secondGraphLabels = orderedSecondGraphDataValidity === 'waitHack'
+                  ? null
+                  : orderedSecondGraphDataValidity
+                        ? this.getGraphLabels(this.state.orderedSecondGraphData)
+                        : null;
+            let thirdGraphLabels = punishedFirstGraphDataValidity === 'waitHack'
+                  ? null
+                  : punishedFirstGraphDataValidity
+                        ? this.getGraphLabels(this.state.punishedFirstGraphData)
+                        : null;
+            let fourthGraphLabels = punishedSecondGraphDataValidity === 'waitHack'
+                  ? null
+                  : punishedSecondGraphDataValidity
+                        ? this.getGraphLabels(this.state.punishedSecondGraphData)
+                        : null;
 
             return (
                   <div>
@@ -377,38 +399,42 @@ class Stats extends React.Component {
 
                                           <label className="statz-group-heading">PUNISHING OTHERS</label>
 
-                                          {orderedFirstGraphDataValidity
-                                                ? <div className="float-left graph-container graph1-container"
-                                                      style={{ width: "420px" }}>
+                                          {orderedFirstGraphDataValidity === 'waitHack' ?
+                                                null
+                                                : orderedFirstGraphDataValidity
+                                                      ? <div className="float-left graph-container graph1-container"
+                                                            style={{ width: "420px" }}>
 
-                                                      {firstGraphLabels && firstGraphLabels.map(label => label)}
+                                                            {firstGraphLabels && firstGraphLabels.map(label => label)}
 
-                                                      <PieChart
-                                                            data={orderedFirstGraphData}
-                                                            lengthAngle={-360}
-                                                            lineWidth={100}
-                                                            paddingAngle={0}
-                                                            animate={true}
-                                                            animationDuration={graphAnimationDuration} />
-                                                </div>
+                                                            <PieChart
+                                                                  data={orderedFirstGraphData}
+                                                                  lengthAngle={-360}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={graphAnimationDuration} />
+                                                      </div>
 
-                                                : noDataLeftGraph}
+                                                      : noDataLeftGraph}
 
-                                          {orderedSecondGraphDataValidity ?
-                                                <div className="float-right graph-container graph2-container"
-                                                      style={{ width: "420px" }}>
+                                          {orderedSecondGraphDataValidity === 'waitHack' ?
+                                                null
+                                                : orderedSecondGraphDataValidity
+                                                      ? <div className="float-right graph-container graph2-container"
+                                                            style={{ width: "420px" }}>
 
-                                                      {secondGraphLabels && secondGraphLabels.map(label => label)}
+                                                            {secondGraphLabels && secondGraphLabels.map(label => label)}
 
-                                                      <PieChart
-                                                            data={orderedSecondGraphData}
-                                                            lengthAngle={-360}
-                                                            lineWidth={100}
-                                                            paddingAngle={0}
-                                                            animate={true}
-                                                            animationDuration={graphAnimationDuration} />
-                                                </div>
-                                                : noDataRightGraph}
+                                                            <PieChart
+                                                                  data={orderedSecondGraphData}
+                                                                  lengthAngle={-360}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={graphAnimationDuration} />
+                                                      </div>
+                                                      : noDataRightGraph}
 
                                           <div className="pun-others-bottom-image-container">
                                                 {punishingOthersSVG}
@@ -420,37 +446,41 @@ class Stats extends React.Component {
 
                                           <label className="statz-group-heading">ME, BEING PUNISHED</label>
 
-                                          {punishedFirstGraphDataValidity ?
-                                                <div className="float-left graph-container graph1-container"
-                                                      style={{ width: "420px" }}>
+                                          {punishedFirstGraphDataValidity === 'waitHack' ?
+                                                null
+                                                : punishedFirstGraphDataValidity
+                                                      ? <div className="float-left graph-container graph1-container"
+                                                            style={{ width: "420px" }}>
 
-                                                      {thirdGraphLabels && thirdGraphLabels.map(label => label)}
+                                                            {thirdGraphLabels && thirdGraphLabels.map(label => label)}
 
-                                                      <PieChart
-                                                            data={punishedFirstGraphData}
-                                                            lengthAngle={-360}
-                                                            lineWidth={100}
-                                                            paddingAngle={0}
-                                                            animate={true}
-                                                            animationDuration={graphAnimationDuration} />
-                                                </div>
-                                                : noDataLeftGraph}
+                                                            <PieChart
+                                                                  data={punishedFirstGraphData}
+                                                                  lengthAngle={-360}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={graphAnimationDuration} />
+                                                      </div>
+                                                      : noDataLeftGraph}
 
-                                          {punishedSecondGraphDataValidity ?
-                                                <div className="float-right graph-container graph2-container"
-                                                      style={{ width: "420px" }}>
+                                          {punishedSecondGraphDataValidity === 'waitHack' ?
+                                                null
+                                                : punishedSecondGraphDataValidity
+                                                      ? <div className="float-right graph-container graph2-container"
+                                                            style={{ width: "420px" }}>
 
-                                                      {fourthGraphLabels && fourthGraphLabels.map(label => label)}
+                                                            {fourthGraphLabels && fourthGraphLabels.map(label => label)}
 
-                                                      <PieChart
-                                                            data={punishedSecondGraphData}
-                                                            lengthAngle={-360}
-                                                            lineWidth={100}
-                                                            paddingAngle={0}
-                                                            animate={true}
-                                                            animationDuration={graphAnimationDuration} />
-                                                </div>
-                                                : noDataRightGraph}
+                                                            <PieChart
+                                                                  data={punishedSecondGraphData}
+                                                                  lengthAngle={-360}
+                                                                  lineWidth={100}
+                                                                  paddingAngle={0}
+                                                                  animate={true}
+                                                                  animationDuration={graphAnimationDuration} />
+                                                      </div>
+                                                      : noDataRightGraph}
 
                                           <div className="being-punished-bottom-image-container">
                                                 {beingPunishedSVG}
@@ -568,7 +598,9 @@ const noDataLeftGraph = (
 )
 
 function validateGraphData(graphData) {
-      if (
+      if (graphData === 'waitHack') {
+            return 'waitHack'
+      } else if (
             typeof graphData === 'undefined'
             || graphData === null
             || !Object.keys(graphData).length

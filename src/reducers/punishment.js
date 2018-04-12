@@ -15,7 +15,6 @@ const defaultState = {
     orderedPunishments: 'empty',
     shownOrderedPunishments: 'empty',
     currentOrderedPage: 1,
-    orderedPunishmentsResorted: false,
 
     showAcceptedTab: false,
     showPastTab: false,
@@ -68,8 +67,6 @@ export default (state = defaultState, action) => {
             return { ...state, shownOrderedPunishments: action.punishments, currentOrderedPage: action.newPage };
         case 'ORDERED_PUNISHMENTS_CHANGED':
             return { ...state, orderedPunishments: action.punishments, orderedPunishmentsResorted: action.orderedPunishmentsResorted };
-        case 'CLEAR_ORDERED_PUN_RESORTED_FLAG':
-            return { ...state, orderedPunishmentsResorted: defaultState.orderedPunishmentsResorted };
 
         case 'ACCEPTED_TAB_HEADER_VISIBILITY_CHANGED':
             return { ...state, showAcceptedTab: action.value };

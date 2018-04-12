@@ -1263,6 +1263,11 @@ input[type=number]::-webkit-outer-spin-button {
 	letter-spacing: 2px;
 }
 
+#cr-kreativni #kreativni-link {
+	text-decoration: none;
+	color: inherit;
+}
+
 #social-icons-footer {
 	float: right;
 	margin-top: 241px;

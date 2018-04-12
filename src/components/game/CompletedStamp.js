@@ -15,9 +15,6 @@ const CompletedStamp = props => (
 
                 <button id="twitter-btn" className="social-btn">
                     <svg width="41px" height="34px" viewBox="0 0 41 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-                        <title>Fill 68</title>
-                        <desc>Created with Sketch.</desc>
-                        <defs></defs>
                         <g id="page-02a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-571.000000, -1090.000000)">
                             <g id="Group-Copy-3" transform="translate(535.000000, 1008.000000)" fill="#FFFFFF">
                                 <g id="Group-72" transform="translate(35.000000, 82.000000)">
@@ -31,9 +28,6 @@ const CompletedStamp = props => (
 
                 <button id="facebook-btn" className="social-btn">
                     <svg width="35px" height="35px" viewBox="0 0 35 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-                        <title>Fill 70</title>
-                        <desc>Created with Sketch.</desc>
-                        <defs></defs>
                         <g id="page-02a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-627.000000, -1090.000000)">
                             <g id="Group-Copy-3" transform="translate(535.000000, 1008.000000)" fill="#FFFFFF">
                                 <g id="Group-72" transform="translate(35.000000, 82.000000)">

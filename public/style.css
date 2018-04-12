@@ -13,6 +13,10 @@
 			box-sizing: border-box;			
 }
 
+#root {
+	overflow-x: hidden;
+}
+
 #board-textarea {
 	scrollbar-base-color: #000;
 	scrollbar-face-color: #000;
@@ -837,33 +841,6 @@ fieldset + fieldset {
 }
 
 @-webkit-keyframes stamp-hit{
-	0% {
-	opacity: 0;
-	-webkit-transform-origin: 50% 50%;
-	        transform-origin: 50% 50%;
-	-webkit-transform: rotate(-15deg) scale(10);
-	        transform: rotate(-15deg) scale(10);
-	}
-
-	10% {
-	opacity:.50;	
-	
-	-webkit-transform: rotate(-2deg) scale(5);	
-	
-	        transform: rotate(-2deg) scale(5);
-	-webkit-transition: all .3s linear;
-	-o-transition: all .3s linear;
-	transition: all .3s linear;
-	}
-
-	100% {
-	opacity:1;
-	-webkit-transform: rotate(0deg) scale(1);
-	        transform: rotate(0deg) scale(1);
-	}
-}
-
-@keyframes stamp-hit{
 	0% {
 	opacity: 0;
 	-webkit-transform-origin: 50% 50%;

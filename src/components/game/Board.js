@@ -101,8 +101,6 @@ class Board extends React.Component {
     constructor() {
         super();
 
-        this.clickToStartMessage = 'Click to start!';
-
         this.audio = document.createElement('audio');
         this.audio.style.display = "none";
         this.audio.src = 'http://www.freesfx.co.uk/rx2/mp3s/6/18460_1464720565.mp3';
@@ -118,6 +116,34 @@ class Board extends React.Component {
         this.state = {
             boardCursor: false,
             showBoardCursor: false,
+        }
+
+        this.listenOnEnterKey = () => {
+            document.onkeypress = e => {
+                e = e || window.event;
+                if (
+                    e.key === 'Enter'
+                    && this.props.boardTextMistake
+                ) {
+                    if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
+                    this.punishmentInit(false);
+                    // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
+                    this.boardFocused();
+                    requestAnimationFrame(() => this.textBoard.focus());
+                }
+            };
+        }
+
+        // TODO: dodati tooltip na spužvi nakon PRVE odigrane kazne 
+        // da igrač zna što može kliknuti (ne kuži se da je spužva klikabilni element)
+        // 
+        // na done/failed prve odigrane, varijabla pri loadu koja zadaje jel prva kazna, provjerava jel odigrana 
+        // 
+        // MOGUCE RJESENJE: pingaj BE radi provjere ako postoji koji pun try trenutnog usera 
+        // ako postoji
+
+        this.usersFirstPunishment = () => {
+
         }
 
         this.incorrectBoardEntry = () => {
@@ -195,6 +221,7 @@ class Board extends React.Component {
 
         this.activePunishmentDone = () => {
             this.props.onBoardLostFocus();
+            // cekaj na potencijalni enter
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 return;
             } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
@@ -429,6 +456,7 @@ class Board extends React.Component {
         // special snowflake - zahtjeva sinkroni ajax request
         // window.onunload = window.onbeforeunload
         window.addEventListener("beforeunload", this.handleBeforeunload);
+        this.listenOnEnterKey();
     }
 
     componentDidUpdate(prevProps) {

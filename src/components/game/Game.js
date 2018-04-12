@@ -219,9 +219,6 @@ class Game extends React.Component {
                         <div id="board-bottom-books-component">
 
                             <svg id="books-on-floor" width="157px" height="139px" viewBox="0 0 157 139" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                <title>knjige ispod ploce</title>
-                                <desc>Created with Sketch.</desc>
-                                <defs></defs>
                                 <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-827.000000, -971.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="knjige-ispod-ploce" transform="translate(827.000000, 821.000000)">
@@ -275,10 +272,6 @@ class Game extends React.Component {
 
                         <div id="plant-board-right-container">
                             <svg id="board-plant-with-shelf" width="190px" height="237px" viewBox="0 0 190 237" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-                                <title>biljka sa policom</title>
-                                <desc>Created with Sketch.</desc>
-                                <defs></defs>
                                 <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-1067.000000, -180.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="biljka-sa-policom" transform="translate(1067.000000, 30.000000)">

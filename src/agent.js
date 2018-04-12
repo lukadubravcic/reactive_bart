@@ -1,6 +1,7 @@
 import superagent from 'superagent';
 
 import { API_ROOT } from './constants/constants';
+import { request } from 'http';
 
 const encode = encodeURIComponent;
 
@@ -40,7 +41,7 @@ const Auth = {
 	setNewPassword: (currentPassword, newPassword, reNewPassword) => requests.post('/users/setNewPassword', { currentPassword, newPassword, reNewPassword }),
 	forgotPassword: email => requests.post('/users/forgot', { email }),
 	getPunishmentAsGuest: (userId, punishmentId) => requests.post('/users/guest', { userId, punishmentId }),
-	checkIfUserExists: identity => requests.post('/users/exist', { identity })
+	checkIfUserExists: identity => requests.post('/users/exist', { identity }),
 };
 
 const Punishment = {
@@ -54,7 +55,8 @@ const Punishment = {
 	logTry: (id, timeSpent) => requests.post('/punishment/log', { id, timeSpent }),
 	guestLogTry: (userId, punishmentId, timeSpent) => requests.post('/punishment/guestLog', { userId, punishmentId, timeSpent }),
 	getRandom: () => requests.get('/punishment/random'),
-	getSpecial: () => requests.get('/punishment/special')
+	getSpecial: () => requests.get('/punishment/special'),
+	firstTime: id => request.get(`/punishment/firsttime?id=${encodeURIComponent(id)}`),
 };
 
 const Pref = {

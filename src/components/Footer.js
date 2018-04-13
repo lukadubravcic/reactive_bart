@@ -11,7 +11,7 @@ const Footer = props => {
                 <a
                         id="kreativni-link"                       
                         target="_blank"
-                        href="http://www.kreativni.hr/">
+                        href="http://www.kreativni.com/">
                         KREATIVNI ODJEL
                 </a>
                     &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;DIR

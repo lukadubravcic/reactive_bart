@@ -16,13 +16,15 @@ const mapStateToProps = state => ({
     acceptedPunishments: state.punishment.acceptedPunishments,
     pastPunishments: state.punishment.pastPunishments,
     currentUser: state.common.currentUser,
+    guestUser: state.common.guestUser,
     guestUserId: state.auth.userIdFromURL,
     token: state.common.token,
     showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent,
     specialPunishments: state.punishment.specialPunishments,
     randomPunishments: state.punishment.randomPunishments,
     showTooltips: state.prefs.show_tooltips,
-    soundEnabled: state.prefs.sound
+    soundEnabled: state.prefs.sound,
+    firstTimePlaying: state.punishment.firstTimePlaying,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -91,8 +93,12 @@ const mapDispatchToProps = dispatch => ({
     },
     cheatingDetected: () => {
         dispatch({ type: 'CHEATING_DETECTED' });
-    }, updatePastPunishments: newPastPunishments => {
+    },
+    updatePastPunishments: newPastPunishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments: newPastPunishments });
+    },
+    updateUserHasTriedPunishments: boolean => {
+        dispatch({ type: 'UPDATE_USER_HAS_TRIED_PLAYING_BEFORE', value: boolean });
     },
 });
 
@@ -118,20 +124,21 @@ class Board extends React.Component {
             showBoardCursor: false,
         }
 
-        this.listenOnEnterKey = () => {
-            document.onkeypress = e => {
-                e = e || window.event;
-                if (
-                    e.key === 'Enter'
-                    && this.props.boardTextMistake
-                ) {
-                    if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
-                    this.punishmentInit(false);
-                    // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
-                    this.boardFocused();
-                    requestAnimationFrame(() => this.textBoard.focus());
-                }
-            };
+        this.reactToEnterKey = e => {
+            if (
+                e.key === 'Enter'
+                && this.props.boardTextMistake
+            ) {
+                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
+                this.punishmentInit(false);
+                // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
+                this.boardFocused();
+                requestAnimationFrame(() => this.textBoard.focus());
+            }
+        }
+
+        this.listenOnKey = () => {
+            document.addEventListener("keydown", this.reactToEnterKey, false);
         }
 
         // TODO: dodati tooltip na spužvi nakon PRVE odigrane kazne 
@@ -141,9 +148,23 @@ class Board extends React.Component {
         // 
         // MOGUCE RJESENJE: pingaj BE radi provjere ako postoji koji pun try trenutnog usera 
         // ako postoji
+        /* setTimeout(() => {
+            console.log(this.usersFirstPunishment(this.props.currentUser, this.props.activePunishment, this.props.pastPunishments));
+        }, 2000) */
 
-        this.usersFirstPunishment = () => {
-
+        this.usersFirstPunishment = (currentUser, activePunishment, pastPunishments) => {
+            // nakon odigrane kazne (fail/completed) pregledaj past i accepted kazne ako je "nesto" već odigrano
+            // provjera jel postoji vec zavrsena (past kazne)
+            let firstTimePlaying = true;
+            if (specialOrRandomPunishmentIsActive(activePunishment)) return false;
+            else if (Object.keys(currentUser).length) {
+                for (let pastPunishment of pastPunishments) {
+                    if (pastPunishment.tries > 0) firstTimePlaying = false;
+                }
+            } else if (Object.keys(this.props.guestUser).length) {
+                if (this.props.guestUser.userHasTriedPunishments) firstTimePlaying = false;
+            }
+            return this.props.updateUserHasTriedPunishments(firstTimePlaying);
         }
 
         this.incorrectBoardEntry = () => {
@@ -413,7 +434,7 @@ class Board extends React.Component {
 
         this.punishmentInit = (punishmentChanged = true) => {
             this.stopBoardCursorToggling();
-
+            if (this.props.firstTimePlaying === true && !specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.updateUserHasTriedPunishments(false);
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
             // incijalni setup
             this.props.gameReset();
@@ -456,23 +477,28 @@ class Board extends React.Component {
         // special snowflake - zahtjeva sinkroni ajax request
         // window.onunload = window.onbeforeunload
         window.addEventListener("beforeunload", this.handleBeforeunload);
-        this.listenOnEnterKey();
+        this.listenOnKey();
     }
 
     componentDidUpdate(prevProps) {
 
-        if ((Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid !== prevProps.activePunishment.uid))
-            || (Object.keys(this.props.activePunishment).length && (this.props.activePunishment.uid === prevProps.activePunishment.uid) && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write))) { // postavljena nova kazna
+        if ((Object.keys(this.props.activePunishment).length
+            && (this.props.activePunishment.uid !== prevProps.activePunishment.uid))
+            || (Object.keys(this.props.activePunishment).length
+                && (this.props.activePunishment.uid === prevProps.activePunishment.uid)
+                && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write))) { // postavljena nova kazna
             // console.log('%cTRUE', 'background: yellow; color: green')
 
-            if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) { // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-
+            // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
+            if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) {
                 this.props.logPunishmentTry(prevProps.activePunishment.uid, prevProps.timeSpent);
             }
             // specijalni slucaj detektiranja adblocker-a
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {
                 this.adblockDetected = true;
             }
+            if (this.props.firstTimePlaying === true) this.props.updateUserHasTriedPunishments(false);
+            else if (this.props.firstTimePlaying === null) this.usersFirstPunishment(this.props.currentUser, this.props.activePunishment, this.props.pastPunishments);
             this.stopBoardCursorToggling();
             this.activePunishmentChanged();
         }
@@ -568,6 +594,8 @@ class Board extends React.Component {
                                 onHover={this.spongeHover}
                                 onHoverOut={this.spongeHoverOut}
                                 hovering={this.props.spongeHovered}
+                                firstTimePlaying={this.props.firstTimePlaying}
+                                isPunishmentFailed={isPunishmentFailed}
                             />
 
                             <svg id="board-chalks" width="486px" height="22px" viewBox="0 0 486 22" version="1.1" xmlns="http://www.w3.org/2000/svg">

@@ -23,10 +23,13 @@ const defaultState = {
     specialPunishments: 'empty',
     randomPunishments: 'empty',
 
-    ignoredPunishmentSet: false
+    firstTimePlaying: null,
+
+    ignoredPunishmentSet: false,
 };
 
 export default (state = defaultState, action) => {
+    // console.log(action.type)
     switch (action.type) {
         // case 'UPDATE_FIELD_PUNISH_CREATE':
         //     return { ...state, [action.key]: action.value };
@@ -79,6 +82,9 @@ export default (state = defaultState, action) => {
             return { ...state, randomPunishments: action.punishments };
         case 'SET_SPECIAL_PUNISHMENTS':
             return { ...state, specialPunishments: action.punishments };
+
+        case 'UPDATE_USER_HAS_TRIED_PLAYING_BEFORE':
+            return { ...state, firstTimePlaying: action.value };
 
         case 'SPECIAL_LOGOUT':
             return { ...defaultState, specialPunishments: state.specialPunishments, randomPunishments: state.randomPunishments };

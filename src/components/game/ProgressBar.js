@@ -6,8 +6,22 @@ const ProgressBar = props => {
     const progress = props.progress;
     let spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
     // pomak kada se label tekst promijeni 
-    const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {}; 
-    const hoverText = progress !== 100 ? 'RESTART' : 'RANDOM PUNISHMENT';
+    const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {};
+    const hoverText = props.firstTimePlaying
+        ? progress !== 100
+            ? 'CLICK TO RESTART'
+            : 'CLICK FOR RANDOM PUNISHMENT'
+        : progress !== 100
+            ? 'RESTART'
+            : 'RANDOM PUNISHMENT';
+    const showTooltip = (
+        props.hovering
+        || (
+            (progress === 100 && props.firstTimePlaying)
+            || (props.isPunishmentFailed && props.firstTimePlaying)
+        )
+    );
+// console.log(hoverText)
 
     return (
         <div
@@ -18,7 +32,7 @@ const ProgressBar = props => {
             onMouseOver={props.onHover}
             onMouseOut={props.onHoverOut}
         >
-            {props.hovering ?
+            {showTooltip ?
                 <div
                     style={finishedPunishmentHoverOffsetStyle}
                     id="restart-hover-element"

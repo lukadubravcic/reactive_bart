@@ -249,21 +249,16 @@ class Board extends React.Component {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
             } else {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
-                this.updatePastPunishments(this.props.activePunishment.uid);
+                this.updatePastPunishments(this.props.activePunishment);
                 this.removeActivePunishmentFromAccepted();
             }
         };
 
-        this.updatePastPunishments = id => {
-            let hitCounter = false;
-            let newPastPunishments = JSON.parse(JSON.stringify(this.props.pastPunishments));
-            for (let pun of newPastPunishments) {
-                if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
-                    pun.done = new Date().toISOString().slice(0, 19);
-                    hitCounter = true;
-                }
-            }
-            if (hitCounter) this.props.updatePastPunishments(newPastPunishments);
+        this.updatePastPunishments = newPunishment => {
+            if (!newPunishment) return null;
+            newPunishment.given_up = new Date().toISOString().slice(0, 19);
+            newPastPunishments.unshift(newPunishment)
+            this.props.updatePastPunishments(newPastPunishments);
         }
 
         this.removeActivePunishmentFromAccepted = () => {

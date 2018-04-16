@@ -88,22 +88,30 @@ class AcceptedTab extends React.Component {
 
         this.giveUpPunishment = id => { // makni tu kaznu iz statea
             let newPastPunishments = JSON.parse(JSON.stringify(this.props.pastPunishments));
+            let givenUpPunishment = null;
             let filteredPunishments = this.props.acceptedPunishments.filter(punishment => {
-                return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
+                if (decodeURIComponent(punishment.uid) === decodeURIComponent(id)) {
+                    givenUpPunishment = punishment;
+                    return null;
+                } else return punishment;
+                // return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
             });
-            this.updatePastPunishments(id, newPastPunishments);
+            this.updatePastPunishments(givenUpPunishment, newPastPunishments);
             this.props.giveUpPunishment(id, filteredPunishments);
         };
 
-        this.updatePastPunishments = (id, newPastPunishments) => {
-            let hitCounter = false;
-            for (let pun of newPastPunishments) {
-                if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
-                    pun.given_up = new Date().toISOString().slice(0, 19);
-                    hitCounter = true;
-                }
-            }
-            if (hitCounter) this.props.updatePastPunishments(newPastPunishments);
+        this.updatePastPunishments = (newPunishment, newPastPunishments) => {
+            if (!newPunishment) return null;
+            // let hitCounter = false;
+            // for (let pun of newPastPunishments) {
+            //     if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
+            //         pun.given_up = new Date().toISOString().slice(0, 19);
+            //         hitCounter = true;
+            //     }
+            // }
+            newPunishment.given_up = new Date().toISOString().slice(0, 19);
+            newPastPunishments.unshift(newPunishment)
+            this.props.updatePastPunishments(newPastPunishments);
         }
 
         this._showFirstPage = (punishments = this.props.acceptedPunishments) => {

@@ -2,7 +2,6 @@ import React from 'react';
 
 const ProgressBar = props => {
 
-
     const progress = props.progress;
     let spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
     // pomak kada se label tekst promijeni 
@@ -21,7 +20,6 @@ const ProgressBar = props => {
             || (props.isPunishmentFailed && props.firstTimePlaying)
         )
     );
-// console.log(hoverText)
 
     return (
         <div
@@ -36,7 +34,7 @@ const ProgressBar = props => {
                 <div
                     style={finishedPunishmentHoverOffsetStyle}
                     id="restart-hover-element"
-                    className="hover-dialog">
+                    className={`hover-dialog ${props.firstTimePlaying && !props.hovering ? 'show-delay' : ''}`}>
 
                     <label className="hover-dialog-text noselect">
                         {hoverText}

@@ -13,9 +13,9 @@
 			box-sizing: border-box;			
 }
 
-#root {
+/* #root {
 	overflow-x: hidden;
-}
+} */
 
 #board-textarea {
 	scrollbar-base-color: #000;
@@ -257,7 +257,6 @@ textarea {
 	z-index: 6;
 
 	-webkit-animation-name: hover-tooltip;
-
 	        animation-name: hover-tooltip;
 	-webkit-animation-duration: 0.3s;
 	        animation-duration: 0.3s;
@@ -265,6 +264,25 @@ textarea {
 	        animation-direction: normal;
 	-webkit-animation-fill-mode: forwards;
 	        animation-fill-mode: forwards;
+} 
+
+.show-delay {
+	-webkit-animation-name: show-delay;
+		animation-name: show-delay;
+	-webkit-animation-duration: 0.3s;
+		animation-duration: 0.3s;
+	-webkit-animation-delay: 0.8s;
+		animation-delay: 0.8s;
+	-webkit-animation-direction: normal;
+		animation-direction: normal;
+	-webkit-animation-fill-mode: forwards;
+		animation-fill-mode: forwards;
+	opacity: 0;
+}
+
+@-webkit-keyframes show-delay {
+	0%   {opacity: 0; }
+    100% {opacity: 1; }
 } 
 
 @-webkit-keyframes hover-tooltip {
@@ -823,7 +841,7 @@ fieldset + fieldset {
 	display: inline-block;
 	position: absolute;
 
-	z-index: 10;
+	z-index: 100;
 
 	left: 286px;
 	top: 183px;
@@ -840,24 +858,22 @@ fieldset + fieldset {
 	opacity: 0;
 }
 
-@-webkit-keyframes stamp-hit{
+@-webkit-keyframes stamp-hit {
 	0% {
 	opacity: 0;
 	-webkit-transform-origin: 50% 50%;
 	        transform-origin: 50% 50%;
-	-webkit-transform: rotate(-15deg) scale(10);
-	        transform: rotate(-15deg) scale(10);
+	-webkit-transform: rotate(-15deg) scale(2.9);
+	        transform: rotate(-15deg) scale(2.9);
 	}
 
 	10% {
-	opacity:.50;	
-	
-	-webkit-transform: rotate(-2deg) scale(5);	
-	
-	        transform: rotate(-2deg) scale(5);
+	opacity:.50;		
+	-webkit-transform: rotate(-2deg) scale(2.8);		
+	        transform: rotate(-2deg) scale(2.8);
 	-webkit-transition: all .3s linear;
 	-o-transition: all .3s linear;
-	transition: all .3s linear;
+		transition: all .3s linear;
 	}
 
 	100% {

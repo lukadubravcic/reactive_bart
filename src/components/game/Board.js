@@ -514,7 +514,7 @@ class Board extends React.Component {
         const isPunishmentFailed = this.props.boardTextMistake;
         const makeFocusable = this.props.startSentenceBeingWritten || isPunishmentFailed || progress === 100 ? {} : { tabIndex: "1" };
         const showTextCursor = this.props.gameInProgress && this.props.boardFocused;
-        // if (fullLines((startingSentenceFirstPart + startingSentenceSecondPart + boardText))) console.log('hit')
+        const isUserLoggedIn = !!Object.keys(this.props.currentUser).length;
 
         if (activePunishmentSet) {
 
@@ -590,7 +590,7 @@ class Board extends React.Component {
                                 onHover={this.spongeHover}
                                 onHoverOut={this.spongeHoverOut}
                                 hovering={this.props.spongeHovered}
-                                firstTimePlaying={this.props.firstTimePlaying}
+                                firstTimePlaying={isUserLoggedIn ? this.props.firstTimePlaying : true}
                                 isPunishmentFailed={isPunishmentFailed}
                             />
 
@@ -634,7 +634,6 @@ class Board extends React.Component {
 
                                 {startingSentenceFirstPart}
                                 <span style={{ color: '#FFBC24' }}>{startingSentenceSecondPart}</span>
-                                {/* startingSentenceThirdPart */}
                                 {boardText}
                             </div>
 
@@ -681,9 +680,6 @@ class Board extends React.Component {
                             />
 
                             <svg id="board-chalks" width="486px" height="22px" viewBox="0 0 486 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                <title>krede na ploci</title>
-                                <desc>Created with Sketch.</desc>
-                                <defs></defs>
                                 <g id="page-01" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-226.000000, -918.000000)">
                                     <g id="Ploca" transform="translate(0.000000, 150.000000)">
                                         <g id="krede-na-ploci" transform="translate(226.000000, 768.000000)">

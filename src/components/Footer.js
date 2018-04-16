@@ -14,7 +14,6 @@ const Footer = props => {
                         href="http://www.kreativni.com/">
                         KREATIVNI ODJEL
                 </a>
-                    &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;DIR
                 </label>
 
                 <div id="social-icons-footer">

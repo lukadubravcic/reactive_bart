@@ -119,7 +119,6 @@ class PastTab extends React.Component {
 
             if (sortedPunishments) {
                 this.updateAndShowPastPunishments(sortedPunishments, true);
-                console.log('FROM RESORT PUNS')
                 this.changeElement(element);
                 this._resetElements(element, this.columns);
             }
@@ -213,7 +212,7 @@ class PastTab extends React.Component {
     }
 
 
-    componentDidMount() {
+    componentDidMount() {     
         if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) {
             if (this.props.ignoredPunishmentSet) {
                 this.showIgnoredPunishmentPage(this.props.pastPunishments);

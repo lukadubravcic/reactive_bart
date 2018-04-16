@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => ({
     },
     updatePastPunishments: newPastPunishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments: newPastPunishments });
-    }
+    },
 });
 
 const animationDuration = 500;
@@ -102,13 +102,6 @@ class AcceptedTab extends React.Component {
 
         this.updatePastPunishments = (newPunishment, newPastPunishments) => {
             if (!newPunishment) return null;
-            // let hitCounter = false;
-            // for (let pun of newPastPunishments) {
-            //     if (decodeURIComponent(pun.uid) === decodeURIComponent(id)) {
-            //         pun.given_up = new Date().toISOString().slice(0, 19);
-            //         hitCounter = true;
-            //     }
-            // }
             newPunishment.given_up = new Date().toISOString().slice(0, 19);
             newPastPunishments.unshift(newPunishment)
             this.props.updatePastPunishments(newPastPunishments);

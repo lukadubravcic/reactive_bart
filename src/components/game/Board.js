@@ -256,7 +256,8 @@ class Board extends React.Component {
 
         this.updatePastPunishments = newPunishment => {
             if (!newPunishment) return null;
-            newPunishment.given_up = new Date().toISOString().slice(0, 19);
+            let newPastPunishments = JSON.parse(JSON.stringify(this.props.pastPunishments))
+            newPunishment.done = new Date().toISOString().slice(0, 19);
             newPastPunishments.unshift(newPunishment)
             this.props.updatePastPunishments(newPastPunishments);
         }

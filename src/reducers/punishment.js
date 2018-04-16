@@ -29,7 +29,6 @@ const defaultState = {
 };
 
 export default (state = defaultState, action) => {
-    // console.log(action.type)
     switch (action.type) {
         // case 'UPDATE_FIELD_PUNISH_CREATE':
         //     return { ...state, [action.key]: action.value };

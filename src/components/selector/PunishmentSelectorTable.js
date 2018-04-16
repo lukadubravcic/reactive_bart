@@ -201,18 +201,16 @@ class PunishmentSelectorTable extends React.Component {
         const activePunishmentJustSet = !Object.keys(prevProps.activePunishment).length && Object.keys(this.props.activePunishment).length > 0;
 
         if (activePunishmentJustSet && this.props.ignoredPunishmentSet && this.props.pastPunishments && Object.keys(this.props.user).length > 0) {
-
             this.selectTab('pastTab');
         }
-
     }
 
     componentWillReceiveProps(nextProps) {
-
         if (nextProps.acceptedPunishments.length === 0) {
             // slucaj gdje nema accepted kazni
             this.props.setAcceptedHeaderVisibility(false);
             if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
+                this.props.setPastHeaderVisibility(true);
                 this.selectTab('pastTab');
             } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
                 this.selectTab('orderedTab');

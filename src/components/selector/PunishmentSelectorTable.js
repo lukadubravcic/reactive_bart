@@ -208,6 +208,12 @@ class PunishmentSelectorTable extends React.Component {
             this.props.setOrderedHeaderVisibility(true);
             if (this.props.selectedTab === null) this.selectTab('orderedTab');
         }
+
+        if (prevProps.pastPunishments.length === 0 && this.props.pastPunishments.length > 0) {
+            this.props.setPastHeaderVisibility(true);
+            if (this.props.selectedTab === null) this.selectTab('pastTab');
+        }
+
     }
 
     componentWillReceiveProps(nextProps) {

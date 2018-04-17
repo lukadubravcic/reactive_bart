@@ -48,14 +48,6 @@ class OrderedTab extends React.Component {
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
-        this.state = {
-            tableStyle: { display: 'none' },
-            tableContainerStyle: {
-                height: 0,
-                borderBottom: '10px solid #515151',
-                transition: 'height 0.5s'
-            }
-        };
 
         this._showFirstPage = (punishments = this.props.orderedPunishments) => {
             let firstPage = [];
@@ -72,23 +64,6 @@ class OrderedTab extends React.Component {
             this._showFirstPage();
         };
 
-        this.changeElement = element => {
-            element.name = (
-                <span>
-                    <label>
-                        {element.defaultName}
-                    </label>
-                    {element.sortOrder === 1
-                        ? ascendingSVG
-                        : element.sortOrder === -1
-                            ? descendingSVG
-                            : element.name}
-                </span>
-            )
-
-            element.sortOrder *= -1;
-        }
-
         this.updateAndShowOrderedPunishments = (punishments) => {
             this.props.changeOrderedPunishments(punishments);
             this._showFirstPage(punishments);
@@ -98,11 +73,19 @@ class OrderedTab extends React.Component {
 
             let sortedPunishments = [];
             let orderedPunishments = this.props.orderedPunishments;
-            let element = getByValue(this.columns, id);
+            let element = getByValue(this.state.columns, id);
+
+            if (element === null) return;
+
+            element.sortOrder === 0
+                ? element.sortOrder = 1
+                : element.sortOrder === 1
+                    ? element.sortOrder = -1
+                    : element.sortOrder = 1;
 
             switch (id) {
                 case 'created':
-                    sortedPunishments = sortPunishmentsByDate(orderedPunishments, element.sortOrder, element.fieldName);
+                    sortedPunishments = sortPunishmentsByDate(orderedPunishments, element.sortOrder * -1, element.fieldName);
                     break;
                 case 'toWhom':
                     sortedPunishments = sortPunishmentsByString(orderedPunishments, element.sortOrder, element.fieldName);
@@ -122,8 +105,8 @@ class OrderedTab extends React.Component {
 
             if (sortedPunishments) {
                 this.updateAndShowOrderedPunishments(sortedPunishments);
-                this.changeElement(element);
                 this._resetElements(element, this.columns);
+                this.setState({ columns: [...this.columns] });
             }
         };
 
@@ -132,63 +115,10 @@ class OrderedTab extends React.Component {
             for (let col of columns) {
                 if (element.id !== col.id) {
                     col.name = col.defaultName;
-                    col.sortOrder = 1;
+                    col.sortOrder = 0;
                 }
             }
         };
-
-        this.columns = [
-            {
-                name: 'WHEN',
-                defaultName: 'WHEN',
-                clickHandler: this.reSortPunishments,
-                id: 'created',
-                fieldName: 'created',
-                sortOrder: 1,
-                style: 'float-left when-field ordered-on-lmargin-field'
-            },
-            {
-                name: 'TO WHOM',
-                defaultName: 'TO WHOM',
-                clickHandler: this.reSortPunishments,
-                id: 'toWhom',
-                fieldName: 'user_taking_punishment',
-                sortOrder: 1,
-                style: 'float-left to-whom-field'
-            },
-            {
-                name: 'DEADLINE',
-                defaultName: 'DEADLINE',
-                clickHandler: this.reSortPunishments,
-                id: 'deadline',
-                fieldName: 'deadline',
-                sortOrder: 1,
-                style: 'float-left ordered-deadline-field'
-            },
-            {
-                name: 'X',
-                defaultName: 'X',
-                clickHandler: this.reSortPunishments,
-                id: 'howManyTimes',
-                fieldName: 'how_many_times',
-                sortOrder: 1,
-                style: 'float-left num-time-field num-time-field-pad-left'
-            },
-            {
-                name: 'WHAT',
-                defaultName: 'WHAT',
-                clickHandler: null,
-                id: 'whatToWrite',
-                style: 'float-left ordered-what-field'
-            },
-            {
-                name: 'STATUS',
-                defaultName: 'STATUS',
-                clickHandler: null,
-                id: 'status',
-                style: 'float-left ordered-status-field'
-            }
-        ];
 
         this.startAnimation = () => {
             requestAnimationFrame(() => {
@@ -213,6 +143,69 @@ class OrderedTab extends React.Component {
                 }, animationDuration);
             });
         }
+
+        this.columns = [
+            {
+                name: 'WHEN',
+                defaultName: 'WHEN',
+                clickHandler: this.reSortPunishments,
+                id: 'created',
+                fieldName: 'created',
+                sortOrder: 1,
+                style: 'float-left when-field ordered-on-lmargin-field',
+            },
+            {
+                name: 'TO WHOM',
+                defaultName: 'TO WHOM',
+                clickHandler: this.reSortPunishments,
+                id: 'toWhom',
+                fieldName: 'user_taking_punishment',
+                sortOrder: 0,
+                style: 'float-left to-whom-field',
+            },
+            {
+                name: 'DEADLINE',
+                defaultName: 'DEADLINE',
+                clickHandler: this.reSortPunishments,
+                id: 'deadline',
+                fieldName: 'deadline',
+                sortOrder: 0,
+                style: 'float-left ordered-deadline-field',
+            },
+            {
+                name: 'X',
+                defaultName: 'X',
+                clickHandler: this.reSortPunishments,
+                id: 'howManyTimes',
+                fieldName: 'how_many_times',
+                sortOrder: 0,
+                style: 'float-left num-time-field num-time-field-pad-left',
+            },
+            {
+                name: 'WHAT',
+                defaultName: 'WHAT',
+                clickHandler: null,
+                id: 'whatToWrite',
+                style: 'float-left ordered-what-field',
+            },
+            {
+                name: 'STATUS',
+                defaultName: 'STATUS',
+                clickHandler: null,
+                id: 'status',
+                style: 'float-left ordered-status-field',
+            }
+        ];
+
+        this.state = {
+            tableStyle: { display: 'none' },
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151',
+                transition: 'height 0.5s',
+            },
+            columns: [...this.columns],
+        };
     }
 
     componentDidMount() {
@@ -242,11 +235,12 @@ class OrderedTab extends React.Component {
     render() {
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownOrderedPunishments;
+        const columns = this.state.columns;
 
         if (shownPunishments !== 'empty') {
             return (
                 <div ref={elem => this.containerElement = elem}>
-                    <TableHeader columns={this.columns} />
+                    <TableHeader columns={columns} />
                     <div style={this.state.tableContainerStyle}>
 
                         <table

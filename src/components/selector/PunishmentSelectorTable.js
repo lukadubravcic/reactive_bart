@@ -211,9 +211,9 @@ class PunishmentSelectorTable extends React.Component {
 
         if (prevProps.pastPunishments.length === 0 && this.props.pastPunishments.length > 0) {
             this.props.setPastHeaderVisibility(true);
-            if (this.props.selectedTab === null) this.selectTab('pastTab');
+            if (this.props.selectedTab === null) this.selectTab('pastTab');            
         }
-
+        
     }
 
     componentWillReceiveProps(nextProps) {

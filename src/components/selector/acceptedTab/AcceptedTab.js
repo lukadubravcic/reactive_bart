@@ -60,14 +60,7 @@ class AcceptedTab extends React.Component {
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
-        this.state = {
-            tableStyle: { display: 'none' },
-            tableContainerStyle: {
-                height: 0,
-                borderBottom: '10px solid #515151',
-                transition: 'height 0.5s'
-            }
-        };
+
 
         this.handleGoPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
@@ -120,28 +113,18 @@ class AcceptedTab extends React.Component {
             this._showFirstPage(punishments);
         };
 
-        this.changeElement = element => {
-            element.name = (
-                <span>
-                    <label>
-                        {element.defaultName}
-                    </label>
-                    {element.sortOrder === 1
-                        ? ascendingSVG
-                        : element.sortOrder === -1
-                            ? descendingSVG
-                            : element.name}
-                </span>
-            )
-
-            element.sortOrder *= -1;
-        }
-
         this.reSortPunishments = id => {
-
             let sortedPunishments = [];
             let acceptedPunishments = this.props.acceptedPunishments;
-            let element = getByValue(this.columns, id);
+            let element = getByValue(this.state.columns, id);
+
+            if (element === null) return;
+
+            element.sortOrder === 0
+                ? element.sortOrder = 1
+                : element.sortOrder === 1
+                    ? element.sortOrder = -1
+                    : element.sortOrder = 1;
 
             switch (id) {
                 case 'orderedBy':
@@ -158,8 +141,8 @@ class AcceptedTab extends React.Component {
 
             if (sortedPunishments) {
                 this.updateAndShowAcceptedPunishments(sortedPunishments);
-                this.changeElement(element);
                 this._resetElements(element, this.columns);
+                this.setState({ columns: [...this.columns] });
             }
         };
 
@@ -168,47 +151,10 @@ class AcceptedTab extends React.Component {
             for (let col of columns) {
                 if (element.id !== col.id) {
                     col.name = col.defaultName;
-                    col.sortOrder = 1;
+                    col.sortOrder = 0;
                 }
             }
         };
-
-        this.columns = [
-            {
-                name: 'ORDERED BY',
-                defaultName: 'ORDERED BY',
-                clickHandler: this.reSortPunishments,
-                id: 'orderedBy',
-                fieldName: 'user_ordering_punishment',
-                sortOrder: 1,
-                style: 'float-left ordering-field'
-            },
-            {
-                name: 'DEADLINE',
-                defaultName: 'DEADLINE',
-                clickHandler: this.reSortPunishments,
-                id: 'deadline',
-                fieldName: 'deadline',
-                sortOrder: 1,
-                style: 'float-left deadline-field'
-            },
-            {
-                name: 'X',
-                defaultName: 'X',
-                clickHandler: this.reSortPunishments,
-                id: 'howManyTimes',
-                fieldName: 'how_many_times',
-                sortOrder: 1,
-                style: 'float-left num-time-field num-time-field-pad-left'
-            },
-            {
-                name: 'WHAT',
-                defaultName: 'WHAT',
-                clickHandler: null,
-                id: 'whatToWrite',
-                style: 'float-left what-field'
-            }
-        ];
 
         this.startAnimation = () => {
             requestAnimationFrame(() => {
@@ -233,6 +179,53 @@ class AcceptedTab extends React.Component {
                 }, animationDuration);
             });
         }
+
+        this.columns = [
+            {
+                name: 'ORDERED BY',
+                defaultName: 'ORDERED BY',
+                clickHandler: this.reSortPunishments,
+                id: 'orderedBy',
+                fieldName: 'user_ordering_punishment',
+                sortOrder: 0,
+                style: 'float-left ordering-field'
+            },
+            {
+                name: 'DEADLINE',
+                defaultName: 'DEADLINE',
+                clickHandler: this.reSortPunishments,
+                id: 'deadline',
+                fieldName: 'deadline',
+                sortOrder: 0,
+                style: 'float-left deadline-field'
+            },
+            {
+                name: 'X',
+                defaultName: 'X',
+                clickHandler: this.reSortPunishments,
+                id: 'howManyTimes',
+                fieldName: 'how_many_times',
+                sortOrder: 0,
+                style: 'float-left num-time-field num-time-field-pad-left'
+            },
+            {
+                name: 'WHAT',
+                defaultName: 'WHAT',
+                clickHandler: null,
+                id: 'whatToWrite',
+                style: 'float-left what-field'
+            }
+        ];
+
+        this.state = {
+            tableStyle: { display: 'none' },
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151',
+                transition: 'height 0.5s'
+            },
+            columns: [...this.columns],
+        };
     }
 
     componentDidMount() {

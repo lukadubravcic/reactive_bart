@@ -51,14 +51,6 @@ class PastTab extends React.Component {
         this.numOfRows = null;
         this.rowHeight = 60;
         this.borderThickness = 10;
-        this.state = {
-            tableStyle: { display: 'none' },
-            tableContainerStyle: {
-                height: 0,
-                borderBottom: '10px solid #515151',
-                transition: 'height 0.5s',
-            }
-        };
 
         this._showFirstPage = (punishments = this.props.pastPunishments) => {
             let firstPage = [];
@@ -69,23 +61,6 @@ class PastTab extends React.Component {
             }
             this.props.changeShownPunishments(firstPage, 1);
         };
-
-        this.changeElement = element => {
-            element.name = (
-                <span>
-                    <label>
-                        {element.defaultName}
-                    </label>
-                    {element.sortOrder === 1
-                        ? ascendingSVG
-                        : element.sortOrder === -1
-                            ? descendingSVG
-                            : element.name}
-                </span>
-            )
-
-            element.sortOrder *= -1;
-        }
 
         this.showIgnoredPunishmentPage = punishments => {
             let pageNum = getPunishmentPageNumber(this.props.punishmentIdFromURL, this.props.pastPunishments);
@@ -98,14 +73,21 @@ class PastTab extends React.Component {
         };
 
         this.reSortPunishments = id => {
-
             let sortedPunishments = [];
             let pastPunishments = this.props.pastPunishments;
-            let element = getElementById(this.columns, id);
+            let element = getElementById(this.state.columns, id);
+
+            if (element === null) return;
+
+            element.sortOrder === 0
+                ? element.sortOrder = 1
+                : element.sortOrder === 1
+                    ? element.sortOrder = -1
+                    : element.sortOrder = 1;
 
             switch (id) {
                 case 'created':
-                    sortedPunishments = sortPunishmentsByDate(pastPunishments, element.sortOrder, element.fieldName);
+                    sortedPunishments = sortPunishmentsByDate(pastPunishments, element.sortOrder * -1, element.fieldName);
                     break;
                 case 'userOrdering':
                     sortedPunishments = sortPunishmentsByString(pastPunishments, element.sortOrder, element.fieldName);
@@ -119,8 +101,8 @@ class PastTab extends React.Component {
 
             if (sortedPunishments) {
                 this.updateAndShowPastPunishments(sortedPunishments, true);
-                this.changeElement(element);
                 this._resetElements(element, this.columns);
+                this.setState({ columns: [...this.columns] });
             }
         };
 
@@ -129,54 +111,10 @@ class PastTab extends React.Component {
             for (let col of columns) {
                 if (element.id !== col.id) {
                     col.name = col.defaultName;
-                    col.sortOrder = 1;
+                    col.sortOrder = 0;
                 }
             }
         };
-
-        this.columns = [
-            {
-                name: 'ORDERED ON',
-                defaultName: 'ORDERED ON',
-                clickHandler: this.reSortPunishments,
-                id: 'created',
-                fieldName: 'created',
-                sortOrder: 1,
-                style: 'float-left ordered-on-field ordered-on-lmargin-field'
-            },
-            {
-                name: 'BY WHOM',
-                defaultName: 'BY WHOM',
-                clickHandler: this.reSortPunishments,
-                id: 'userOrdering',
-                fieldName: 'user_ordering_punishment',
-                sortOrder: 1,
-                style: 'float-left by-whom-field'
-            },
-            {
-                name: 'X',
-                defaultName: 'X',
-                clickHandler: this.reSortPunishments,
-                id: 'howManyTimes',
-                fieldName: 'how_many_times',
-                sortOrder: 1,
-                style: 'float-left num-time-field num-time-field-pad-left'
-            },
-            {
-                name: 'WHAT',
-                defaultName: 'WHAT',
-                clickHandler: null,
-                id: 'whatToWrite',
-                style: 'float-left what-field-longer'
-            },
-            {
-                name: 'STATUS',
-                defaultName: 'STATUS',
-                clickHandler: null,
-                id: 'status',
-                style: 'float-left status-field'
-            }
-        ];
 
         this.startAnimation = () => {
             requestAnimationFrame(() => {
@@ -202,17 +140,70 @@ class PastTab extends React.Component {
             });
         }
 
-        this.didPunishmentsChangeDeep = (nextPastPunishments) => {
+        this.didPunishmentsChangeDeep = nextPastPunishments => {
             if (this.props.pastPunishments.length !== nextPastPunishments.length) return true;
             for (let i = 0; i < this.props.pastPunishments.length; i++) {
                 if (!comparePunishments(this.props.pastPunishments[i], nextPastPunishments[i])) return true;
             }
             return false;
         };
+
+        this.columns = [
+            {
+                name: 'ORDERED ON',
+                defaultName: 'ORDERED ON',
+                clickHandler: this.reSortPunishments,
+                id: 'created',
+                fieldName: 'created',
+                sortOrder: 1,
+                style: 'float-left ordered-on-field ordered-on-lmargin-field',
+            },
+            {
+                name: 'BY WHOM',
+                defaultName: 'BY WHOM',
+                clickHandler: this.reSortPunishments,
+                id: 'userOrdering',
+                fieldName: 'user_ordering_punishment',
+                sortOrder: 0,
+                style: 'float-left by-whom-field',
+            },
+            {
+                name: 'X',
+                defaultName: 'X',
+                clickHandler: this.reSortPunishments,
+                id: 'howManyTimes',
+                fieldName: 'how_many_times',
+                sortOrder: 0,
+                style: 'float-left num-time-field num-time-field-pad-left',
+            },
+            {
+                name: 'WHAT',
+                defaultName: 'WHAT',
+                clickHandler: null,
+                id: 'whatToWrite',
+                style: 'float-left what-field-longer',
+            },
+            {
+                name: 'STATUS',
+                defaultName: 'STATUS',
+                clickHandler: null,
+                id: 'status',
+                style: 'float-left status-field',
+            }
+        ];
+
+        this.state = {
+            tableStyle: { display: 'none' },
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151',
+                transition: 'height 0.5s',
+            },
+            columns: [...this.columns],
+        };
     }
 
-
-    componentDidMount() {     
+    componentDidMount() {
         if (this.props.pastPunishments !== 'empty' && this.props.pastPunishments.length > 0) {
             if (this.props.ignoredPunishmentSet) {
                 this.showIgnoredPunishmentPage(this.props.pastPunishments);
@@ -222,24 +213,6 @@ class PastTab extends React.Component {
             this.startAnimation();
         }
     }
-
-    /* componentWillReceiveProps(nextProps) {
-        if (
-            (this.props.pastPunishments === 'empty'
-                && nextProps.pastPunishments !== 'empty'
-                && nextProps.pastPunishments.length > 0)
-            || this.didPunishmentsChangeDeep(prevProps.pastPunishments)
-        ) {
-            this.updateAndShowPastPunishments(this.props.pastPunishments);
-        }
-         if () {
-             this.updateAndShowPastPunishments(nextProps.pastPunishments);
-         } 
-        if (this.props.shownPastPunishments.length !== prevProps.shownPastPunishments.length) {
-            this.numOfRows = this.props.shownPastPunishments.length;
-            this.startAnimation();
-        }
-    } */
 
     componentDidUpdate(prevProps) {
         if (
@@ -271,7 +244,7 @@ class PastTab extends React.Component {
     render() {
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownPastPunishments;
-        const columns = this.columns;
+        const columns = this.state.columns;
         const styleMarkIgnored = 'picker-selected-row';
 
         if (shownPunishments !== 'empty') {

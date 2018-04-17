@@ -99,7 +99,7 @@ class PunishmentSelectorTable extends React.Component {
 
         this._handleOrderedPunFromAgent = payload => {
 
-
+            console.log()
             if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
 
                 this.props.setOrderedPunishments(payload.orderedPunishments);
@@ -203,6 +203,11 @@ class PunishmentSelectorTable extends React.Component {
         if (activePunishmentJustSet && this.props.ignoredPunishmentSet && this.props.pastPunishments && Object.keys(this.props.user).length > 0) {
             this.selectTab('pastTab');
         }
+
+        if (prevProps.orderedPunishments.length === 0 && this.props.orderedPunishments.length > 0) {
+            this.props.setOrderedHeaderVisibility(true);
+            if (this.props.selectedTab === null) this.selectTab('orderedTab');
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -225,10 +230,6 @@ class PunishmentSelectorTable extends React.Component {
 
             this.props.setOrderedHeaderVisibility(false);
 
-        } else if (this.props.orderedPunishments.length === 0 && nextProps.orderedPunishments.length > 0) { // stvorene nove ordered kazne
-
-            this.props.setOrderedPunishments(nextProps.orderedPunishments);
-            this._handleOrderedPunFromAgent(nextProps.orderedPunishments);
         }
 
         if (nextProps.pastPunishments.length === 0) {
@@ -321,9 +322,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(PunishmentSelectorTa
 
 const componentBottomImage = (
     <svg id="picker-bottom-image" width="1080px" height="166px" viewBox="0 0 1080 166" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-        <title>Group Copy 5</title>
-        <desc>Created with Sketch.</desc>
         <defs>
             <polyline id="path-1" points="0 73 72.577 73 72.577 0.722 0 0.722"></polyline>
         </defs>

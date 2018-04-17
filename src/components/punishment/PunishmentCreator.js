@@ -54,8 +54,8 @@ const mapDispatchToProps = dispatch => ({
             let newOrderedPunishments = orderedPunishments.length > 0
                 ? JSON.parse(JSON.stringify(orderedPunishments))
                 : [];
-
-            newOrderedPunishments.unshift(payload);
+            if (orderedPunishments.length === 0) newOrderedPunishments.push(payload);
+            else newOrderedPunishments.unshift(payload);
 
             if (!payload.errorMsg) {
                 dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg: 'Request sent!' });

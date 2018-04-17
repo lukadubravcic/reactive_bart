@@ -1,6 +1,6 @@
 let averageTime = null;
 let lastCharTypedTimestamp = null;
-const THRESHOLD = 5; // 30ms
+const THRESHOLD = 5; // 5ms
 
 const cheatingDetector = function detectIfUserIsCheating(char, punishmentText) {
 

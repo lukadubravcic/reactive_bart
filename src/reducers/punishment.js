@@ -57,10 +57,8 @@ export default (state = defaultState, action) => {
         case 'PAST_PUNISHMENTS_LOADED':
             return { ...state, pastPunishments: action.punishments };
         case 'UPDATE_SHOWN_PAST_PUNISHMENTS':
-            console.log('UPDATE_SHOWN_PAST_PUNISHMENTS');
             return { ...state, shownPastPunishments: action.punishments, currentPastPage: action.newPage };
         case 'PAST_PUNISHMENTS_CHANGED':
-            console.log('PAST_PUNISHMENTS_CHANGED')
             return { ...state, pastPunishments: action.punishments, pastPunishmentsResorted: action.pastPunishmentsResorted };
         case 'CLEAR_PAST_PUN_RESORTED_FLAG':
             return { ...state, pastPunishmentsResorted: defaultState.pastPunishmentsResorted };

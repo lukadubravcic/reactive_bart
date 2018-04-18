@@ -136,7 +136,11 @@ class AcceptedTab extends React.Component {
                 case 'howManyTimes':
                     sortedPunishments = sortPunishmentsByNumber(acceptedPunishments, element.sortOrder, element.fieldName);
                     break;
+                case 'whatToWrite':
+                    sortedPunishments = sortPunishmentsByString(acceptedPunishments, element.sortOrder, element.fieldName);
+                    break;
                 default:
+                    break;
             }
 
             if (sortedPunishments) {
@@ -211,8 +215,10 @@ class AcceptedTab extends React.Component {
             {
                 name: 'WHAT',
                 defaultName: 'WHAT',
-                clickHandler: null,
+                clickHandler: this.reSortPunishments,
                 id: 'whatToWrite',
+                fieldName: 'what_to_write',
+                sortOrder: 0,
                 style: 'float-left what-field'
             }
         ];

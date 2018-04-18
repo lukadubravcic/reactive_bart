@@ -1,3 +1,5 @@
+import { getPunishmentStatus } from './helpers';
+
 export const sortPunishmentsByString = (punishments, order, field) => { // order = 1 / -1 (ASC / DESC)
     let tmpPun = JSON.parse(JSON.stringify(punishments));
 
@@ -36,3 +38,14 @@ export const sortPunishmentsByNumber = (punishments, order, field) => {
     return tmpPun;
 };
 
+
+export const sortPunishmentsByStatus = (punishments, order) => {
+    if (typeof punishments === 'undefined' || punishments === null || punishments.length === 0) return punishments;
+    let tmp = [...punishments];
+
+    for (let punishment of tmp) {
+        punishment.status = getPunishmentStatus(punishment);
+    }
+    
+    return sortPunishmentsByString(tmp, order, 'status');
+};

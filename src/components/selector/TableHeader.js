@@ -8,21 +8,19 @@ const OrderedTabRow = props => {
                 props.columns.map(column => {
                     return (
                         <div
-                            className={column.style}
+                            className={column.style + " cursor-pointer"}
                             key={column.id}
                             id={column.id}
                             onClick={() => (column.clickHandler) ? column.clickHandler(column.id) : () => { }}>
 
-                            <span className="noselect">
-                                <label>
-                                    {column.name}
-                                </label>
+                            <button className="noselect punishment-table-header-btn cursor-pointer">
+                                {column.name}
                                 {column.sortOrder === 1
                                     ? ascendingSVG
                                     : column.sortOrder === -1
                                         ? descendingSVG
                                         : null}
-                            </span>
+                            </button>
                         </div>
                     )
                 })

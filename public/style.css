@@ -26,7 +26,7 @@
 	scrollbar-arrow-color: black;
 	scrollbar-shadow-color: #000;
 	scrollbar-dark-shadow-color: #000;
-  }
+}
 
 #board-textarea::-webkit-scrollbar-track {
 	-webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.155);
@@ -44,6 +44,11 @@
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: rgba(255, 255, 255, 0.5);
 }
+
+.cursor-pointer:hover {
+	cursor: pointer;
+}
+
 
 button:hover {
 	cursor: pointer;
@@ -1457,7 +1462,10 @@ td {
 	
 	        animation-name: table-header-fadein-anim;
 	-webkit-animation-duration: 1s;
-	        animation-duration: 1s;
+			animation-duration: 1s;
+			
+	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 @-webkit-keyframes table-header-fadein-anim {
@@ -1472,11 +1480,12 @@ td {
 
 
 .picker-table-header {
-	display: block;
+	display: table;
+	width: 100%;
 	position: relative;
 
-	padding-top: 20px;
-	padding-bottom: 40px;
+	/* padding-top: 20px;
+	padding-bottom: 40px; */
 
 	background: #515151;
 }
@@ -1506,6 +1515,15 @@ td {
 @keyframes select-row-anim {
 	from { background-color: transparent;}
     to { background-color: #FFD75F;}
+}
+
+.punishment-table-header-btn {
+	font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: #FEFEFE;
+    letter-spacing: 5px;
+    background: transparent;
 }
 
 .picker-table-row td {
@@ -1625,7 +1643,7 @@ td {
 
 .status-field {
 	display: inline-block;
-	width: 146px;
+	width: 149px;
 	padding-left: 24px;
 }
 

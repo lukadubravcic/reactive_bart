@@ -4,7 +4,12 @@ import PastTabRow from './PastTabRow';
 import TableFooter from '../TableFooter';
 import TableHeader from '../TableHeader'
 
-import { sortPunishmentsByDate, sortPunishmentsByNumber, sortPunishmentsByString } from '../../../helpers/sortingPunishments';
+import {
+    sortPunishmentsByDate,
+    sortPunishmentsByNumber,
+    sortPunishmentsByString,
+    sortPunishmentsByStatus
+} from '../../../helpers/sortingPunishments';
 import { getElementById } from '../../../helpers/helpers';
 
 import agent from '../../../agent';
@@ -95,6 +100,12 @@ class PastTab extends React.Component {
                 case 'howManyTimes':
                     sortedPunishments = sortPunishmentsByDate(pastPunishments, element.sortOrder, element.fieldName);
                     break;
+                case 'whatToWrite':
+                    sortedPunishments = sortPunishmentsByString(pastPunishments, element.sortOrder, element.fieldName);
+                    break;
+                case 'status':
+                    sortedPunishments = sortPunishmentsByStatus(pastPunishments, element.sortOrder);
+                    break;
                 default:
                     break;
             }
@@ -179,15 +190,19 @@ class PastTab extends React.Component {
             {
                 name: 'WHAT',
                 defaultName: 'WHAT',
-                clickHandler: null,
+                clickHandler: this.reSortPunishments,
                 id: 'whatToWrite',
+                fieldName: 'what_to_write',
+                sortOrder: 0,
                 style: 'float-left what-field-longer',
             },
             {
                 name: 'STATUS',
                 defaultName: 'STATUS',
-                clickHandler: null,
+                clickHandler: this.reSortPunishments,
                 id: 'status',
+                fieldName: 'status',
+                sortOrder: 0,
                 style: 'float-left status-field',
             }
         ];

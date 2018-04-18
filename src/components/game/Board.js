@@ -7,6 +7,7 @@ import CompletedStamp from './CompletedStamp';
 import FailedStamp from './FailedStamp';
 
 import cheatingCheck from '../../helpers/cheatingCheck';
+import keysound from '../../helpers/keysound';
 import { API_ROOT } from '../../constants/constants';
 
 const UPPERCASE = false;
@@ -106,6 +107,8 @@ class Board extends React.Component {
 
     constructor() {
         super();
+
+        keysound.initSound();
 
         this.audio = document.createElement('audio');
         this.audio.style.display = "none";

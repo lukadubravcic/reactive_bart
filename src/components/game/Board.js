@@ -220,6 +220,7 @@ class Board extends React.Component {
         };
 
         this.boardFocused = ev => {
+            if (this.props.progress === 100 || this.props.boardTextMistake) return;
             ev && ev.preventDefault();
             this.props.onBoardFocus();
             this.stopBoardCursorToggling();

@@ -7,7 +7,7 @@ import CompletedStamp from './CompletedStamp';
 import FailedStamp from './FailedStamp';
 
 import cheatingCheck from '../../helpers/cheatingCheck';
-import keysound from '../../helpers/keysound';
+import keysound from '../../helpers///keysound';
 import { API_ROOT } from '../../constants/constants';
 
 const UPPERCASE = false;
@@ -110,10 +110,6 @@ class Board extends React.Component {
 
         keysound.initSound();
 
-        this.audio = document.createElement('audio');
-        this.audio.style.display = "none";
-        this.audio.src = 'http://www.freesfx.co.uk/rx2/mp3s/6/18460_1464720565.mp3';
-
         this._wrongCharPlace = null;
         this.adblockDetected = false;
         this.cheatDetected = false;
@@ -215,6 +211,7 @@ class Board extends React.Component {
                 let randomPunishment = getRandomPunishment(this.props.randomPunishments);
                 if (randomPunishment) this.props.setActivePunishment(randomPunishment);
             }
+            keysound.resetAudio();
         };
 
         this.boardTextChange = ev => {
@@ -295,20 +292,11 @@ class Board extends React.Component {
                 this._wrongCharPlace = null;
             }
 
-            if (this.props.soundEnabled) this.playTypeSound(char);
-
+            if (this.props.soundEnabled) {
+                keysound.onKeyPress();
+            }
             return true;
         };
-
-        this.playTypeSound = char => {
-            if (char !== ' ' && (!this.audio.paused || this.audio.currentTime > 0)) {
-                // playing
-                this.audio.currentTime = 0;
-
-            } else if (char !== ' ') {
-                this.audio.play();
-            }
-        }
 
         this.boardStateUpdate = key => {
             if (!this.props.boardFocused) return;
@@ -432,6 +420,7 @@ class Board extends React.Component {
         };
 
         this.punishmentInit = (punishmentChanged = true) => {
+            //keysound.resetAudio();
             this.stopBoardCursorToggling();
             if (this.props.firstTimePlaying === true && !specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.updateUserHasTriedPunishments(false);
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);

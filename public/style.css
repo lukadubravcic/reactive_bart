@@ -2093,3 +2093,67 @@ td.ordered-status-field {
 
 	left: -50%;
 }
+
+.cookie-notice {
+	min-width: 1280px;
+	display: block;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background: #848484;
+	z-index: 1000;
+}
+
+.cookie-notice-container {
+	overflow: overlay;
+	padding: 20px 15% 20px 15%;
+	opacity: 1;
+}
+
+.cookie-message {
+	font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+	letter-spacing: 1px;	
+	color: white;
+}
+
+.cookie-content-left,
+.cookie-content-right {
+	display: inline-block;
+}
+
+.cookie-content-left {
+	float: left;
+	height: 100%;
+	width: 90%;
+}
+
+.cookie-content-right {
+	float: right;
+	width: 5%;
+}
+
+.btn-cookie {
+	display: inline-block;
+	position: relative;
+
+	padding: 10px 19px 10px 19px;
+
+	background-color: #323232;
+
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 500;
+	font-size: 15px;
+	letter-spacing: 2px;
+	color: #FEFEFE;
+
+	border: none;
+	outline: 0;
+}
+
+.btn-cookie:hover {
+	color: #515151;
+	background-color: #FFFFFF;
+}
+

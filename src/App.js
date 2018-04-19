@@ -7,6 +7,7 @@ import PunishmentSelectorTable from './components/selector/PunishmentSelectorTab
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
 import Footer from './components/Footer';
+import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
@@ -157,6 +158,7 @@ class App extends React.Component {
                 <Stats />
                 <Prefs />
                 <Footer />
+                <EULawAbidingCitizen />
             </div>
         );
     }

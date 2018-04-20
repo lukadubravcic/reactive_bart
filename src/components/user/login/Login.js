@@ -92,7 +92,7 @@ const mapDispatchToProps = dispatch => ({
 const registerElementHeight = 670;
 const resetPwdElementHeight = 400;
 const animationDuration = 500; // 0.5s
-const formMsgDuration = 5000; // 5s
+const formMsgDuration = 2000; // 2s
 
 const animStyles = {
     componentStyle: {

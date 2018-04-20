@@ -2,6 +2,7 @@ const TIME_BETWEEN_KEYS_THRESHOLD = 200;
 
 let keysound = null;
 let audioElement = null;
+let chalkboardDownAudioElement = null;
 let timeoutID = null;
 
 let availableKeySounds = [
@@ -21,11 +22,18 @@ const initSound = () => {
     audioElement = document.createElement('audio');
     audioElement.style.display = "none";
 
+    chalkboardDownAudioElement = document.createElement('audio');
+    chalkboardDownAudioElement.style.display = "none";
+    chalkboardDownAudioElement.src = 'chalkboard_down.mp3';
+
     currentKeySound = availableKeySounds[0];
     availableKeySounds.splice(0, 1);
 
     audioElement.src = currentKeySound;
     audioElement.addEventListener("ended", setNewCurrentKeySound);
+    chalkboardDownAudioElement.addEventListener("ended", () => {
+        chalkboardDownAudioElement.currentTime = 0;
+    });
 };
 
 const playAudio = () => {
@@ -66,9 +74,17 @@ const getRandomKeySoundClip = () => {
     return newKeySound;
 }
 
+const playChalkDownAudio = () => {
+    let chalkDownTimeout = setTimeout(() => {
+        chalkboardDownAudioElement.play();
+        clearTimeout(chalkDownTimeout);
+    }, 200)
+};
+
 export default {
     initSound,
     onKeyPress,
-    resetAudio
+    resetAudio,
+    playChalkDownAudio,
 }
 

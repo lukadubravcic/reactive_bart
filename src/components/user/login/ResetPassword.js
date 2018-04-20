@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => ({
 
 
 const animationDuration = 500;
-const formMsgDuration = 5000;
+const formMsgDuration = 2000;
 const loginHeight = 490;
 
 const animStyles = {

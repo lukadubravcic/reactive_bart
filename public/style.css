@@ -2102,18 +2102,21 @@ td.ordered-status-field {
 	width: 100%;
 	background: #848484;
 	z-index: 1000;
+	padding-top: 25px;
+	padding-bottom: 25px;
 }
 
-.cookie-notice-container {
+.cookie-notice-container {	
+	display: flex;
 	overflow: overlay;
-	padding: 20px 15% 20px 15%;
 	opacity: 1;
 }
 
 .cookie-message {
 	font-family: 'Montserrat', sans-serif;
     font-weight: 300;
-    font-size: 13px;
+	font-size: 16px;
+	line-height: 24px;
 	letter-spacing: 1px;	
 	color: white;
 }
@@ -2126,12 +2129,19 @@ td.ordered-status-field {
 .cookie-content-left {
 	float: left;
 	height: 100%;
-	width: 90%;
+	padding-right: 70px;
+	width: calc(100% - 67px);
 }
 
 .cookie-content-right {
+	display: flex;
 	float: right;
-	width: 5%;
+}
+
+.cookie-btn-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .btn-cookie {
@@ -2144,12 +2154,13 @@ td.ordered-status-field {
 
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 500;
-	font-size: 15px;
+	font-size: 16px;
 	letter-spacing: 2px;
 	color: #FEFEFE;
 
 	border: none;
 	outline: 0;
+
 }
 
 .btn-cookie:hover {

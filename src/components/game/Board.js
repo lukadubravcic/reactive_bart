@@ -140,17 +140,6 @@ class Board extends React.Component {
             document.addEventListener("keydown", this.reactToEnterKey, false);
         }
 
-        // TODO: dodati tooltip na spužvi nakon PRVE odigrane kazne 
-        // da igrač zna što može kliknuti (ne kuži se da je spužva klikabilni element)
-        // 
-        // na done/failed prve odigrane, varijabla pri loadu koja zadaje jel prva kazna, provjerava jel odigrana 
-        // 
-        // MOGUCE RJESENJE: pingaj BE radi provjere ako postoji koji pun try trenutnog usera 
-        // ako postoji
-        /* setTimeout(() => {
-            console.log(this.usersFirstPunishment(this.props.currentUser, this.props.activePunishment, this.props.pastPunishments));
-        }, 2000) */
-
         this.usersFirstPunishment = (currentUser, activePunishment, pastPunishments) => {
             // nakon odigrane kazne (fail/completed) pregledaj past i accepted kazne ako je "nesto" već odigrano
             // provjera jel postoji vec zavrsena (past kazne)
@@ -171,6 +160,7 @@ class Board extends React.Component {
                  this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
              } */
             this.props.onBoardLostFocus();
+            keysound.playChalkDownAudio();
         }
 
         this.spongeHover = ev => {
@@ -243,6 +233,7 @@ class Board extends React.Component {
 
         this.activePunishmentDone = () => {
             this.props.onBoardLostFocus();
+            keysound.playChalkDownAudio();
             // cekaj na potencijalni enter
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 return;

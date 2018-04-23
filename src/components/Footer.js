@@ -1,15 +1,28 @@
 import React from 'react';
 
 const Footer = props => {
+    const logos = [
+        'skolded_1.png',
+        'skolded_2.png',
+        'skolded_3.png',
+        'skolded_4.png',
+    ];
+
+    const logoToShow = logos[Math.floor(Math.random() * logos.length)];
 
     return (
         <div id="footer-component">
             <div className="container">
+                <div className="logo-container">
+                    <img className="logo-image" src={logoToShow} />
+                    <span className="logo-beta-mark">beta</span>
+                    <span className="logo-tm-mark">TM</span>
+                </div>
 
                 <label id="cr-kreativni">
                     &copy;&nbsp;
                 <a
-                        id="kreativni-link"                       
+                        id="kreativni-link"
                         target="_blank"
                         href="http://www.kreativni.com/">
                         KREATIVNI ODJEL

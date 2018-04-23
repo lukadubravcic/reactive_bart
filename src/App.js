@@ -7,6 +7,7 @@ import PunishmentSelectorTable from './components/selector/PunishmentSelectorTab
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
 import Footer from './components/Footer';
+import MobileSplashScreen from './components/MobileSplashScreen';
 import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
 import agent from './agent';
 
@@ -88,12 +89,22 @@ const mapDispatchToProps = dispatch => ({
     setRandomPunishments: punishments => {
         dispatch({ type: 'SET_RANDOM_PUNISHMENTS', punishments });
     },
-    setSpecialPunishment: punishments => {
+    setSpecialPunishments: punishments => {
         dispatch({ type: 'SET_SPECIAL_PUNISHMENTS', punishments })
     },
     specialLogout: () => {
         dispatch({ type: 'SPECIAL_LOGOUT' });
-    }
+    },
+    set404Punishment: () => {
+        dispatch({
+            type: 'SET_ACTIVE_PUNISHMENT',
+            punishment: {
+                how_many_times: 404,
+                uid: 404,
+                what_to_write: "Page not found. ",
+            },
+        });
+    },
 });
 
 class App extends React.Component {
@@ -104,7 +115,12 @@ class App extends React.Component {
         let queryStringData = getQueryStringData();
         let token = window.localStorage.getItem('token');
 
-        if (token) {
+        console.log(window.location.pathname)
+
+        //  ako pathname postoji -> prikazi 404 kaznu
+        if (window.location.pathname.length > 1) {
+            this.props.set404Punishment();
+        } else if (token) {
             this.props.onLoad(token);
             if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
             if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
@@ -123,7 +139,7 @@ class App extends React.Component {
         });
 
         agent.Punishment.getSpecial().then(payload => {
-            this.props.setSpecialPunishment(payload);
+            this.props.setSpecialPunishments(payload);
         });
     }
 
@@ -149,18 +165,32 @@ class App extends React.Component {
     }
 
     render() {
-        return (
-            <div>
-                <Top />
-                <Game />
-                <PunishmentCreator />
-                <PunishmentSelectorTable />
-                <Stats />
-                <Prefs />
-                <Footer />
-                <EULawAbidingCitizen />
-            </div>
-        );
+
+        const md = new window.MobileDetect(window.navigator.userAgent);
+        const isMobile = md.mobile();
+
+        return <MobileSplashScreen />;
+
+        if (isMobile) {
+            return (
+                <div>
+                
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <Top />
+                    <Game />
+                    <PunishmentCreator />
+                    <PunishmentSelectorTable />
+                    <Stats />
+                    <Prefs />
+                    <Footer />
+                    <EULawAbidingCitizen />
+                </div>
+            );
+        }
     }
 }
 

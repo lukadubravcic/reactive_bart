@@ -706,7 +706,7 @@ fieldset + fieldset {
 	overflow-y: auto;
 	overflow-x: hidden;
 	
-	font-family: 'Margarine', cursive;
+	font-family: 'Pangolin', cursive;
 	font-size: 36px;
 	color: #FFFFFF;
 	line-height: 46px;
@@ -2166,5 +2166,71 @@ td.ordered-status-field {
 .btn-cookie:hover {
 	color: #515151;
 	background-color: #FFFFFF;
+}
+
+.logo-container {
+	position: absolute;
+	width: 100%;
+	margin-top: 75px;
+	text-align: center;
+}
+
+.logo-beta-mark {
+	position: absolute;
+	font-family: 'Love Ya Like A Sister', cursive;
+	font-size: 20px;
+	color: #929292;
+	letter-spacing: 1.6px;
+
+	top: 102px;
+    right: 673px;
+}
+
+.logo-tm-mark {
+	position: absolute;
+	font-family: 'Montserrat';
+	font-size: 10px;
+	color: #929292;
+	letter-spacing: 1.67px;
+
+	top: 29px;
+    right: 401px;
+}
+
+.mobile-logo-container {
+	padding-top: 55px;
+	width: 285px;
+	height: 130px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.mobile-logo-image {
+	width: 285px;
+	height: auto;
+}
+
+.mobile-message-container {
+	padding-top: 70px;
+	padding-left: 50px;
+	padding-right: 50px;
+	text-align: center;
+}
+
+.mobile-message {
+	font-family: 'Love Ya Like A Sister';
+	font-size: 30px;
+	color: #FEFEFE;
+	letter-spacing: 0;	
+	line-height: 34px;
+}
+
+.mobile-bottom-container {
+	padding-top: 77px;
+	text-align: center;
+}
+
+.mobile-social-icons-container {
+	margin: auto;
 }
 

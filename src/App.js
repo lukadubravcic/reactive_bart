@@ -114,9 +114,6 @@ class App extends React.Component {
         // hendlaj invited usera kao guesta
         let queryStringData = getQueryStringData();
         let token = window.localStorage.getItem('token');
-
-        console.log(window.location.pathname)
-
         //  ako pathname postoji -> prikazi 404 kaznu
         if (window.location.pathname.length > 1) {
             this.props.set404Punishment();

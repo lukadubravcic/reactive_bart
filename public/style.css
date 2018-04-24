@@ -2210,6 +2210,28 @@ td.ordered-status-field {
 	height: auto;
 }
 
+.logo-beta-mobile-mark {
+	position: absolute;
+	font-family: 'Love Ya Like A Sister', cursive;
+	font-size: 15px;
+	color: #929292;
+	letter-spacing: 1.6px;
+
+	top: 61px;
+    right: 156px;
+}
+
+.logo-tm-mobile-mark {
+	position: absolute;
+	font-family: 'Montserrat';
+	font-size: 6px;
+	color: #929292;
+	letter-spacing: 1.67px;
+
+	top: 19px;
+    right: -2px;
+}
+
 .mobile-message-container {
 	padding-top: 70px;
 	padding-left: 50px;
@@ -2220,6 +2242,7 @@ td.ordered-status-field {
 .mobile-message {
 	font-family: 'Love Ya Like A Sister';
 	font-size: 30px;
+	height: 238px;
 	color: #FEFEFE;
 	letter-spacing: 0;	
 	line-height: 34px;
@@ -2232,5 +2255,41 @@ td.ordered-status-field {
 
 .mobile-social-icons-container {
 	margin: auto;
+	height: 48px;
 }
 
+.kreativni-mobile-link-container {
+	display: inline-block;
+	position: relative;
+	padding-top: 46px;
+	padding-bottom: 43px;
+}
+
+#kreativni-mobile-link {
+	text-decoration: none;
+	font-family: 'Montserrat';
+	font-size: 12px;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+}
+
+#kreativni-mobile-link:hover {
+	/* color: white; */
+}
+
+#twitter-mobile-icon {
+	margin-right: 44px;
+	opacity: 0.5;
+}
+
+#twitter-mobile-icon:hover {
+	opacity: 1;
+}
+
+#facebook-mobile-icon {
+	opacity: 0.5;
+}
+
+#facebook-mobile-icon:hover {
+	opacity: 1;
+}

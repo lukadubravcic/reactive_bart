@@ -17,7 +17,7 @@ const defaultMsgDuration = 5000;
 
 const mapStateToProps = state => ({
     common: state.common,
-    auth: state.auth,
+    userIdFromURL: state.auth.userIdFromURL,
     guestPunishment: state.game.guestPunishment,
     punishmentIdFromURL: state.game.punishmentIdFromURL
 });
@@ -143,20 +143,16 @@ class App extends React.Component {
     componentWillUpdate(nextProps) {
 
         const userLoggedIn = !!Object.keys(nextProps.common.currentUser).length;
-        const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id === nextProps.auth.userIdFromURL;
+        const isUrlPunOwnedByLoggedUser = nextProps.common.currentUser._id === nextProps.userIdFromURL;
 
         // ako je user logiran, a kazna nije njegova, logout te postavi tu kaznu
         if (userLoggedIn) {
-
-            /* console.log("nextProps.auth.userIdFromURL !== null: " + (nextProps.auth.userIdFromURL !== null));
-            console.log("!isUrlPunOwnedByLoggedUser: " + !isUrlPunOwnedByLoggedUser); */
-
-            if (nextProps.auth.userIdFromURL !== null && !isUrlPunOwnedByLoggedUser) {
+            if (nextProps.userIdFromURL !== null && !isUrlPunOwnedByLoggedUser) {
                 agent.Auth.logout();
                 agent.setToken(0);
                 window.localStorage.removeItem('token');
                 this.props.specialLogout();
-                this.props.handleGuest(nextProps.auth.userIdFromURL, nextProps.punishmentIdFromURL);
+                this.props.handleGuest(nextProps.userIdFromURL, nextProps.punishmentIdFromURL);
             }
         }
     }

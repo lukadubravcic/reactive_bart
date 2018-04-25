@@ -167,9 +167,11 @@ class App extends React.Component {
         const isMobile = md.mobile();
 
         if (isMobile) {
-            return (
+        return (
+            <div style={{ width: 100 + "vw", height: 100 + "vh", background: "#2B5D64" }}>
                 <MobileSplashScreen />
-            )
+            </div>
+        )
         } else {
             return (
                 <div>

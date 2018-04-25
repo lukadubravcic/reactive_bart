@@ -24,10 +24,10 @@ const MobileSplashScreen = props => {
             </div>
             <div className="mobile-bottom-container">
                 <div className="mobile-social-icons-container">
-                    <a target="_blank" href="skolded.twitter.com">
+                    <a target="_blank" href="https://twitter.com/skolded_com">
                         {twitterIcon}
                     </a>
-                    <a target="_blank" href="skolded.facebook.com">
+                    <a target="_blank" href="https://www.facebook.com/skolded">
                         {facebookIcon}
                     </a>
                 </div>

@@ -118,6 +118,7 @@ class Board extends React.Component {
         this.lastPunishmentPlayedId = null;
 
         this.cursorTimeout = null;
+        this.elementKreda = null;
 
         this.state = {
             boardCursor: false,
@@ -185,7 +186,7 @@ class Board extends React.Component {
             if (this.props.progress < 100) {
                 this._wrongCharPlace = null;
 
-                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress) {
+                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress && this.props.progress > 0) {
                     if (this.props.guestPunishment !== null &&
                         Object.keys(this.props.guestPunishment).length &&
                         typeof this.props.guestPunishment.uid !== 'undefined' &&
@@ -215,6 +216,7 @@ class Board extends React.Component {
 
         this.boardFocused = ev => {
             if (this.props.progress === 100 || this.props.boardTextMistake) return;
+            this.elementKreda.style.opacity = 0;
             ev && ev.preventDefault();
             this.props.onBoardFocus();
             this.stopBoardCursorToggling();
@@ -466,6 +468,10 @@ class Board extends React.Component {
 
     componentDidUpdate(prevProps) {
 
+        if (prevProps.gameInProgress === true && this.props.gameInProgress === false) {
+            this.elementKreda.style.opacity = 1;
+        }
+
         if ((Object.keys(this.props.activePunishment).length
             && (this.props.activePunishment.uid !== prevProps.activePunishment.uid))
             || (Object.keys(this.props.activePunishment).length
@@ -504,7 +510,7 @@ class Board extends React.Component {
         const showTextCursor = this.props.gameInProgress && this.props.boardFocused;
         const isUserLoggedIn = !!Object.keys(this.props.currentUser).length;
 
-        if (!activePunishmentSet) {
+        if (activePunishmentSet) {
 
             return (
 
@@ -611,7 +617,7 @@ class Board extends React.Component {
                                             <polygon id="kreda" fill="#FEFEFE" points="0.34306 22 38.34306 22 38.34306 13 0.34306 13"></polygon>
                                             <polygon id="zuta-kreda" fill="#FFD75F" transform="translate(45.343060, 11.273000) rotate(20.000000) translate(-45.343060, -11.273000) "
                                                 points="26.34306 15.7730005 64.34306 15.7730005 64.34306 6.77300048 26.34306 6.77300048"></polygon>
-                                            <polygon id="Fill-15" fill="#FEFEFE" points="448 22 486 22 486 13 448 13"></polygon>
+                                            <polygon className="opacity-tran-long" style={{ opacity: 1 }} ref={elem => this.elementKreda = elem} id="kreda_za_micanje" fill="#FEFEFE" points="448 22 486 22 486 13 448 13"></polygon>
                                         </g>
                                     </g>
                                 </g>

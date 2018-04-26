@@ -141,6 +141,12 @@ textarea {
 	transition: opacity 0.2s, height 0.3s 0.2s, margin-top 0.3s 0.2s;
 }
 
+.opacity-tran-long {
+	-webkit-transition: opacity 1s;
+	-o-transition: opacity 1s;
+	transition: opacity 1s;
+}
+
 
 #test {
 	position: absolute;
@@ -201,7 +207,7 @@ textarea {
 	border-radius: 8px; 
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 24px;
 	color: #515151;
 	letter-spacing: 1px;	
@@ -313,7 +319,7 @@ textarea {
 
 	background: #323232;
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 500;
 	font-size: 18px;
 	color: #FFFFFF;
 	letter-spacing: 5.73px;
@@ -430,7 +436,7 @@ fieldset + fieldset {
 	display: inline-block;
 	position: relative;
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 17px;
 	background-color: transparent;
 }
@@ -503,7 +509,7 @@ fieldset + fieldset {
 	
 	background: transparent;
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 20px;
 	color: #515151;
 	letter-spacing: 0;
@@ -541,7 +547,7 @@ fieldset + fieldset {
 	padding-left: 24px;
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 500;
 	font-size: 16px;
 	color: #D2D2D2;
 	background: transparent;
@@ -917,7 +923,7 @@ fieldset + fieldset {
 	padding-left: 36px;
 	
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 20px;
 	color: #FEFEFE;
 	letter-spacing: 5px;
@@ -995,14 +1001,14 @@ fieldset + fieldset {
 }
 
 .input-field-name {	
-	width: 246px;	
+	width: 248px;	
 
 	display: inline-block;
 	position: relative;
 	margin-top: 22px;	/* not by design */
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 26px;
 	color: #FEFEFE;
 	letter-spacing: 0;
@@ -1343,7 +1349,7 @@ input[type=number]::-webkit-outer-spin-button {
 	margin-top: -1px;
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 22px;
 	color: #515151;
 	letter-spacing: 1px;
@@ -1407,7 +1413,7 @@ td {
 	background: transparent;
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 30px;	
 	color: #FEFEFE;
 	letter-spacing: 2px;
@@ -1726,7 +1732,7 @@ td.ordered-status-field {
 
 	background: #323232;
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 18px;
 	letter-spacing: 5.73px;
 
@@ -1771,6 +1777,7 @@ td.ordered-status-field {
 
 	font-family: 'Montserrat', sans-serif;
 	font-size: 16px;
+	font-weight: 700;
 	color: #FFFFFF;
 	letter-spacing: 5px;
 
@@ -1853,7 +1860,7 @@ td.ordered-status-field {
 	padding-top: 13px;
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 30px;
 	color: #FEFEFE;
 	letter-spacing: 2px;
@@ -1948,7 +1955,7 @@ td.ordered-status-field {
 	margin: 0 auto;
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 500;
 	font-size: 24px;
 	color: #C4ACE4;
 	letter-spacing: 1px;
@@ -2074,7 +2081,7 @@ td.ordered-status-field {
 	padding-left: 21px;	
 
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 300;
+	font-weight: 400;
 	font-size: 26px;
 	color: #FEFEFE;
 	letter-spacing: 0;
@@ -2119,7 +2126,7 @@ td.ordered-status-field {
 
 .cookie-message {
 	font-family: 'Montserrat', sans-serif;
-    font-weight: 300;
+    font-weight: 400;
 	font-size: 16px;
 	line-height: 24px;
 	letter-spacing: 1px;	

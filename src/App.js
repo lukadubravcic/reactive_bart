@@ -105,6 +105,7 @@ const mapDispatchToProps = dispatch => ({
             },
         });
     },
+    showTermsOfAgreement: () => dispatch({ type: 'SHOW_TERMS_OF_AGREEMENT' }),
 });
 
 class App extends React.Component {
@@ -163,11 +164,11 @@ class App extends React.Component {
         const isMobile = md.mobile();
 
         if (isMobile) {
-        return (
-            <div style={{ width: 100 + "vw", height: 100 + "vh", background: "#2B5D64" }}>
-                <MobileSplashScreen />
-            </div>
-        )
+            return (
+                <div style={{ width: 100 + "vw", height: 100 + "vh", background: "#2B5D64" }}>
+                    <MobileSplashScreen />
+                </div>
+            )
         } else {
             return (
                 <div>
@@ -177,7 +178,7 @@ class App extends React.Component {
                     <PunishmentSelectorTable />
                     <Stats />
                     <Prefs />
-                    <Footer />
+                    <Footer showTermsOfAgreement={this.props.showTermsOfAgreement} />
                     <EULawAbidingCitizen />
                 </div>
             );

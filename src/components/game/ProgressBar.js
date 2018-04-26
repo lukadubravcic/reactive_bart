@@ -3,10 +3,12 @@ import React from 'react';
 const ProgressBar = props => {
 
     const progress = props.progress;
-    let spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
+
+    let spongeOffset = 0;
+    if (!props.showToA) spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
     // pomak kada se label tekst promijeni 
     const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {};
-    const hoverText = props.firstTimePlaying
+    let hoverText = props.firstTimePlaying
         ? progress !== 100
             ? 'CLICK TO RESTART'
             : 'CLICK FOR RANDOM PUNISHMENT'
@@ -19,7 +21,10 @@ const ProgressBar = props => {
             (progress === 100 && props.firstTimePlaying)
             || (props.isPunishmentFailed && props.firstTimePlaying)
         )
+
     );
+
+    if (props.showToA) hoverText = 'BACK TO GAME'; 
 
     return (
         <div

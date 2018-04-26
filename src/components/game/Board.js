@@ -101,6 +101,7 @@ const mapDispatchToProps = dispatch => ({
     updateUserHasTriedPunishments: boolean => {
         dispatch({ type: 'UPDATE_USER_HAS_TRIED_PLAYING_BEFORE', value: boolean });
     },
+    removeToA: () => dispatch({ type: 'REMOVE_TERMS_OF_AGREEMENT' }),
 });
 
 class Board extends React.Component {
@@ -156,16 +157,13 @@ class Board extends React.Component {
         }
 
         this.incorrectBoardEntry = () => {
-            /*  if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                 this.props.logPunishmentTry(this.props.activePunishment._id, this.props.timeSpent);
-             } */
             this.props.onBoardLostFocus();
             keysound.playChalkDownAudio();
         }
 
         this.spongeHover = ev => {
             // igra u tijeku -> pokazi tooltip
-            if (this.props.gameInProgress && this.props.showTooltips) {
+            if (this.props.gameInProgress && this.props.showTooltips || this.props.showToA) {
                 this.props.onSpongeHover();
             }
         }
@@ -178,6 +176,12 @@ class Board extends React.Component {
         // restart kazne
         this.spongeClick = ev => {
             // nema reseta ako je kazna obavljena
+            if (this.props.showToA) {
+                // ako je prikazan toa -> klik na spuzvu vraca na igru
+                this.props.removeToA();
+                return this.punishmentInit();
+            }
+
             if (this.props.progress < 100) {
                 this._wrongCharPlace = null;
 
@@ -500,7 +504,7 @@ class Board extends React.Component {
         const showTextCursor = this.props.gameInProgress && this.props.boardFocused;
         const isUserLoggedIn = !!Object.keys(this.props.currentUser).length;
 
-        if (activePunishmentSet) {
+        if (!activePunishmentSet) {
 
             return (
 
@@ -508,31 +512,56 @@ class Board extends React.Component {
 
                     <div
                         id="board-frame"
-                        onMouseOver={this.boardHover}
-                        onMouseOut={this.boardHoverOut}>
+                        onMouseOver={!this.props.showToA && this.boardHover}
+                        onMouseOut={!this.props.showToA && this.boardHoverOut}>
 
                         <div id="drawing-board">
 
-                            <div
-                                ref={elem => this.textBoard = elem}
-                                id="board-textarea"
-                                className="noselect"
-                                {...makeFocusable}
-                                disabled={this.props.boardDisabled}
-                                onKeyDown={this.boardTextChange}
-                                onFocus={this.boardFocused}
-                                onBlur={this.boardLostFocus}>
+                            {this.props.showToA ?
+                                <div
+                                    ref={elem => this.textBoard = elem}
+                                    id="board-textarea"
+                                    className="noselect"
+                                >
+                                    <span
+                                        style={{
+                                            paddingLeft: "231px",
+                                            fontSize: "45px"
+                                        }}>
+                                        Terms of Agreement
+                                    </span>
+                                    <br /><br />
+                                    <span
+                                        style={{
+                                            display: "block",
+                                            fontSize: "20px",
+                                            lineHeight: "32px"
+                                        }}>
+                                        {termsOfAgreement}
+                                    </span>
+                                </div>
+                                : <div
+                                    ref={elem => this.textBoard = elem}
+                                    id="board-textarea"
+                                    className="noselect"
+                                    {...makeFocusable}
+                                    disabled={this.props.boardDisabled}
+                                    onKeyDown={this.boardTextChange}
+                                    onFocus={this.boardFocused}
+                                    onBlur={this.boardLostFocus}>
 
-                                {startingSentenceFirstPart}
-                                <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
-                                {/* startingSentenceThirdPart */}
-                                {boardText}
-                                <wbr />
-                                {showTextCursor ? <span style={this.state.boardCursor ? { opacity: 1 } : { opacity: 0 }}>|</span> : null}
-                            </div>
+                                    {startingSentenceFirstPart}
+                                    <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
+                                    {/* startingSentenceThirdPart */}
+                                    {boardText}
+                                    <wbr />
+                                    {showTextCursor ? <span style={this.state.boardCursor ? { opacity: 1 } : { opacity: 0 }}>|</span> : null}
+                                </div>
+                            }
 
-                            {progress === 100 ? <CompletedStamp /> : null}
-                            {isPunishmentFailed ? <FailedStamp /> : null}
+
+                            {progress === 100 && !this.props.showToA ? <CompletedStamp /> : null}
+                            {isPunishmentFailed && !this.props.showToA ? <FailedStamp /> : null}
 
                             {this.props.boardHovered && this.props.startSentenceBeingWritten === false ?
                                 <div
@@ -547,10 +576,6 @@ class Board extends React.Component {
                                     <div className="triangle-hover-box-container">
 
                                         <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-                                            <title>Triangle 4 Copy</title>
-                                            <desc>Created with Sketch.</desc>
-                                            <defs></defs>
                                             <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-528.000000, -981.000000)">
                                                 <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
                                                     <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
@@ -569,6 +594,7 @@ class Board extends React.Component {
                             id="chalk-container">
 
                             <ProgressBar
+                                showToA={this.props.showToA}
                                 progress={progress}
                                 spongeClick={this.spongeClick}
                                 onHover={this.spongeHover}
@@ -603,64 +629,25 @@ class Board extends React.Component {
             return (
                 <div id="board-writing-board-component">
                     <div
-                        id="board-frame"
-                        onMouseOver={this.boardHover}
-                        onMouseOut={this.boardHoverOut}>
+                        id="board-frame">
 
                         <div id="drawing-board">
                             <div
                                 id="board-textarea"
-                                tabIndex="1"
                                 disabled={null}
                                 onKeyDown={null}
                                 onFocus={null}
                                 onBlur={null}>
-
-                                {startingSentenceFirstPart}
-                                <span style={{ color: '#FFBC24' }}>{startingSentenceSecondPart}</span>
-                                {boardText}
                             </div>
-
-                            {this.props.boardHovered ?
-                                <div
-                                    id="click-to-start-element"
-                                    className="hover-dialog" >
-
-                                    <label className="hover-dialog-text">
-                                        CLICK
-                                        <br /> TO START
-                                    </label>
-
-                                    <div className="triangle-hover-box-container">
-
-                                        <svg id="triangle-element" width="23px" height="14px" viewBox="0 0 23 14" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-                                            <title>Triangle 4 Copy</title>
-                                            <desc>Created with Sketch.</desc>
-                                            <defs></defs>
-                                            <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-528.000000, -981.000000)">
-                                                <g id="Fill-2-+-LOG-IN-+-Triangle-4-Copy" transform="translate(456.000000, 916.000000)" fill="#323232">
-                                                    <polygon id="Triangle-4-Copy" transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000) "
-                                                        points="83.5 65 95 79 72 79"></polygon>
-                                                </g>
-                                            </g>
-                                        </svg>
-
-                                    </div>
-
-                                </div> : null}
 
                         </div>
 
                         <div
                             id="chalk-container">
 
-                            <ProgressBar
-                                progress={0}
-                                spongeClick={() => { }}
-                                onHover={() => { }}
-                                onHoverOut={() => { }}
-                                hovering={() => { }}
+                            <div
+                                id="sponge"
+                                className="tran-all"
                             />
 
                             <svg id="board-chalks" width="486px" height="22px" viewBox="0 0 486 22" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -726,3 +713,6 @@ function getRandomPunishment(randomPunishments) {
     if (index > randomPunishments.length - 1) return randomPunishments[0];
     else return randomPunishments[index];
 }
+
+
+const termsOfAgreement = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dolor urna, ullamcorper nec feugiat eleifend, viverra et lorem. Aliquam congue, dui ut semper lacinia, ex ligula tristique enim, in interdum sem magna ut purus. Ut odio neque, placerat in luctus quis, vehicula eu tellus. Suspendisse consequat rutrum neque, vitae dignissim sem lacinia at. Fusce nec turpis lorem. Aenean tempor lorem venenatis erat dignissim elementum. Curabitur sit amet nibh eget libero ultricies maximus ac quis velit. Etiam interdum mi lacus, et tempus turpis sodales vel. Maecenas et laoreet turpis, vitae interdum odio. Suspendisse eleifend aliquam tristique. Donec scelerisque commodo augue. Phasellus posuere placerat elit id ultrices. Sed non augue purus. Nullam iaculis lorem est, vel sodales nibh commodo eu. Nullam diam ex, ultricies sed lorem non, pulvinar convallis velit. Curabitur nec ipsum sit amet metus facilisis maximus. Nullam lacus magna, luctus lobortis pellentesque eget, venenatis vel sem. Donec lobortis sollicitudin velit in finibus. Proin varius ex eu pellentesque ornare. Morbi condimentum luctus lacus cursus iaculis. Sed vel orci tincidunt, elementum metus vel, interdum libero. Nullam viverra facilisis hendrerit. Etiam cursus dapibus volutpat. Curabitur nisi nisi, facilisis laoreet luctus a, posuere tincidunt sapien. Duis a nisi eu orci vestibulum venenatis ut eget leo. Proin non dictum tellus. In mi neque, tempus nec venenatis suscipit, rutrum a orci. Duis suscipit efficitur elit, sit amet egestas nunc laoreet fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus et volutpat erat. Maecenas ac tempus urna, ut consectetur lorem. Vestibulum et iaculis enim. Vivamus vel urna dolor. Ut congue dignissim libero, et aliquam nunc sodales sed. Sed egestas, elit non tincidunt laoreet, libero nulla pretium nunc, eget hendrerit dolor nisl sit amet purus. Quisque vel nisl non purus volutpat pretium. Aenean ultricies ultricies enim quis gravida. Ut tincidunt metus in metus euismod, ut vehicula ligula ultrices. Cras egestas iaculis cursus. Maecenas ullamcorper purus in neque auctor cursus. Integer eleifend, mi non egestas facilisis, tortor neque vulputate tortor, id dictum massa dolor at ipsum. Integer gravida nunc molestie dapibus fringilla. Maecenas ac tempus urna, ut consectetur lorem. Vestibulum et iaculis enim. Vivamus vel urna dolor. Ut congue dignissim libero, et aliquam nunc sodales sed. Sed egestas, elit non tincidunt laoreet, libero nulla pretium nunc, eget hendrerit dolor nisl sit amet purus. Quisque vel nisl non purus volutpat pretium. Aenean ultricies ultricies enim quis gravida. Ut tincidunt metus in metus euismod, ut vehicula ligula ultrices. Cras egestas iaculis cursus. Maecenas ullamcorper purus in neque auctor cursus. Integer eleifend, mi non egestas facilisis, tortor neque vulputate tortor, id dictum massa dolor at ipsum. Integer gravida nunc molestie dapibus fringilla. Aliquam congue, dui ut semper lacinia, ex ligula tristique enim, in interdum sem magna ut purus. Ut odio neque, placerat in luctus quis, vehicula eu tellus. Suspendisse consequat rutrum neque, vitae dignissim sem lacinia at. Fusce nec turpis lorem. Aenean tempor lorem venenatis erat dignissim elementum. Curabitur sit amet nibh eget libero ultricies maximus ac quis velit. Etiam interdum mi lacus, et tempus turpis sodales vel. Maecenas et laoreet turpis, vitae interdum odio. Suspendisse eleifend aliquam tristique. Donec scelerisque commodo augue. Phasellus posuere placerat elit id ultrices. Sed non augue purus. Nullam iaculis lorem est, vel sodales nibh commodo eu. Nullam diam ex, ultricies sed lorem non, pulvinar convallis velit. Curabitur nec ipsum sit amet metus facilisis maximus. Nullam lacus magna, luctus lobortis pellentesque eget, venenatis vel sem. Donec lobortis sollicitudin velit in finibus. Proin varius ex eu pellentesque ornare. Morbi condimentum luctus lacus cursus iaculis. Sed vel orci tincidunt, elementum metus vel, interdum libero. Nullam viverra facilisis hendrerit. Etiam cursus dapibus volutpat. Curabitur nisi nisi, facilisis laoreet luctus a, posuere tincidunt sapien. Duis a nisi eu orci vestibulum venenatis ut eget leo. Proin non dictum tellus. In mi neque, tempus nec venenatis suscipit, rutrum a orci. Duis suscipit efficitur elit, sit amet egestas nunc laoreet fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus et volutpat erat. Maecenas ac tempus urna, ut consectetur lorem. Vestibulum et iaculis enim. Vivamus vel urna dolor. Ut congue dignissim libero, et aliquam nunc sodales sed. Sed egestas, elit non tincidunt laoreet, libero nulla pretium nunc, eget hendrerit dolor nisl sit amet purus. Quisque vel nisl non purus volutpat pretium. Aenean ultricies ultricies enim quis gravida. Ut tincidunt metus in metus euismod, ut vehicula ligula ultrices. Cras egestas iaculis cursus. Maecenas ullamcorper purus in neque auctor cursus. Integer eleifend, mi non egestas facilisis, tortor neque vulputate tortor, id dictum massa dolor at ipsum. Integer gravida nunc molestie dapibus fringilla. Maecenas ac tempus urna, ut consectetur lorem. Vestibulum et iaculis enim. Vivamus vel urna dolor. Ut congue dignissim libero, et aliquam nunc sodales sed. Sed egestas, elit non tincidunt laoreet, libero nulla pretium nunc, eget hendrerit dolor nisl sit amet purus. Quisque vel nisl non purus volutpat pretium. Aenean ultricies ultricies enim quis gravida. Ut tincidunt metus in metus euismod, ut vehicula ligula ultrices. Cras egestas iaculis cursus. Maecenas ullamcorper purus in neque auctor cursus. Integer eleifend, mi non egestas facilisis, tortor neque vulputate tortor, id dictum massa dolor at ipsum. Integer gravida nunc molestie dapibus fringilla.`;

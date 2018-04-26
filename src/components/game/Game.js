@@ -20,6 +20,7 @@ const mapStateToProps = state => ({
     guestDataLoadingInProgress: state.common.guestDataLoadingInProgress,
     userIdFromURL: state.auth.userIdFromURL,
     punishmentProgress: state.game.progress,
+    showToA: state.game.showToA,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -129,11 +130,11 @@ class Game extends React.Component {
             this.setRandomActivePunishment();
         }
 
-        this.setBoardInViewport = () => {
+        this.setBoardInViewport = delay => {
             // focusaj board nakon odredenog vremena
             this.boardInViewportTimeout = setTimeout(() => {
                 this.writingBoard.scrollIntoView({ behavior: 'smooth' });
-            }, 800);
+            }, delay);
         }
     }
 
@@ -201,7 +202,11 @@ class Game extends React.Component {
             && (this.props.activePunishment.uid !== prevProps.activePunishment.uid)
             && !specialOrRandomPunishmentIsActive(this.props.activePunishment)
         ) {
-            this.setBoardInViewport();
+            this.setBoardInViewport(800);
+        }
+
+        if (prevProps.showToA === false && this.props.showToA === true) {
+            this.setBoardInViewport(100);
         }
     }
 

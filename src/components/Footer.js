@@ -14,7 +14,7 @@ const Footer = props => {
         <div id="footer-component">
             <div className="container">
                 <div className="logo-container">
-                    <img className="logo-image" src={logoToShow} />
+                    <img className="logo-image" src={logoToShow} alt="" />
                     <span className="logo-beta-mark">beta</span>
                     <span className="logo-tm-mark">TM</span>
                 </div>
@@ -26,6 +26,13 @@ const Footer = props => {
                         target="_blank"
                         href="http://www.kreativni.com/">
                         KREATIVNI ODJEL
+                </a>
+                    &nbsp;|&nbsp;
+                <a
+                        id="terms-of-agreement-link"
+                        onClick={props.showTermsOfAgreement}
+                    >
+                        Terms of agreement
                 </a>
                 </label>
 

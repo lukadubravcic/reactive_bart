@@ -105,7 +105,8 @@ const mapDispatchToProps = dispatch => ({
             },
         });
     },
-    showTermsOfAgreement: () => dispatch({ type: 'SHOW_TERMS_OF_AGREEMENT' }),
+    showTermsOfAgreement: () => dispatch({ type: 'SHOW_TERMS_OF_SERVICE' }),
+    showPrivacyPolicy: () => dispatch({ type: 'SHOW_PRIVACY_POLICY' }),
 });
 
 class App extends React.Component {
@@ -178,7 +179,9 @@ class App extends React.Component {
                     <PunishmentSelectorTable />
                     <Stats />
                     <Prefs />
-                    <Footer showTermsOfAgreement={this.props.showTermsOfAgreement} />
+                    <Footer
+                        showTermsOfAgreement={this.props.showTermsOfAgreement}
+                        showPrivacyPolicy={this.props.showPrivacyPolicy} />
                     <EULawAbidingCitizen />
                 </div>
             );

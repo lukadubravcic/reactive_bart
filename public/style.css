@@ -1280,6 +1280,11 @@ input[type=number]::-webkit-outer-spin-button {
 	cursor: pointer;
 }
 
+#privacy-policy-link:hover {
+	color: white;
+	cursor: pointer;
+}
+
 #social-icons-footer {
 	float: right;
 	margin-top: 241px;
@@ -2304,4 +2309,8 @@ td.ordered-status-field {
 
 #facebook-mobile-icon:hover {
 	opacity: 1;
+}
+
+.react-calendar button:disabled {
+	cursor: default;
 }

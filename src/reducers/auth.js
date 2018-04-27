@@ -75,7 +75,7 @@ export default (state = defaultState, action) => {
              return { ...state, showSetNewPasswordComponent: action.value }; */
 
         case 'HIDE_RESET_PASSWORD_FORM':
-            return { ...defaultState, elementToDisplay: 'login' };
+            return { ...defaultState, elementToDisplay: 'login', loginWhom: action.fieldValue };
         case 'RESET_PASSWORD_ATTEMPT':
             return { ...state, _errMsg: null };
         case 'RESET_PASSWORD_ANSWER':

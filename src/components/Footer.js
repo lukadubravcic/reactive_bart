@@ -33,8 +33,16 @@ const Footer = props => {
                         id="terms-of-agreement-link"
                         onClick={props.showTermsOfAgreement}
                     >
-                        Terms of agreement
-                </a>
+                        Terms of service
+                    </a>
+                    <span style={{ color: "#777" }}>&nbsp;|&nbsp;</span>
+                    <a
+                        style={{ color: "#777" }}
+                        id="privacy-policy-link"
+                        onClick={props.showPrivacyPolicy}
+                    >
+                        Privacy policy
+                    </a>
                 </label>
 
                 <div id="social-icons-footer">

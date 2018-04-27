@@ -20,7 +20,8 @@ const mapStateToProps = state => ({
     guestDataLoadingInProgress: state.common.guestDataLoadingInProgress,
     userIdFromURL: state.auth.userIdFromURL,
     punishmentProgress: state.game.progress,
-    showToA: state.game.showToA,
+    showToS: state.game.showToS,
+    showPrivacyPolicy: state.game.showPrivacyPolicy,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -205,7 +206,10 @@ class Game extends React.Component {
             this.setBoardInViewport(800);
         }
 
-        if (prevProps.showToA === false && this.props.showToA === true) {
+        if (
+            (prevProps.showToS === false && this.props.showToS === true)
+            || (prevProps.showPrivacyPolicy === false && this.props.showPrivacyPolicy === true)
+        ) {
             this.setBoardInViewport(100);
         }
     }
@@ -268,7 +272,7 @@ class Game extends React.Component {
                                 </g>
                             </svg>
 
-                           
+
 
                         </div>
                     </div>

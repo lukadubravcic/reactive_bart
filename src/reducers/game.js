@@ -26,7 +26,8 @@ const defaultState = {
     cheating: false,
     guestPunishment: null,
     startSentenceBeingWritten: false,
-    showToA: false,
+    showToS: false,
+    showPrivacyPolicy: false,
 };
 
 export default (state = defaultState, action) => {
@@ -130,10 +131,15 @@ export default (state = defaultState, action) => {
         case 'START_SENTENCE_WRITING_FINISHED':
             return { ...state, startSentenceBeingWritten: false };
 
-        case 'SHOW_TERMS_OF_AGREEMENT':
-            return { ...state, showToA: true, boardFocused: false };
-        case 'REMOVE_TERMS_OF_AGREEMENT':
-            return { ...state, showToA: defaultState.showToA }
+        case 'SHOW_TERMS_OF_SERVICE':
+            return { ...state, showToS: true, showPrivacyPolicy: defaultState.showPrivacyPolicy, boardFocused: false };
+        case 'REMOVE_TERMS_OF_SERVICE':
+            return { ...state, showToS: defaultState.showToS };
+
+        case 'SHOW_PRIVACY_POLICY':
+            return { ...state, showPrivacyPolicy: true, showToS: defaultState.showToS, boardFocused: false };
+        case 'REMOVE_PRIVACY_POLICY':
+            return { ...state, showPrivacyPolicy: defaultState.showPrivacyPolicy };
 
         default:
             return state;

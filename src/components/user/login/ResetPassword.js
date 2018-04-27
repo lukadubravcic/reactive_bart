@@ -28,7 +28,7 @@ const mapDispatchToProps = dispatch => ({
 
         });
     },
-    backToLogin: () => dispatch({ type: 'HIDE_RESET_PASSWORD_FORM' }),
+    backToLogin: fieldValue => dispatch({ type: 'HIDE_RESET_PASSWORD_FORM', fieldValue }),
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_FORM_MSG' }),
 });
 
@@ -111,7 +111,7 @@ class ResetPassword extends React.Component {
             });
 
             setTimeout(() => {
-                this.props.backToLogin();
+                this.props.backToLogin(this.props.email);
             }, animationDuration);
         }
 

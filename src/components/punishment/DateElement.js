@@ -48,13 +48,16 @@ class DateElement extends React.Component {
         this.state = {
             validDeadline: true,
             isManagingFocus: false,
+            showIt: false,
         };
 
         this.showCalendar = ev => {
             ev.preventDefault();
+
             this.setState({
                 isManagingFocus: true,
             });
+
             setTimeout(() => {
                 this.calendarContainer.focus();
             }, 1);
@@ -227,6 +230,7 @@ class DateElement extends React.Component {
                                 onChange={this.onCalendarChange}
                                 minDate={tomorrow}
                                 maxDate={maxDate}
+                                className="react-calendar"
                             />
                         </div>
                         : null}

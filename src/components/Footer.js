@@ -27,8 +27,9 @@ const Footer = props => {
                         href="http://www.kreativni.com/">
                         KREATIVNI ODJEL
                 </a>
-                    &nbsp;|&nbsp;
-                <a
+                    <span style={{ color: "#777" }}>&nbsp;|&nbsp;</span>
+                    <a
+                        style={{ color: "#777" }}
                         id="terms-of-agreement-link"
                         onClick={props.showTermsOfAgreement}
                     >

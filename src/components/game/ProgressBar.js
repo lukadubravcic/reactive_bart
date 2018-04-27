@@ -24,7 +24,7 @@ const ProgressBar = props => {
 
     );
 
-    if (props.showToA) hoverText = 'BACK TO GAME'; 
+    if (props.showToA) hoverText = 'BACK TO GAME';
 
     return (
         <div
@@ -37,7 +37,7 @@ const ProgressBar = props => {
         >
             {showTooltip ?
                 <div
-                    style={finishedPunishmentHoverOffsetStyle}
+                    style={props.showToA ? { ...finishedPunishmentHoverOffsetStyle, left: "-7px" } : finishedPunishmentHoverOffsetStyle}
                     id="restart-hover-element"
                     className={`hover-dialog ${props.firstTimePlaying && !props.hovering ? 'show-delay' : ''}`}>
 

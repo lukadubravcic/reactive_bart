@@ -784,13 +784,13 @@ fieldset + fieldset {
 }
 
 #classroom-floor {
-	width: 1280px;
+	width: 100%;
 	height: 74px;
 
 	display: inline-block;
 	position: relative;
 
-	margin-top: -27px;
+	bottom: 74px;
 
 	z-index: 0;
 

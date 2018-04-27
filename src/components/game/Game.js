@@ -268,7 +268,7 @@ class Game extends React.Component {
                                 </g>
                             </svg>
 
-                            <div id="classroom-floor"></div>
+                           
 
                         </div>
                     </div>
@@ -304,6 +304,7 @@ class Game extends React.Component {
                     </div>
 
                 </div>
+                <div id="classroom-floor"></div>
             </div >
         );
     }

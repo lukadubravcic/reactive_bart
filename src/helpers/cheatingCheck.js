@@ -1,31 +1,67 @@
 let averageTime = null;
 let lastCharTypedTimestamp = null;
-const THRESHOLD = 5; // 5ms
+const THRESHOLD = 10; // 10ms
 
-const cheatingDetector = function detectIfUserIsCheating(char, punishmentText) {
+class cheatingDetector {
 
-    const nowTime = Date.now();
+    constructor() {
+        this.startingTimeout = null;
+        this.lastCharTypedTimestamp = null;
+        this.averageTime = null;
+        this.BEST_AVERAGE = 40; // 40ms
+        this.IGNORED_TIME_ON_START = 2000; // 2s 
+    }
 
-    if (!lastCharTypedTimestamp) {
-        lastCharTypedTimestamp = nowTime;
+    start() {
+        this.clearData();
+        this.startingTimeout = setTimeout(() => {
+            clearTimeout(this.startingTimeout);
+            this.startingTimeout = null;
+        }, this.IGNORED_TIME_ON_START);
+    }
+
+    stop() {
+        this.lastCharTypedTimestamp = null;
+    }
+
+    onKeyPress() {
+        this.addToAverage();
+    
+        if (!this.startingTimeout) {
+            console.log('provjera')
+            if (this.averageTime < this.BEST_AVERAGE) return true;
+        }
+        console.log(this.averageTime)
+    }
+
+    addToAverage() {
+        let timeBetweenCharEntry = null;
+        let nowTime = Date.now();
+
+        if (this.lastCharTypedTimestamp !== null) {
+            timeBetweenCharEntry = nowTime - this.lastCharTypedTimestamp
+        } else {
+            this.lastCharTypedTimestamp = nowTime;
+            return false;
+        }
+
+        this.lastCharTypedTimestamp = nowTime;
+
+        if (this.averageTime === null && timeBetweenCharEntry !== null) {
+            this.averageTime = timeBetweenCharEntry;
+        } else if (this.averageTime !== null) {
+            this.averageTime = (this.averageTime + timeBetweenCharEntry) / 2;
+        }
+
         return;
     }
 
-    if (lastCharTypedTimestamp) {
-        let timeBetweenCharEntry = nowTime - lastCharTypedTimestamp;
-
-        //console.log(`avg: ${averageTime}`);
-
-        if (timeBetweenCharEntry < THRESHOLD) {
-            return true;
-        }
-        averageTime = averageTime ? (averageTime + timeBetweenCharEntry) / 2 : timeBetweenCharEntry;
+    clearData() {
+        this.averageTime = null;
+        this.lastCharTypedTimestamp = null;
+        clearTimeout(this.startingTimeout);
     }
 
-    lastCharTypedTimestamp = nowTime;
-
-    return false;
 }
-
 
 export default cheatingDetector;

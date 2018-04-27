@@ -111,6 +111,7 @@ class Board extends React.Component {
 
         keysound.initSound();
 
+        this.cheatingCheck = new cheatingCheck();
         this._wrongCharPlace = null;
         this.adblockDetected = false;
         this.cheatDetected = false;
@@ -160,6 +161,9 @@ class Board extends React.Component {
         this.incorrectBoardEntry = () => {
             this.props.onBoardLostFocus();
             keysound.playChalkDownAudio();
+            setTimeout(() => {
+                this.elementKreda.style.opacity = 1;
+            }, 200);
         }
 
         this.spongeHover = ev => {
@@ -182,6 +186,8 @@ class Board extends React.Component {
                 this.props.removeToA();
                 return this.punishmentInit();
             }
+
+            this.elementKreda.style.opacity = 1;
 
             if (this.props.progress < 100) {
                 this._wrongCharPlace = null;
@@ -217,6 +223,7 @@ class Board extends React.Component {
         this.boardFocused = ev => {
             if (this.props.progress === 100 || this.props.boardTextMistake) return;
             this.elementKreda.style.opacity = 0;
+            this.cheatingCheck.start();
             ev && ev.preventDefault();
             this.props.onBoardFocus();
             this.stopBoardCursorToggling();
@@ -227,6 +234,7 @@ class Board extends React.Component {
             ev.preventDefault();
             this.stopBoardCursorToggling();
             this.props.onBoardLostFocus();
+            this.cheatingCheck.stop();
         };
 
         this.boardHover = ev => {
@@ -240,6 +248,9 @@ class Board extends React.Component {
         this.activePunishmentDone = () => {
             this.props.onBoardLostFocus();
             keysound.playChalkDownAudio();
+            setTimeout(() => {
+                this.elementKreda.style.opacity = 1;
+            }, 200);
             // cekaj na potencijalni enter
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 return;
@@ -281,6 +292,7 @@ class Board extends React.Component {
                     if (boardText[boardText.length - 1] !== this.punishment[rightCharForCurrentPosition]) {
                         this._wrongCharPlace = boardText.length - 1;
                         this.props.wrongBoardEntryWarning(true);
+                        this.cheatingCheck.clearData();
                         // greska
                         return false;
                     }
@@ -303,14 +315,14 @@ class Board extends React.Component {
             let transformedBoardText = '';
             let progress = 0;
 
-            if (!this.cheatDetected && cheatingCheck()) {
-                // set special pun
-                this.cheatDetected = true;
-                this.props.cheatingDetected();
-                this.props.onBoardLostFocus();
-            };
-
             if (inArray(key, validKeys) && this._wrongCharPlace === null && this.props.progress < 100) {
+
+                if (!this.cheatDetected && this.cheatingCheck.onKeyPress(key)) {
+                    // set special pun
+                    this.cheatDetected = true;
+                    this.props.cheatingDetected();
+                    this.props.onBoardLostFocus();
+                };
 
                 if (key === ' ' && boardText[boardText.length - 1] === ' ') return;
                 else transformedBoardText = boardText + (UPPERCASE ? key.toUpperCase() : key);

@@ -1,10 +1,10 @@
 import React from 'react';
 import TableHeader from '../selector/TableHeader';
+import SkoldBoardTableRow from './SkoldBoardTableRow';
 
 class SkoldBoardTable extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props)
 
         this.tableColumns = [
             {
@@ -39,6 +39,14 @@ class SkoldBoardTable extends React.Component {
     }
 
     render() {
+
+        if (Object.keys(this.props.data).length === 0) return null;
+
+        const rowsToDisplay = [];
+        Object.keys(this.props.data).forEach(item => {
+            rowsToDisplay.push(<SkoldBoardTableRow item={this.props.data[item]} />)
+        });
+    
         return (
             <div>
                 <TableHeader columns={this.tableColumns} />
@@ -47,16 +55,7 @@ class SkoldBoardTable extends React.Component {
                     className="picker-table">
 
                     <tbody>
-                        {
-                            shownPunishments.map(punishment => {
-
-                                if (punishment.uid === activePunishment.uid) {
-                                    return (
-                                        <>
-                                    )
-                                }
-                            })
-                        }
+                        {rowsToDisplay.map(elem => elem)}
 
                     </tbody>
                 </table>

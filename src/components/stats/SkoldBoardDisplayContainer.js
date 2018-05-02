@@ -33,7 +33,7 @@ class SkoldBoardDisplayContainer extends React.Component {
 
         return (
             <div style={style} className="height-tran">
-                {this.state.readyToRender ? <SkoldBoardTable data={this.props} /> : null}
+                {this.state.readyToRender ? <SkoldBoardTable data={this.props.data} /> : null}
             </div>
         )
     }

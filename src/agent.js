@@ -1,7 +1,6 @@
 import superagent from 'superagent';
 
 import { API_ROOT } from './constants/constants';
-import { request } from 'http';
 
 const encode = encodeURIComponent;
 
@@ -56,7 +55,8 @@ const Punishment = {
 	guestLogTry: (userId, punishmentId, timeSpent) => requests.post('/punishment/guestLog', { userId, punishmentId, timeSpent }),
 	getRandom: () => requests.get('/punishment/random'),
 	getSpecial: () => requests.get('/punishment/special'),
-	firstTime: id => request.get(`/punishment/firsttime?id=${encodeURIComponent(id)}`),
+	firstTime: id => requests.get(`/punishment/firsttime?id=${encodeURIComponent(id)}`),
+	skoldboard: () => requests.get('/punishment/skoldboard'),
 };
 
 const Pref = {

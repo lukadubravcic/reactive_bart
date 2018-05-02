@@ -25,13 +25,10 @@ class cheatingDetector {
     }
 
     onKeyPress() {
-        this.addToAverage();
-    
+        this.addToAverage();    
         if (!this.startingTimeout) {
-            console.log('provjera')
             if (this.averageTime < this.BEST_AVERAGE) return true;
         }
-        console.log(this.averageTime)
     }
 
     addToAverage() {
@@ -61,7 +58,6 @@ class cheatingDetector {
         this.lastCharTypedTimestamp = null;
         clearTimeout(this.startingTimeout);
     }
-
 }
 
 export default cheatingDetector;

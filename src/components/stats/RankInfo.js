@@ -1,4 +1,5 @@
 import React from 'react';
+import SkoldBoard from './SkoldBoard';
 
 
 class RankInfo extends React.Component {
@@ -24,6 +25,8 @@ class RankInfo extends React.Component {
                             Fusce imperdiet dui scelerisque mi dapibus aliquam. Aliquam erat volutpat.
                         </p>
                     </div>
+
+                    <SkoldBoard />
 
                 </div>
 

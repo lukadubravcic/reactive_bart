@@ -481,6 +481,11 @@ class Board extends React.Component {
         // special snowflake - zahtjeva sinkroni ajax request
         // window.onunload = window.onbeforeunload
         window.addEventListener("beforeunload", this.handleBeforeunload);
+        window.addEventListener('keydown', function (e) {
+            if (e.keyCode == 32 && e.target == document.body) {
+                e.preventDefault();
+            }
+        });
         this.listenOnKey();
     }
 

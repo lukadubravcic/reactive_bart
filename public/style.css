@@ -49,6 +49,13 @@
 	cursor: pointer;
 }
 
+.def-cursor {
+	cursor: default;
+}
+
+.def-cursor:hover {
+	cursor: default;
+}
 
 button:hover {
 	cursor: pointer;
@@ -1275,9 +1282,17 @@ input[type=number]::-webkit-outer-spin-button {
 	color: white;
 }
 
+#terms-of-agreement-link {
+	color: #777;
+}
+
 #terms-of-agreement-link:hover {
 	color: white;
 	cursor: pointer;
+}
+
+#privacy-policy-link {
+	color: #777;
 }
 
 #privacy-policy-link:hover {
@@ -2313,4 +2328,112 @@ td.ordered-status-field {
 
 .react-calendar button:disabled {
 	cursor: default;
+}
+
+
+/* SKOLDBOARD TABLE PART */
+
+.skoldboard-table {
+	display: inline-block;
+	position: relative;
+
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 400;
+	font-size: 22px;
+	color: #515151;
+	letter-spacing: 1px;
+	line-height: 20px;	
+
+	border-collapse: collapse;
+
+	-webkit-animation-name: picker-table-anim;
+	        animation-name: picker-table-anim;
+	-webkit-animation-duration: 1s;
+	        animation-duration: 1s;
+	-webkit-animation-fill-mode: forwards;
+	        animation-fill-mode: forwards;
+}
+
+.skoldboard-row td{
+	border-bottom: 1px solid #515151;
+}
+
+.skoldboard-row:last-child td {
+	border-bottom: none;
+}
+
+.skoldboard-table-header-rank {
+	width: 200px;
+	padding-left: 50px;
+	text-align: center;
+}
+
+.skoldboard-table-header-who {
+	width: 450px;
+	padding-left: 22px;
+}
+
+.skoldboard-table-header-from {
+	width: 150px;
+	text-align: center;
+}
+
+.skoldboard-table-header-to {
+	width: 150px;
+	text-align: center;
+}
+
+
+.skoldboard-rank-field {
+	width: 150px;
+}
+
+.skoldboard-who-field {
+	width: 450px;
+	padding-left: 22px;
+}
+
+.skoldboard-from-field {
+	width: 150px;
+}
+
+.skoldboard-to-field {
+	width: 150px;
+}
+
+.skoldboard-table-punish-field {
+	width: 281px;
+    padding-top: 10px;
+    padding-bottom: 9px;
+    display: inline-block;
+}
+
+.skoldboard-btn-punish {
+	float: right;
+    position: relative;
+    width: 140px;
+    height: 40px;
+    background: #323232;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    letter-spacing: 5.73px;
+	text-align: center;
+	color: white;
+}
+
+.skoldboard-btn-punish:hover {
+	filter: invert(1);
+}
+
+.skoldboard-rank-field,
+.skoldboard-who-field,
+.skoldboard-from-field {
+	border-right: 1px solid #515151;
+}
+
+.skoldboard-rank-field,
+.skoldboard-from-field,
+.skoldboard-to-field {
+	text-align: center;
 }

@@ -20,9 +20,7 @@ class RankInfo extends React.Component {
 
                     <div className="rank-description-container">
                         <p className="rank-description">
-                            Based on bla, bla… Nullam eleifend sapien sem, non blandit est euismod at.<br />                            
-                            Quisque erat dui, egestas sed ornare sed, varius vel sem. Morbi mattis congue rutrum.<br />                            
-                            Fusce imperdiet dui scelerisque mi dapibus aliquam. Aliquam erat volutpat.
+                        Ranking is based on your activity. EVERYTHING counts. Especially good deeds.
                         </p>
                     </div>
 

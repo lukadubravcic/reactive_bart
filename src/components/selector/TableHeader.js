@@ -13,7 +13,7 @@ const OrderedTabRow = props => {
                             id={column.id}
                             onClick={() => (column.clickHandler) ? column.clickHandler(column.id) : () => { }}>
 
-                            <button className="noselect punishment-table-header-btn cursor-pointer">
+                            <button className={`noselect punishment-table-header-btn ${column.clickHandler ? "cursor-pointer" : "def-cursor"}`}>
                                 {column.name}
                                 {column.sortOrder === 1
                                     ? ascendingSVG

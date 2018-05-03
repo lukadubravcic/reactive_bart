@@ -445,7 +445,7 @@ class Board extends React.Component {
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             if (this.punishment[this.punishment.length - 1] !== ' ') this.punishment = this.punishment + ' ';
             this.punishmentId = this.props.activePunishment.uid;
-            this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'Gazzilion' : this.props.activePunishment.how_many_times;
+            this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'gazilion' : this.props.activePunishment.how_many_times;
 
             let punishmentExplanation = [
                 `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times ' : 'x ')}`,

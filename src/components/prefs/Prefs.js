@@ -1,18 +1,18 @@
 import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../agent'
-import { isNullOrUndefined } from 'util';
+import NewPasswordContainer from '../user/newPassword/NewPasswordContainer';
 
 const mapStateToProps = state => ({
     ...state.prefs,
-    currentUser: state.common.currentUser
+    currentUser: state.common.currentUser,
 });
 
 const mapDispatchToProps = dispatch => ({
     updatePref: newPref => {
         agent.Pref.updatePreferences(newPref);
         dispatch({ type: 'PREFS_UPDATED', newPref });
-    }
+    },
 });
 
 
@@ -20,9 +20,27 @@ class Prefs extends React.Component {
 
     constructor() {
         super();
+
+        this.state = {
+            showChangePwdForm: false,
+        };
+
         this.clickHandler = ev => {
             this.props.updatePref({ [ev.target.name]: !this.props[ev.target.name] });
         };
+        
+        this.toggleShowChangePwdForm = ev => {
+            ev.preventDefault();
+            this.setState({
+                showChangePwdForm: !this.state.showChangePwdForm,
+            });
+        };
+
+        this.hideChangePwdForm = () => {
+            this.setState({
+                showChangePwdForm: false,
+            });
+        }
     }
 
     render() {
@@ -35,70 +53,80 @@ class Prefs extends React.Component {
 
         if (userLoggedIn) {
             return (
-                <div id="prefs" className="parent-component prefs-component-container">
-                    <div className="container pref-content-container">
-                        <label id="prefs-heading" className="float-left heading">Prefs</label>
-                        <div className="float-left prefs-container">
-                            <div className="prefs-row">
-                                <label className="float-left pref-chexbox-cont">
-                                    <input
-                                        name="show_tooltips"
-                                        type="checkbox"
-                                        checked={tooltips}
-                                        onChange={this.clickHandler} />
-                                    <span id="pref-checkmark"></span>
-                                </label>
-                                <label className="pref-name">tooltips</label>
+                <div>
+                    <div id="prefs" className="parent-component prefs-component-container">
+                        <div className="container pref-content-container">
+                            <div className="prefs-left-container float-left">
+                                <label id="prefs-heading" className="heading">Prefs</label>
+                                <a
+                                    id="change-pwd-link"
+                                    onClick={this.toggleShowChangePwdForm}>
+                                    CHANGE PASSWORD
+                                </a>
                             </div>
-                            <div className="prefs-row">
-                                <label className="float-left pref-chexbox-cont">
-                                    <input
-                                        name="notify_trying"
-                                        type="checkbox"
-                                        checked={notifyTrying}
-                                        onChange={this.clickHandler} />
-                                    <span id="pref-checkmark"></span>
-                                </label>
-                                <label className="pref-name">notify trying</label>
+                            <div className="float-left prefs-container">
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="show_tooltips"
+                                            type="checkbox"
+                                            checked={tooltips}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">tooltips</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="notify_trying"
+                                            type="checkbox"
+                                            checked={notifyTrying}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify trying</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="notify_done"
+                                            type="checkbox"
+                                            checked={notifyDone}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify completed</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="notify_failed"
+                                            type="checkbox"
+                                            checked={notifyFailed}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify failed</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="sound"
+                                            type="checkbox"
+                                            checked={sound}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">sound on/off</label>
+                                </div>
                             </div>
-                            <div className="prefs-row">
-                                <label className="float-left pref-chexbox-cont">
-                                    <input
-                                        name="notify_done"
-                                        type="checkbox"
-                                        checked={notifyDone}
-                                        onChange={this.clickHandler} />
-                                    <span id="pref-checkmark"></span>
-                                </label>
-                                <label className="pref-name">notify completed</label>
+                            <div className="prefs-bottom-image-container">
+                                {bottomSVG}
                             </div>
-                            <div className="prefs-row">
-                                <label className="float-left pref-chexbox-cont">
-                                    <input
-                                        name="notify_failed"
-                                        type="checkbox"
-                                        checked={notifyFailed}
-                                        onChange={this.clickHandler} />
-                                    <span id="pref-checkmark"></span>
-                                </label>
-                                <label className="pref-name">notify failed</label>
-                            </div>
-                            <div className="prefs-row">
-                                <label className="float-left pref-chexbox-cont">
-                                    <input
-                                        name="sound"
-                                        type="checkbox"
-                                        checked={sound}
-                                        onChange={this.clickHandler} />
-                                    <span id="pref-checkmark"></span>
-                                </label>
-                                <label className="pref-name">sound</label>
-                            </div>
-                        </div>
-                        <div className="prefs-bottom-image-container">
-                            {bottomSVG}
                         </div>
                     </div>
+                    <NewPasswordContainer showForm={this.state.showChangePwdForm} hideForm={this.hideChangePwdForm}/>
                 </div>
             );
         } else return null;

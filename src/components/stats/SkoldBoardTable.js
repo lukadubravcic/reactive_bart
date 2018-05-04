@@ -3,13 +3,27 @@ import TableHeader from '../selector/TableHeader';
 import SkoldBoardTableRow from './SkoldBoardTableRow';
 import SkoldboardPager from './SkoldboardPager';
 
+import { ITEMS_PER_PAGE } from '../../constants/constants';
+
+const sizeOfTableRow = 60; // 60px
+const tableBottomBorderSize = 9;
+
+
 class SkoldBoardTable extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state({
-            currentPage: 1,
-        });
+        this.tableOpacityTimeout = null;
+        this.state = {
+            currentPage: null,
+            shownRows: null,
+            tableContainerStyle: {
+                height: 0,
+                borderBottom: '10px solid #515151',
+            },
+            tableStyle: {
+                opacity: 1,
+            },
+        };
 
         this.tableColumns = [
             {
@@ -41,29 +55,109 @@ class SkoldBoardTable extends React.Component {
                 style: 'float-left def-cursor skoldboard-table-header-to'
             },
         ];
+
+        this.changeShownItems = (array, pageNum) => {
+            this.setState({
+                currentPage: pageNum,
+                shownRows: [...array],
+            });
+        }
+
+        this.changeTableContainerHeight = (rowsLen = this.state.shownRows.length) => {
+            // izracunaj novu visinu i animiraj promjenu
+            let newHeight = rowsLen * sizeOfTableRow + tableBottomBorderSize;
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.setState({
+                        tableContainerStyle: { ...this.state.tableContainerStyle, height: newHeight },
+                        tableStyle: { opacity: 0 },
+                    });
+                });
+            });
+
+            this.tableOpacityTimeout = setTimeout(() => {
+                requestAnimationFrame(() => {
+                    this.setState({
+                        tableStyle: { ...this.state.tableStyle, opacity: 1 },
+                    });
+                });
+            }, 500);
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if ((prevState.shownRows === null && this.state.shownRows !== null)
+            || (prevState.shownRows !== null && prevState.shownRows.length !== this.state.shownRows.length)) {
+            this.changeTableContainerHeight();
+        }
+    }
+
+    componentDidMount() {
+        let shownRows = getFirstPage(this.props.data);
+
+        this.setState({
+            currentPage: 1,
+            shownRows: [...shownRows],
+        });
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                this.changeTableContainerHeight(shownRows.length);
+            });
+        });
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.tableOpacityTimeout)
     }
 
     render() {
-        if (Object.keys(this.props.data).length === 0) return null;
+        if (this.state.shownRows === null || this.state.shownRows.length === 0) return null;
+        // if (Object.keys(this.props.data).length === 0) return null;
 
-        const rowsToDisplay = Object.keys(this.props.data).map((item, index) => {
-            let hasPunishBtn = !(this.props.currentUser.email === item);
-            return (<SkoldBoardTableRow item={this.props.data[item]} key={index} userEmail={item} hasPunishBtn={hasPunishBtn} />)
-        }
-        );
+        const rowsToDisplay = this.state.shownRows.map((item, index) => {
+            let hasPunishBtn = !(this.props.currentUser.email === item.email);
+            return (<SkoldBoardTableRow item={item} key={index} hasPunishBtn={hasPunishBtn} />)
+        });
 
         return (
-            <div>
+            <div style={{ marginTop: 40 + "px" }}>
                 <TableHeader columns={this.tableColumns} />
-                <table className="picker-table" style={{ borderBottom: '10px solid #515151' }}>
-                    <tbody>
-                        {rowsToDisplay.map(elem => elem)}
-                    </tbody>
-                </table>
-                <SkoldboardPager />
+
+                <div style={this.state.tableContainerStyle} className="height-tran">
+                    <table className="picker-table">
+                        <tbody style={this.state.tableStyle}>
+                            {rowsToDisplay.map(elem => elem)}
+                        </tbody>
+                    </table>
+                </div>
+
+                <SkoldboardPager
+                    currentPage={this.state.currentPage}
+                    shownRows={this.state.shownRows}
+                    dataToDisplay={this.props.data}
+                    changeShownItems={this.changeShownItems} />
             </div>
         )
     }
 }
 
 export default SkoldBoardTable;
+
+
+function getFirstPage(dataObject) {
+    let tmp = [];
+    let objKeys = Object.keys(dataObject).map(item => item);
+
+    if (objKeys.length === 0) return null;
+
+    for (let i = 0; i < ITEMS_PER_PAGE; i++) {
+        if (typeof objKeys[i] !== 'undefined' && objKeys[i] !== null) {
+            tmp.push({ ...dataObject[objKeys[i]], email: objKeys[i] });
+        }
+    }
+
+    return tmp;
+}
+
+

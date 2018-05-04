@@ -23,6 +23,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     showLoginForm: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
+    showRegisterForm: () => dispatch({ type: 'DIRECT_SHOW_REGISTER_FORM' }),
     showChangePasswordForm: () => dispatch({ type: 'SHOW_CHANGE_PASSWORD_FORM' }),
     onLogout: () => {
         dispatch({ type: 'LOGOUT' });
@@ -59,10 +60,14 @@ const mapDispatchToProps = dispatch => ({
 class Top extends React.Component {
 
     constructor() {
-        super();        
+        super();
 
         this.showLogin = () => {
             this.props.showLoginForm();
+        }
+
+        this.showRegisterForm = () => {
+            this.props.showRegisterForm();
         }
 
         this.showChangePassword = ev => {
@@ -128,7 +133,7 @@ class Top extends React.Component {
             } else { // user nije logiran
                 switch (elementToDisplay) {
                     case 'start':
-                        element = <StartToolbar btnClickCallback={this.showLogin} />;
+                        element = <StartToolbar btnClickCallback={this.showLogin} showRegisterForm={this.showRegisterForm} />;
                         break;
                     case 'login':
                         element = <Login />;
@@ -140,7 +145,7 @@ class Top extends React.Component {
                         element = <Register />;
                         break;
                     default:
-                        element = <StartToolbar btnClickCallback={this.showLogin} />;
+                        element = <StartToolbar btnClickCallback={this.showLogin} showRegisterForm={this.showRegisterForm} />;
                 }
                 return (
                     <div>

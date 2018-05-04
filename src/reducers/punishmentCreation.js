@@ -11,7 +11,8 @@ const defaultState = {
     monthField: '',
     yearField: '',
     deadlineValid: false,
-    _errMsg: null
+    _errMsg: null,
+    punishingUserSetFromOuterComponent: null,
 };
 
 export default (state = defaultState, action) => {
@@ -36,6 +37,10 @@ export default (state = defaultState, action) => {
             return { ...state, _errMsg: null }
         case 'LOGOUT':
             return defaultState;
+        case 'SEND_PUNISHMENT':
+            return { ...state, punishingUserSetFromOuterComponent: action.toWhom, whom: action.toWhom };
+        case 'CLEAR_PUNISHING_USER':
+            return { ...state, punishingUserSetFromOuterComponent: defaultState.punishingUserSetFromOuterComponent };
         default:
             return state;
     }

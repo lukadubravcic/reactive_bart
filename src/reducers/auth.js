@@ -38,6 +38,8 @@ export default (state = defaultState, action) => {
 
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
+        case 'DIRECT_SHOW_REGISTER_FORM':
+            return { ...state, elementToDisplay: 'register' };
         case 'SHOW_REGISTER_FORM':
             return {
                 ...state,

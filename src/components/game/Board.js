@@ -538,7 +538,7 @@ class Board extends React.Component {
             return (
 
                 <div id="board-writing-board-component">
-
+                    <img id="credits" src="credits.png" alt="" />
                     <div
                         id="board-frame"
                         onMouseOver={!this.props.showToS && !this.props.showPrivacyPolicy && this.boardHover}
@@ -562,13 +562,11 @@ class Board extends React.Component {
 
                                         {startingSentenceFirstPart}
                                         <span style={{ color: '#FFD75F' }}>{startingSentenceSecondPart}</span>
-                                        {/* startingSentenceThirdPart */}
                                         {boardText}
                                         <wbr />
                                         {showTextCursor ? <span style={this.state.boardCursor ? { opacity: 1 } : { opacity: 0 }}>|</span> : null}
                                     </div>
                             }
-
 
                             {progress === 100 && !this.props.showToS && !this.props.showPrivacyPolicy ? <CompletedStamp /> : null}
                             {isPunishmentFailed && !this.props.showToS && !this.props.showPrivacyPolicy ? <FailedStamp /> : null}

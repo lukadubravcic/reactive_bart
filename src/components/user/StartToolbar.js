@@ -7,13 +7,19 @@ const animStyles = {
     opacityDown: { opacity: 0 },
     heightUp: { height: 490 + 'px' }
 };
+const toRegAnimStyle = {
+    opacityDown: { opacity: 0 },
+    heightUp: { height: 669 + 'px' },
+    registerColor: { backgroundColor: '#FFA623' },
+}
 
 
 class StartToolbar extends React.Component {
 
     constructor(props) {
         super(props);
-
+        this.loginTimeout = null;
+        this.registerTimeout = null;
         this.componentDiv = null;
 
         this.state = {
@@ -28,8 +34,16 @@ class StartToolbar extends React.Component {
         }
 
         this.showLogin = () => {
-            setTimeout(() => {
+            this.loginTimeout = setTimeout(() => {
                 this.props.btnClickCallback();
+            }, animationDuration);
+        }
+
+        this.showRegisterForm = ev => {
+            ev.preventDefault();
+            this.triggerToRegisterAnimation();
+            this.registerTimeout = setTimeout(() => {
+                this.props.showRegisterForm();
             }, animationDuration);
         }
 
@@ -41,6 +55,15 @@ class StartToolbar extends React.Component {
                 });
             });
         }
+
+        this.triggerToRegisterAnimation = () => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    componentStyle: { ...this.state.componentStyle, ...toRegAnimStyle.heightUp, ...toRegAnimStyle.registerColor },
+                    buttonStyle: { ...this.state.buttonStyle, ...toRegAnimStyle.opacityDown }
+                });
+            });
+        }
     }
 
     componentDidMount() {
@@ -49,12 +72,17 @@ class StartToolbar extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        clearTimeout(this.loginTimeout);
+        clearTimeout(this.registerTimeout);
+    }
+
     render() {
         return (
             <div
                 style={this.state.componentStyle}
                 ref={elem => this.componentDiv = elem}
-                className="parent-component header height-tran">
+                className="parent-component header height-bcg-color-tran">
 
                 <div className="container">
                     <button
@@ -64,7 +92,14 @@ class StartToolbar extends React.Component {
                         onClick={this.clickHandler}>
 
                         LOG IN
-                        </button>
+                    </button>
+                    <a
+                        style={this.state.buttonStyle}
+                        id="register-link"
+                        onClick={this.showRegisterForm}>
+                        REGISTER
+                    </a>
+                    <div style={{ clear: "both" }}></div>
                 </div>
             </div>
         );

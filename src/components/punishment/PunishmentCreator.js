@@ -65,6 +65,7 @@ const mapDispatchToProps = dispatch => ({
         });
     },
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_DISPLAY_MSG' }),
+    clearPunishingUser: () => dispatch({ type: 'CLEAR_PUNISHING_USER' }),
 });
 
 const animationDuration = 500; // 0.5s
@@ -80,11 +81,8 @@ class PunishmentCreator extends React.Component {
 
     constructor() {
         super();
-
-        // this.toWhomErrorText = null;
-        // this.whatToWriteErrorText = null;
-        // this.whyErrorText = null;
         this.formMsgTimeout = null;
+        this.formContainerRef = null;
 
         this.state = {
             dateElementStyle: {
@@ -228,6 +226,15 @@ class PunishmentCreator extends React.Component {
         if (prevProps._errMsg === null && this.props._errMsg !== null) {
             this.displayFormMessage();
         }
+
+        if (
+            prevProps.punishingUserSetFromOuterComponent === null
+            && this.props.punishingUserSetFromOuterComponent !== null
+            && this.props.punishingUserSetFromOuterComponent.length
+        ) {
+            if (this.formContainerRef !== null) this.formContainerRef.scrollIntoView({ behavior: 'smooth' });
+            this.props.clearPunishingUser();
+        }
     }
 
     componentWillUnmount() {
@@ -265,7 +272,9 @@ class PunishmentCreator extends React.Component {
 
                 {usrLoggedIn && window.canRunAds ? null : <div id="form-overlay"></div>}
 
-                <div className="container">
+                <div
+                    ref={elem => this.formContainerRef = elem}
+                    className="container">
 
                     <div id="creator-heading-container">
                         <h1 id="creator-heading">Your turn to punish someone!</h1>

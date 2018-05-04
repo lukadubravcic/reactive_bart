@@ -1,6 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 const CHAR_SPACING = 16.28;
+
+const mapDispatchToProps = dispatch => ({
+    sendPunishment: toWhom => dispatch({ type: 'SEND_PUNISHMENT', toWhom }),
+});
 
 class SkoldBoardTableRow extends React.Component {
     constructor(props) {
@@ -101,6 +106,15 @@ class SkoldBoardTableRow extends React.Component {
             });
         }
 
+        this.punishHandler = ev => {
+            ev.preventDefault();
+            let toWhom = (typeof this.props.item.username === 'undefined'
+                || this.props.item.username === ''
+                || this.props.item.username === null)
+                ? this.props.item.email
+                : this.props.item.username;
+            this.props.sendPunishment(toWhom);
+        }
     }
 
     render() {
@@ -111,12 +125,12 @@ class SkoldBoardTableRow extends React.Component {
             (typeof this.props.item.username === 'undefined'
                 || this.props.item.username === ''
                 || this.props.item.username === null)
-                ? this.getTableFieldData(this.props.userEmail, 26)
+                ? this.getTableFieldData(this.props.item.email, 26)
                 : this.getTableFieldData(this.props.item.username, 26);
         const punishBtn = this.props.hasPunishBtn
             ? <button
                 className="skoldboard-btn-punish"
-                onClick={() => console.log("PUNISH btn clicked")}>
+                onClick={this.punishHandler}>
                 PUNISH
             </button>
             : null;
@@ -151,4 +165,4 @@ class SkoldBoardTableRow extends React.Component {
 }
 
 
-export default SkoldBoardTableRow;
+export default connect(() => ({}), mapDispatchToProps)(SkoldBoardTableRow);

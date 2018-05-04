@@ -406,16 +406,34 @@ fieldset + fieldset {
 }
 
 #btn-log-in {
-	display: inline-block;
+	float: right;
+	margin-right: 37px;
 	margin-top: 45px;
-	margin-left: 1070px;
 	margin-bottom: 45px;
+	margin-left: 0px;
 }
 
 #btn-register {
 	display: inline-block;
 	padding-right: 27px;
 	padding-left: 27px; 
+}
+
+#register-link {
+	float: right;
+	margin-right: 25px;
+	margin-top: 66px;
+
+	cursor: pointer;
+
+	font-family: Montserrat-Regular;
+	font-size: 16px;
+	color: #FFFFFF;
+	letter-spacing: 5px;
+}
+
+#register-link:hover {
+	text-decoration: underline;
 }
 
 #btn-additional {
@@ -462,13 +480,69 @@ fieldset + fieldset {
 	margin-top: 50px;
 }
 
-
 .register-form {
 	display: inline-block;
 	position: relative;
 
 	margin-top: 40px;
 	padding-bottom: 80px;
+}
+
+.change-pwd-form {
+	display: inline-block;
+	position: relative;
+
+	margin-top: 40px;
+	padding-bottom: 80px;
+}
+
+.opacity-anim {
+	-webkit-animation-name: anim-opacity;
+		animation-name: anim-opacity;
+	-webkit-animation-duration: 0.5s;
+		animation-duration: 0.5s;
+	-webkit-animation-direction: normal;
+		animation-direction: normal;
+	-webkit-animation-fill-mode: forwards;
+		animation-fill-mode: forwards;
+	opacity: 0;
+}
+
+@-webkit-keyframes anim-opacity {
+	0%   {opacity: 0; }
+    100% {opacity: 1; }
+} 
+
+@keyframes anim-opacity {
+	0%   {opacity: 0; }
+    100% {opacity: 1; }
+} 
+
+.close-btn {
+	display: inline-block;
+	position: relative;
+
+	padding: 16px 19px 15px 25px;
+	margin-left: 29px;
+
+	background-color: #323232;
+
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 500;
+	font-size: 24px;
+	letter-spacing: 5px;
+	color: #FEFEFE;
+
+	border: none;
+	outline: 0;
+}
+
+#btn-set-pwd {
+	margin-left: 355px;
+}
+
+#change-pwd-form-feedback {
+	margin-left: 22px;
 }
 
 .header-form-row .text-input, .btn-submit {
@@ -1752,7 +1826,7 @@ td.ordered-status-field {
 
 	background: #323232;
 	font-family: 'Montserrat', sans-serif;
-	font-weight: 400;
+	font-weight: 500;
 	font-size: 18px;
 	letter-spacing: 5.73px;
 
@@ -1985,7 +2059,7 @@ td.ordered-status-field {
 	display: block;
 	position: relative;
 
-	padding-top: 94px;
+	margin-top: 94px;
 }
 
 #rank-bottom-image {
@@ -2030,6 +2104,29 @@ td.ordered-status-field {
 	padding-left: 264px;
 
 	z-index: 5;
+}
+
+.prefs-left-container {
+}
+
+#change-pwd-link {
+	display: inline-block;
+	position: absolute;
+	left: 100px;
+	top: 274px;
+
+	z-index: 10;
+
+	font-family: Montserrat-Regular;
+	font-size: 16px;
+	color: #FFFFFF;
+	letter-spacing: 5px;
+
+	cursor: pointer;
+}
+
+#change-pwd-link:hover {
+	text-decoration: underline;
 }
 
 .prefs-row {
@@ -2356,6 +2453,19 @@ td.ordered-status-field {
 
 .skoldboard-row td{
 	border-bottom: 1px solid #515151;
+	padding-top: 20px;
+}
+
+td.skoldboard-table-punish-field {
+	padding-top: 10px;
+}
+
+.skoldboard-row .empty-field {
+	border-bottom: none;
+}
+
+.skoldboard-row:last-child {
+	margin-bottom: -1px;
 }
 
 .skoldboard-row:last-child td {
@@ -2382,7 +2492,6 @@ td.ordered-status-field {
 	width: 150px;
 	text-align: center;
 }
-
 
 .skoldboard-rank-field {
 	width: 150px;
@@ -2415,7 +2524,7 @@ td.ordered-status-field {
     height: 40px;
     background: #323232;
     font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 18px;
     letter-spacing: 5.73px;
 	text-align: center;
@@ -2436,4 +2545,11 @@ td.ordered-status-field {
 .skoldboard-from-field,
 .skoldboard-to-field {
 	text-align: center;
+}
+
+
+#credits {
+	position: absolute;
+	top: 146px;
+	left: 169px;
 }

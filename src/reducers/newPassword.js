@@ -15,6 +15,8 @@ export default (state = defaultState, action) => {
             return { ...defaultState, _errMsg: action.errMsg };
         case 'PASSWORD_CHANGED':
             return { ...defaultState };
+        case 'CLEAR_FORM_VALUES':
+            return { ...defaultState };
         default:
             return state;
     }

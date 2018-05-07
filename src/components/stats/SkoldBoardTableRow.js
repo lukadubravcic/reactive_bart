@@ -127,6 +127,12 @@ class SkoldBoardTableRow extends React.Component {
                 || this.props.item.username === null)
                 ? this.getTableFieldData(this.props.item.email, 26)
                 : this.getTableFieldData(this.props.item.username, 26);
+        const fromValue = typeof this.props.item.fromNum === 'undefined' || this.props.item.fromNum === null
+            ? 0
+            : this.props.item.fromNum;
+        const toValue = typeof this.props.item.toNum === 'undefined' || this.props.item.toNum === null
+            ? 0
+            : this.props.item.toNum;
         const punishBtn = this.props.hasPunishBtn
             ? <button
                 className="skoldboard-btn-punish"
@@ -150,10 +156,10 @@ class SkoldBoardTableRow extends React.Component {
                 </td>
 
                 <td className="skoldboard-from-field">
-                    {this.props.item.fromNum}
+                    {fromValue}
                 </td>
                 <td className="skoldboard-to-field">
-                    {this.props.item.toNum}
+                    {toValue}
                 </td>
                 <td className="skoldboard-table-punish-field">
                     {punishBtn}

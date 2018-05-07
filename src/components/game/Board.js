@@ -56,7 +56,11 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment });
     },
     setActivePunishmentDone: (id, timeSpent) => {
-        agent.Punishment.done(id, timeSpent).then(payload => dispatch({ type: 'PUNISHMENT_MARKED_DONE', newRank: payload.rank }));
+        agent.Punishment.done(id, timeSpent).then(payload => {
+            if (typeof payload.rank !== 'undefined' && payload.rank !== null) {
+                dispatch({ type: 'PUNISHMENT_MARKED_DONE', newRank: payload.rank });
+            }
+        });
         dispatch({ type: 'PUNISHMENT_DONE', id });
     },
     setActivePunishmentGuestDone: (userId, punishmentId, timeSpent) => {
@@ -87,12 +91,12 @@ const mapDispatchToProps = dispatch => ({
     gameReset: () => {
         dispatch({ type: 'GAME_RESETED' });
     },
-    logPunishmentTry: (id, timeSpent) => {
-        agent.Punishment.logTry(id, timeSpent).then(() => { console.log('Try logged') });
+    logPunishmentTry: (id, timeSpent, typedCharsNum = 0) => {
+        agent.Punishment.logTry(id, timeSpent, typedCharsNum).then(() => { console.log('Try logged') });
         dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
     },
-    logPunishmentGuestTry: (userId, punishmentId, timeSpent) => {
-        agent.Punishment.guestLogTry(userId, punishmentId, timeSpent).then(() => { console.log('Try logged') });
+    logPunishmentGuestTry: (userId, punishmentId, timeSpent, typedCharsNum = 0) => {
+        agent.Punishment.guestLogTry(userId, punishmentId, timeSpent, typedCharsNum).then(() => { console.log('Try logged') });
     },
     cheatingDetected: () => {
         dispatch({ type: 'CHEATING_DETECTED' });
@@ -134,7 +138,9 @@ class Board extends React.Component {
                 e.key === 'Enter'
                 && this.props.boardTextMistake
             ) {
-                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
+                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                    this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
+                }
                 this.punishmentInit(false);
                 // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
                 this.boardFocused();
@@ -204,9 +210,9 @@ class Board extends React.Component {
                         typeof this.props.guestPunishment.uid !== 'undefined' &&
                         this.props.guestPunishment.uid === this.props.activePunishment.uid) {
 
-                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
+                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
 
-                    } else this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
+                    } else this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
                 }
 
                 this.punishmentInit(false);
@@ -388,7 +394,7 @@ class Board extends React.Component {
                     xhttp.send();
 
                 } else {
-                    this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent);
+                    this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
                 }
             }
         };
@@ -445,7 +451,7 @@ class Board extends React.Component {
             this.punishment = UPPERCASE ? this.props.activePunishment.what_to_write.toUpperCase() : this.props.activePunishment.what_to_write;
             if (this.punishment[this.punishment.length - 1] !== ' ') this.punishment = this.punishment + ' ';
             this.punishmentId = this.props.activePunishment.uid;
-            this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'gazilion' : this.props.activePunishment.how_many_times;
+            this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'gazillion' : this.props.activePunishment.how_many_times;
 
             let punishmentExplanation = [
                 `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times ' : 'x ')}`,
@@ -503,8 +509,13 @@ class Board extends React.Component {
             // console.log('%cTRUE', 'background: yellow; color: green')
 
             // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-            if (prevProps.gameInProgress && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) {
-                this.props.logPunishmentTry(prevProps.activePunishment.uid, prevProps.timeSpent);
+            if (
+                prevProps.gameInProgress
+                && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)
+                && prevProps.progress !== 0
+                && prevProps.progress !== 100
+            ) {
+                this.props.logPunishmentTry(prevProps.activePunishment.uid, prevProps.timeSpent, prevProps.boardValue.length);
             }
             // specijalni slucaj detektiranja adblocker-a
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {
@@ -538,7 +549,6 @@ class Board extends React.Component {
             return (
 
                 <div id="board-writing-board-component">
-                    <img id="credits" src="credits.png" alt="" />
                     <div
                         id="board-frame"
                         onMouseOver={!this.props.showToS && !this.props.showPrivacyPolicy && this.boardHover}

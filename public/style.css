@@ -426,7 +426,7 @@ fieldset + fieldset {
 
 	cursor: pointer;
 
-	font-family: Montserrat-Regular;
+    font-family: 'Montserrat', sans-serif;
 	font-size: 16px;
 	color: #FFFFFF;
 	letter-spacing: 5px;
@@ -535,6 +535,11 @@ fieldset + fieldset {
 
 	border: none;
 	outline: 0;
+}
+
+.close-btn:hover {
+	color: #515151;
+    background-color: #FFFFFF;
 }
 
 #btn-set-pwd {
@@ -854,6 +859,9 @@ fieldset + fieldset {
 #board-bottom-books-component {
 	width: 100%;
 	height: 190px;
+	display: block;
+	position: absolute;
+	bottom: 0px;
 }
 
 #books-on-floor {
@@ -2022,7 +2030,7 @@ td.ordered-status-field {
 
 	margin-top: -64px;
 
-	background: #EA411E;
+	background: #02bbd7;
 }
 
 #rank-heading {
@@ -2051,7 +2059,7 @@ td.ordered-status-field {
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 500;
 	font-size: 24px;
-	color: #C4ACE4;
+	color: #515151;
 	letter-spacing: 1px;
 }
 
@@ -2075,7 +2083,7 @@ td.ordered-status-field {
 
 .prefs-component-container {
 	position: relative;
-	background: #00bbd6;
+	background: #c5ace5;
 	z-index: 1;
 }
 
@@ -2117,7 +2125,7 @@ td.ordered-status-field {
 
 	z-index: 10;
 
-	font-family: Montserrat-Regular;
+	font-family: 'Montserrat', sans-serif;
 	font-size: 16px;
 	color: #FFFFFF;
 	letter-spacing: 5px;
@@ -2550,6 +2558,15 @@ td.skoldboard-table-punish-field {
 
 #credits {
 	position: absolute;
-	top: 146px;
-	left: 169px;
+	top: 306px;
+	left: 170px;
 }
+
+.change-pwd-header {
+	background: #a379e2;
+}
+
+#chng-pwd-feedback {
+	margin-left: 22px;
+}
+

@@ -2,10 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../../agent';
 
-const PASSWORD_MAX_LEN = 20;
-const PASSWORD_MIN_LEN = 3;
-
-const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MIN_LEN + ' and ' + PASSWORD_MAX_LEN + ' characters long.';
 
 const mapStateToProps = state => ({
     ...state.newPassword
@@ -21,22 +17,21 @@ const mapDispatchToProps = dispatch => ({
     onReNewPasswordChange: value => {
         dispatch({ type: 'UPDATE_FIELD', key: 'reNewPassword', value });
     },
-    submitNewPassword: (currentPassword, newPassword, reNewPassword, enableSubmit) => {
+    submitNewPassword: (currentPassword, newPassword, reNewPassword, cb) => {
         dispatch({ type: 'SETTING_NEW_PASSWORD' });
 
-        agent.Auth.setNewPassword(currentPassword, newPassword, reNewPassword).then((payload) => {
+        agent.Auth.setNewPassword(currentPassword, newPassword, reNewPassword).then(payload => {
             if (payload !== null) {
-
                 if (typeof payload.message !== 'undefined') {
                     dispatch({ type: 'SETTING_NEW_PASSWORD_FAILED', errMsg: payload.message });
-
                 } else {
                     dispatch({ type: 'PASSWORD_CHANGED' });
                 }
-            }
-            enableSubmit();
+            } else dispatch({ type: 'SETTING_NEW_PASSWORD_FAILED', errMsg: "Error on server." });
+            if (typeof cb === 'function') cb();
         });
-    }
+    },
+    clearFormEntries: () => dispatch({ type: 'CLEAR_FORM_VALUES' }),
 });
 
 
@@ -48,14 +43,22 @@ class NewPassword extends React.Component {
             validCurrPwd: true,
             validNewPwd: true,
             validReNewPwd: true,
+            disableSumbit: false,
 
             showNewPwdInvalidHoverElement: false,
         };
 
+        this.enableSubmitBtn = () => {
+            this.setState({ disableSumbit: false });
+        }
+
+        console.log(typeof this.enableSubmitBtn)
+
         this.submitNewPassword = (currentPassword, newPassword, reNewPassword, enableSubmit) => ev => {
             ev.preventDefault();
             this.refs.changePasswordBtn.setAttribute('disabled', 'true');
-            this.props.submitNewPassword(currentPassword, newPassword, reNewPassword, this.enableSubmit);
+            this.setState({ disableSumbit: true });
+            this.props.submitNewPassword(currentPassword, newPassword, reNewPassword, this.enableSubmitBtn);
         }
 
         this.currentPasswordChange = ev => {
@@ -69,6 +72,13 @@ class NewPassword extends React.Component {
             if (ev.target.value.length > 0 && !validatePassword(ev.target.value)) {
                 this.setState({ validNewPwd: false });
             } else this.setState({ validNewPwd: true, showNewPwdInvalidHoverElement: false });
+
+            if (this.props.reNewPassword.length) {
+                if (ev.target.value !== this.props.reNewPassword) this.setState({ validReNewPwd: false });
+                else if (ev.target.value === this.props.reNewPassword && this.state.validReNewPwd === false) {
+                    this.setState({ validReNewPwd: true });
+                }
+            }
             this.props.onNewPasswordChange(ev.target.value);
         }
 
@@ -91,9 +101,11 @@ class NewPassword extends React.Component {
             this.setState({ showNewPwdInvalidHoverElement: false });
         }
 
-      /*   this.enableSubmit = () => {
-            this.refs.changePasswordBtn.removeAttribute('disabled');
-        } */
+        this.closeForm = ev => {
+            ev.preventDefault();
+            this.props.clearFormEntries();
+            this.props.closeForm();
+        }
     }
 
     render() {
@@ -102,17 +114,17 @@ class NewPassword extends React.Component {
         const newPassword = this.props.newPassword;
         const reNewPassword = this.props.reNewPassword;
         const errMsg = this.props._errMsg;
-        const formValid = currentPassword.length
+        const formValid =
+            currentPassword.length
             && newPassword.length
-            && !this.currentPasswordValidationMessage
-            && !this.newPasswordValidationMessage
-            && !this.reNewPasswordValidationMessage
+            && this.state.validNewPwd
+            && this.state.validReNewPwd
             && newPassword === reNewPassword
             && currentPassword !== newPassword;
         const passwordWrongEntryWarning = '3 to 20 characters, contain at least one numeric digit, one uppercase and lowercase letter.';
 
         return (
-            <div className="parent-component header register-header">
+            <div className="parent-component header change-pwd-header">
                 <div className="container">
 
                     <label className="heading register-heading">Change your password</label>
@@ -123,7 +135,7 @@ class NewPassword extends React.Component {
 
                         <fieldset className="header-form-row">
                             <input
-                                className={`text-input ${!this.state.validCurrPwd ? "input-wrong-entry" : ""}`}
+                                className={`text-input`}
                                 id='currentPassword'
                                 type="password"
                                 placeholder="Current password"
@@ -144,6 +156,7 @@ class NewPassword extends React.Component {
 
                             {!this.state.validNewPwd
                                 ? <label
+                                    id="chng-pwd-feedback"
                                     className="form-feedback"
                                     onMouseOver={this.showPwdInvalidElement}
                                     onMouseOut={this.hidePwdInvalidElement}>
@@ -184,41 +197,46 @@ class NewPassword extends React.Component {
                         <fieldset className="header-form-row">
                             <input
                                 id="reNewPassword"
-                                className={`text-input ${!this.state.validReNewPwd ? "input-wrong-entry" : ""}`}
+                                className={`text-input ${this.state.validReNewPwd ? "" : "input-wrong-entry"}`}
                                 type="password"
                                 placeholder="Confirm new password"
                                 onChange={this.reNewPasswordChange}
                                 value={reNewPassword}
                                 required />
+
+                            {reNewPassword.length && reNewPassword !== newPassword
+                                ? <label
+                                    id="chng-pwd-feedback"
+                                    className="form-feedback">
+                                    DOESN'T MATCH
+                                </label>
+                                : null}
                         </fieldset>
 
                         <fieldset className="header-form-row">
                             <button
-                                id="btn-set-pwd"
+                                style={!formValid || this.state.disableSumbit ? { opacity: 0.5, pointerEvents: "none" } : {}}
                                 className="btn-submit"
                                 ref="changePasswordBtn"
                                 type="submit"
-                                disabled={!formValid}>
-                                SET NEW PASSWORD
+                                disabled={!formValid || this.state.disableSumbit}>
+                                CHANGE
                             </button>
 
                             <button
                                 className="close-btn"
-                                onClick={this.props.closeForm}>
+                                onClick={this.closeForm}>
                                 CLOSE
                             </button>
 
                             {errMsg
                                 ? <label
-                                    id="change-pwd-form-feedback"
-                                    className="form-feedback ">
+                                    id="chng-pwd-feedback"
+                                    className="form-feedback">
                                     {errMsg.toUpperCase()}
                                 </label>
                                 : null}
                         </fieldset>
-
-
-
                     </form>
                 </div>
             </div>

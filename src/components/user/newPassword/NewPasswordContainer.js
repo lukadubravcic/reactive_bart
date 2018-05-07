@@ -15,7 +15,7 @@ class NewPasswordContainer extends React.Component {
             showForm: false,
             containerStyle: {
                 height: 0,
-                background: '#FFA623',
+                background: '#a379e2',
             },
         };
 

@@ -121,7 +121,7 @@ class SkoldBoardTable extends React.Component {
         });
 
         return (
-            <div style={{ marginTop: 40 + "px" }}>
+            <div>
                 <TableHeader columns={this.tableColumns} />
 
                 <div style={this.state.tableContainerStyle} className="height-tran">

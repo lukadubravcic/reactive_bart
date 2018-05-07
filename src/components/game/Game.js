@@ -222,6 +222,7 @@ class Game extends React.Component {
                     <div
                         ref={elem => this.writingBoard = elem}
                         className="left-side-col">
+                        <img id="credits" src="credits.png" alt="" />
                         <Timer />
                         <Board />
 

@@ -186,7 +186,7 @@ class PunishmentCreator extends React.Component {
             isMail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
             submitData.deadlineDate = deadlineChecked
-                ? new Date(this.props.yearField, this.props.monthField, this.props.dayField)
+                ? new Date(this.props.yearField, this.props.monthField - 1, this.props.dayField, 12, 0, 0, 0).toString()
                 : null;
             submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
             submitData.why = trimExcessSpaces(whyField);

@@ -1,7 +1,3 @@
-let averageTime = null;
-let lastCharTypedTimestamp = null;
-const THRESHOLD = 10; // 10ms
-
 class cheatingDetector {
 
     constructor() {
@@ -14,10 +10,6 @@ class cheatingDetector {
 
     start() {
         this.clearData();
-        this.startingTimeout = setTimeout(() => {
-            clearTimeout(this.startingTimeout);
-            this.startingTimeout = null;
-        }, this.IGNORED_TIME_ON_START);
     }
 
     stop() {
@@ -25,7 +17,14 @@ class cheatingDetector {
     }
 
     onKeyPress() {
-        this.addToAverage();    
+        if (this.averageTime === null) {
+            this.startingTimeout = setTimeout(() => {
+                clearTimeout(this.startingTimeout);
+                this.startingTimeout = null;
+            }, this.IGNORED_TIME_ON_START);
+        }
+
+        this.addToAverage();
         if (!this.startingTimeout) {
             if (this.averageTime < this.BEST_AVERAGE) return true;
         }
@@ -49,7 +48,7 @@ class cheatingDetector {
         } else if (this.averageTime !== null) {
             this.averageTime = (this.averageTime + timeBetweenCharEntry) / 2;
         }
-
+        console.log(this.averageTime)
         return;
     }
 

@@ -4,6 +4,7 @@ import SkoldBoardTable from './SkoldBoardTable';
 class SkoldBoardDisplayContainer extends React.Component {
     constructor(props) {
         super(props);
+        console.log(props.data);
     }
 
     render() {

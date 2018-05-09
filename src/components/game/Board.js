@@ -11,6 +11,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import cheatingCheck from '../../helpers/cheatingCheck';
 import keysound from '../../helpers///keysound';
 import { API_ROOT } from '../../constants/constants';
+import cheatingDetector from '../../helpers/cheatingCheck';
 
 const UPPERCASE = false;
 
@@ -150,6 +151,7 @@ class Board extends React.Component {
                         this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
                     }
                 }
+                this.cheatingCheck.clearData();
                 this.punishmentInit(false);
                 // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
                 this.boardFocused();

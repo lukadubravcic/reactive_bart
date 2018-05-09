@@ -16,7 +16,7 @@ const MAX_HOW_MANY_TIMES_PUNISHMENT = 999;
 const mapStateToProps = state => ({
     ...state.punishmentCreation,
     orderedPunishments: state.punishment.orderedPunishments,
-    currentUser: state.common.currentUser
+    currentUser: state.common.currentUser,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -93,6 +93,7 @@ class PunishmentCreator extends React.Component {
             showTryMailTooltip: false,
             whatToWriteFieldValid: true,
             whyFieldValid: true,
+            showMasochistTooltip: false,
 
             showFormMsg: false,
         }
@@ -102,14 +103,18 @@ class PunishmentCreator extends React.Component {
             // provjeri jel unesen username (!isMail):
             //  - ako je, provjeri jel postoji:
             //      - postoji - nista
-            //      - ne postoji - poruka "try email instead"
+            //      - ne postoji - poruka "try email instead"      
+            if (checkIfSameUser(this.props.whom, this.props.currentUser)) return this.setState({ showMasochistTooltip: true });
+
             if (isMail(this.props.whom) || this.props.whom.length === 0) return this.setState({ showTryMailTooltip: false });
             let { exist } = await agent.Auth.checkIfUserExists(this.props.whom);
             if (!exist) return this.setState({ showTryMailTooltip: true });
         }
 
         this.changeWhom = ev => {
-            this.setState({ showTryMailTooltip: false });
+            this.setState({
+                showTryMailTooltip: false, showMasochistTooltip: false
+            });
             // this.validateToWhomValue(ev.target.value);
             this.props.onChangeWhom(ev.target.value);
         }
@@ -258,6 +263,7 @@ class PunishmentCreator extends React.Component {
         const submitDisabled =
             this.props.whom.length === 0
             || this.state.showTryMailTooltip
+            || this.state.showMasochistTooltip
             || !validDeadline
             || !this.state.whatToWriteFieldValid
             || !this.state.whyFieldValid
@@ -292,7 +298,7 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHOM</label>
                             <input
                                 id="whom-input"
-                                className={`float-left text-input ${this.state.showTryMailTooltip ? "input-wrong-entry" : ""}`}
+                                className={`float-left text-input ${this.state.showTryMailTooltip || this.state.showMasochistTooltip ? "input-wrong-entry" : ""}`}
                                 type="text"
                                 placeholder="e-mail/username"
                                 value={whomField}
@@ -302,6 +308,7 @@ class PunishmentCreator extends React.Component {
                                 required
                             />
                             {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label> : null}
+                            {this.state.showMasochistTooltip ? <label id="whom-feedback" className="float-left form-feedback">MASOCHIST?</label> : null}
                         </fieldset>
 
                         <fieldset
@@ -576,3 +583,8 @@ const incrementBtnSvg = (
         </g>
     </svg >
 )
+
+function checkIfSameUser(whom, currentUserObject) {
+    if ((currentUserObject.username !== '' && whom === currentUserObject.username) || whom === currentUserObject.email) return true;
+    else return false;
+}

@@ -470,7 +470,7 @@ class Board extends React.Component {
             this.howManyTimes = this.props.activePunishment.how_many_times === 0 ? 'gazillion' : this.props.activePunishment.how_many_times;
 
             let punishmentExplanation = [
-                `Write ${this.howManyTimes}${(this.adblockDetected || this.cheatDetected ? ' times ' : 'x ')}`,
+                `Write ${this.howManyTimes}${(this.adblockDetected ? ' times ' : 'x ')}`,
                 `${this.punishment}`
             ];
 

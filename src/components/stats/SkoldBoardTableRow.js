@@ -133,16 +133,24 @@ class SkoldBoardTableRow extends React.Component {
         const toValue = typeof this.props.item.toNum === 'undefined' || this.props.item.toNum === null
             ? 0
             : this.props.item.toNum;
-        const punishBtn = this.props.hasPunishBtn
+        const isCurrentUser = !this.props.isCurrentUser
             ? <button
                 className="skoldboard-btn-punish"
                 onClick={this.punishHandler}>
                 PUNISH
             </button>
-            : null;
+            : <a
+                href="https://skolded.threadless.com"
+                target="_blank"
+                rel="noopener noreferrer">
+                <button
+                    className="skoldboard-btn-punish">
+                    TREAT
+                </button>
+            </a>;
 
         return (
-            <tr className={`skoldboard-row ${!this.props.hasPunishBtn ? "picker-selected-row" : ""}`}>
+            <tr className={`skoldboard-row ${this.props.isCurrentUser ? "picker-selected-row" : ""}`}>
                 <td className="empty-field"></td>
                 <td className="skoldboard-rank-field">
                     {rankFieldContent}
@@ -162,7 +170,7 @@ class SkoldBoardTableRow extends React.Component {
                     {toValue}
                 </td>
                 <td className="skoldboard-table-punish-field">
-                    {punishBtn}
+                    {isCurrentUser}
                 </td>
                 <td className="empty-field"></td>
             </tr >

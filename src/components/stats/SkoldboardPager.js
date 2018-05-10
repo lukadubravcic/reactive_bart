@@ -9,7 +9,7 @@ class SkoldboardPager extends React.Component {
         this.showPage = id => {
             const currentPage = this.props.currentPage;
             const dataRows = this.props.dataToDisplay;
-            const rowsLength = Object.keys(dataRows).length;
+            const rowsLength = dataRows.length;
 
             let startingIndex;
             let destinationPage;
@@ -35,13 +35,8 @@ class SkoldboardPager extends React.Component {
                     break;
             }
 
-            let dataObjKeys = Object.keys(dataRows).map(item => item);
-
             for (let i = startingIndex; i < (startingIndex + ITEMS_PER_PAGE); i++) {
-                if (dataObjKeys[i]) {
-                    shownItems.push({ ...dataRows[dataObjKeys[i]], email: dataObjKeys[i] });
-                    // shownPunishments.push(punishments[i])
-                };
+                if (dataRows[i]) shownItems.push({ ...dataRows[i] });
             }
 
             this.props.changeShownItems(shownItems, destinationPage);

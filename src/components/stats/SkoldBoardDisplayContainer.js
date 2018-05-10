@@ -1,14 +1,22 @@
 import React from 'react';
 import SkoldBoardTable from './SkoldBoardTable';
+import { isNumber } from 'util';
 
 class SkoldBoardDisplayContainer extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props.data);
+        this.state = {
+            data: null,
+        }
+    }
+
+    componentDidMount() {
+        let dataArray = tranformAndSortData(this.props.data);
+        if (dataArray.length) this.setState({ data: dataArray });
     }
 
     render() {
-        if (!this.props.data) return null;
+        if (!this.state.data) return null;
 
         return (
             <div>
@@ -21,10 +29,33 @@ class SkoldBoardDisplayContainer extends React.Component {
                         </button>
                     </nav>
                 </div>
-                <SkoldBoardTable data={this.props.data} currentUser={this.props.currentUser} />
+                <SkoldBoardTable data={this.state.data} currentUser={this.props.currentUser} />
             </div>
         )
     }
 }
 
 export default SkoldBoardDisplayContainer;
+
+
+function tranformAndSortData(data) {
+    let dataArray = [];
+
+    for (let key in data) {
+        dataArray.push({ ...data[key], email: key });
+    }
+
+    return sortDataByRank(dataArray, 1);
+}
+
+function sortDataByRank(data, order) {
+    let tmp = [...data];
+
+    tmp.sort((a, b) => {
+        if ((typeof b.rank === 'undefined' || b.rank === null) && (typeof a.rank !== 'undefined' || a.rank !== 'null')) return -1;
+        else if ((typeof a.rank === 'undefined' || a.rank === null) && (typeof b.rank !== 'undefined' || b.rank !== 'null')) return 1;
+        return ((a.rank - b.rank) * order);
+    });
+
+    return tmp;
+};

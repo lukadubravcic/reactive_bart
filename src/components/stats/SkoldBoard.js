@@ -57,132 +57,132 @@ const testData = {
         "fromNum": 2,
         "username": "Marko",
         "toNum": 6,
-        "rank": 4
+        "rank": 3
     },
     "slavko@test.hr": {
         "fromNum": 2,
         "username": "Slavko",
         "toNum": 6,
-        "rank": 4
+        "rank": 200
     },
     "Čečenija@test.hr": {
         "fromNum": 2,
         "username": "Čečen",
         "toNum": 6,
-        "rank": 4
+        "rank": 117
     },
     "list@test.hr": {
         "fromNum": 2,
         "username": "Šižt",
         "toNum": 6,
-        "rank": 4
+        "rank": 8
     },
     "darko@test.hr": {
         "fromNum": 2,
         "username": null,
         "toNum": 6,
-        "rank": 4
+        "rank": 36
     },
     "igor@test.hr": {
         "fromNum": 2,
         "username": "IgorZvanIgorKojiUlaziANe KucaNaVrataVragJedan",
         "toNum": 6,
-        "rank": 4
+        "rank": 55
     },
     "ante@test.hr": {
         "fromNum": 2,
         "username": "Ante",
         "toNum": 6,
-        "rank": 4
+        "rank": 42
     },
     "bepo@test.hr": {
         "fromNum": 2,
         "username": "Bepo",
         "toNum": 6,
-        "rank": 4
+        "rank": 89
     },
     "zenza@test.hr": {
         "fromNum": 2,
         "username": "Zem",
         "toNum": 6,
-        "rank": 4
+        "rank": 100
     },
     "ibrica@test.hr": {
         "fromNum": 2,
         "username": null,
         "toNum": 6,
-        "rank": 4
+        "rank": 71
     },
     "milo@test.hr": {
         "fromNum": 2,
         "username": "Milo",
         "toNum": 6,
-        "rank": 4
+        "rank": null
     },
     "igor2@test.hr": {
         "fromNum": 2,
         "username": "IgorZvanIgorKojiUlaziANe KucaNaVrataVragJedan",
         "toNum": 6,
-        "rank": 4
+        "rank": 199
     },
     "ante2@test.hr": {
         "fromNum": 2,
         "username": "Ante",
         "toNum": 6,
-        "rank": 4
+        "rank": 114
     },
     "bepo2@test.hr": {
         "fromNum": 2,
         "username": "Bepo",
         "toNum": 6,
-        "rank": 4
+        "rank": 13
     },
     "zenza2@test.hr": {
         "fromNum": 2,
         "username": "Zem",
         "toNum": 6,
-        "rank": 4
+        "rank": 14
     },
     "ibrica2@test.hr": {
         "fromNum": 2,
         "username": null,
         "toNum": 6,
-        "rank": 4
+        "rank": 17
     },
     "milo2@test.hr": {
         "fromNum": 2,
         "username": "Milo",
         "toNum": 6,
-        "rank": 4
+        "rank": 19
     },
     "ante3@test.hr": {
         "fromNum": 2,
         "username": "Ante",
         "toNum": 6,
-        "rank": 4
+        "rank": 22
     },
     "bepo3@test.hr": {
         "fromNum": 2,
         "username": "Bepo",
         "toNum": 6,
-        "rank": 4
+        "rank": 33
     },
     "zenza3@test.hr": {
         "fromNum": 2,
         "username": "Zem",
         "toNum": 6,
-        "rank": 4
+        "rank": 44
     },
     "ibrica3@test.hr": {
         "fromNum": 2,
         "username": null,
         "toNum": 6,
-        "rank": 4
+        "rank": null,
     },
     "milo3@test.hr": {
         "fromNum": 2,
         "username": "Milo",
         "toNum": 6,
-        "rank": 4
+        "rank": 300,
     },
 }

@@ -132,6 +132,11 @@ class Board extends React.Component {
         this.state = {
             boardCursor: false,
             showBoardCursor: false,
+            screw1: true,
+            screw2: true,
+            screw3: true,
+            screw4: true,
+            showBoard: true,
         }
 
         this.reactToEnterKey = e => {
@@ -484,13 +489,48 @@ class Board extends React.Component {
         this.stopBoardCursorToggling = () => {
             clearInterval(this.cursorInterval);
             this.setState({ boardCursor: false });
-        }
+        };
 
         this.boardCursorToggle = () => {
             const toggleIntervalTime = 500;
             this.cursorInterval = setInterval(() => {
                 this.setState({ boardCursor: !this.state.boardCursor });
             }, toggleIntervalTime);
+        };
+
+        this.screwClick = ev => {
+            ev.preventDefault();
+            let targetScrew = null;
+            let stateCopy = { ...this.state };
+
+            switch (ev.currentTarget.id) {
+                case 'btn-board-screw-01':
+                    targetScrew = 'screw1'
+                    break;
+                case 'btn-board-screw-02':
+                    targetScrew = 'screw2';
+                    break;
+                case 'btn-board-screw-03':
+                    targetScrew = 'screw3';
+                    break;
+                case 'btn-board-screw-04':
+                    targetScrew = 'screw4';
+                    break;
+                default:
+                    break;
+            }
+
+            if (targetScrew) this.setState({ [targetScrew]: false });
+            stateCopy[targetScrew] = false;
+            if (stateCopy.screw1 === false
+                && stateCopy.screw2 === false
+                && stateCopy.screw3 === false
+                && stateCopy.screw4 === false
+            ) {
+                this.setState({ showBoard: false });
+            }
+
+            return;
         }
     }
 
@@ -570,10 +610,45 @@ class Board extends React.Component {
 
                 <div id="board-writing-board-component">
                     <div
+                        style={this.state.showBoard ? {} : { opacity: 0 }}
                         id="board-frame"
+                        className="opacity-tran"
                         onMouseOver={!this.props.showToS && !this.props.showPrivacyPolicy && this.boardHover}
                         onMouseOut={!this.props.showToS && !this.props.showPrivacyPolicy && this.boardHoverOut}>
 
+                        {this.state.screw1
+                            ? <button
+                                id="btn-board-screw-01"
+                                className="btn-board-screw"
+                                onClick={this.screwClick}>
+                                {boardScrewSVG}
+                            </button>
+                            : null}
+                        {this.state.screw2
+                            ? <button
+                                id="btn-board-screw-02"
+                                className="btn-board-screw"
+                                onClick={this.screwClick}>
+                                {boardScrewSVG}
+
+                            </button>
+                            : null}
+                        {this.state.screw3
+                            ? <button
+                                id="btn-board-screw-03"
+                                className="btn-board-screw"
+                                onClick={this.screwClick}>
+                                {boardScrewSVG}
+                            </button>
+                            : null}
+                        {this.state.screw4
+                            ? <button
+                                id="btn-board-screw-04"
+                                className="btn-board-screw"
+                                onClick={this.screwClick}>
+                                {boardScrewSVG}
+                            </button>
+                            : null}
                         <div id="drawing-board">
 
                             {this.props.showToS ?
@@ -585,7 +660,7 @@ class Board extends React.Component {
                                         id="board-textarea"
                                         className="noselect"
                                         {...makeFocusable}
-                                        disabled={this.props.boardDisabled}
+                                        disabled={this.props.boardDisabled || !this.state.showBoard}
                                         onKeyDown={this.boardTextChange}
                                         onFocus={this.boardFocused}
                                         onBlur={this.boardLostFocus}>
@@ -658,7 +733,11 @@ class Board extends React.Component {
 
                     </div>
 
-                    <div id="board-shelf"></div>
+                    <div
+                        style={this.state.showBoard ? {} : { opacity: 0 }}
+                        id="board-shelf"
+                        className="opacity-tran"
+                    ></div>
 
                 </div>
 
@@ -753,3 +832,10 @@ function getRandomPunishment(randomPunishments) {
 }
 
 
+const boardScrewSVG = (
+    <svg style={{ position: "absolute", top: "0", left: "0" }} width="7px" height="7px" viewBox="0 0 7 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+            <circle id="Oval-1" fill="#2B80B2" cx="3.5" cy="3.5" r="3.5"></circle>
+        </g>
+    </svg>
+);

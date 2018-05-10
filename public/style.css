@@ -753,7 +753,7 @@ fieldset + fieldset {
 	height: 630px;
 
 	position: relative;
-	left: 50px;
+	margin-left: 50px;
 	
 	background: #EA411E;
 }
@@ -885,6 +885,44 @@ fieldset + fieldset {
 
 	background: #234F78;
 }
+
+ /* BOARD SCREWS  */
+.btn-board-screw {
+	position: absolute;
+	display: inline-block;
+
+	background: transparent;
+	height: 7px;
+	width: 7px;
+	overflow: visible;
+
+	cursor: default;
+}
+
+.btn-board-screw:hover{
+	cursor: default;
+}
+
+#btn-board-screw-01{
+	left: 5px;
+	top: 5px;
+}
+
+#btn-board-screw-02{
+	right: 5px;
+	top: 5px;
+}
+
+#btn-board-screw-03{
+	left: 5px;
+	bottom: 5px;
+}
+
+#btn-board-screw-04{
+	right: 5px;
+	bottom: 5px;
+}
+
 
 .right-side-col {
 	width: 226px;

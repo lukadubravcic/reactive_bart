@@ -48,7 +48,6 @@ class cheatingDetector {
         } else if (this.averageTime !== null) {
             this.averageTime = (this.averageTime + timeBetweenCharEntry) / 2;
         }
-        console.log(this.averageTime)
         return;
     }
 

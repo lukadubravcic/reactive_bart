@@ -7,7 +7,7 @@ class TableFooter extends React.Component {
     constructor(props) {
         super(props);
         this.changeShownPunishments = this.props.changeShownPunishments;
-
+        
         this.showPage = id => {
             const currentPage = this.props.currentPage;
             const punishments = this.props.punishments;

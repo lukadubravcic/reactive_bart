@@ -114,10 +114,9 @@ class SkoldBoardTable extends React.Component {
     render() {
         if (this.state.shownRows === null || this.state.shownRows.length === 0) return null;
         // if (Object.keys(this.props.data).length === 0) return null;
-
         const rowsToDisplay = this.state.shownRows.map((item, index) => {
-            let hasPunishBtn = !(this.props.currentUser.email === item.email);
-            return (<SkoldBoardTableRow item={item} key={index} hasPunishBtn={hasPunishBtn} />)
+            let isCurrentUser = (this.props.currentUser.email === item.email);
+            return (<SkoldBoardTableRow item={item} key={index} isCurrentUser={isCurrentUser} />)
         });
 
         return (
@@ -146,15 +145,11 @@ export default SkoldBoardTable;
 
 
 function getFirstPage(dataObject) {
+    if (dataObject.length === 0) return null;
     let tmp = [];
-    let objKeys = Object.keys(dataObject).map(item => item);
-
-    if (objKeys.length === 0) return null;
 
     for (let i = 0; i < ITEMS_PER_PAGE; i++) {
-        if (typeof objKeys[i] !== 'undefined' && objKeys[i] !== null) {
-            tmp.push({ ...dataObject[objKeys[i]], email: objKeys[i] });
-        }
+        if (dataObject[i]) tmp.push(dataObject[i]);
     }
 
     return tmp;

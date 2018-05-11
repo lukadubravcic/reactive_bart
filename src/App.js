@@ -50,7 +50,7 @@ const mapDispatchToProps = dispatch => ({
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
                     const msgDuration = typeof payload.time !== 'undefined' && payload.time !== null ? payload.time : defaultMsgDuration;
-                    console.log(payload)
+                    
                     dispatch({
                         type: 'GUEST_PUNISHMENT_INVALID',
                         msg: payload.msg,

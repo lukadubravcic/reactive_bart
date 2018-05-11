@@ -28,7 +28,7 @@ class Prefs extends React.Component {
         this.clickHandler = ev => {
             this.props.updatePref({ [ev.target.name]: !this.props[ev.target.name] });
         };
-        
+
         this.toggleShowChangePwdForm = ev => {
             ev.preventDefault();
             this.setState({
@@ -60,13 +60,13 @@ class Prefs extends React.Component {
                 <div>
                     <div id="prefs" className="parent-component prefs-component-container">
                         <div className="container pref-content-container">
+                            <a
+                                id="change-pwd-link"
+                                onClick={this.toggleShowChangePwdForm}>
+                                CHANGE PASSWORD
+                            </a>
                             <div className="prefs-left-container float-left">
                                 <label id="prefs-heading" className="heading">Prefs</label>
-                                <a
-                                    id="change-pwd-link"
-                                    onClick={this.toggleShowChangePwdForm}>
-                                    CHANGE PASSWORD
-                                </a>
                             </div>
                             <div className="float-left prefs-container">
                                 <div className="prefs-row">
@@ -174,7 +174,7 @@ class Prefs extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <NewPasswordContainer showForm={this.state.showChangePwdForm} hideForm={this.hideChangePwdForm}/>
+                    <NewPasswordContainer showForm={this.state.showChangePwdForm} hideForm={this.hideChangePwdForm} />
                 </div>
             );
         } else return null;

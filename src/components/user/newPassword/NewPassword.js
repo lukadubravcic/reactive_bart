@@ -52,8 +52,6 @@ class NewPassword extends React.Component {
             this.setState({ disableSumbit: false });
         }
 
-        console.log(typeof this.enableSubmitBtn)
-
         this.submitNewPassword = (currentPassword, newPassword, reNewPassword, enableSubmit) => ev => {
             ev.preventDefault();
             this.refs.changePasswordBtn.setAttribute('disabled', 'true');

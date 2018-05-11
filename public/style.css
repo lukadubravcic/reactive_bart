@@ -2158,7 +2158,7 @@ td.ordered-status-field {
 	display: inline-block;
 	position: absolute;
 	left: 100px;
-	top: 274px;
+	bottom: 123px;
 
 	z-index: 10;
 

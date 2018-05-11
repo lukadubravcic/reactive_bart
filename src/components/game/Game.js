@@ -88,9 +88,10 @@ class Game extends React.Component {
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
                 if (punishmentInURL) {  // kazna je aktivna
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));
-                } else { // kazna nije pronadena u accepted
+                } else { // kazna nije pronadena u accepted                    
                     punishmentInURL = getByValue(this.props.pastPunishments, this.props.punishmentIdFromURL) // pronadi je u past kaznama
-                    this.handleFaultyAcceptedPunishment(punishmentInURL);
+                    if (punishmentInURL) this.handleFaultyAcceptedPunishment(punishmentInURL);
+                    else this.setRandomActivePunishment();
                 }
             } else { // ako ne postoji postavi random punishment
                 this.setRandomActivePunishment();
@@ -122,6 +123,9 @@ class Game extends React.Component {
                 case 'failed':
                     warningMsg = 'Accessing failed punishment.';
                     break;
+                case 'ignored':
+                    warningMsg = 'Accessing ignored punishment.';
+                    break;
                 default:
                     warningMsg = 'Invalid punishment.';
                     break;
@@ -139,12 +143,12 @@ class Game extends React.Component {
         }
     }
 
-    componentDidMount() {
-        // trigera se kod setanja novog pwda
-        if (Object.keys(this.props.activePunishment).length && Object.keys(this.props.currentUser).length) {
-            this.changeActivePunishmentLoggedIn();
-        }
-    }
+    /*  componentDidMount() {
+            // trigera se kod setanja novog pwda
+            if (Object.keys(this.props.activePunishment).length && Object.keys(this.props.currentUser).length) {
+                this.changeActivePunishmentLoggedIn();
+            }
+        } */
 
     componentWillUnmount() {
         this.props.gameUnmount();
@@ -340,13 +344,9 @@ function getSpecialPunishment(type, specialPunishments) {
 }
 
 function addSpacingToPunishmentWhatToWrite(punishment) {
-
     if (punishment.what_to_write[punishment.what_to_write.length - 1] === ' ') {
-
         return punishment;
-
     } else {
-
         return { ...punishment, what_to_write: punishment.what_to_write += ' ' };
     }
 }
@@ -368,6 +368,7 @@ function getAcceptedPunishmentStatus(punishment) {
     if (typeof punishment.given_up !== 'undefined' && punishment.given_up !== null) return 'given_up';
     else if (typeof punishment.done !== 'undefined' && punishment.done !== null) return 'done';
     else if (typeof punishment.failed !== 'undefined' && punishment.failed !== null) return 'failed';
+    else if (typeof punishment.ignored !== 'undefined' && punishment.ignored !== null) return 'ignored';
     else return null;
 }
 

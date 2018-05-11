@@ -46,9 +46,13 @@ class Prefs extends React.Component {
     render() {
         const userLoggedIn = Object.keys(this.props.currentUser).length > 0;
         const tooltips = this.props.show_tooltips;
+        const punishmentAccepted = this.props.punishment_accepted;
+        const punishmentRejected = this.props.punishment_rejected;
+        const punishmentIgnored = this.props.punishment_ignored;
         const notifyTrying = this.props.notify_trying;
         const notifyDone = this.props.notify_done;
         const notifyFailed = this.props.notify_failed;
+        const punishmentGivenUp = this.props.punishment_givenup;
         const sound = this.props.sound;
 
         if (userLoggedIn) {
@@ -79,6 +83,39 @@ class Prefs extends React.Component {
                                 <div className="prefs-row">
                                     <label className="float-left pref-chexbox-cont">
                                         <input
+                                            name="punishment_accepted"
+                                            type="checkbox"
+                                            checked={punishmentAccepted}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify on accepted</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="punishment_rejected"
+                                            type="checkbox"
+                                            checked={punishmentRejected}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify on rejected</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="punishment_ignored"
+                                            type="checkbox"
+                                            checked={punishmentIgnored}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify on ignored</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
                                             name="notify_trying"
                                             type="checkbox"
                                             checked={notifyTrying}
@@ -96,7 +133,7 @@ class Prefs extends React.Component {
                                             onChange={this.clickHandler} />
                                         <span id="pref-checkmark"></span>
                                     </label>
-                                    <label className="pref-name">notify completed</label>
+                                    <label className="pref-name">notify on completed</label>
                                 </div>
                                 <div className="prefs-row">
                                     <label className="float-left pref-chexbox-cont">
@@ -108,6 +145,17 @@ class Prefs extends React.Component {
                                         <span id="pref-checkmark"></span>
                                     </label>
                                     <label className="pref-name">notify failed</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="punishment_givenup"
+                                            type="checkbox"
+                                            checked={punishmentGivenUp}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify on giving up</label>
                                 </div>
                                 <div className="prefs-row">
                                     <label className="float-left pref-chexbox-cont">
@@ -165,3 +213,5 @@ const bottomSVG = (
         </g>
     </svg>
 )
+
+

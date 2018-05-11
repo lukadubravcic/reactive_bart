@@ -46,14 +46,11 @@ const mapDispatchToProps = dispatch => ({
     },
     handleGuest: (userId, punishmentId) => {
         dispatch({ type: 'GUEST_PUNISHMENT_LOADING' });
-
         agent.Auth.getPunishmentAsGuest(encodeURIComponent(userId), encodeURIComponent(punishmentId)).then(payload => {
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
-                    console.log(payload.msg);
-
                     const msgDuration = typeof payload.time !== 'undefined' && payload.time !== null ? payload.time : defaultMsgDuration;
-
+                    console.log(payload)
                     dispatch({
                         type: 'GUEST_PUNISHMENT_INVALID',
                         msg: payload.msg,
@@ -130,7 +127,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        prettyURL();
+        // prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

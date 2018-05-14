@@ -2607,3 +2607,39 @@ td.skoldboard-table-punish-field {
 	margin-left: 22px;
 }
 
+.goodies-component-container {
+	display: block;
+	position: relative;
+	height: 470px;
+	min-width: 1280px;
+	background: #FF545F;
+}
+
+#goodies-heading {
+	margin-top: 59px;
+	z-index: 2;
+}
+
+#goodies-svg-container {
+	position: absolute;
+	top: 33px;
+	left: 100px;
+	z-index: 1;
+}
+
+#goodies-btn-holder {
+	position: relative;
+	text-align: center;
+}
+
+#goodies-btn {
+	position: absolute;
+	margin-left: 0;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 5;
+
+
+	font-weight: 300;
+}

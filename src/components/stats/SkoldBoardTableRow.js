@@ -108,12 +108,7 @@ class SkoldBoardTableRow extends React.Component {
 
         this.punishHandler = ev => {
             ev.preventDefault();
-            let toWhom = (typeof this.props.item.username === 'undefined'
-                || this.props.item.username === ''
-                || this.props.item.username === null)
-                ? this.props.item.email
-                : this.props.item.username;
-            this.props.sendPunishment(toWhom);
+            this.props.sendPunishment(this.props.item.whom);
         }
     }
 
@@ -121,19 +116,15 @@ class SkoldBoardTableRow extends React.Component {
         const rankFieldContent = typeof this.props.item.rank === 'undefined' || this.props.item.rank === null
             ? 'unknown'
             : this.props.item.rank;
-        const whoFieldContent =
-            (typeof this.props.item.username === 'undefined'
-                || this.props.item.username === ''
-                || this.props.item.username === null)
-                ? this.getTableFieldData(this.props.item.email, 26)
-                : this.getTableFieldData(this.props.item.username, 26);
-        const fromValue = typeof this.props.item.fromNum === 'undefined' || this.props.item.fromNum === null
+        const whoFieldContent = this.getTableFieldData(this.props.item.whom, 26)
+
+        const fromValue = typeof this.props.item._from === 'undefined' || this.props.item._from === null
             ? 0
-            : this.props.item.fromNum;
-        const toValue = typeof this.props.item.toNum === 'undefined' || this.props.item.toNum === null
+            : this.props.item._from;
+        const toValue = typeof this.props.item._to === 'undefined' || this.props.item._to === null
             ? 0
-            : this.props.item.toNum;
-        const isCurrentUser = !this.props.isCurrentUser
+            : this.props.item._to;
+        const isCurrentUser = this.props.item.self === 0
             ? <button
                 className="skoldboard-btn-punish"
                 onClick={this.punishHandler}>
@@ -150,7 +141,7 @@ class SkoldBoardTableRow extends React.Component {
             </a>;
 
         return (
-            <tr className={`skoldboard-row ${this.props.isCurrentUser ? "picker-selected-row" : ""}`}>
+            <tr className={`skoldboard-row ${this.props.item.self === 1 ? "picker-selected-row" : ""}`}>
                 <td className="empty-field"></td>
                 <td className="skoldboard-rank-field">
                     {rankFieldContent}

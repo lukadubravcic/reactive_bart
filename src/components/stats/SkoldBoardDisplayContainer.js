@@ -11,8 +11,8 @@ class SkoldBoardDisplayContainer extends React.Component {
     }
 
     componentDidMount() {
-        let dataArray = tranformAndSortData(this.props.data);
-        if (dataArray.length) this.setState({ data: dataArray });
+        // let dataArray = tranformAndSortData(this.props.data);
+        if (this.props.data.length) this.setState({ data: this.props.data });
     }
 
     render() {
@@ -38,7 +38,7 @@ class SkoldBoardDisplayContainer extends React.Component {
 export default SkoldBoardDisplayContainer;
 
 
-function tranformAndSortData(data) {
+/* function tranformAndSortData(data) {
     let dataArray = [];
 
     for (let key in data) {
@@ -58,4 +58,4 @@ function sortDataByRank(data, order) {
     });
 
     return tmp;
-};
+}; */

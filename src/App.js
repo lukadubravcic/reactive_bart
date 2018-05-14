@@ -9,6 +9,7 @@ import Stats from './components/stats/Stats';
 import Footer from './components/Footer';
 import MobileSplashScreen from './components/MobileSplashScreen';
 import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
+import GoodiesStore from './components/GoodiesStore';
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
@@ -175,6 +176,7 @@ class App extends React.Component {
                     <PunishmentCreator />
                     <PunishmentSelectorTable />
                     <Stats />
+                    <GoodiesStore />
                     <Prefs />
                     <Footer
                         showTermsOfAgreement={this.props.showTermsOfAgreement}

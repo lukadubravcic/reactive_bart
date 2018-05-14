@@ -115,8 +115,7 @@ class SkoldBoardTable extends React.Component {
         if (this.state.shownRows === null || this.state.shownRows.length === 0) return null;
         // if (Object.keys(this.props.data).length === 0) return null;
         const rowsToDisplay = this.state.shownRows.map((item, index) => {
-            let isCurrentUser = (this.props.currentUser.email === item.email);
-            return (<SkoldBoardTableRow item={item} key={index} isCurrentUser={isCurrentUser} />)
+            return (<SkoldBoardTableRow item={item} key={index}/>)
         });
 
         return (

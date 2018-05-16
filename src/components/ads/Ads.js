@@ -2,12 +2,14 @@ import React from 'react';
 
 const Ads = props => {
     return (
-        <div id="ads">
+        <div id="rollups">
             <a href="http://www.hyperviz.com" target="_blank" rel="noopener noreferrer">
-                <img id="dummy-oglas" src="/banners/hyperviz.png" alt="ads" />
+                <img id="rollup" src="/banners/hyperviz.png" alt="ads" />
             </a>
         </div>
     )
 }
 
 export default Ads;
+
+ 

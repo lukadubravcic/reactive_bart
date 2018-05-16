@@ -945,7 +945,7 @@ fieldset + fieldset {
 	margin-left: 13px;	
 }
 
-#ads-container {
+#rollup-container {
 	width: 100%;
 	height: calc(100% - 330px);
 
@@ -954,7 +954,7 @@ fieldset + fieldset {
 	z-index: 1;
 }
 
-#ads {
+#rollups {
 	width: 190px;
 	height: 630px;
 
@@ -965,7 +965,7 @@ fieldset + fieldset {
 	background: #2B5D64;
 }	
 
-#dummy-oglas {
+#rollup {
 	width: 160px;
 	height: 600px;
 

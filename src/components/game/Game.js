@@ -306,7 +306,7 @@ class Game extends React.Component {
                             </svg>
                         </div>
 
-                        <div id="ads-container">
+                        <div id="rollup-container">
                             <Ads />
                         </div>
 

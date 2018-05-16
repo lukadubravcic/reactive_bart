@@ -19,7 +19,7 @@ class SkoldBoardDisplayContainer extends React.Component {
         if (!this.state.data) return null;
 
         return (
-            <div>
+            <div className="skoldboard-table-container">
                 <div style={{ marginTop: 60 + "px" }} className="picker-nav-container">
                     <nav className="picker-navigation">
                         <button

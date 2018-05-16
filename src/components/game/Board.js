@@ -249,7 +249,7 @@ class Board extends React.Component {
         };
 
         this.boardFocused = ev => {
-            if (this.props.progress === 100 || this.props.boardTextMistake) return;
+            if (this.props.progress === 100 || this.props.boardTextMistake || !this.state.showBoard) return;
             this.elementKreda.style.opacity = 0;
             this.cheatingCheck.start();
             ev && ev.preventDefault();

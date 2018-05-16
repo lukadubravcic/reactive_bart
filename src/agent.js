@@ -18,8 +18,8 @@ const tokenPlugin = req => {
 const requests = {
 	get: url => superagent('GET', `${API_ROOT}${url}`)
 		.use(tokenPlugin)
-		.then(responseBody, (err) => {
-			console.log('err GET THEN ');
+		.then(responseBody, err => {
+			// console.log('err GET THEN ');
 			return null;
 		}),
 	post: (url, body) => superagent('POST', `${API_ROOT}${url}`)

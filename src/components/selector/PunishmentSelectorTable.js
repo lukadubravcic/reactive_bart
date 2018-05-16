@@ -70,8 +70,7 @@ class PunishmentSelectorTable extends React.Component {
                 }
 
             } else {
-
-                console.log("warning: accepted punishments empty or payload wasn't received");
+                // console.log("warning: accepted punishments empty or payload wasn't received");
                 this.props.setAcceptedPunishments([]);
             }
         };
@@ -91,15 +90,13 @@ class PunishmentSelectorTable extends React.Component {
                     }
                 }
             } else {
-
-                console.log("warning: past punishments payload empty or wasn't received");
+                // console.log("warning: past punishments payload empty or wasn't received");
                 this.props.setPastPunishments([]);
             }
         };
 
         this._handleOrderedPunFromAgent = payload => {
 
-            console.log()
             if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
 
                 this.props.setOrderedPunishments(payload.orderedPunishments);
@@ -115,8 +112,7 @@ class PunishmentSelectorTable extends React.Component {
 
                 }
             } else {
-
-                console.log("warning: ordered punishments payload empty or wasn't received");
+                // console.log("warning: ordered punishments payload empty or wasn't received");
                 this.props.setOrderedPunishments([]);
             }
         };

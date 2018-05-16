@@ -2475,6 +2475,11 @@ td.ordered-status-field {
 
 /* SKOLDBOARD TABLE PART */
 
+.skoldboard-table-container {
+	width: 1180px;
+	margin: auto;
+}
+
 .skoldboard-table {
 	display: inline-block;
 	position: relative;
@@ -2556,7 +2561,7 @@ td.skoldboard-table-punish-field {
 }
 
 .skoldboard-table-punish-field {
-	width: 281px;
+	width: 181px;
     padding-top: 10px;
     padding-bottom: 9px;
     display: inline-block;

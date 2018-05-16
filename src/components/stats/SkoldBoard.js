@@ -17,9 +17,9 @@ class SkoldBoard extends React.Component {
 
         this.getSkoldboardData = async () => {
             let res = await agent.Punishment.skoldboard();
-
+            
             if (res) {
-                this.setState({ skoldboardData: res });
+                this.setState({ skoldboardData: res });               
                 // this.setState({ skoldboardData: testData });
             }
         }

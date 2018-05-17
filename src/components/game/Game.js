@@ -115,21 +115,25 @@ class Game extends React.Component {
             let warningMsg = null;
             switch (punishmentStatus) {
                 case 'given_up':
-                    warningMsg = 'Punishment given up.';
+                    warningMsg = 'Punishment was given up.';
                     break;
                 case 'done':
-                    warningMsg = 'Punishment already completed.';
+                    warningMsg = 'Punishment already completed!';
                     break;
                 case 'failed':
-                    warningMsg = 'Punishment failed.';
+                    warningMsg = 'Punishment was failed.';
                     break;
                 case 'ignored':
-                    warningMsg = 'Punishment ignored.';
+                    warningMsg = 'Punishment was ignored.';
+                    break;
+                case 'rejected':
+                    warningMsg = 'Punishment was rejected.';
                     break;
                 default:
-                    warningMsg = 'Invalid punishment.';
+                    warningMsg = 'Err... something went wrong. Oh, no! We\'ll get punished!';
                     break;
             }
+
             // postavi poruku i random kaznu
             this.props.faultyPunishmentSet(warningMsg);
             this.setRandomActivePunishment();
@@ -369,6 +373,7 @@ function getAcceptedPunishmentStatus(punishment) {
     else if (typeof punishment.done !== 'undefined' && punishment.done !== null) return 'done';
     else if (typeof punishment.failed !== 'undefined' && punishment.failed !== null) return 'failed';
     else if (typeof punishment.ignored !== 'undefined' && punishment.ignored !== null) return 'ignored';
+    else if (typeof punishment.rejected !== 'undefined' && punishment.rejected !== null) return 'rejected';
     else return null;
 }
 

@@ -532,6 +532,19 @@ class Board extends React.Component {
 
             return;
         }
+
+        this.preloadStampImages = () => {
+            // hacky preload rjesenje - loadaj sve slike koje koriste stamp komponente u cache,
+            // te kad ih te komponente budu zahtjevale, slike se vade iz cache-a 
+            this.completedStampImg = new Image();
+            this.completedStampImg.src = 'board-completed-stamp.png';
+            this.failedStampImg = new Image();
+            this.failedStampImg.src = 'board-failed-stamp.png';
+            this.completedSocialImg = new Image();
+            this.completedSocialImg.src = 'board-completed-social.png';
+            this.failedSocialImg = new Image();
+            this.failedSocialImg.src = 'board-failed-social.png';
+        };
     }
 
     componentDidMount() {
@@ -544,6 +557,7 @@ class Board extends React.Component {
             }
         });
         this.listenOnKey();
+        this.preloadStampImages();
     }
 
     componentDidUpdate(prevProps) {
@@ -673,8 +687,8 @@ class Board extends React.Component {
                                     </div>
                             }
 
-                            {progress === 100 && !this.props.showToS && !this.props.showPrivacyPolicy ? <CompletedStamp /> : null}
-                            {isPunishmentFailed && !this.props.showToS && !this.props.showPrivacyPolicy ? <FailedStamp /> : null}
+                            {progress === 100 && !this.props.showToS && !this.props.showPrivacyPolicy ? <CompletedStamp img={this.completedStampImg} /> : null}
+                            {isPunishmentFailed && !this.props.showToS && !this.props.showPrivacyPolicy ? <FailedStamp img={this.failedStampImg} /> : null}
 
                             {this.props.boardHovered && this.props.startSentenceBeingWritten === false ?
                                 <div

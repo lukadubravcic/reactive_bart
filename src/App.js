@@ -160,6 +160,22 @@ class App extends React.Component {
         }
     }
 
+    onClick() {
+        let stringToShare = 'Testni tweet! #Skolded';
+
+        let width = 600,
+            height = 500,
+            left = 200,
+            top = 200,
+            url = 'http://twitter.com/share',
+            opts = 'status=1' +
+                ',width=' + width +
+                ',height=' + height +
+                ',top=' +  ((window.screen.availHeight - height)/2) +
+                ',left=' + ((window.screen.availWidth - width)/2);
+
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(stringToShare)}`, 'targetWindow', opts);
+    }
     render() {
 
         const md = new window.MobileDetect(window.navigator.userAgent);
@@ -174,6 +190,9 @@ class App extends React.Component {
         } else {
             return (
                 <div>
+                    <a className="twitter-share-button"
+                        onClick={this.onClick}>
+                        Tweet</a>
                     <Top />
                     <Game />
                     <PunishmentCreator />

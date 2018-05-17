@@ -13,6 +13,7 @@ const mapDispatchToProps = dispatch => ({
         agent.Pref.updatePreferences(newPref);
         dispatch({ type: 'PREFS_UPDATED', newPref });
     },
+    removeShowPrefFlag: () => dispatch({ type: 'REMOVE_SHOW_PREF_FLAG' }),
 });
 
 
@@ -20,7 +21,7 @@ class Prefs extends React.Component {
 
     constructor() {
         super();
-
+        this.prefComponentRef = null;
         this.state = {
             showChangePwdForm: false,
         };
@@ -43,6 +44,15 @@ class Prefs extends React.Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.showPrefs === 0 && this.props.showPrefs === 1) {
+            this.props.removeShowPrefFlag();
+            this.scrollTimeout = setTimeout(() => {
+                if (this.prefComponentRef !== null) this.prefComponentRef.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
+    }
+
     render() {
         const userLoggedIn = Object.keys(this.props.currentUser).length > 0;
         const tooltips = this.props.show_tooltips;
@@ -58,7 +68,10 @@ class Prefs extends React.Component {
         if (userLoggedIn) {
             return (
                 <div>
-                    <div id="prefs" className="parent-component prefs-component-container">
+                    <div ref={elem => this.prefComponentRef = elem}
+                        id="prefs"
+                        className="parent-component prefs-component-container">
+
                         <div className="container pref-content-container">
                             <a
                                 id="change-pwd-link"

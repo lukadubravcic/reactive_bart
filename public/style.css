@@ -2401,7 +2401,7 @@ td.ordered-status-field {
 	font-size: 6px;
 	color: #929292;
 	letter-spacing: 1.67px;
-
+	
 	top: 19px;
     right: -2px;
 }
@@ -2411,6 +2411,7 @@ td.ordered-status-field {
 	padding-left: 50px;
 	padding-right: 50px;
 	text-align: center;
+	height: 308px;
 }
 
 .mobile-message {

@@ -10,7 +10,8 @@ const defaultState = {
     sound: true,
     wall_season: 'plain',
     classroom_wall: 'plain',
-    classroom_board: 'plain'
+    classroom_board: 'plain',
+    showPrefs: 0,
 };
 
 export default (state = defaultState, action) => {
@@ -21,6 +22,10 @@ export default (state = defaultState, action) => {
             return { ...state, ...action.newPref };
         case 'LOGIN':
             return { ...state, ...action.prefs };
+        case 'SHOW_PREFS':
+            return { ...state, showPrefs: 1 };
+        case 'REMOVE_SHOW_PREF_FLAG':
+            return { ...state, showPrefs: 0 };
         case 'LOGOUT':
             return defaultState;
         default:

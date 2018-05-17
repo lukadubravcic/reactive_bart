@@ -115,16 +115,16 @@ class Game extends React.Component {
             let warningMsg = null;
             switch (punishmentStatus) {
                 case 'given_up':
-                    warningMsg = 'Accessing given up punishment.';
+                    warningMsg = 'Punishment given up.';
                     break;
                 case 'done':
-                    warningMsg = 'Accessing completed punishment.';
+                    warningMsg = 'Punishment already completed.';
                     break;
                 case 'failed':
-                    warningMsg = 'Accessing failed punishment.';
+                    warningMsg = 'Punishment failed.';
                     break;
                 case 'ignored':
-                    warningMsg = 'Accessing ignored punishment.';
+                    warningMsg = 'Punishment ignored.';
                     break;
                 default:
                     warningMsg = 'Invalid punishment.';

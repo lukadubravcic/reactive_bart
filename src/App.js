@@ -51,7 +51,7 @@ const mapDispatchToProps = dispatch => ({
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
                     const msgDuration = typeof payload.time !== 'undefined' && payload.time !== null ? payload.time : defaultMsgDuration;
-                    
+
                     dispatch({
                         type: 'GUEST_PUNISHMENT_INVALID',
                         msg: payload.msg,
@@ -105,6 +105,7 @@ const mapDispatchToProps = dispatch => ({
     },
     showTermsOfAgreement: () => dispatch({ type: 'SHOW_TERMS_OF_SERVICE' }),
     showPrivacyPolicy: () => dispatch({ type: 'SHOW_PRIVACY_POLICY' }),
+    showPrefs: () => dispatch({ type: 'SHOW_PREFS' }),
 });
 
 class App extends React.Component {
@@ -112,23 +113,25 @@ class App extends React.Component {
     componentDidMount() {
 
         // hendlaj invited usera kao guesta
-        let queryStringData = getQueryStringData();
+        this.queryStringData = getQueryStringData();
         let token = window.localStorage.getItem('token');
         //  ako pathname postoji -> prikazi 404 kaznu
+
         if (window.location.pathname.length > 1) {
             this.props.set404Punishment();
         } else if (token) {
             this.props.onLoad(token);
-            if (typeof queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(queryStringData.uid);
-            if (typeof queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(queryStringData.id);
-        } else if (typeof queryStringData.uid !== 'undefined' && typeof queryStringData.id !== 'undefined') {
-            this.props.setUserIdFromUrl(queryStringData.uid);
-            this.props.handleGuest(queryStringData.uid, queryStringData.id);
+            if (typeof this.queryStringData.uid !== 'undefined') this.props.setUserIdFromUrl(this.queryStringData.uid);
+            if (typeof this.queryStringData.id !== 'undefined') this.props.setPunishmentIdFromURL(this.queryStringData.id);
+            else if (typeof this.queryStringData.prf !== 'undefined') this.props.showPrefs();
+        } else if (typeof this.queryStringData.uid !== 'undefined' && typeof this.queryStringData.id !== 'undefined') {
+            this.props.setUserIdFromUrl(this.queryStringData.uid);
+            this.props.handleGuest(this.queryStringData.uid, this.queryStringData.id);
             // window.localStorage.removeItem('token');
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        prettyURL();
+        //prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

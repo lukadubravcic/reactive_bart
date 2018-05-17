@@ -8,36 +8,64 @@ const MobileSplashScreen = props => {
         'skolded_4.png',
     ];
 
+    const msgs = [
+        `Your mobile device 
+is a fine piece of 
+equipment, but
+Skolded.com
+requires a proper
+desktop computer
+because we say so.`,
+
+        `Hint: desktop`,
+
+        `Get yourself a 
+proper desktop
+computer. Then
+come back.`,
+
+        `Your screen is too
+small. Your 
+keyboard is 
+useless. And your
+battery is about to
+die. Find something
+else.`,
+    ]
+
     const logoToShow = logos[Math.floor(Math.random() * logos.length)];
+    const msgToShow = msgs[Math.floor(Math.random() * msgs.length)]
 
     return (
-        <div style={{ background: "#2B5D64", minWidth: 375 + "px" }}>
-            <div className="mobile-logo-container">
-                <div style={{ width: 285 + "px", position: "absolute" }}>
-                    <img className="mobile-logo-image" src={logoToShow} />
-                    <span className="logo-beta-mobile-mark">beta</span>
-                    <span className="logo-tm-mobile-mark">TM</span>
+        <div style={{ background: "#2B5D64" }}>
+            <div style={{ background: "#2B5D64", minWidth: 375 + "px" }}>
+                <div className="mobile-logo-container">
+                    <div style={{ width: 285 + "px", position: "absolute" }}>
+                        <img className="mobile-logo-image" src={logoToShow} />
+                        <span className="logo-beta-mobile-mark">beta</span>
+                        <span className="logo-tm-mobile-mark">TM</span>
+                    </div>
+                </div>
+                <div className="mobile-message-container">
+                    <span className="mobile-message">{msgToShow}</span>
+                </div>
+                <div className="mobile-bottom-container">
+                    <div className="mobile-social-icons-container">
+                        <a target="_blank" href="https://twitter.com/skolded_com">
+                            {twitterIcon}
+                        </a>
+                        <a target="_blank" href="https://www.facebook.com/skolded">
+                            {facebookIcon}
+                        </a>
+                    </div>
+                    <div className="kreativni-mobile-link-container">
+                        <a id="kreativni-mobile-link" target="_blank" href="http://www.kreativni.com/">
+                            &copy;&nbsp;KREATIVNI ODJEL
+                    </a>
+                    </div>
                 </div>
             </div>
-            <div className="mobile-message-container">
-                <span className="mobile-message">Your mobile device is a fine piece of equipment, but Skolded.com requires a proper desktop computer because we say so.</span>
-            </div>
-            <div className="mobile-bottom-container">
-                <div className="mobile-social-icons-container">
-                    <a target="_blank" href="https://twitter.com/skolded_com">
-                        {twitterIcon}
-                    </a>
-                    <a target="_blank" href="https://www.facebook.com/skolded">
-                        {facebookIcon}
-                    </a>
-                </div>
-                <div className="kreativni-mobile-link-container">
-                    <a id="kreativni-mobile-link" target="_blank" href="http://www.kreativni.com/">
-                        &copy;&nbsp;KREATIVNI ODJEL
-                    </a>
-                </div>
-            </div>
-        </div>
+        </div >
     )
 }
 
@@ -66,3 +94,4 @@ const facebookIcon = (
         </g>
     </svg >
 )
+

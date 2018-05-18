@@ -1,11 +1,10 @@
 import React from 'react';
 
 const FailedStamp = props => {
+    let stringToShare = `I've just failed to write ${props.punishment.how_many_times}x "${props.punishment.what_to_write.trim()}" on Skolded.com. Bummer!`;
 
-    const handleClick = ev => {
+    const handleTwitterClick = ev => {
         ev.preventDefault();
-
-        let stringToShare = `I've just failed to write ${props.punishment.how_many_times}x "${props.punishment.what_to_write.trim()}" on Skolded.com. Bummer! #Skolded`;
 
         let width = 600,
             height = 500,
@@ -18,7 +17,18 @@ const FailedStamp = props => {
                 ',top=' + ((window.screen.availHeight - height) / 2) +
                 ',left=' + ((window.screen.availWidth - width) / 2);
 
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(stringToShare)}`, 'targetWindow', opts);
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(stringToShare + " #skolded")}`, 'targetWindow', opts);
+    }
+
+    const handleFbClick = ev => {
+        ev.preventDefault();
+
+        window.FB.ui({
+            method: 'share',
+            href: 'https://www.skolded.com',
+            quote: stringToShare,
+            hashtag: '#skolded',
+        }, function (response) { });
     }
 
     return (
@@ -32,7 +42,7 @@ const FailedStamp = props => {
 
                 <div className="social-btns-container">
                     <a className="twitter-share-button"
-                        onClick={handleClick}>
+                        onClick={handleTwitterClick}>
                         <button className="social-btn">
                             <svg width="41px" height="34px" viewBox="0 0 41 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
                                 <g id="page-02a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-571.000000, -1090.000000)">
@@ -47,18 +57,20 @@ const FailedStamp = props => {
                         </button>
                     </a>
 
-                    <button className="social-btn">
-                        <svg width="35px" height="35px" viewBox="0 0 35 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-                            <g id="page-02a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-627.000000, -1090.000000)">
-                                <g id="Group-Copy-3" transform="translate(535.000000, 1008.000000)" fill="#FFFFFF">
-                                    <g id="Group-72" transform="translate(35.000000, 82.000000)">
-                                        <path d="M91.4545,5.8295 C91.4545,2.8335 88.7465,0.1235 85.7505,0.1235 L62.9305,0.1235 C59.9325,0.1235 57.2245,2.8335 57.2245,5.8295 L57.2245,28.6505 C57.2245,31.6485 59.9325,34.3535 62.9305,34.3535 L74.3395,34.3535 L74.3395,21.4255 L70.1565,21.4255 L70.1565,15.7195 L74.3395,15.7195 L74.3395,13.4945 C74.3395,9.6635 77.2185,6.2095 80.7575,6.2095 L85.3705,6.2095 L85.3705,11.9155 L80.7575,11.9155 C80.2515,11.9155 79.6655,12.5275 79.6655,13.4465 L79.6655,15.7195 L85.3705,15.7195 L85.3705,21.4255 L79.6655,21.4255 L79.6655,34.3535 L85.7505,34.3535 C88.7465,34.3535 91.4545,31.6485 91.4545,28.6505 L91.4545,5.8295 Z"
-                                            id="Fill-70"></path>
+                    <a onClick={handleFbClick}>
+                        <button className="social-btn">
+                            <svg width="35px" height="35px" viewBox="0 0 35 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+                                <g id="page-02a" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-627.000000, -1090.000000)">
+                                    <g id="Group-Copy-3" transform="translate(535.000000, 1008.000000)" fill="#FFFFFF">
+                                        <g id="Group-72" transform="translate(35.000000, 82.000000)">
+                                            <path d="M91.4545,5.8295 C91.4545,2.8335 88.7465,0.1235 85.7505,0.1235 L62.9305,0.1235 C59.9325,0.1235 57.2245,2.8335 57.2245,5.8295 L57.2245,28.6505 C57.2245,31.6485 59.9325,34.3535 62.9305,34.3535 L74.3395,34.3535 L74.3395,21.4255 L70.1565,21.4255 L70.1565,15.7195 L74.3395,15.7195 L74.3395,13.4945 C74.3395,9.6635 77.2185,6.2095 80.7575,6.2095 L85.3705,6.2095 L85.3705,11.9155 L80.7575,11.9155 C80.2515,11.9155 79.6655,12.5275 79.6655,13.4465 L79.6655,15.7195 L85.3705,15.7195 L85.3705,21.4255 L79.6655,21.4255 L79.6655,34.3535 L85.7505,34.3535 C88.7465,34.3535 91.4545,31.6485 91.4545,28.6505 L91.4545,5.8295 Z"
+                                                id="Fill-70"></path>
+                                        </g>
                                     </g>
                                 </g>
-                            </g>
-                        </svg>
-                    </button>
+                            </svg>
+                        </button>
+                    </a>
 
                 </div>
             </div>

@@ -110,6 +110,11 @@ const mapDispatchToProps = dispatch => ({
 
 class App extends React.Component {
 
+    constructor() {
+        super();
+    }
+
+
     componentDidMount() {
 
         // hendlaj invited usera kao guesta
@@ -163,7 +168,7 @@ class App extends React.Component {
             }
         }
     }
-    
+
     render() {
 
         const md = new window.MobileDetect(window.navigator.userAgent);
@@ -177,7 +182,7 @@ class App extends React.Component {
             )
         } else {
             return (
-                <div>                    
+                <div>
                     <Top />
                     <Game />
                     <PunishmentCreator />

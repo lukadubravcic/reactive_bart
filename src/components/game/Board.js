@@ -687,8 +687,8 @@ class Board extends React.Component {
                                     </div>
                             }
 
-                            {progress === 100 && !this.props.showToS && !this.props.showPrivacyPolicy ? <CompletedStamp img={this.completedStampImg} /> : null}
-                            {isPunishmentFailed && !this.props.showToS && !this.props.showPrivacyPolicy ? <FailedStamp img={this.failedStampImg} /> : null}
+                            {progress === 100 && !this.props.showToS && !this.props.showPrivacyPolicy ? <CompletedStamp punishment={this.props.activePunishment} /> : null}
+                            {isPunishmentFailed && !this.props.showToS && !this.props.showPrivacyPolicy ? <FailedStamp punishment={this.props.activePunishment} /> : null}
 
                             {this.props.boardHovered && this.props.startSentenceBeingWritten === false ?
                                 <div

@@ -1,5 +1,7 @@
 import React from 'react';
 
+const releaseYear = 2018;
+
 const Footer = props => {
     const logos = [
         'skolded_1.png',
@@ -9,6 +11,13 @@ const Footer = props => {
     ];
 
     const logoToShow = logos[Math.floor(Math.random() * logos.length)];
+
+    const cpCalc = () => {
+        let currentYear = new Date().getFullYear();
+
+        if (currentYear > releaseYear) return `${releaseYear}-${currentYear}`
+        else return releaseYear;
+    }
 
     return (
         <div id="footer-component">
@@ -20,8 +29,8 @@ const Footer = props => {
                 </div>
 
                 <label id="cr-kreativni">
-                    &copy;&nbsp;
-                <a
+                    &copy;&nbsp;{cpCalc()}&nbsp;
+                    <a
                         id="kreativni-link"
                         target="_blank"
                         href="http://www.kreativni.com/">

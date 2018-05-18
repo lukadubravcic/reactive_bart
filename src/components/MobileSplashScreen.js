@@ -1,5 +1,7 @@
 import React from 'react';
 
+const releaseYear = 2018;
+
 const MobileSplashScreen = props => {
     const logos = [
         'skolded_1.png',
@@ -36,6 +38,13 @@ else.`,
     const logoToShow = logos[Math.floor(Math.random() * logos.length)];
     const msgToShow = msgs[Math.floor(Math.random() * msgs.length)]
 
+    const cpCalc = () => {
+        let currentYear = new Date().getFullYear();
+
+        if (currentYear > releaseYear) return `${releaseYear}-${currentYear}`
+        else return releaseYear;
+    }
+
     return (
         <div style={{ background: "#2B5D64" }}>
             <div style={{ background: "#2B5D64", minWidth: 375 + "px" }}>
@@ -60,7 +69,7 @@ else.`,
                     </div>
                     <div className="kreativni-mobile-link-container">
                         <a id="kreativni-mobile-link" target="_blank" href="http://www.kreativni.com/">
-                            &copy;&nbsp;KREATIVNI ODJEL
+                            &copy;&nbsp;{cpCalc()}&nbsp;KREATIVNI ODJEL
                     </a>
                     </div>
                 </div>

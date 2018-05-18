@@ -254,7 +254,7 @@ class Register extends React.Component {
 
         this.onEmailBlur = async ev => {
             ev.preventDefault();
-            if (this.props.email.length === 0) return;
+            if (this.props.email.length === 0 || !isMail(this.props.email)) return;
             let { exist } = await agent.Auth.checkIfUserExists(this.props.email);
             if (!exist) return this.setState({ emailExist: false });
             return this.setState({ emailExist: true });
@@ -336,14 +336,18 @@ class Register extends React.Component {
         const isFormDisabled = this.state.formDisabled;
         const isSubmitDisabled =
             this.state.formDisabled
+            || this.state.emailExist
             || this.state.usernameExist
             || !this.state.validEmailField
             || !this.state.validUsernameField
             || !this.state.validPasswordField
             || this.state.submitBtnDisabled;
-        const submitBtnStyle = this.state.submitBtnDisabled
+
+        const submitBtnStyle = isSubmitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
+
+        console.log(this.state.emailExist)
 
         return (
 
@@ -483,16 +487,15 @@ class Register extends React.Component {
                                 id="btn-register"
                                 className="btn-submit opacity-tran"
                                 type="submit"
-                                disabled={isFormDisabled || isSubmitDisabled}>
+                                disabled={isSubmitDisabled}>
                                 REGISTER
                             </button>
                             <button
-                                style={submitBtnStyle}
+                                style={{}}
                                 id="btn-additional"
                                 className="btn-submit"
                                 type="button"
-                                onClick={this.backToLogin}
-                                disabled={this.state.submitBtnDisabled}>
+                                onClick={this.backToLogin}>
                                 BACK TO LOGIN
                             </button>
                             {this.props._errMsg && this.state.showFormMsg

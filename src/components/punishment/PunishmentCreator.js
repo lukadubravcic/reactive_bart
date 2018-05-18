@@ -271,6 +271,7 @@ class PunishmentCreator extends React.Component {
         const submitBtnStyle = this.state.showFormMsg || submitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
+        const heading = usrLoggedIn && window.canRunAds ? 'Your turn to punish someone!' : 'Log in to start punishing!';
 
         return (
 
@@ -283,7 +284,7 @@ class PunishmentCreator extends React.Component {
                     className="container">
 
                     <div id="creator-heading-container">
-                        <h1 id="creator-heading">Your turn to punish someone!</h1>
+                        <h1 id="creator-heading">{heading}</h1>
                     </div>
 
                     <form

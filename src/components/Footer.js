@@ -39,7 +39,7 @@ const Footer = props => {
                     <span style={{ color: "#777" }}>&nbsp;|&nbsp;</span>
                     <a
                         id="terms-of-agreement-link"
-                        onClick={props.showTermsOfAgreement}
+                        onClick={props.showTermsOfService}
                     >
                         Terms of service
                     </a>

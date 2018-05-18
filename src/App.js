@@ -103,7 +103,7 @@ const mapDispatchToProps = dispatch => ({
             },
         });
     },
-    showTermsOfAgreement: () => dispatch({ type: 'SHOW_TERMS_OF_SERVICE' }),
+    showTermsOfService: () => dispatch({ type: 'SHOW_TERMS_OF_SERVICE' }),
     showPrivacyPolicy: () => dispatch({ type: 'SHOW_PRIVACY_POLICY' }),
     showPrefs: () => dispatch({ type: 'SHOW_PREFS' }),
 });
@@ -116,6 +116,10 @@ class App extends React.Component {
         this.queryStringData = getQueryStringData();
         let token = window.localStorage.getItem('token');
         //  ako pathname postoji -> prikazi 404 kaznu
+
+        // handle showToS ili Privacy policy
+        if (typeof this.queryStringData.tos !== 'undefined') this.props.showTermsOfService();
+        if (typeof this.queryStringData.pp !== 'undefined') this.props.showPrivacyPolicy();
 
         if (window.location.pathname.length > 1) {
             this.props.set404Punishment();
@@ -182,7 +186,7 @@ class App extends React.Component {
                     <GoodiesStore />
                     <Prefs />
                     <Footer
-                        showTermsOfAgreement={this.props.showTermsOfAgreement}
+                        showTermsOfService={this.props.showTermsOfService}
                         showPrivacyPolicy={this.props.showPrivacyPolicy} />
                     <EULawAbidingCitizen />
                 </div>

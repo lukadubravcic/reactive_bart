@@ -89,14 +89,16 @@ class StartToolbar extends React.Component {
                         style={this.state.buttonStyle}
                         id="btn-log-in"
                         className="btn-submit opacity-tran"
-                        onClick={this.clickHandler}>
+                        onClick={this.clickHandler}
+                        disabled={this.props.disabled}>
 
                         LOG IN
                     </button>
                     <a
                         style={this.state.buttonStyle}
                         id="register-link"
-                        onClick={this.showRegisterForm}>
+                        onClick={this.showRegisterForm}
+                        disabled={this.props.disabled}>
                         REGISTER
                     </a>
                     <div style={{ clear: "both" }}></div>

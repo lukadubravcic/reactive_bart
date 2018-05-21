@@ -120,7 +120,6 @@ class App extends React.Component {
         // hendlaj invited usera kao guesta
         this.queryStringData = getQueryStringData();
         let token = window.localStorage.getItem('token');
-        //  ako pathname postoji -> prikazi 404 kaznu
 
         // handle showToS ili Privacy policy
         if (typeof this.queryStringData.tos !== 'undefined') this.props.showTermsOfService();

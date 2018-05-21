@@ -1,4 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+
+const mapDispatchToProps = dispatch => ({
+    updatePolicyAgreementStatus: value => dispatch({ type: 'POLICY_AGREEMENT_STATUS_UPDATE', value }),
+});
 
 class EULawAbidingCitizen extends React.Component {
     constructor() {
@@ -10,12 +15,14 @@ class EULawAbidingCitizen extends React.Component {
         this.handleAgreeClick = () => {
             localStorage.setItem('cookie_agreed', "true");
             this.setState({ showElement: false });
+            this.props.updatePolicyAgreementStatus(true);
         }
     }
 
     componentDidMount() {
         if (localStorage.getItem('cookie_agreed') === "true") {
             this.setState({ showElement: false });
+            this.props.updatePolicyAgreementStatus(true);
         }
     }
 
@@ -50,4 +57,4 @@ class EULawAbidingCitizen extends React.Component {
     }
 }
 
-export default EULawAbidingCitizen;
+export default connect(() => ({}), mapDispatchToProps)(EULawAbidingCitizen);

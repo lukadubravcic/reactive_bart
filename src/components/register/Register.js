@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import agent from '../../agent';
 
 const mapStateToProps = state => ({
-    ...state.auth
+    ...state.auth,
+    policyAgreementStatus: state.common.policyAgreementStatus, 
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -333,7 +334,7 @@ class Register extends React.Component {
         const _errMsg = this.props._errMsg;
         const serverAnswer = this.props.serverAnswer;
         const passwordWrongEntryWarning = '3 to 20 characters, contain at least one numeric digit, one uppercase and lowercase letter.';
-        const isFormDisabled = this.state.formDisabled;
+        const isFormDisabled = this.state.formDisabled || this.props.policyAgreementStatus !== true;
         const isSubmitDisabled =
             this.state.formDisabled
             || this.state.emailExist
@@ -346,8 +347,6 @@ class Register extends React.Component {
         const submitBtnStyle = isSubmitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
-
-        console.log(this.state.emailExist)
 
         return (
 

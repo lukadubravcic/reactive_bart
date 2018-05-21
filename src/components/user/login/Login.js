@@ -25,6 +25,7 @@ const mapStateToProps = state => ({
     activePunishment: state.game.activePunishment,
     timeSpent: state.game.timeSpent,
     gameInProgress: state.game.gameInProgress,
+    policyAgreementStatus: state.common.policyAgreementStatus,
     // showSetNewPasswordComponent: state.auth.showSetNewPasswordComponent
 });
 
@@ -131,6 +132,8 @@ class Login extends React.Component {
         this.formMsgTimeout = null;
         this.whomFieldId = 'WHOM_FIELD';
         this.forgotPasswordLinkId = 'forgot-password';
+        this.toResetTimeout = null;
+        this.checkForUserTimeout = null;
 
         this.state = {
             componentStyle: {},
@@ -174,8 +177,9 @@ class Login extends React.Component {
 
         this.showResetPasswordForm = ev => {
             ev.preventDefault();
+            if (this.props.policyAgreementStatus !== true) return;
             this.animateShowResetPassword();
-            setTimeout(() => {
+            this.toResetTimeout = setTimeout(() => {
                 this.props.showResetPasswordForm();
             }, animationDuration);
         }
@@ -200,7 +204,7 @@ class Login extends React.Component {
             let key = isMail(value) ? 'email' : 'username';
             if (response.exist !== false) return;
             this.animateChangeToRegister(key);
-            setTimeout(() => {
+            this.checkForUserTimeout = setTimeout(() => {
                 this.props.showRegisterForm(key, value);
             }, animationDuration);
         }
@@ -280,6 +284,8 @@ class Login extends React.Component {
 
     componentWillUnmount() {
         clearTimeout(this.formMsgTimeout);
+        clearTimeout(this.toResetTimeout);
+        clearTimeout(this.checkForUserTimeout);
     }
 
     render() {
@@ -287,7 +293,7 @@ class Login extends React.Component {
         const loginWhom = this.props.loginWhom;
         const password = this.props.password;
         const errMsg = this.props._errMsg;
-        const isFormDisabled = this.state.formDisabled;
+        const isFormDisabled = this.state.formDisabled || this.props.policyAgreementStatus !== true;
         const submitBtnStyle = this.state.submitBtnDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };

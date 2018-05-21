@@ -18,7 +18,7 @@ const mapStateToProps = state => ({
     auth: state.auth,
     activePunishment: state.game.activePunishment,
     timeSpent: state.game.timeSpent,
-    gameInProgress: state.game.gameInProgress
+    gameInProgress: state.game.gameInProgress,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -133,7 +133,7 @@ class Top extends React.Component {
             } else { // user nije logiran
                 switch (elementToDisplay) {
                     case 'start':
-                        element = <StartToolbar btnClickCallback={this.showLogin} showRegisterForm={this.showRegisterForm} />;
+                        element = <StartToolbar btnClickCallback={this.showLogin} showRegisterForm={this.showRegisterForm} disabled={this.props.common.policyAgreementStatus !== true} />;
                         break;
                     case 'login':
                         element = <Login />;
@@ -145,7 +145,7 @@ class Top extends React.Component {
                         element = <Register />;
                         break;
                     default:
-                        element = <StartToolbar btnClickCallback={this.showLogin} showRegisterForm={this.showRegisterForm} />;
+                        element = <StartToolbar btnClickCallback={this.showLogin} showRegisterForm={this.showRegisterForm} disabled={this.props.common.policyAgreementStatus !== true} />;
                 }
                 return (
                     <div>
@@ -182,7 +182,12 @@ class Top extends React.Component {
     }
 
     render() {
-        return this.getElementToDisplay();
+        return (
+            <div className={this.props.common.policyAgreementStatus !== true ? 'greyscale-filter' : ''}>
+                {this.props.common.policyAgreementStatus !== true ? <div id="form-overlay"></div> : null}
+                {this.getElementToDisplay()}
+            </div>
+        );
     }
 }
 

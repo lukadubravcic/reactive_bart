@@ -17,6 +17,8 @@ export default (state = defaultState, action) => {
             return { ...defaultState };
         case 'CLEAR_FORM_VALUES':
             return { ...defaultState };
+        case 'LOGOUT':
+            return { ...defaultState };
         default:
             return state;
     }

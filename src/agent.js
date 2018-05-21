@@ -63,9 +63,14 @@ const Pref = {
 	updatePreferences: prefs => requests.post('/prefs/update', prefs)
 }
 
+const Rollups = {
+	getRollups: () => requests.get('/rollups/getrollups'),
+}
+
 export default {
 	Auth,
 	Punishment,
 	Pref,
+	Rollups,
 	setToken: _token => { token = _token; }
 }

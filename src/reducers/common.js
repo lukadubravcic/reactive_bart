@@ -1,5 +1,5 @@
 const defaultState = {
-    appName: 'reactive-bart',
+    appName: 'skolded',
     currentUser: {},
     token: null,
     loadInProgress: false,
@@ -9,7 +9,8 @@ const defaultState = {
     guestDataLoadingInProgress: false,
     guestAccessMsg: null,
     msgDuration: null,
-    guestUser: null
+    guestUser: null,
+    policyAgreementStatus: false,
 }
 
 export default (state = defaultState, action) => {
@@ -21,9 +22,9 @@ export default (state = defaultState, action) => {
         case 'LOGIN':
             return { ...state, currentUser: action.currentUser, token: action.token, rank: action.rank };
         case 'SPECIAL_LOGOUT':
-            return { ...defaultState, guestDataLoadingInProgress: state.guestDataLoadingInProgress, guestAccessMsg: state.guestAccessMsg, guestUser: state.guestUser };
+            return { ...defaultState, guestDataLoadingInProgress: state.guestDataLoadingInProgress, guestAccessMsg: state.guestAccessMsg, guestUser: state.guestUser, policyAgreementStatus: state.policyAgreementStatus };
         case 'LOGOUT':
-            return defaultState;
+            return { ...defaultState, policyAgreementStatus: state.policyAgreementStatus };
         case 'APP_LOAD':
             return { ...state, token: action.token || null, currentUser: action.user, loadInProgress: defaultState.loadInProgress, rank: action.rank };
         case 'GUEST_PUNISHMENT_LOADED':
@@ -48,6 +49,8 @@ export default (state = defaultState, action) => {
             return { ...state, rank: action.newRank };
         case 'REMOVE_GUEST_ACCESS_MSG':
             return { ...state, guestAccessMsg: defaultState.guestAccessMsg, msgDuration: defaultState.msgDuration };
+        case 'POLICY_AGREEMENT_STATUS_UPDATE':
+            return { ...state, policyAgreementStatus: action.value };
         default:
             return state;
     }

@@ -23,7 +23,7 @@ export default PrivacyPolicy;
 
 
 const textPrivacyPolicy = (
-    <span>
+    <span className="legals">
         <h2>TL;DR</h2>
 
         <p>What happens on Skolded.com, stays on Skolded.com.</p>
@@ -33,6 +33,7 @@ const textPrivacyPolicy = (
 
 
         <h1>Privacy Policy</h1>
+        <h2>OVERVIEW</h2>
 
         <p>This Privacy Policy describes how your personal information is collected, used, and shared when you visit Skolded (the "Site").</p>
 
@@ -41,12 +42,12 @@ const textPrivacyPolicy = (
 
         <p>When you visit the Site, we automatically collect certain information about your device, including information about your web browser and some of the cookies that are installed on your device. Additionally, as you use the Site, we collect information about how you interact with the Site. We refer to this automatically-collected information as "Device Information".</p>
 
-        <p>We collect Device Information using the following technologies:
-            <ul>
-                <li>"Cookies" are data files that are placed on your device or computer and often include an anonymous unique identifier. For more information about cookies, and how to disable cookies, visit <a href="http://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">http://www.allaboutcookies.org</a>.</li>
-                <li>"Log files" track actions occurring on the Site, and collect data including event types (such as log in, log out and password reset) and date/time stamps.</li>
-            </ul>
-        </p>
+        <p>We collect Device Information using the following technologies:</p>
+        <ul>
+            <li>"Cookies" are data files that are placed on your device or computer and often include an anonymous unique identifier. For more information about cookies, and how to disable cookies, visit <a href="http://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">http://www.allaboutcookies.org</a>.</li>
+            <li>"Log files" track actions occurring on the Site, and collect data including event types (such as log in, log out and password reset) and date/time stamps.</li>
+        </ul>
+    
 
         <p>Additionally, when you register, we store your e-mail address, (optional) username and password. We also store e-mail addresses of users not previously registered, that you invite by sending them initial "punishment". During your activity, we store "punishments" ordered by each user, including statistics relevant to completing them (such as how much time a user spent trying to complete each "punishment"). We refer to this information as "Account Information".</p>
 
@@ -86,7 +87,7 @@ const textPrivacyPolicy = (
 
         <h2>CONTACT US</h2>
 
-        <p>For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by e-mail at <a href="mailto:support@skolded.hr">support@skolded.com</a> or by mail using the details provided below:</p>
+        <p>For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by e-mail at <a href="mailto:support@skolded.com">support@skolded.com</a> or by mail using the details provided below:</p>
 
         <p>Kreativni odjel d.o.o. Rijeka<br />
             Meduliceva 3<br />

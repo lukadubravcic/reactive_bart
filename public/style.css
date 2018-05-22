@@ -2649,3 +2649,37 @@ td.skoldboard-table-punish-field {
 
 	font-weight: 300;
 }
+
+
+
+.legals {
+	text-align: center;
+}
+
+.legals h1 {
+	font-family: 'Love Ya Like A Sister', cursive;
+	font-size: 3em;
+	font-weight: 100;
+	padding-top: 100px;
+}
+
+.legals h2 {
+	padding-top: 40px;
+	padding-bottom: 10px;
+}
+
+.legals p {
+	padding-bottom: 10px;	
+}
+
+.legals a {
+	color: white;	
+}
+
+.legals ul {
+	padding-left: 50px;
+	padding-right: 50px;
+
+	padding-bottom: 10px;
+    margin-top: -10px;
+}

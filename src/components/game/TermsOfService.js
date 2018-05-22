@@ -23,7 +23,7 @@ export default TermsOfService;
 
 
 const textTermsOfService = (
-    <span>
+    <span className="legals">
         <h2>TL;DR</h2>
 
         <p>Skolded is provided "as is". Don't make it complicated. Also, don't do any harm. Enjoy life.</p>

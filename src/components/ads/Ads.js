@@ -9,19 +9,19 @@ class Ads extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             images: [],
             activeRollup: null,            
+            hovering: false,
         };
-
-        this.fadeOutTimeout = null;
-        this.fadeInTimeout = null;
 
         this.pickingArray = [];
 
         this.getRollups = async () => {
             let result = await agent.Rollups.getRollups();
-            if (result.length) {
+         
+            if (result !== null && result.length) {
                 this.setState({ images: [...result] });
                 this.pickingArray = [...result];
                 this.initRollupToggle();

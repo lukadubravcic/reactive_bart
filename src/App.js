@@ -192,7 +192,9 @@ class App extends React.Component {
                     <Footer
                         showTermsOfService={this.props.showTermsOfService}
                         showPrivacyPolicy={this.props.showPrivacyPolicy} />
-                    <EULawAbidingCitizen />
+                    <EULawAbidingCitizen
+                        showTermsOfService={this.props.showTermsOfService}
+                        showPrivacyPolicy={this.props.showPrivacyPolicy} />
                 </div>
             );
         }

@@ -8,12 +8,14 @@ const ProgressBar = props => {
     if (!props.showToA) spongeOffset = Math.floor(836 * (progress / 100)) + 'px';
     // pomak kada se label tekst promijeni 
     const finishedPunishmentHoverOffsetStyle = progress === 100 ? { left: -60 + 'px' } : {};
+    const failedTry = props.isPunishmentFailed;
+
     let hoverText = props.firstTimePlaying
-        ? progress !== 100
-            ? 'CLICK TO RESTART'
-            : 'CLICK FOR RANDOM PUNISHMENT'
+        ? progress === 100
+            ? 'CLICK FOR RANDOM PUNISHMENT'
+            : failedTry ? 'CLICK HERE OR PRESS ENTER TO RESTART' : 'CLICK TO RESTART'
         : progress !== 100
-            ? 'RESTART'
+            ? failedTry ? 'CLICK HERE OR PRESS ENTER TO RESTART' : 'RESTART'
             : 'RANDOM PUNISHMENT';
     const showTooltip = (
         props.hovering
@@ -21,7 +23,6 @@ const ProgressBar = props => {
             (progress === 100 && props.firstTimePlaying)
             || (props.isPunishmentFailed && props.firstTimePlaying)
         )
-
     );
 
     if (props.showToS) hoverText = 'BACK TO GAME';
@@ -37,7 +38,13 @@ const ProgressBar = props => {
         >
             {showTooltip ?
                 <div
-                    style={props.showToS ? { ...finishedPunishmentHoverOffsetStyle, left: "-7px" } : finishedPunishmentHoverOffsetStyle}
+                    style={props.showToS
+                        ? { ...finishedPunishmentHoverOffsetStyle, left: "-7px" }
+                        : progress === 100
+                            ? finishedPunishmentHoverOffsetStyle
+                            : props.isPunishmentFailed
+                                ? { ...finishedPunishmentHoverOffsetStyle, width: "300px", left: "-100px" }
+                                : finishedPunishmentHoverOffsetStyle}
                     id="restart-hover-element"
                     className={`hover-dialog ${props.firstTimePlaying && !props.hovering ? 'show-delay' : ''}`}>
 
@@ -64,3 +71,4 @@ const ProgressBar = props => {
 }
 
 export default ProgressBar;
+

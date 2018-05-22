@@ -172,12 +172,12 @@ class Board extends React.Component {
             // nakon odigrane kazne (fail/completed) pregledaj past i accepted kazne ako je "nesto" već odigrano
             // provjera jel postoji vec zavrsena (past kazne)
             let firstTimePlaying = true;
-            if (specialOrRandomPunishmentIsActive(activePunishment)) return false;
-            else if (Object.keys(currentUser).length) {
+            // if (specialOrRandomPunishmentIsActive(activePunishment)) return false;
+            if (Object.keys(currentUser).length) {
                 for (let pastPunishment of pastPunishments) {
                     if (pastPunishment.tries > 0) firstTimePlaying = false;
                 }
-            } else if (Object.keys(this.props.guestUser).length) {
+            } else if (this.props.guestUser !== null && Object.keys(this.props.guestUser).length) {
                 if (this.props.guestUser.userHasTriedPunishments) firstTimePlaying = false;
             }
             return this.props.updateUserHasTriedPunishments(firstTimePlaying);
@@ -460,7 +460,7 @@ class Board extends React.Component {
         this.punishmentInit = (punishmentChanged = true) => {
             //keysound.resetAudio();
             this.stopBoardCursorToggling();
-            if (this.props.firstTimePlaying === true && !specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.updateUserHasTriedPunishments(false);
+            // if (this.props.firstTimePlaying === true && !specialOrRandomPunishmentIsActive(this.props.activePunishment)) this.props.updateUserHasTriedPunishments(false);
             if (this.activeWriteTimeout) clearTimeout(this.activeWriteTimeout);
             // incijalni setup
             this.props.gameReset();
@@ -595,7 +595,7 @@ class Board extends React.Component {
             if (specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.activePunishment.type === 'ADBLOCKER_DETECTED') {
                 this.adblockDetected = true;
             }
-            if (this.props.firstTimePlaying === true) this.props.updateUserHasTriedPunishments(false);
+            if (this.props.firstTimePlaying === true && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) this.props.updateUserHasTriedPunishments(false);
             else if (this.props.firstTimePlaying === null) this.usersFirstPunishment(this.props.currentUser, this.props.activePunishment, this.props.pastPunishments);
             this.stopBoardCursorToggling();
             this.activePunishmentChanged();

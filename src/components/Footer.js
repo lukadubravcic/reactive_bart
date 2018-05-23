@@ -50,6 +50,13 @@ const Footer = props => {
                     >
                         Privacy Policy
                     </a>
+                    <span style={{ color: "#777" }}>&nbsp;|&nbsp;</span>
+                    <a
+                        id="marketing-link"
+                        href="mailto:marketing@skolded.com"
+                    >
+                        Marketing
+                    </a>
                 </label>
 
                 <div id="social-icons-footer">

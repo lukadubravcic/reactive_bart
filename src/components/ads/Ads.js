@@ -1,7 +1,7 @@
 import React from 'react';
 import agent from '../../agent';
 
-const ROLLUP_DISPLAY_TIME = 1000;
+const ROLLUP_DISPLAY_TIME = 30000;
 const ROLLUPS_DIRECTORY = '/rollups/';
 
 

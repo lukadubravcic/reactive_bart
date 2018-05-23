@@ -13,7 +13,7 @@ const TermsOfService = props => {
                     fontSize: "20px",
                     lineHeight: "32px",
                 }}>
-                {textTermsOfService}
+                {textTermsOfService(props.displayPrivacyPolicy)}
             </span>
         </div>
     )
@@ -22,7 +22,7 @@ const TermsOfService = props => {
 export default TermsOfService;
 
 
-const textTermsOfService = (
+const textTermsOfService = displayPrivacyPolicy => (
     <span className="legals">
         <h2>TL;DR</h2>
 
@@ -118,7 +118,7 @@ const textTermsOfService = (
 
         <h2>SECTION 9 - PERSONAL INFORMATION</h2>
 
-        <p>Your submission of personal information through the website is governed by our <a href="https://www.skolded.com/?pp=1">Privacy Policy</a>.</p>
+        <p>Your submission of personal information through the website is governed by our <a style={{ textDecoration: "underline", cursor: "pointer" }} onClick={displayPrivacyPolicy} >Privacy Policy</a>.</p>
 
 
         <h2>SECTION 10 - ERRORS, INACCURACIES AND OMISSIONS</h2>

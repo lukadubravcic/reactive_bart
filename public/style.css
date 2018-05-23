@@ -1419,6 +1419,16 @@ input[type=number]::-webkit-outer-spin-button {
 	cursor: pointer;
 }
 
+#marketing-link {
+	color: #777;
+	text-decoration: none;
+}
+
+#marketing-link:hover {
+	color: white;
+	cursor: pointer;
+}
+
 #social-icons-footer {
 	float: right;
 	margin-top: 241px;

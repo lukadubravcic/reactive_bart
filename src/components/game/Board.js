@@ -110,6 +110,7 @@ const mapDispatchToProps = dispatch => ({
     },
     removeToS: () => dispatch({ type: 'REMOVE_TERMS_OF_SERVICE' }),
     removePrivacyPolicy: () => dispatch({ type: 'REMOVE_PRIVACY_POLICY' }),
+    displayPrivacyPolicy: () => dispatch({ type: 'SHOW_PRIVACY_POLICY' }),
 });
 
 class Board extends React.Component {
@@ -666,7 +667,7 @@ class Board extends React.Component {
                         <div id="drawing-board">
 
                             {this.props.showToS ?
-                                <TermsOfService />
+                                <TermsOfService displayPrivacyPolicy={this.props.displayPrivacyPolicy} />
                                 : this.props.showPrivacyPolicy ?
                                     <PrivacyPolicy />
                                     : <div

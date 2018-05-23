@@ -47,6 +47,9 @@ class Ads extends React.Component {
         };
 
         this.handleRollups = () => {
+
+            // POTECIJALNO, promjeniti mjesto gdje se picking array ponovno "napuni"
+
             if (this.state.images.length === 1) return;
             this.rollupToShow = this.setupNextRollup();
 
@@ -74,6 +77,7 @@ class Ads extends React.Component {
             }
 
             index = this.getRandomRollupIndex();
+            if (index === null) return;
 
             this.preloadRollup(this.pickingArray[index].image);
             let rollupToShow = this.pickingArray[index];
@@ -98,7 +102,10 @@ class Ads extends React.Component {
 
         this.getRandomRollupIndex = () => {
             if (this.pickingArray.length > 0) {
+                if (this.pickingArray.length === 1) return 0;
+
                 let newIndex = Math.floor(Math.random() * this.pickingArray.length);
+
                 while (this.pickingArray[newIndex] === this.state.activeRollup) {
                     newIndex = Math.floor(Math.random() * this.pickingArray.length);
                 }

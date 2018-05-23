@@ -3,6 +3,10 @@ const defaultState = {
 
     selectedTab: null,
 
+    newPunishments: 'empty',
+    shownNewPunishments: 'empty',
+    currentNewPage: 1,
+
     acceptedPunishments: 'empty',
     shownAcceptedPunishments: 'empty',
     currentAcceptedPage: 1,
@@ -16,6 +20,7 @@ const defaultState = {
     shownOrderedPunishments: 'empty',
     currentOrderedPage: 1,
 
+    showNewTab: false,
     showAcceptedTab: false,
     showPastTab: false,
     showOrderedTab: false,
@@ -47,6 +52,13 @@ export default (state = defaultState, action) => {
         case 'SAVING_ACTIVE_PUNISHMENT':
             return { ...state };
 
+        case 'NEW_PUNISHMENTS_LOADED':
+            return { ...state, newPunishments: action.punishments };
+        case 'UPDATE_SHOWN_NEW_PUNISHMENTS':
+            return { ...state, shownNewPunishments: action.punishments, currentNewPage: action.newPage };
+        case 'NEW_PUNISHMENTS_CHANGED':
+            return { ...state, newPunishments: action.punishments };
+
         case 'ACCEPTED_PUNISHMENTS_LOADED':
             return { ...state, acceptedPunishments: action.punishments };
         case 'UPDATE_SHOWN_ACCEPTED_PUNISHMENTS':
@@ -70,6 +82,8 @@ export default (state = defaultState, action) => {
         case 'ORDERED_PUNISHMENTS_CHANGED':
             return { ...state, orderedPunishments: action.punishments, orderedPunishmentsResorted: action.orderedPunishmentsResorted };
 
+        case 'NEW_TAB_HEADER_VISIBILITY_CHANGED':
+            return { ...state, showNewTab: action.value };
         case 'ACCEPTED_TAB_HEADER_VISIBILITY_CHANGED':
             return { ...state, showAcceptedTab: action.value };
         case 'PAST_TAB_HEADER_VISIBILITY_CHANGED':

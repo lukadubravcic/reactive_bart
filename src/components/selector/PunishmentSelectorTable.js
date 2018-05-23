@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
 
+import NewTab from './newTab/NewTab';
 import AcceptedTab from './acceptedTab/AcceptedTab';
 import PastTab from './pastTab/PastTab';
 import OrderedTab from './orderedTab/OrderedTab';
@@ -18,6 +19,9 @@ const mapDispatchToProps = dispatch => ({
     changeSelectedTab: id => {
         dispatch({ type: 'SWITCH_SELECTED_PUNISHMENT_TAB', id })
     },
+    setNewPunishments: punishments => {
+        dispatch({ type: 'NEW_PUNISHMENTS_LOADED', punishments });
+    },
     setAcceptedPunishments: punishments => {
         dispatch({ type: 'ACCEPTED_PUNISHMENTS_LOADED', punishments })
     },
@@ -26,6 +30,9 @@ const mapDispatchToProps = dispatch => ({
     },
     setPastPunishments: punishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_LOADED', punishments })
+    },
+    setNewHeaderVisibility: value => {
+        dispatch({ type: 'NEW_TAB_HEADER_VISIBILITY_CHANGED', value });
     },
     setAcceptedHeaderVisibility: value => {
         dispatch({ type: 'ACCEPTED_TAB_HEADER_VISIBILITY_CHANGED', value });
@@ -57,6 +64,18 @@ class PunishmentSelectorTable extends React.Component {
             }
         }
 
+        this._handleNewPunFromAgent = payload => {
+            if (payload !== null && typeof payload.newPunishments !== 'undefined') {
+
+                this.props.setNewPunishments(payload.newPunishments);
+
+                if (payload.newPunishments.length > 0) {
+                    this.props.setNewHeaderVisibility(true);
+                    this.selectTab('newTab');
+                }
+            }
+        }
+
         this._handleAcceptedPunFromAgent = payload => {
 
             if (payload !== null && typeof payload.acceptedPunishments !== 'undefined') {
@@ -66,7 +85,10 @@ class PunishmentSelectorTable extends React.Component {
                 if (payload.acceptedPunishments.length > 0) {
 
                     this.props.setAcceptedHeaderVisibility(true);
-                    this.selectTab('acceptedTab');
+
+                    if (!this.props.selectedTab) {
+                        this.selectTab('acceptedTab');
+                    }
                 }
 
             } else {
@@ -119,12 +141,32 @@ class PunishmentSelectorTable extends React.Component {
 
         this.setHeaderTabsElement = selectedTab => {
 
+            let newTabHeader = null;
             let acceptedTabHeader = null;
             let pastTabHeader = null;
             let orderedTabHeader = null;
 
             switch (selectedTab) {
+                case 'newTab':
+                    newTabHeader = this.props.showNewTab
+                        ? (<button className="picker-tab picker-selected-tab" id="newTab" onClick={this.onChangeTab}>NEW</button>)
+                        : null;
+                    acceptedTabHeader = this.props.showAcceptedTab
+                        ? (<button className="picker-tab picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        : null;
+                    pastTabHeader = this.props.showPastTab
+                        ? (<button className="picker-tab picker-tab-with-border" id="pastTab" onClick={this.onChangeTab}>PAST</button>)
+                        : null;
+                    orderedTabHeader = this.props.showOrderedTab
+                        ? (<button className="picker-tab" id="orderedTab" onClick={this.onChangeTab}>ORDERED</button>)
+                        : null;
+
+                    break;
+
                 case 'acceptedTab':
+                    newTabHeader = this.props.showNewTab
+                        ? (<button className="picker-tab" id="newTab" onClick={this.onChangeTab}>NEW</button>)
+                        : null;
                     acceptedTabHeader = this.props.showAcceptedTab
                         ? (<button className="picker-tab picker-selected-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
@@ -138,6 +180,9 @@ class PunishmentSelectorTable extends React.Component {
                     break;
 
                 case 'pastTab':
+                    newTabHeader = this.props.showNewTab
+                        ? (<button className="picker-tab picker-tab-with-border" id="newTab" onClick={this.onChangeTab}>NEW</button>)
+                        : null;
                     acceptedTabHeader = this.props.showAcceptedTab
                         ? (<button className="picker-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
@@ -151,6 +196,9 @@ class PunishmentSelectorTable extends React.Component {
                     break;
 
                 case 'orderedTab':
+                    newTabHeader = this.props.showNewTab
+                        ? (<button className="picker-tab picker-tab-with-border" id="newTab" onClick={this.onChangeTab}>NEW</button>)
+                        : null;
                     acceptedTabHeader = this.props.showAcceptedTab
                         ? (<button className="picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
@@ -165,6 +213,7 @@ class PunishmentSelectorTable extends React.Component {
             return (
                 <div className="picker-nav-container">
                     <nav className="picker-navigation">
+                        {newTabHeader}
                         {acceptedTabHeader}
                         {pastTabHeader}
                         {orderedTabHeader}
@@ -177,6 +226,10 @@ class PunishmentSelectorTable extends React.Component {
     componentDidUpdate(prevProps) {
 
         if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvacanja userdata
+
+            agent.Punishment.getNew().then(payload => {
+                this._handleNewPunFromAgent(payload);
+            });
 
             agent.Punishment.getAccepted().then(payload => {
                 // console.log('accepted answer')
@@ -207,20 +260,39 @@ class PunishmentSelectorTable extends React.Component {
 
         if (prevProps.pastPunishments.length === 0 && this.props.pastPunishments.length > 0) {
             this.props.setPastHeaderVisibility(true);
-            if (this.props.selectedTab === null) this.selectTab('pastTab');            
+            if (this.props.selectedTab === null) this.selectTab('pastTab');
         }
-        
+
     }
 
     componentWillReceiveProps(nextProps) {
+
+        if (nextProps.newPunishments.length === 0) {
+            // slucaj gdje nema new kazni
+            this.props.setNewHeaderVisibility(false);
+            if (nextProps.acceptedPunishments.length > 0 && this.props.selectedTab === 'newTab') {
+                this.props.setAcceptedHeaderVisibility(true);
+            } else if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'newTab') {
+                this.props.setPastHeaderVisibility(true);
+                this.selectTab('pastTab');
+            } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'newTab') {
+                this.selectTab('orderedTab');
+            }
+
+        } else if (nextProps.newPunishments.length) {
+            this.props.setNewPunishments(nextProps.newPunishments);
+        }
+
         if (nextProps.acceptedPunishments.length === 0) {
             // slucaj gdje nema accepted kazni
             this.props.setAcceptedHeaderVisibility(false);
-            if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
-                this.props.setPastHeaderVisibility(true);
-                this.selectTab('pastTab');
-            } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
-                this.selectTab('orderedTab');
+            if (nextProps.newPunishments.length === 0) {
+                if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
+                    this.props.setPastHeaderVisibility(true);
+                    this.selectTab('pastTab');
+                } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
+                    this.selectTab('orderedTab');
+                }
             }
 
         } else if (nextProps.acceptedPunishments.length) {
@@ -250,7 +322,9 @@ class PunishmentSelectorTable extends React.Component {
         const userLoggedIn = this.props.user._id;
         const adblockerOrCheatDetected = window.canRunAds === undefined || this.props.cheating;
         const showComponent =
-            (this.props.acceptedPunishments !== 'empty'
+            (this.props.newPunishments !== 'empty'
+                && this.props.newPunishments.length > 0)
+            || (this.props.acceptedPunishments !== 'empty'
                 && this.props.acceptedPunishments.length > 0)
             || (this.props.pastPunishments !== 'empty'
                 && this.props.pastPunishments.length > 0)
@@ -265,6 +339,15 @@ class PunishmentSelectorTable extends React.Component {
             const tableTabNamesElement = this.setHeaderTabsElement(this.props.selectedTab);
 
             switch (this.props.selectedTab) {
+                case 'newTab':
+                    selectorParentCSS += ' picker-new-color';
+                    this.props.showNewTab ? shownTab = (
+
+                        <NewTab />
+
+                    ) : null;
+                    break;
+
                 case 'acceptedTab':
                     selectorParentCSS += ' picker-accepted-color';
                     this.props.showAcceptedTab ? shownTab = (

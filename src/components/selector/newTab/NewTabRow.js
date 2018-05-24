@@ -152,7 +152,7 @@ class NewTabRow extends React.Component {
                     <button
                         className="picker-btn picker-btn-go"
                         disabled={this.props.disabledGo}
-                        onClick={this.props.onGoClick(this.props.id)}>
+                        onClick={this.props.onAcceptClick(this.props.punishment)}>
                         ACCEPT
                     </button>
 
@@ -162,7 +162,7 @@ class NewTabRow extends React.Component {
                     className="giveup-field">
                     <button
                         className="picker-btn picker-btn-giveup"
-                        onClick={() => this.props.onGiveUpClick(this.props.id)}>
+                        onClick={() => this.props.onRejectClick(this.props.punishment)}>
                         REJECT
                     </button>
                 </td>

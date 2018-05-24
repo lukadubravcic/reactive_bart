@@ -58,6 +58,8 @@ const Punishment = {
 	getSpecial: () => requests.get('/punishment/special'),
 	firstTime: id => requests.get(`/punishment/firsttime?id=${encodeURIComponent(id)}`),
 	skoldboard: () => requests.get('/punishment/skoldboard'),
+	accept: (punId, inAppFlag = true) => requests.get(`/punishment/accept?id=${encodeURIComponent(punId)}&iaf=${encodeURIComponent(inAppFlag)}`),
+	reject: (punId, inAppFlag = true) => requests.get(`/punishment/reject?id=${encodeURIComponent(punId)}&iaf=${encodeURIComponent(inAppFlag)}`),
 };
 
 const Pref = {

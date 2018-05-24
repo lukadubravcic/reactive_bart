@@ -62,6 +62,8 @@ const mapDispatchToProps = dispatch => ({
             } else dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: payload.errorMsg });
 
             enableSubmit();
+        }, rejected => {
+            dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: 'Ouch! Something went wrong.' });
         });
     },
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_DISPLAY_MSG' }),
@@ -440,7 +442,7 @@ class PunishmentCreator extends React.Component {
                                 PUNISH
                             </button>
 
-                            {this.state.showFormMsg
+                            {this.state.showFormMsg && this.props._errMsg !== null
                                 ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg.toUpperCase()}</label>
                                 : null}
 

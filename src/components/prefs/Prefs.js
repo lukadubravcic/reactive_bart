@@ -56,6 +56,7 @@ class Prefs extends React.Component {
     render() {
         const userLoggedIn = Object.keys(this.props.currentUser).length > 0;
         const tooltips = this.props.show_tooltips;
+        const punishmentRequested = this.props.punishment_requested;
         const punishmentAccepted = this.props.punishment_accepted;
         const punishmentRejected = this.props.punishment_rejected;
         const punishmentIgnored = this.props.punishment_ignored;
@@ -92,6 +93,17 @@ class Prefs extends React.Component {
                                         <span id="pref-checkmark"></span>
                                     </label>
                                     <label className="pref-name">tooltips</label>
+                                </div>
+                                <div className="prefs-row">
+                                    <label className="float-left pref-chexbox-cont">
+                                        <input
+                                            name="punishment_requested"
+                                            type="checkbox"
+                                            checked={punishmentRequested}
+                                            onChange={this.clickHandler} />
+                                        <span id="pref-checkmark"></span>
+                                    </label>
+                                    <label className="pref-name">notify on new punishment</label>
                                 </div>
                                 <div className="prefs-row">
                                     <label className="float-left pref-chexbox-cont">

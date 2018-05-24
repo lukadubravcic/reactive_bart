@@ -41,6 +41,8 @@ const mapDispatchToProps = dispatch => ({
                             username: payload.username
                         }
                     });
+                } else if (payload === null) {
+                    localStorage.removeItem('token');
                 }
             });
         }

@@ -114,7 +114,7 @@ class SkoldBoardTableRow extends React.Component {
 
     render() {
         const rankFieldContent = typeof this.props.item.rank === 'undefined' || this.props.item.rank === null
-            ? 'unknown'
+            ? 'unranked'
             : this.props.item.rank;
         const whoFieldContent = this.getTableFieldData(this.props.item.whom, 26)
 

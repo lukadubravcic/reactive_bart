@@ -588,7 +588,7 @@ fieldset + fieldset {
 	display: inline-block;
 	position: relative;
 
-	padding-right: 26px;
+	margin-right: 26px;
 	padding-left: 10px;
 	padding-top: 5px;
 	margin-top: 24px;
@@ -1581,7 +1581,7 @@ td {
 	width: 1px;
 
 	position: absolute;
-	right: 0;
+	right: 1px;
 	bottom: 0; 
 
 	background-color: #515151;
@@ -2696,4 +2696,39 @@ td.skoldboard-table-punish-field {
 
 	padding-bottom: 10px;
     margin-top: -10px;
+}
+
+
+/* new puns notification component */
+.notification-count-container {
+	display: inline-block;
+	position: relative;
+	height: 24px;
+
+	right: 22px;
+	bottom: 15px;
+
+	border-radius: 24px;
+    background: hotpink;
+   /*  padding: 20px; 
+    width: 600px;
+    height: 150px;   */
+}
+
+.notification-count-display {
+	position: relative;
+	display: block;
+	font-size: 14px;
+	color: white;
+	height: 100%;
+	width: 100%;
+
+	text-align: center;
+	top: 3px;
+
+	cursor: pointer;
+}
+
+.notification-count-display:hover {
+	color: #00BBD6;
 }

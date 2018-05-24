@@ -1,4 +1,5 @@
 import React from 'react';
+import NotificationCount from './NotificationCount';
 
 
 class LoggedInToolbar extends React.Component {
@@ -31,18 +32,24 @@ class LoggedInToolbar extends React.Component {
                         </svg>
                     </div>
 
-                    <button
-                        className="float-right user-identity noselect"
-                        onClick={this.usernameClick} >
-                        {this.props.username}
-                        {/* <div id="password-change-btn-container">
+                    <div style={{ position: "relative", display: "inline-block" }} className="float-right">
+                        <button
+                            className="user-identity noselect"
+                            onClick={this.usernameClick} >
+                            {this.props.username}
+
+                            {/* <div id="password-change-btn-container">
                             <button
-                                id="password-change-btn"
-                                onClick={this.props.btnShowForm}>
-                                Change password
+                            id="password-change-btn"
+                            onClick={this.props.btnShowForm}>
+                            Change password
                             </button>
                         </div> */}
-                    </button>
+                        </button>
+
+                        <NotificationCount />
+
+                    </div>
                 </div>
             </div>
         )

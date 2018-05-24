@@ -34,9 +34,9 @@ const mapDispatchToProps = dispatch => ({
         if (punishment.what_to_write[punishment.what_to_write.length - 1] !== ' ') punishment.what_to_write += ' ';
         dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment })
     },
-    giveUpPunishment: (id, newAcceptedPunishments) => {
+    rejectPunishment: punishment => {
         // poslat backendu odustajanje
-        agent.Punishment.giveUp(id).then(dispatch({ type: 'GIVE_UP_ON_PUNISHMENT', newAcceptedPunishments }))
+        agent.Punishment.reject(punishment.uid);
     },
     changeShownPunishments: (punishments, newPage) => {
         dispatch({ type: 'UPDATE_SHOWN_NEW_PUNISHMENTS', punishments, newPage })
@@ -44,6 +44,15 @@ const mapDispatchToProps = dispatch => ({
     updatePastPunishments: newPastPunishments => {
         dispatch({ type: 'PAST_PUNISHMENTS_CHANGED', punishments: newPastPunishments });
     },
+    switchActiveTab: tab => {
+        dispatch({ type: 'SWITCH_SELECTED_PUNISHMENT_TAB', id: tab });
+    },
+    updateAcceptedPunishments: punishments => {
+        dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments });
+    },
+    acceptPunishment: punishment => {
+        agent.Punishment.accept(punishment.uid);
+    }
 });
 
 const animationDuration = 500;
@@ -64,12 +73,13 @@ class NewTab extends React.Component {
         this.borderThickness = 10;
 
 
-        this.handleAcceptPunishment = id => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
+        this.handleAcceptPunishment = punishment => ev => { // dispatch akciju koja stavlja odabrani punishment na trenutni       
             ev.preventDefault();
             let newActivePunishment = {};
 
-            if (id !== this.props.activePunishment.uid && window.canRunAds) {
-                newActivePunishment = JSON.parse(JSON.stringify(getPunishmentById(id, this.props.newPunishments)));
+            if (window.canRunAds) {
+
+                newActivePunishment = { ...punishment };
 
                 if (newActivePunishment.what_to_write[newActivePunishment.what_to_write.length - 1] !== ' ') {
                     newActivePunishment.what_to_write += ' ';  // dodaj razmak na kraju ako ga nema
@@ -79,35 +89,39 @@ class NewTab extends React.Component {
                 let updatedNewPunishments = [...this.props.newPunishments];
 
                 let filteredPunishments = this.props.newPunishments.filter(punishment => {
-                    if (decodeURIComponent(punishment.uid) !== decodeURIComponent(id)) {
-                        return punishment;
+                    if (decodeURIComponent(punishment.uid) !== decodeURIComponent(newActivePunishment.uid)) {
+                        return { ...punishment };
                     }
                 });
+                // posalji accept req
+                this.props.acceptPunishment(punishment);
+                // update novih new kazni
+                this.updateAndShowNewPunishments(filteredPunishments);
+                // update accepted kazni
+                this.updateAcceptedPunishments(newActivePunishment);
 
-                this.updateActivePunishments(newActivePunishment);
-
-                console.log(updatedNewPunishments);
-                return;
-                if (newActivePunishment) this.props.setActivePunishment(newActivePunishment);
+                if (newActivePunishment) {
+                    this.props.setActivePunishment(newActivePunishment);
+                    this.switchToAcceptedTab();
+                }
             }
         };
 
-        this.rejectPunishment = id => { // makni tu kaznu iz statea
-            let givenUpPunishment = null;
-            let filteredPunishments = this.props.acceptedPunishments.filter(punishment => {
-                if (decodeURIComponent(punishment.uid) === decodeURIComponent(id)) {
-                    givenUpPunishment = punishment;
-                    return null;
-                } else return punishment;
-                // return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
+        this.rejectPunishment = rejectedPunishment => { // makni tu kaznu iz statea
+            let filteredPunishments = this.props.newPunishments.filter(punishment => {
+                if (decodeURIComponent(punishment.uid) !== decodeURIComponent(rejectedPunishment.uid)) {
+                    return punishment;
+                }
             });
-            this.updatePastPunishments(givenUpPunishment);
-            this.props.giveUpPunishment(id, filteredPunishments);
+            // update newPunishmentsa
+            this.updateAndShowNewPunishments(filteredPunishments);
+            this.props.rejectPunishment(rejectedPunishment);
+            this.updatePastPunishments(rejectedPunishment);
         };
 
         this.updateAcceptedPunishments = newPunishment => {
-            let newAcceptedPunishments = [...this.props.acceptedPunishments];
             if (!newPunishment) return null;
+            let newAcceptedPunishments = [...this.props.acceptedPunishments];
             newPunishment.accepted = new Date().toISOString().slice(0, 19);
             newAcceptedPunishments.unshift(newPunishment);
             this.props.updateAcceptedPunishments(newAcceptedPunishments);
@@ -133,6 +147,10 @@ class NewTab extends React.Component {
             this.props.changeNewPunishments(punishments);
             this._showFirstPage(punishments);
         };
+
+        this.switchToAcceptedTab = () => {
+            this.props.switchActiveTab('acceptedTab');
+        }
 
         this.reSortPunishments = id => {
             let sortedPunishments = [];
@@ -305,8 +323,8 @@ class NewTab extends React.Component {
                                             punishment={punishment}
                                             key={punishment.uid}
                                             id={punishment.uid}
-                                            onGoClick={this.handleGoPunishment}
-                                            onGiveUpClick={this.giveUpPunishment}
+                                            onAcceptClick={this.handleAcceptPunishment}
+                                            onRejectClick={this.rejectPunishment}
                                             disabledGo={false} />
                                     ))
                                 }

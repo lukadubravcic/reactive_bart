@@ -27,7 +27,7 @@ class NotificationCount extends React.Component {
     }
 
     render() {
-        let num = this.props.newPunishments.length;
+        let num = this.props.newPunishments !== 'empty' ? this.props.newPunishments.length : 0;
         let width = ((num.toString().length * 14) + 10) + 'px';
 
         if (num > 0) {

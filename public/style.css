@@ -2198,6 +2198,8 @@ td.ordered-status-field {
 }
 
 
+
+
 .pref-chexbox-cont {
 	width: 30px;
 	height: 30px;
@@ -2262,6 +2264,28 @@ td.ordered-status-field {
 	color: #FEFEFE;
 	letter-spacing: 0;
 	line-height: 26px;
+}
+
+.pref-heading {
+	display: inline-block;
+	position: relative;
+
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 400;
+	font-size: 26px;
+	color: #FEFEFE;
+	letter-spacing: 0;
+	line-height: 26px;
+
+	padding-top: 10px;
+}
+
+.pref-heading-bot-marg {
+	margin-bottom: 11px;
+}
+
+.pref-heading-bot-pad {
+	padding-bottom: 15px;
 }
 
 .prefs-bottom-image-container {	

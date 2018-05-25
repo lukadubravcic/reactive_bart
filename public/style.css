@@ -334,6 +334,12 @@ textarea {
 	text-align: center;
 }
 
+.pun-picker-component .hover-dialog-text,
+.skoldboard-table-container .hover-dialog-text
+{
+	letter-spacing: 2px;
+}
+
 #triangle-element {
 	display: block;
 	position: relative;
@@ -588,7 +594,7 @@ fieldset + fieldset {
 	display: inline-block;
 	position: relative;
 
-	margin-right: 26px;
+	margin-right: 30px;
 	padding-left: 10px;
 	padding-top: 5px;
 	margin-top: 24px;
@@ -1795,8 +1801,21 @@ td {
 	display: inline-block;
 }
 
+.accept-field {
+	width: 150px;
+	padding-top: 10px;
+	padding-bottom: 9px;
+	display: inline-block;
+}
+
 .giveup-field {
 	width: 160px;
+	padding: 10px 0 9px 10px;
+	display: inline-block;
+}
+
+.reject-field {
+	width: 144px;
 	padding: 10px 0 9px 10px;
 	display: inline-block;
 }
@@ -1850,6 +1869,8 @@ td.ordered-status-field {
 .picker-table-row .what-field,
 .picker-table-row .go-field,
 .picker-table-row .giveup-field,
+.picker-table-row .accept-field,
+.picker-table-row .reject-field,
 .picker-table-row .status-field,
 .picker-table-row .ordered-status-field,
 .picker-table-row .empty-field {
@@ -1871,6 +1892,8 @@ td.ordered-status-field {
 .picker-table-row .ordered-what-field,
 .picker-table-row .go-field,
 .picker-table-row .giveup-field,
+.picker-table-row .accept-field,
+.picker-table-row .reject-field,
 .picker-table-row .status-field,
 .picker-table-row .ordered-status-field {	
 	border-bottom: 1px solid #515151;
@@ -1880,8 +1903,11 @@ td.ordered-status-field {
 	display: inline-block;
 	position: relative;
 
-	width: 100%;
+	/* width: 100%; */
 	height: 40px;
+
+	padding-left: 15px;
+	padding-right: 15px;
 
 	background: #323232;
 	font-family: 'Montserrat', sans-serif;
@@ -1893,8 +1919,8 @@ td.ordered-status-field {
 }
 
 .picker-btn:hover {
-	-webkit-filter: invert(1);
-	        filter: invert(1);
+	background: white;
+	color: #323232;
 }
 
 .picker-btn-go {
@@ -1903,10 +1929,12 @@ td.ordered-status-field {
 	-webkit-transition: opacity 0.5s;
 	-o-transition: opacity 0.5s;
 	transition: opacity 0.5s;
+	float: right;
 }
 
 .picker-btn-giveup {
 	color: #FF948A;
+	float: left;
 }
 
 
@@ -2260,10 +2288,10 @@ td.ordered-status-field {
 
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 400;
-	font-size: 26px;
+	font-size: 23px;
 	color: #FEFEFE;
 	letter-spacing: 0;
-	line-height: 26px;
+	line-height: 23px;
 }
 
 .pref-heading {
@@ -2272,10 +2300,10 @@ td.ordered-status-field {
 
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 400;
-	font-size: 26px;
+	font-size: 23px;
 	color: #FEFEFE;
 	letter-spacing: 0;
-	line-height: 26px;
+	line-height: 23px;
 
 	padding-top: 10px;
 }
@@ -2621,7 +2649,8 @@ td.skoldboard-table-punish-field {
 }
 
 .skoldboard-btn-punish:hover {
-	filter: invert(1);
+	background: white;
+	color: #323232;
 }
 
 .skoldboard-rank-field,
@@ -2730,13 +2759,18 @@ td.skoldboard-table-punish-field {
 	height: 24px;
 
 	right: 22px;
-	bottom: 15px;
+	bottom: 5px;
+	background: #EA411E;
 
 	border-radius: 24px;
-    background: hotpink;
    /*  padding: 20px; 
     width: 600px;
     height: 150px;   */
+}
+
+.notification-count-container:hover {
+	background: #323232;
+	color: white;
 }
 
 .notification-count-display {
@@ -2747,12 +2781,11 @@ td.skoldboard-table-punish-field {
 	height: 100%;
 	width: 100%;
 
+	font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+
 	text-align: center;
 	top: 3px;
 
 	cursor: pointer;
-}
-
-.notification-count-display:hover {
-	color: #00BBD6;
 }

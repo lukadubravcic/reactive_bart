@@ -97,7 +97,7 @@ class NewTabRow extends React.Component {
 
         const tableRowClass = 'picker-table-row ' + this.props.style;
 
-        let orderingUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 13);
+        let orderingUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 16);
         let deadlineUserField = this.props.punishment.deadline !== null
             ? this.getTableFieldData(moment(this.props.punishment.deadline).fromNow(), 11)
             : { content: 'no deadline', HTMLHoverElement: null }
@@ -137,7 +137,7 @@ class NewTabRow extends React.Component {
                     {this.props.punishment.how_many_times}
                 </td>
                 <td
-                    style={{ width: "300px" }}
+                    style={{ width: "258px" }}
                     id="what-field"
                     className="what-field"
                     onMouseOver={this.elementHovering}
@@ -147,19 +147,16 @@ class NewTabRow extends React.Component {
                     {whatToWriteUserField.content}
                 </td>
                 <td
-                    style={{ width: "120px" }}
-                    className="go-field">
+                    className="accept-field">
                     <button
                         className="picker-btn picker-btn-go"
                         disabled={this.props.disabledGo}
                         onClick={this.props.onAcceptClick(this.props.punishment)}>
                         ACCEPT
                     </button>
-
                 </td>
                 <td
-                    style={{ width: "127px" }}
-                    className="giveup-field">
+                    className="reject-field">
                     <button
                         className="picker-btn picker-btn-giveup"
                         onClick={() => this.props.onRejectClick(this.props.punishment)}>

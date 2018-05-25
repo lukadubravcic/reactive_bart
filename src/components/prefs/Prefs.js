@@ -114,14 +114,14 @@ class Prefs extends React.Component {
                                             onChange={this.clickHandler} />
                                         <span id="pref-checkmark"></span>
                                     </label>
-                                    <label className="pref-name">mail me when I receive new punishment</label>
+                                    <label className="pref-name">mail me when I receive a new punishment</label>
                                 </div>
 
                                 <div style={{ height: 30 + "px" }} className="prefs-row">
                                 </div>
 
                                 <div className="prefs-row pref-heading-bot-marg">
-                                    <span style={{ right: 2 + "px" }} className="pref-heading">Mail me when they</span>
+                                    <span style={{ right: 2 + "px" }} className="pref-heading">Mail me when they...</span>
                                 </div>
 
                                 <div className="prefs-row">
@@ -202,8 +202,8 @@ class Prefs extends React.Component {
                                     <label className="pref-name">give up</label>
                                 </div>
 
-                                <div style={{ paddingTop: 0 }} lassName="prefs-row">
-                                    <span className="pref-heading">my punishment.</span>
+                                <div style={{ paddingTop: 0 }} className="prefs-row">
+                                    <span className="pref-heading">... my punishment.</span>
                                 </div>
 
                             </div>

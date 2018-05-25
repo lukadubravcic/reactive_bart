@@ -225,7 +225,7 @@ class PunishmentSelectorTable extends React.Component {
     componentDidUpdate(prevProps) {
 
         if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvacanja userdata
-          
+
             agent.Punishment.getNew().then(payload => {
                 this._handleNewPunFromAgent(payload);
             });
@@ -239,7 +239,7 @@ class PunishmentSelectorTable extends React.Component {
                 // console.log('past answer')
                 this._handlePastPunFromAgent(payload);
             });
-            
+
             agent.Punishment.getOrdered().then(payload => {
                 // console.log('ordered answer')
                 this._handleOrderedPunFromAgent(payload);
@@ -250,6 +250,11 @@ class PunishmentSelectorTable extends React.Component {
 
         if (activePunishmentJustSet && this.props.ignoredPunishmentSet && this.props.pastPunishments && Object.keys(this.props.user).length > 0) {
             this.selectTab('pastTab');
+        }
+
+        if (prevProps.acceptedPunishments.length === 0 && this.props.acceptedPunishments.length > 0) {
+            this.props.setAcceptedHeaderVisibility(true);
+            if (this.props.selectedTab === null) this.selectTab('acceptedTab');
         }
 
         if (prevProps.orderedPunishments.length === 0 && this.props.orderedPunishments.length > 0) {
@@ -266,16 +271,16 @@ class PunishmentSelectorTable extends React.Component {
 
     componentWillReceiveProps(nextProps) {
 
-        if (nextProps.newPunishments.length === 0) {
+        if (nextProps.newPunishments.length === 0 && this.props.selectedTab === 'newTab') {
             // slucaj gdje nema new kazni
             this.props.setNewHeaderVisibility(false);
-            if (nextProps.acceptedPunishments.length > 0 && this.props.selectedTab === 'newTab') {
+            if (nextProps.acceptedPunishments.length > 0) {
                 this.props.setAcceptedHeaderVisibility(true);
                 this.selectTab('acceptedTab');
-            } else if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'newTab') {
+            } else if (nextProps.pastPunishments.length > 0) {
                 this.props.setPastHeaderVisibility(true);
                 this.selectTab('pastTab');
-            } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'newTab') {
+            } else if (nextProps.orderedPunishments.length > 0) {
                 this.selectTab('orderedTab');
             }
 
@@ -283,18 +288,19 @@ class PunishmentSelectorTable extends React.Component {
             this.props.setNewPunishments(nextProps.newPunishments);
         }
 
-        if (nextProps.acceptedPunishments.length === 0) {
+        if (nextProps.acceptedPunishments.length === 0 && this.props.selectedTab === 'acceptedTab') {
             // slucaj gdje nema accepted kazni
             this.props.setAcceptedHeaderVisibility(false);
-            if (nextProps.newPunishments.length === 0) {
-                if (nextProps.pastPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
+            if (nextProps.newPunishments.length > 0) {
+                this.selectTab('newTab');
+            } else if (nextProps.newPunishments.length === 0) {
+                if (nextProps.pastPunishments.length > 0) {
                     this.props.setPastHeaderVisibility(true);
                     this.selectTab('pastTab');
-                } else if (nextProps.orderedPunishments.length > 0 && this.props.selectedTab === 'acceptedTab') {
+                } else if (nextProps.orderedPunishments.length > 0) {
                     this.selectTab('orderedTab');
                 }
             }
-
         } else if (nextProps.acceptedPunishments.length) {
 
             this.props.setAcceptedPunishments(nextProps.acceptedPunishments);

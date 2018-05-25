@@ -9,6 +9,8 @@ class RankInfo extends React.Component {
     }
 
     render() {
+        let rank = typeof this.props.rank === 'undefined' || this.props.rank === null || this.props.rank === 'unknown' ? 'unranked' : ('#' + this.props.rank);
+
         return (
 
             <div className="parent-component rank-component-container">
@@ -16,11 +18,11 @@ class RankInfo extends React.Component {
                 <div className="container">
 
                     <label id="rank-heading" className="heading">Your rank is&nbsp;</label>
-                    <label id="user-rank">#{this.props.rank}</label>
+                    <label id="user-rank">{rank}</label>
 
                     <div className="rank-description-container">
                         <p className="rank-description">
-                        Ranking is based on your activity. EVERYTHING counts. Especially good deeds.
+                            Ranking is based on your activity. EVERYTHING counts. Especially good deeds.
                         </p>
                     </div>
 
@@ -44,9 +46,6 @@ export default RankInfo;
 const componentSVG = (
     <svg id="rank-bottom-image" width="1080px" height="74px" viewBox="0 0 1080 74" version="1.1" xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink">
-        <title>Group 12</title>
-        <desc>Created with Sketch.</desc>
-        <defs></defs>
         <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -5168.000000)">
             <g id="Group" transform="translate(0.000000, 4844.000000)">
                 <g id="Group-12" transform="translate(100.000000, 324.000000)">

@@ -151,10 +151,10 @@ class PunishmentSelectorTable extends React.Component {
                         ? (<button className="picker-tab picker-selected-tab" id="newTab" onClick={this.onChangeTab}>NEW</button>)
                         : null;
                     acceptedTabHeader = this.props.showAcceptedTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        ? (<button className={`picker-tab ${this.props.showOrderedTab || this.props.showPastTab ? "picker-tab-with-border" : ""}`} id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
                     pastTabHeader = this.props.showPastTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="pastTab" onClick={this.onChangeTab}>PAST</button>)
+                        ? (<button className={`picker-tab ${this.props.showOrderedTab ? "picker-tab-with-border" : ""}`} id="pastTab" onClick={this.onChangeTab}>PAST</button>)
                         : null;
                     orderedTabHeader = this.props.showOrderedTab
                         ? (<button className="picker-tab" id="orderedTab" onClick={this.onChangeTab}>ORDERED</button>)
@@ -170,7 +170,7 @@ class PunishmentSelectorTable extends React.Component {
                         ? (<button className="picker-tab picker-selected-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
                     pastTabHeader = this.props.showPastTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="pastTab" onClick={this.onChangeTab}>PAST</button>)
+                        ? (<button className={`picker-tab ${this.props.showOrderedTab ? "picker-tab-with-border" : ""}`} id="pastTab" onClick={this.onChangeTab}>PAST</button>)
                         : null;
                     orderedTabHeader = this.props.showOrderedTab
                         ? (<button className="picker-tab" id="orderedTab" onClick={this.onChangeTab}>ORDERED</button>)
@@ -180,7 +180,7 @@ class PunishmentSelectorTable extends React.Component {
 
                 case 'pastTab':
                     newTabHeader = this.props.showNewTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="newTab" onClick={this.onChangeTab}>NEW</button>)
+                        ? (<button className={`picker-tab ${this.props.showAcceptedTab ? "picker-tab-with-border" : ""}`} id="newTab" onClick={this.onChangeTab}>NEW</button>)
                         : null;
                     acceptedTabHeader = this.props.showAcceptedTab
                         ? (<button className="picker-tab" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
@@ -196,10 +196,10 @@ class PunishmentSelectorTable extends React.Component {
 
                 case 'orderedTab':
                     newTabHeader = this.props.showNewTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="newTab" onClick={this.onChangeTab}>NEW</button>)
+                        ? (<button className={`picker-tab ${this.props.showAcceptedTab || this.props.showPastTab ? "picker-tab-with-border" : ""}`} id="newTab" onClick={this.onChangeTab}>NEW</button>)
                         : null;
                     acceptedTabHeader = this.props.showAcceptedTab
-                        ? (<button className="picker-tab picker-tab-with-border" id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
+                        ? (<button className={`picker-tab ${this.props.showPastTab ? "picker-tab-with-border" : ""}`} id="acceptedTab" onClick={this.onChangeTab}>ACCEPTED</button>)
                         : null;
                     pastTabHeader = this.props.showPastTab
                         ? (<button className="picker-tab" id="pastTab" onClick={this.onChangeTab}>PAST</button>)

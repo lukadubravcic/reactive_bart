@@ -304,16 +304,8 @@ class AcceptedTab extends React.Component {
                 </div>
 
             )
-        } else if (shownPunishments === 'empty') {
-            return (
-                <div className="container">
-                    <h3>Loading data...</h3>
-                </div>
-            );
-        }
-        else {
-            return (<h3>No data.</h3>);
-        }
+        } else return null;
+        
     }
 }
 

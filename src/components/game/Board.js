@@ -58,7 +58,7 @@ const mapDispatchToProps = dispatch => ({
     },
     setActivePunishmentDone: (id, timeSpent) => {
         agent.Punishment.done(id, timeSpent).then(payload => {
-            if (typeof payload.rank !== 'undefined' && payload.rank !== null) {
+            if (typeof payload !== 'undefined' && payload !== null && typeof payload.rank !== 'undefined' && payload.rank !== null) {
                 dispatch({ type: 'PUNISHMENT_MARKED_DONE', newRank: payload.rank });
             }
         });

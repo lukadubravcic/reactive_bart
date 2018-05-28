@@ -45,8 +45,8 @@ export default (state = defaultState, action) => {
             return { ...state, loadInProgress: true };
         case 'SET_USERNAME_ERROR':
             return { ...state, _errMsg: action.errMsg };
-        case 'PUNISHMENT_MARKED_DONE':
-            return { ...state, rank: action.newRank };
+       /*  case 'PUNISHMENT_MARKED_DONE':
+            return { ...state, rank: action.newRank }; */
         case 'REMOVE_GUEST_ACCESS_MSG':
             return { ...state, guestAccessMsg: defaultState.guestAccessMsg, msgDuration: defaultState.msgDuration };
         case 'POLICY_AGREEMENT_STATUS_UPDATE':

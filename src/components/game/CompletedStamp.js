@@ -28,7 +28,7 @@ const CompletedStamp = props => {
             method: 'share',
             href: 'https://www.skolded.com',
             quote: stringToShare,
-            hashtag: 'Skolded',
+            hashtag: '#skolded',
         }, function (response) { });
     }
 

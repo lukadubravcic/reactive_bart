@@ -4,6 +4,8 @@ import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/hel
 
 const CHAR_SPACING = 16.28;
 
+const WHAT_FILED_SIZE = 264;
+
 
 class OrderedTabRow extends React.Component {
 
@@ -16,6 +18,12 @@ class OrderedTabRow extends React.Component {
             showDeadlineTooltip: false,
             showWhatToWriteTooltip: false,
         };
+
+        this.whenUserFieldRef = null;
+        this.toWhomUserFieldRef = null;
+        // this.orderedUserFieldRef = null;
+        this.deadlineUserFieldRef = null;
+        this.whatFieldRef = null;
 
         this.elementHovering = ev => {
 
@@ -73,82 +81,87 @@ class OrderedTabRow extends React.Component {
             }
         }
 
-        this.getTableFieldData = (string, len) => {
+        this.getTableFieldData = (string, elementRef) => {
 
             if (typeof string !== 'string'
                 || string.length === 0
-                || typeof len !== 'number'
-                || len === 0) {
-
+            ) {
                 return null;
-            } else if (string.length <= len) return {
-                content: string,
-                HTMLHoverElement: null
-            }
+            } else if (this.elementRef && isEllipsisActive(elementRef)) {
 
-            let content = `${string.substr(0, len - 3)}...`;
-            let elementLen = Math.floor(CHAR_SPACING * string.length) + 35;
+                let elementPlacingStyle = {
+                    width: "calc(100% + 35px)",
+                    bottom: "55px",
+                    left: `-17.5px`
+                };
 
-            let elementPlacingStyle = {
-                width: "calc(100% + 35px)",
-                bottom: "55px",
-                left: `-17.5px`
-            };
+                let wordBreakStyling = {
+                    wordBreak: "break-word",
+                    whiteSpace: "normal"
+                };
 
-            let wordBreakStyling = {
-                wordBreak: "break-word",
-                whiteSpace: "normal"
-            };
-
-            let HTMLHoverElement = (
-                <div
-                    className="hover-dialog"
-                    style={elementPlacingStyle}
-                >
-                    <label
-                        className="hover-dialog-text"
-                        style={wordBreakStyling}>
-                        {string}
-                    </label>
-                    <div className="triangle-hover-box-container">
-                        <svg
-                            id="triangle-element"
-                            width="23px"
-                            height="14px"
-                            viewBox="0 0 23 14"
-                            version="1.1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlnsXlink="http://www.w3.org/1999/xlink">
-
-                            <g
-                                id="page-03"
-                                stroke="none"
-                                strokeWidth="1"
-                                fill="none"
-                                fillRule="evenodd"
-                                transform="translate(-528.000000, -981.000000)">
-
-                                <g
-                                    id="Fill-2-+-LOG-IN-+-Triangle-4-Copy"
-                                    transform="translate(456.000000, 916.000000)"
-                                    fill="#323232">
-
-                                    <polygon
-                                        id="Triangle-4-Copy"
-                                        transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000)"
-                                        points="83.5 65 95 79 72 79">
-                                    </polygon>
-                                </g>
-                            </g>
-                        </svg>
+                let HTMLHoverElement = (
+                    <div
+                        className="hover-dialog"
+                        style={elementPlacingStyle}
+                    >
+                        <label
+                            className="hover-dialog-text"
+                            style={wordBreakStyling}>
+                            {string}
+                        </label>
+                        <div className="triangle-hover-box-container">
+                            {triangleSVG}
+                        </div>
                     </div>
-                </div>
-            )
+                )
 
-            return {
-                content,
-                HTMLHoverElement
+                return {
+                    content: string,
+                    HTMLHoverElement,
+                }
+            } else {
+                return {
+                    content: string,
+                    HTMLHoverElement: null,
+                }
             }
+
+            /* let content = `${string.substr(0, len - 3)}...`;
+            let elementLen = Math.floor(CHAR_SPACING * string.length) + 35; */
+
+            // let elementPlacingStyle = {
+            //     width: "calc(100% + 35px)",
+            //     bottom: "55px",
+            //     left: `-17.5px`
+            // };
+
+            // let wordBreakStyling = {
+            //     wordBreak: "break-word",
+            //     whiteSpace: "normal"
+            // };
+
+
+            // let HTMLHoverElement = (
+            //     <div
+            //         className="hover-dialog"
+            //         style={elementPlacingStyle}
+            //     >
+            //         <label
+            //             className="hover-dialog-text"
+            //             style={wordBreakStyling}>
+            //             {string}
+            //         </label>
+            //         <div className="triangle-hover-box-container">
+            //             {triangleSVG}
+            //         </div>
+            //     </div>
+            // )
+
+            // return {
+            //     string,
+            //     HTMLHoverElement
+            // }
         }
     }
 
@@ -159,18 +172,18 @@ class OrderedTabRow extends React.Component {
 
         const tableRowClass = 'picker-table-row';
 
-        let whenUserField = this.getTableFieldData(moment(this.props.punishment.created).fromNow(), 10);
+        let whenUserField = this.getTableFieldData(moment(this.props.punishment.created).fromNow(), this.whenUserFieldRef);
 
         let toWhomData = this.props.punishment.user_taking_punishment
             ? this.props.punishment.user_taking_punishment
             : this.props.punishment.fk_user_email_taking_punishment;
 
-        let toWhomUserField = this.getTableFieldData(toWhomData, 12);
-        let orderedUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 10);
+        let toWhomUserField = this.getTableFieldData(toWhomData, this.toWhomUserFieldRef);
+        // let orderedUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 10);
         let deadlineUserField = this.props.punishment.deadline !== null
-            ? this.getTableFieldData(moment(this.props.punishment.deadline).fromNow(), 11)
+            ? this.getTableFieldData(moment(this.props.punishment.deadline).fromNow(), this.deadlineUserFieldRef)
             : { content: 'no deadline', HTMLHoverElement: null }
-        let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, 20);
+        let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, this.whatFieldRef);
 
         return (
             <tr className={tableRowClass}>
@@ -203,7 +216,7 @@ class OrderedTabRow extends React.Component {
                     {this.state.showDeadlineTooltip ? deadlineUserField.HTMLHoverElement : null}
                     {deadlineUserField.content}
                 </td>
-                
+
                 <td
                     id="num-time-field"
                     className="ordered-num-time-field">
@@ -211,14 +224,17 @@ class OrderedTabRow extends React.Component {
                     {this.props.punishment.how_many_times}
                 </td>
 
-                <td
-                    id="what-to-write-field"
-                    className="ordered-what-field"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="ordered-what-field">
 
                     {this.state.showWhatToWriteTooltip ? whatToWriteUserField.HTMLHoverElement : null}
-                    {whatToWriteUserField.content}
+                    <span
+                        id="what-to-write-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.whatFieldRef = elem}
+                        className="what-field-content">
+                        {whatToWriteUserField.content}
+                    </span>
                 </td>
 
                 <td className={statusFieldCssClass}>
@@ -235,3 +251,40 @@ class OrderedTabRow extends React.Component {
 export default OrderedTabRow;
 
 
+const triangleSVG = (
+    <svg
+        id="triangle-element"
+        width="23px"
+        height="14px"
+        viewBox="0 0 23 14"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink">
+
+        <g
+            id="page-03"
+            stroke="none"
+            strokeWidth="1"
+            fill="none"
+            fillRule="evenodd"
+            transform="translate(-528.000000, -981.000000)">
+
+            <g
+                id="Fill-2-+-LOG-IN-+-Triangle-4-Copy"
+                transform="translate(456.000000, 916.000000)"
+                fill="#323232">
+
+                <polygon
+                    id="Triangle-4-Copy"
+                    transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000)"
+                    points="83.5 65 95 79 72 79">
+                </polygon>
+            </g>
+        </g>
+    </svg>
+);
+
+
+function isEllipsisActive(e) {
+    return (e.offsetWidth < e.scrollWidth);
+}

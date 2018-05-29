@@ -77,7 +77,7 @@ class NewTab extends React.Component {
             ev.preventDefault();
             let newActivePunishment = {};
 
-            if (window.canRunAds) {
+            // if (window.canRunAds) {
 
                 newActivePunishment = { ...punishment };
 
@@ -104,7 +104,7 @@ class NewTab extends React.Component {
                     this.props.setActivePunishment(newActivePunishment);
                     this.switchToAcceptedTab();
                 }
-            }
+            // }
         };
 
         this.rejectPunishment = rejectedPunishment => { // makni tu kaznu iz statea

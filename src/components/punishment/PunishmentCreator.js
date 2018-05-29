@@ -273,13 +273,13 @@ class PunishmentCreator extends React.Component {
         const submitBtnStyle = this.state.showFormMsg || submitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
-        const heading = usrLoggedIn && window.canRunAds ? 'Your turn to punish someone!' : 'Log in to start punishing!';
+        const heading = usrLoggedIn /* && window.canRunAds */ ? 'Your turn to punish someone!' : 'Log in to start punishing!';
 
         return (
 
-            <div id="creator-component-container" className={usrLoggedIn && window.canRunAds ? 'parent-component' : 'parent-component greyscale-filter'}>
+            <div id="creator-component-container" className={usrLoggedIn /* && window.canRunAds */ ? 'parent-component' : 'parent-component greyscale-filter'}>
 
-                {usrLoggedIn && window.canRunAds ? null : <div id="form-overlay"></div>}
+                {usrLoggedIn /* && window.canRunAds */ ? null : <div id="form-overlay"></div>}
 
                 <div
                     ref={elem => this.formContainerRef = elem}
@@ -291,12 +291,12 @@ class PunishmentCreator extends React.Component {
 
                     <form
                         id="pun-creation-form"
-                        disabled={!(usrLoggedIn && window.canRunAds)}
+                        disabled={!(usrLoggedIn /* && window.canRunAds */)}
                         onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField)}>
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn && window.canRunAds)}>
+                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
 
                             <label className="float-left input-field-name">WHOM</label>
                             <input
@@ -316,7 +316,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn && window.canRunAds)}>
+                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
 
                             <label className="float-left input-field-name">HOW MANY TIMES</label>
                             <button
@@ -353,7 +353,7 @@ class PunishmentCreator extends React.Component {
                         {deadlineChecked ?
                             <fieldset
                                 className="form-row"
-                                disabled={!(usrLoggedIn && window.canRunAds)}>
+                                disabled={!(usrLoggedIn /* && window.canRunAds */)}>
 
                                 <label className="float-left input-field-name">DEADLINE</label>
 
@@ -372,7 +372,7 @@ class PunishmentCreator extends React.Component {
 
                             : <fieldset
                                 className="form-row"
-                                disabled={!(usrLoggedIn && window.canRunAds)}>
+                                disabled={!(usrLoggedIn /* && window.canRunAds */)}>
 
                                 <label
                                     className="float-left input-field-name"
@@ -393,7 +393,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn && window.canRunAds)}>
+                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
 
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input
@@ -412,7 +412,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset id="why-form-row"
                             className="form-row"
-                            disabled={!(usrLoggedIn && window.canRunAds)}>
+                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
 
                             <label className="float-left input-field-name">WHY</label>
                             <textarea
@@ -430,7 +430,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn && window.canRunAds) || this.state.showFormMsg}>
+                            disabled={!(usrLoggedIn /* && window.canRunAds */) || this.state.showFormMsg}>
 
                             <button
                                 style={submitBtnStyle}

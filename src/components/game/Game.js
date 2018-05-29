@@ -57,12 +57,12 @@ class Game extends React.Component {
 
         this.changeActivePunishmentNotLoggedIn = () => {
 
-            if (window.canRunAds === undefined) { // adblocker detektiran
+            /* if (window.canRunAds === undefined) { // adblocker detektiran
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
                 if (specialPunishment) {
                     this.props.setActivePunishment(specialPunishment);
                 } else return;
-            } else if (this.props.guestPunishment) { // invited user
+            } else  */if (this.props.guestPunishment) { // invited user
                 if (checkIfIgnoredPunishment(this.props.guestPunishment)) {
                     let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ACCESING_IGNORED_PUNISHMENT', this.props.specialPunishments))
                     specialPunishment && this.props.setActivePunishment(specialPunishment, false);
@@ -79,12 +79,12 @@ class Game extends React.Component {
 
         this.changeActivePunishmentLoggedIn = () => { // dispatch akciju koja stavlja odabrani punishment na trenutni 
 
-            if (window.canRunAds === undefined) { // adblocker detektiran
+           /*  if (window.canRunAds === undefined) { // adblocker detektiran
                 let specialPunishment = addSpacingToPunishmentWhatToWrite(getSpecialPunishment('ADBLOCKER_DETECTED', this.props.specialPunishments));
                 if (specialPunishment) {
                     this.props.setActivePunishment(specialPunishment);
                 } else return;
-            } else if (this.props.punishmentIdFromURL) { // kazna sa url-a        
+            } else  */if (this.props.punishmentIdFromURL) { // kazna sa url-a        
                 let punishmentInURL = getByValue(this.props.acceptedPunishments, this.props.punishmentIdFromURL);
                 if (punishmentInURL) {  // kazna je aktivna
                     this.props.setActivePunishment(addSpacingToPunishmentWhatToWrite(punishmentInURL));

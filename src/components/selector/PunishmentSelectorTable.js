@@ -326,7 +326,7 @@ class PunishmentSelectorTable extends React.Component {
     render() {
 
         const userLoggedIn = this.props.user._id;
-        const adblockerOrCheatDetected = window.canRunAds === undefined || this.props.cheating;
+        const adblockerOrCheatDetected = /* window.canRunAds === undefined || */ this.props.cheating;
         const showComponent =
             (this.props.newPunishments !== 'empty'
                 && this.props.newPunishments.length > 0)

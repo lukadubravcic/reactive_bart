@@ -66,7 +66,7 @@ class AcceptedTab extends React.Component {
             ev.preventDefault();
             let newActivePunishment = {};
 
-            if (id !== this.props.activePunishment.uid && window.canRunAds) {
+            if (id !== this.props.activePunishment.uid /* && window.canRunAds */) {
                 newActivePunishment = JSON.parse(JSON.stringify(getPunishmentById(id, this.props.acceptedPunishments)));
 
                 if (newActivePunishment.what_to_write[newActivePunishment.what_to_write.length - 1] !== ' ') {

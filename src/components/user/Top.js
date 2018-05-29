@@ -77,7 +77,7 @@ class Top extends React.Component {
 
         this.getElementToDisplay = () => {
 
-            if (window.canRunAds === undefined) return <AdblockerDisabled />;
+            // if (window.canRunAds === undefined) return <AdblockerDisabled />;
 
             const userLoggedIn = !!Object.keys(this.props.common.currentUser).length;
             let elementToDisplay = this.props.auth.elementToDisplay;

@@ -2496,7 +2496,7 @@ td.ordered-status-field {
 	padding-left: 50px;
 	padding-right: 50px;
 	text-align: center;
-	height: 308px;
+	/* height: 308px; */
 }
 
 .mobile-message {
@@ -2508,8 +2508,23 @@ td.ordered-status-field {
 	line-height: 34px;
 }
 
+.mobile-explanation-container {
+	padding-top: 50px;
+	text-align: center;
+	padding-left: 50px;
+	padding-right: 50px;
+}
+
+.mobile-explanation-text {
+	font-family: 'Montserrat';
+	font-size: 14px;
+	color: #FEFEFE;
+	letter-spacing: 0.3px;
+	line-height: 20px;
+}
+
 .mobile-bottom-container {
-	padding-top: 77px;
+	padding-top: 100px;
 	text-align: center;
 }
 
@@ -2521,8 +2536,8 @@ td.ordered-status-field {
 .kreativni-mobile-link-container {
 	display: inline-block;
 	position: relative;
-	padding-top: 46px;
-	padding-bottom: 43px;
+	padding-top: 50px;
+	padding-bottom: 50px;
 }
 
 #kreativni-mobile-link {

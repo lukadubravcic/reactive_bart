@@ -58,6 +58,13 @@ else.`,
                 <div className="mobile-message-container">
                     <span className="mobile-message">{msgToShow}</span>
                 </div>
+
+                <div className="mobile-explanation-container">
+                    <span className="mobile-explanation-text">
+                        Seriously, Skolded is a desktop web app. Great one, though. And as good as you are with your mobile keyboard, you don't really want to punish yourself by using it for skolding. So, put aside your mobile appendix, sit in a comfortable chair, warm up your fingers, show your desktop PC some love and do it the right way!
+                    </span>
+                </div>
+
                 <div className="mobile-bottom-container">
                     <div className="mobile-social-icons-container">
                         <a target="_blank" href="https://twitter.com/skolded_com">

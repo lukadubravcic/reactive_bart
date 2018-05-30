@@ -2,10 +2,6 @@ import React from 'react';
 import moment from 'moment';
 import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/helpers';
 
-const CHAR_SPACING = 16.28;
-
-const WHAT_FILED_SIZE = 264;
-
 
 class OrderedTabRow extends React.Component {
 
@@ -82,12 +78,11 @@ class OrderedTabRow extends React.Component {
         }
 
         this.getTableFieldData = (string, elementRef) => {
-
             if (typeof string !== 'string'
                 || string.length === 0
             ) {
                 return null;
-            } else if (this.elementRef && isEllipsisActive(elementRef)) {
+            } else if (elementRef && isEllipsisActive(elementRef)) {
 
                 let elementPlacingStyle = {
                     width: "calc(100% + 35px)",
@@ -103,8 +98,8 @@ class OrderedTabRow extends React.Component {
                 let HTMLHoverElement = (
                     <div
                         className="hover-dialog"
-                        style={elementPlacingStyle}
-                    >
+                        style={elementPlacingStyle}>
+
                         <label
                             className="hover-dialog-text"
                             style={wordBreakStyling}>
@@ -188,33 +183,43 @@ class OrderedTabRow extends React.Component {
         return (
             <tr className={tableRowClass}>
                 <td className="empty-field"></td>
-                <td
-                    id="when-field"
-                    className="when-field"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="when-field">
 
                     {this.state.showWhenTooltip ? whenUserField.HTMLHoverElement : null}
-                    {whenUserField.content}
+                    <span
+                        id="when-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.whenUserFieldRef = elem}
+                        className="table-cell-content">
+                        {whenUserField.content}
+                    </span>
                 </td>
 
-                <td
-                    id="to-whom-field"
-                    className="to-whom-field"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="to-whom-field">
 
                     {this.state.showToWhomTooltip ? toWhomUserField.HTMLHoverElement : null}
-                    {toWhomUserField.content}
+                    <span
+                        id="to-whom-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.toWhomUserFieldRef = elem}
+                        className="table-cell-content">
+                        {toWhomUserField.content}
+                    </span>
                 </td>
 
-                <td
-                    id="deadline-field"
-                    className="ordered-deadline-field"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="ordered-deadline-field">
+
                     {this.state.showDeadlineTooltip ? deadlineUserField.HTMLHoverElement : null}
-                    {deadlineUserField.content}
+                    <span
+                        id="deadline-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.deadlineUserFieldRef = elem}
+                        className="table-cell-content">
+                        {deadlineUserField.content}
+                    </span>
                 </td>
 
                 <td
@@ -232,7 +237,7 @@ class OrderedTabRow extends React.Component {
                         onMouseOver={this.elementHovering}
                         onMouseOut={this.elementHoverOut}
                         ref={elem => this.whatFieldRef = elem}
-                        className="what-field-content">
+                        className="table-cell-content">
                         {whatToWriteUserField.content}
                     </span>
                 </td>

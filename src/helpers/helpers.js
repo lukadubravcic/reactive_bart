@@ -62,10 +62,10 @@ export function getPunishmentStatus(punishment) {
         }
     } else {
         // ignored, rejected, pending, failed (nije acceptano, deadline je prosao)
-        if (punishmentIgnored) {
-            punishmentStatus = 'IGNORED';
-        } else if (rejectedTimeDefined) {
+        if (rejectedTimeDefined) {
             punishmentStatus = 'REJECTED';
+        } else if (punishmentIgnored) {
+            punishmentStatus = 'IGNORED';
         } else if (waitingForAccept) {
             punishmentStatus = 'PENDING';
         } else if (deadlinePassed) {

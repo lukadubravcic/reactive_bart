@@ -120,6 +120,7 @@ class PunishmentSelectorTable extends React.Component {
         this._handleOrderedPunFromAgent = payload => {
 
             if (payload !== null && typeof payload.orderedPunishments !== 'undefined') {
+                addPropertyToObjectArray(payload.orderedPunishments, 'poked', false);
 
                 this.props.setOrderedPunishments(payload.orderedPunishments);
 
@@ -462,3 +463,11 @@ const componentBottomImage = (
     </svg>
 )
 
+function addPropertyToObjectArray(arrayToTraverse, propName = null, propValue = false) {
+
+    if (arrayToTraverse.length === 0 || propName === null) return arrayToTraverse;
+
+    for (let i = 0; i < arrayToTraverse.length; i++) {
+        arrayToTraverse[i][propName] = propValue;
+    }
+}

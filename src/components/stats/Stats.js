@@ -505,10 +505,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(Stats);
 
 const punishingOthersSVG = (
       <svg id="pun-others-bottom-image" width="1080px" height="43px" viewBox="0 0 1080 43" version="1.1" xmlns="http://www.w3.org/2000/svg">
-
-            <title>Group 11</title>
-            <desc>Created with Sketch.</desc>
-            <defs></defs>
             <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-100.000000, -4071.000000)">
                   <g id="Group" transform="translate(0.000000, 3353.000000)">
                         <g id="Group-11" transform="translate(100.000000, 718.000000)">

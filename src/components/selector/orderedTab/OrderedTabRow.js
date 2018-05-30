@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/helpers';
+import agent from '../../../agent';
 
 
 class OrderedTabRow extends React.Component {
@@ -13,6 +14,7 @@ class OrderedTabRow extends React.Component {
             showToWhomTooltip: false,
             showDeadlineTooltip: false,
             showWhatToWriteTooltip: false,
+            hoveringStatus: false,
         };
 
         this.whenUserFieldRef = null;
@@ -158,6 +160,13 @@ class OrderedTabRow extends React.Component {
             //     HTMLHoverElement
             // }
         }
+
+        this.statusHoverIn = ev => this.setState({ hoveringStatus: true });
+        this.statusHoverOut = ev => this.setState({ hoveringStatus: false });
+
+        this.pokeUser = async ev => {
+            agent.Punishment.poke(this.props.punishment.uid);
+        }
     }
 
     render() {
@@ -242,8 +251,23 @@ class OrderedTabRow extends React.Component {
                     </span>
                 </td>
 
-                <td className={statusFieldCssClass}>
-                    <b>{punishmentStatus}</b>
+                <td className={statusFieldCssClass}
+                    onMouseEnter={this.statusHoverIn}
+                    onMouseLeave={this.statusHoverOut}
+                    style={punishmentStatus === 'PENDING' && this.state.hoveringStatus
+                        ? { textDecoration: 'underline' }
+                        : {}}>
+
+                    {punishmentStatus === 'PENDING'
+                        ? this.state.hoveringStatus
+                            ? <u
+                                onClick={this.pokeUser}
+                                style={{ cursor: 'pointer' }}>
+                                POKE
+                            </u>
+                            : punishmentStatus
+                        : punishmentStatus
+                    }
                 </td>
 
                 <td className="empty-field"></td>

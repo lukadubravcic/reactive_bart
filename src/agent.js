@@ -60,6 +60,7 @@ const Punishment = {
 	skoldboard: () => requests.get('/punishment/skoldboard'),
 	accept: (punId, inAppFlag = true) => requests.get(`/punishment/accept?id=${encodeURIComponent(punId)}&iaf=${encodeURIComponent(inAppFlag)}`),
 	reject: (punId, inAppFlag = true) => requests.get(`/punishment/reject?id=${encodeURIComponent(punId)}&iaf=${encodeURIComponent(inAppFlag)}`),
+	poke: punId => requests.post('/punishment/poke', { punId: encodeURIComponent(punId) }),
 };
 
 const Pref = {

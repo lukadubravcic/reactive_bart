@@ -1513,7 +1513,7 @@ input[type=number]::-webkit-outer-spin-button {
 	font-size: 22px;
 	color: #515151;
 	letter-spacing: 1px;
-	line-height: 20px;	
+	line-height: 22px;	
 
 	border-collapse: collapse;
 
@@ -1540,9 +1540,11 @@ td {
 	position: relative;
 	display: inline-block;
 
-	padding-top: 22px;
-	padding-bottom: 17px;
 	height: 60px;
+
+	padding: 20px 16px 0 19px;
+
+	/* line-height: 22px; */
 
 	text-align: left;
 }
@@ -1660,6 +1662,10 @@ td {
 /* .picker-table-row:last-child {
 	border-bottom: 10px solid #515151;
 } */
+
+.picker-table-row {
+	height: 60px;
+}
 
 .picker-table-row:last-child td {
 	border-bottom: none;
@@ -1838,6 +1844,7 @@ td {
 	height: 100%;
 
 	display: inline-block;
+	
 
 	white-space: nowrap;
     overflow: hidden;

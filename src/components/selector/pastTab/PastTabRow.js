@@ -16,6 +16,10 @@ class PastTabRow extends React.Component {
             showWhatToWriteTooltip: false,
         };
 
+        this.orderedFieldRef = null;
+        this.whomFieldRef = null;
+        this.whatFieldRef = null;
+
         this.elementHovering = ev => {
 
             switch (ev.target.id) {
@@ -66,83 +70,53 @@ class PastTabRow extends React.Component {
             }
         }
 
-        this.getTableFieldData = (string, len) => {
-
+        this.getTableFieldData = (string, elementRef) => {
             if (typeof string !== 'string'
                 || string.length === 0
-                || typeof len !== 'number'
-                || len === 0) {
-
+            ) {
                 return null;
-            } else if (string.length <= len) return {
-                content: string,
-                HTMLHoverElement: null
-            }
+            } else if (elementRef && isEllipsisActive(elementRef)) {
 
-            let content = `${string.substr(0, len - 3)}...`;
-            let elementLen = Math.floor(CHAR_SPACING * string.length) + 35;
+                let elementPlacingStyle = {
+                    width: "calc(100% + 35px)",
+                    bottom: "55px",
+                    left: `-17.5px`
+                };
 
-            let elementPlacingStyle = {
-                width: "calc(100% + 35px)",
-                bottom: "55px",
-                left: `-17.5px`
-            };
+                let wordBreakStyling = {
+                    wordBreak: "break-word",
+                    whiteSpace: "normal"
+                };
 
-            let wordBreakStyling = {
-                wordBreak: "break-word",
-                whiteSpace: "normal"
-            };
+                let HTMLHoverElement = (
+                    <div
+                        className="hover-dialog"
+                        style={elementPlacingStyle}>
 
-            let HTMLHoverElement = (
-                <div
-                    className="hover-dialog"
-                    style={elementPlacingStyle}
-                >
-                    <label
-                        className="hover-dialog-text"
-                        style={wordBreakStyling}>
-                        {string}
-                    </label>
-                    <div className="triangle-hover-box-container">
-                        <svg
-                            id="triangle-element"
-                            width="23px"
-                            height="14px"
-                            viewBox="0 0 23 14"
-                            version="1.1"
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlnsXlink="http://www.w3.org/1999/xlink">
-
-                            <g
-                                id="page-03"
-                                stroke="none"
-                                strokeWidth="1"
-                                fill="none"
-                                fillRule="evenodd"
-                                transform="translate(-528.000000, -981.000000)">
-
-                                <g
-                                    id="Fill-2-+-LOG-IN-+-Triangle-4-Copy"
-                                    transform="translate(456.000000, 916.000000)"
-                                    fill="#323232">
-
-                                    <polygon
-                                        id="Triangle-4-Copy"
-                                        transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000)"
-                                        points="83.5 65 95 79 72 79">
-                                    </polygon>
-                                </g>
-                            </g>
-                        </svg>
+                        <label
+                            className="hover-dialog-text"
+                            style={wordBreakStyling}>
+                            {string}
+                        </label>
+                        <div className="triangle-hover-box-container">
+                            {triangleSVG}
+                        </div>
                     </div>
-                </div>
-            )
+                )
 
-            return {
-                content,
-                HTMLHoverElement
+                return {
+                    content: string,
+                    HTMLHoverElement,
+                }
+            } else {
+                return {
+                    content: string,
+                    HTMLHoverElement: null,
+                }
             }
         }
+
+
     }
 
     render() {
@@ -150,31 +124,37 @@ class PastTabRow extends React.Component {
         const statusFieldCssClass = `ordered-status-field ${this.getCssClassForStatusField(punishmentStatus)}`;
         const tableRowClass = 'picker-table-row ' + this.props.style;
 
-        let orderedOnUserField = this.getTableFieldData(moment(this.props.punishment.created).fromNow(), 14);
-        let byWhomUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 13);
-        let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, 27);
+        let orderedOnUserField = this.getTableFieldData(moment(this.props.punishment.created).fromNow(), this.orderedFieldRef);
+        let byWhomUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, this.whomFieldRef);
+        let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, this.whatFieldRef);
 
         return (
             <tr className={tableRowClass}>
                 <td className="empty-field"></td>
-                <td
-                    id="ordered-on-field"
-                    className="ordered-on-field"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="ordered-on-field">
 
                     {this.state.showOrderedOnTooltip ? orderedOnUserField.HTMLHoverElement : null}
-                    {orderedOnUserField.content}
+                    <span
+                        id="ordered-on-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.orderedFieldRef = elem}
+                        className="table-cell-content">
+                        {orderedOnUserField.content}
+                    </span>
                 </td>
 
-                <td
-                    id="by-whom-field"
-                    className="by-whom-field"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="by-whom-field">
 
                     {this.state.showByWhomTooltip ? byWhomUserField.HTMLHoverElement : null}
-                    {byWhomUserField.content}
+                    <span
+                        id="by-whom-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.whomFieldRef = elem}
+                        className="table-cell-content">
+                        {byWhomUserField.content}
+                    </span>
                 </td>
 
                 <td
@@ -184,14 +164,17 @@ class PastTabRow extends React.Component {
                     {this.props.punishment.how_many_times}
                 </td>
 
-                <td
-                    id="what-to-write-field"
-                    className="what-field-longer"
-                    onMouseOver={this.elementHovering}
-                    onMouseOut={this.elementHoverOut}>
+                <td className="what-field-longer">
 
                     {this.state.showWhatToWriteTooltip ? whatToWriteUserField.HTMLHoverElement : null}
-                    {whatToWriteUserField.content}
+                    <span
+                        id="what-to-write-field"
+                        onMouseOver={this.elementHovering}
+                        onMouseOut={this.elementHoverOut}
+                        ref={elem => this.whatFieldRef = elem}
+                        className="table-cell-content">
+                        {whatToWriteUserField.content}
+                    </span>
                 </td>
 
                 <td className={statusFieldCssClass}>
@@ -208,3 +191,39 @@ class PastTabRow extends React.Component {
 export default PastTabRow;
 
 
+const triangleSVG = (
+    <svg
+        id="triangle-element"
+        width="23px"
+        height="14px"
+        viewBox="0 0 23 14"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink">
+
+        <g
+            id="page-03"
+            stroke="none"
+            strokeWidth="1"
+            fill="none"
+            fillRule="evenodd"
+            transform="translate(-528.000000, -981.000000)">
+
+            <g
+                id="Fill-2-+-LOG-IN-+-Triangle-4-Copy"
+                transform="translate(456.000000, 916.000000)"
+                fill="#323232">
+
+                <polygon
+                    id="Triangle-4-Copy"
+                    transform="translate(83.500000, 72.000000) scale(1, -1) translate(-83.500000, -72.000000)"
+                    points="83.5 65 95 79 72 79">
+                </polygon>
+            </g>
+        </g>
+    </svg>
+);
+
+function isEllipsisActive(e) {
+    return (e.offsetWidth < e.scrollWidth);
+}

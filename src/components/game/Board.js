@@ -111,6 +111,12 @@ const mapDispatchToProps = dispatch => ({
     removeToS: () => dispatch({ type: 'REMOVE_TERMS_OF_SERVICE' }),
     removePrivacyPolicy: () => dispatch({ type: 'REMOVE_PRIVACY_POLICY' }),
     displayPrivacyPolicy: () => dispatch({ type: 'SHOW_PRIVACY_POLICY' }),
+    randomPunishmentDone: (randomPunId, timeSpent) => {
+        agent.Punishment.randomPunDone(randomPunId, timeSpent);
+    },
+    randomPunishmentTry: (randomPunId, timeSpent, textLen) => {
+        agent.Punishment.randomPunTry(randomPunId, timeSpent);
+    },
 });
 
 class Board extends React.Component {
@@ -145,7 +151,15 @@ class Board extends React.Component {
                 e.key === 'Enter'
                 && this.props.boardTextMistake
             ) {
-                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                    if (typeof this.props.currentUser !== 'undefined'
+                        && this.props.currentUser !== null
+                        && Object.keys(this.props.currentUser).length > 0
+                        && typeof this.props.activePunishment.type === 'undefined') {
+
+                        this.props.randomPunishmentTry(this.props.activePunishment.uid, this.props.boardValue.length);
+                    }
+                } else {
                     if (
                         this.props.guestPunishment !== null
                         && Object.keys(this.props.guestPunishment).length
@@ -164,6 +178,7 @@ class Board extends React.Component {
                 requestAnimationFrame(() => this.textBoard.focus());
             }
         }
+
 
         this.listenOnKey = () => {
             document.addEventListener("keydown", this.reactToEnterKey, false);
@@ -221,7 +236,16 @@ class Board extends React.Component {
             if (this.props.progress < 100) {
                 this._wrongCharPlace = null;
 
-                if (!specialOrRandomPunishmentIsActive(this.props.activePunishment) && this.props.gameInProgress && this.props.progress > 0) {
+                if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                    if (typeof this.props.currentUser !== 'undefined'
+                        && this.props.currentUser !== null
+                        && Object.keys(this.props.currentUser).length > 0
+                        && typeof this.props.activePunishment.type === 'undefined'
+                        && this.props.progress > 0) {
+
+                        this.props.randomPunishmentTry(this.props.activePunishment.uid, this.props.boardValue.length);
+                    }
+                } else if (this.props.gameInProgress && this.props.progress > 0) {
                     if (this.props.guestPunishment !== null &&
                         Object.keys(this.props.guestPunishment).length &&
                         typeof this.props.guestPunishment.uid !== 'undefined' &&
@@ -281,8 +305,12 @@ class Board extends React.Component {
                 this.elementKreda.style.opacity = 1;
             }, 200);
             // cekaj na potencijalni enter
-            if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                return;
+            if (specialOrRandomPunishmentIsActive(this.props.activePunishment)
+                && typeof this.props.currentUser !== 'undefined'
+                && this.props.currentUser !== null
+                && Object.keys(this.props.currentUser).length > 0
+                && typeof this.props.activePunishment.type === 'undefined') {
+                this.props.randomPunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
             } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
             } else {
@@ -574,12 +602,22 @@ class Board extends React.Component {
                 && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write))) { // postavljena nova kazna
             // console.log('%cTRUE', 'background: yellow; color: green')
 
-            // ako je trenutna kazna bila u tijeku (i nije specijalna kazna), logiraj ju
-            if (
-                prevProps.gameInProgress
-                && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)
+            // ako je trenutna kazna bila u tijeku, logiraj ju
+            if (specialOrRandomPunishmentIsActive(prevProps.activePunishment)
+                && prevProps.gameInProgress
                 && prevProps.progress !== 0
                 && prevProps.progress !== 100
+                && typeof this.props.currentUser !== 'undefined'
+                && this.props.currentUser !== null
+                && Object.keys(this.props.currentUser).length > 0
+                && typeof prevProps.activePunishment.type === 'undefined'
+            ) {
+                this.props.randomPunishmentTry(prevProps.activePunishment.uid, prevProps.boardValue.length);
+            } else if (
+                prevProps.gameInProgress
+                && prevProps.progress !== 0
+                && prevProps.progress !== 100
+                && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)
             ) {
                 if (
                     prevProps.guestPunishment !== null

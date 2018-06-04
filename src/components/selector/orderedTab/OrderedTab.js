@@ -68,9 +68,21 @@ class OrderedTab extends React.Component {
             this._showFirstPage();
         };
 
-        this.updateAndShowOrderedPunishments = (punishments) => {
+        this.updateAndShowOrderedPunishments = punishments => {
             this.props.changeOrderedPunishments(punishments);
             this._showFirstPage(punishments);
+        };
+
+        this.updatePokedPunishment = punishmentId => {
+            let punishments = [...this.props.orderedPunishments];
+
+            punishments.forEach(punishment => {
+                if (punishment.uid === punishmentId) {
+                    punishment.poked = true;
+                }
+            });
+
+            if (punishments.length) return this.props.changeOrderedPunishments(punishments);
         };
 
         this.reSortPunishments = id => {
@@ -262,7 +274,11 @@ class OrderedTab extends React.Component {
                                 {
                                     shownPunishments.map((punishment, index) => {
                                         return (
-                                            <OrderedTabRow punishment={punishment} key={punishment.uid || index} id={punishment.uid} />
+                                            <OrderedTabRow
+                                                punishment={punishment}
+                                                key={punishment.uid || index}
+                                                id={punishment.uid}
+                                                updatePokedPunishment={this.updatePokedPunishment} />
                                         )
                                     })
                                 }

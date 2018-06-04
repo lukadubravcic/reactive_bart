@@ -166,6 +166,7 @@ class OrderedTabRow extends React.Component {
 
         this.pokeUser = async ev => {
             agent.Punishment.poke(this.props.punishment.uid);
+            this.props.updatePokedPunishment(this.props.punishment.uid);
         }
     }
 
@@ -254,19 +255,21 @@ class OrderedTabRow extends React.Component {
                 <td className={statusFieldCssClass}
                     onMouseEnter={this.statusHoverIn}
                     onMouseLeave={this.statusHoverOut}
-                    style={punishmentStatus === 'PENDING' && this.state.hoveringStatus
+                    style={punishmentStatus === 'PENDING' && this.state.hoveringStatus && this.props.punishment.poked !== true
                         ? { textDecoration: 'underline' }
                         : {}}>
 
-                    {punishmentStatus === 'PENDING'
-                        ? this.state.hoveringStatus
-                            ? <u
-                                onClick={this.pokeUser}
-                                style={{ cursor: 'pointer' }}>
-                                POKE
+                    {this.props.punishment.poked === true
+                        ? 'POKED'
+                        : punishmentStatus === 'PENDING'
+                            ? this.state.hoveringStatus
+                                ? <u
+                                    onClick={this.pokeUser}
+                                    style={{ cursor: 'pointer' }}>
+                                    POKE
                             </u>
+                                : punishmentStatus
                             : punishmentStatus
-                        : punishmentStatus
                     }
                 </td>
 

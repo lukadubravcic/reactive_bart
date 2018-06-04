@@ -92,7 +92,7 @@ class Prefs extends React.Component {
                                             onChange={this.clickHandler} />
                                         <span id="pref-checkmark"></span>
                                     </label>
-                                    <label className="pref-name">tooltips</label>
+                                    <label className="pref-name">Tooltips</label>
                                 </div>
                                 <div className="prefs-row">
                                     <label className="float-left pref-chexbox-cont">
@@ -103,7 +103,7 @@ class Prefs extends React.Component {
                                             onChange={this.clickHandler} />
                                         <span id="pref-checkmark"></span>
                                     </label>
-                                    <label className="pref-name">sound on/off</label>
+                                    <label className="pref-name">Sound on/off</label>
                                 </div>
                                 <div className="prefs-row">
                                     <label className="float-left pref-chexbox-cont">
@@ -114,14 +114,14 @@ class Prefs extends React.Component {
                                             onChange={this.clickHandler} />
                                         <span id="pref-checkmark"></span>
                                     </label>
-                                    <label className="pref-name">mail me when I receive a new punishment</label>
+                                    <label className="pref-name">Mail me when I receive a new punishment</label>
                                 </div>
 
                                 <div style={{ height: 30 + "px" }} className="prefs-row">
                                 </div>
 
                                 <div className="prefs-row pref-heading-bot-marg">
-                                    <span style={{ right: 2 + "px" }} className="pref-heading">Mail me when they...</span>
+                                    <span style={{ right: 2 + "px" }} className="pref-heading">Mail me when my skoldbuddies...</span>
                                 </div>
 
                                 <div className="prefs-row">

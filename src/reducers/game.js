@@ -33,7 +33,6 @@ const defaultState = {
 export default (state = defaultState, action) => {
 
     switch (action.type) {
-
         case 'STARTING_SENTANCE_CHANGED':
             return {
                 ...state,

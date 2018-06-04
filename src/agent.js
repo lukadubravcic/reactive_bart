@@ -61,6 +61,8 @@ const Punishment = {
 	accept: (punId, inAppFlag = true) => requests.get(`/punishment/accept?id=${encodeURIComponent(punId)}&iaf=${encodeURIComponent(inAppFlag)}`),
 	reject: (punId, inAppFlag = true) => requests.get(`/punishment/reject?id=${encodeURIComponent(punId)}&iaf=${encodeURIComponent(inAppFlag)}`),
 	poke: punId => requests.post('/punishment/poke', { punId: encodeURIComponent(punId) }),
+	randomPunDone: (randomPunId, timeSpent) => requests.post('/punishment/randomdone', { randomPunId, timeSpent }),
+	randomPunTry: (randomPunId, typedCharsNum) => requests.post('/punishment/randomlog', { randomPunId, typedCharsNum }),
 };
 
 const Pref = {

@@ -71,6 +71,7 @@ const Pref = {
 
 const Rollups = {
 	getRollups: () => requests.get('/rollups/getrollups'),
+	adClick: () => requests.post('/rollups/adclick', {}),
 }
 
 export default {

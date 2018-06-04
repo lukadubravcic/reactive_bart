@@ -314,6 +314,7 @@ class Board extends React.Component {
             } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
             } else {
+                if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) return;
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
                 this.updatePastPunishments(this.props.activePunishment);
                 this.removeActivePunishmentFromAccepted();

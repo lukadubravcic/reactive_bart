@@ -3,6 +3,7 @@ import agent from '../../agent';
 
 const ROLLUP_DISPLAY_TIME = 30000;
 const ROLLUPS_DIRECTORY = '/rollups/';
+const AD_CLICK_THRESHOLD = 5000;
 
 
 class Ads extends React.Component {
@@ -19,6 +20,8 @@ class Ads extends React.Component {
         this.hovering = false;
         this.timeOutFinished = false;
         this.rollupToShow = null;
+
+        this.timeOfLastAdClick = null;
 
         this.toggleTimeout = null;
 
@@ -129,6 +132,22 @@ class Ads extends React.Component {
                 this.handleRollups()
             }
         }
+
+        this.clickHandler = ev => {
+            if (
+                this.timeOfLastAdClick !== null
+                && ((Date.now() - this.timeOfLastAdClick) < AD_CLICK_THRESHOLD)
+            ) return false;
+
+            if (
+                typeof this.props.currentUser !== 'undefined'
+                && this.props.currentUser !== null
+                && Object.keys(this.props.currentUser).length
+            ) {
+                agent.Rollups.adClick();
+                this.timeOfLastAdClick = Date.now();
+            }
+        }
     }
 
     componentDidMount() {
@@ -144,6 +163,7 @@ class Ads extends React.Component {
         return (
             <div id="rollups">
                 <a
+                    onClick={this.clickHandler}
                     href={this.state.activeRollup !== null ? this.state.activeRollup.url : null}
                     target="_blank"
                     rel="noopener noreferrer">

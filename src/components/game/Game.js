@@ -311,7 +311,7 @@ class Game extends React.Component {
                         </div>
 
                         <div id="rollup-container">
-                            <Ads />
+                            <Ads currentUser={this.props.currentUser}/>
                         </div>
 
                     </div>

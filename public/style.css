@@ -1451,7 +1451,15 @@ input[type=number]::-webkit-outer-spin-button {
 	fill: white;
 }
 
+#facebook-footer-icon {
+	margin-right: 22px;
+}
+
 #facebook-footer-icon:hover #facebook-g {
+	fill: white;
+}
+
+#shop-footer-icon:hover #shop-g {
 	fill: white;
 }
 
@@ -2563,6 +2571,7 @@ td.ordered-status-field {
 }
 
 #facebook-mobile-icon {
+	margin-right: 44px;
 	opacity: 0.5;
 }
 

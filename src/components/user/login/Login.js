@@ -262,6 +262,14 @@ class Login extends React.Component {
                 this.enableSubmit();
             }, formMsgDuration)
         }
+
+        this.toRegisterForm = ev => {
+            ev.preventDefault();
+            this.animateChangeToRegister('email');
+            this.checkForUserTimeout = setTimeout(() => {
+                this.props.showRegisterForm('email', '');
+            }, animationDuration);
+        }
     }
 
     componentDidMount() {
@@ -297,6 +305,9 @@ class Login extends React.Component {
         const submitBtnStyle = this.state.submitBtnDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
+        const backToRegisterBtnStyle = {
+            marginLeft: 28 + 'px',
+        }
 
         return (
 
@@ -366,6 +377,13 @@ class Login extends React.Component {
                                 type="submit"
                                 disabled={this.state.submitBtnDisabled}>
                                 LOG IN
+                            </button>
+
+                            <button
+                                onClick={this.toRegisterForm}
+                                style={backToRegisterBtnStyle}
+                                className="btn-submit opacity-tran">
+                                BACK TO REGISTER
                             </button>
                             <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
 

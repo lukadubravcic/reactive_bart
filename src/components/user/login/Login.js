@@ -305,9 +305,6 @@ class Login extends React.Component {
         const submitBtnStyle = this.state.submitBtnDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
-        const backToRegisterBtnStyle = {
-            marginLeft: 28 + 'px',
-        }
 
         return (
 
@@ -363,7 +360,10 @@ class Login extends React.Component {
                                 value={password}
                                 onChange={this.passwordChange}
                                 required />
-                            {this.state.showFormMsg ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>) : null}
+                            {this.state.showFormMsg
+                                ? (<label className="form-feedback">{errMsg.toUpperCase()}</label>)
+                                : <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
+                            }
                         </fieldset>
 
                         <fieldset
@@ -379,14 +379,11 @@ class Login extends React.Component {
                                 LOG IN
                             </button>
 
-                            <button
-                                onClick={this.toRegisterForm}
-                                style={backToRegisterBtnStyle}
-                                className="btn-submit opacity-tran">
+                            <a
+                                className="link noselect"
+                                onClick={this.toRegisterForm}>
                                 BACK TO REGISTER
-                            </button>
-                            <a id="forgot-password" className="link noselect" onClick={this.showResetPasswordForm}>FORGOT PASSWORD?</a>
-
+                            </a>
                         </fieldset>
 
                     </form>

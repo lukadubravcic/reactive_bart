@@ -4,7 +4,7 @@ import agent from '../../agent';
 
 const mapStateToProps = state => ({
     ...state.auth,
-    policyAgreementStatus: state.common.policyAgreementStatus, 
+    policyAgreementStatus: state.common.policyAgreementStatus,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -489,14 +489,11 @@ class Register extends React.Component {
                                 disabled={isSubmitDisabled}>
                                 REGISTER
                             </button>
-                            <button
-                                style={{}}
-                                id="btn-additional"
-                                className="btn-submit"
-                                type="button"
+                            <a
+                                className="link noselect"
                                 onClick={this.backToLogin}>
                                 BACK TO LOGIN
-                            </button>
+                            </a>
                             {this.props._errMsg && this.state.showFormMsg
                                 ?
                                 <label className="form-feedback">{this.props._errMsg.toUpperCase()}</label>

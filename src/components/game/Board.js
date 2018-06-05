@@ -13,7 +13,7 @@ import keysound from '../../helpers///keysound';
 import { API_ROOT } from '../../constants/constants';
 import cheatingDetector from '../../helpers/cheatingCheck';
 
-const UPPERCASE = false;
+const UPPERCASE = false; // uppercase flag - kontrolira ako se kazna ispisuje u uppercase-u te da igra zanemaruje case slova (tretira ih isto)
 
 const mapStateToProps = state => ({
     ...state.game,
@@ -151,30 +151,9 @@ class Board extends React.Component {
                 e.key === 'Enter'
                 && this.props.boardTextMistake
             ) {
-                if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                    if (typeof this.props.currentUser !== 'undefined'
-                        && this.props.currentUser !== null
-                        && Object.keys(this.props.currentUser).length > 0
-                        && typeof this.props.activePunishment.type === 'undefined') {
-
-                        this.props.randomPunishmentTry(this.props.activePunishment.uid, this.props.boardValue.length);
-                    }
-                } else {
-                    if (
-                        this.props.guestPunishment !== null
-                        && Object.keys(this.props.guestPunishment).length
-                        && typeof this.props.guestPunishment.uid !== 'undefined'
-                        && this.props.guestPunishment.uid === this.props.activePunishment.uid
-                    ) {
-                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
-                    } else {
-                        this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
-                    }
-                }
                 this.cheatingCheck.clearData();
                 this.punishmentInit(false);
-                // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
-                this.boardFocused();
+                this.boardFocused(); // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
                 requestAnimationFrame(() => this.textBoard.focus());
             }
         }
@@ -235,30 +214,8 @@ class Board extends React.Component {
 
             if (this.props.progress < 100) {
                 this._wrongCharPlace = null;
-
-                if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
-                    if (typeof this.props.currentUser !== 'undefined'
-                        && this.props.currentUser !== null
-                        && Object.keys(this.props.currentUser).length > 0
-                        && typeof this.props.activePunishment.type === 'undefined'
-                        && this.props.progress > 0) {
-
-                        this.props.randomPunishmentTry(this.props.activePunishment.uid, this.props.boardValue.length);
-                    }
-                } else if (this.props.gameInProgress && this.props.progress > 0) {
-                    if (this.props.guestPunishment !== null &&
-                        Object.keys(this.props.guestPunishment).length &&
-                        typeof this.props.guestPunishment.uid !== 'undefined' &&
-                        this.props.guestPunishment.uid === this.props.activePunishment.uid) {
-
-                        this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
-
-                    } else this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
-                }
-
                 this.punishmentInit(false);
-                // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
-                this.boardFocused();
+                this.boardFocused(); // kreni sa igrom (fokusiranje boarda -> moze se poceti pisati)
                 requestAnimationFrame(() => this.textBoard.focus());
 
             } else if (this.props.progress === 100) { // u slucaju kada je kazna izvrsena (100%) reset tipka ce postaviti random kaznu
@@ -305,16 +262,21 @@ class Board extends React.Component {
                 this.elementKreda.style.opacity = 1;
             }, 200);
             // cekaj na potencijalni enter
-            if (specialOrRandomPunishmentIsActive(this.props.activePunishment)
+            if (
+                specialOrRandomPunishmentIsActive(this.props.activePunishment)
                 && typeof this.props.currentUser !== 'undefined'
                 && this.props.currentUser !== null
                 && Object.keys(this.props.currentUser).length > 0
-                && typeof this.props.activePunishment.type === 'undefined') {
+                && typeof this.props.activePunishment.type === 'undefined'
+            ) {
                 this.props.randomPunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
-            } else if (this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length && this.props.guestPunishment.uid === this.props.activePunishment.uid) {
+            } else if (
+                this.props.guestPunishment !== null
+                && Object.keys(this.props.guestPunishment).length
+                && this.props.guestPunishment.uid === this.props.activePunishment.uid
+            ) {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
-            } else {
-                if (specialOrRandomPunishmentIsActive(this.props.activePunishment)) return;
+            } else if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
                 this.updatePastPunishments(this.props.activePunishment);
                 this.removeActivePunishmentFromAccepted();
@@ -388,7 +350,7 @@ class Board extends React.Component {
                 if (!this.validateKey(key, transformedBoardText)) {
                     this.props.updateBoardValue(transformedBoardText)
                     this.incorrectBoardEntry();
-                    return;
+                    return this.logTry();
                 }
 
                 this.props.updateBoardValue(transformedBoardText);
@@ -397,7 +359,6 @@ class Board extends React.Component {
                 }
                 progress = this.updateProgress(transformedBoardText, this.punishment, this.howManyTimes);
                 if (progress === 100) {
-                    // punishment DONE
                     this.activePunishmentDone();
                 }
             }
@@ -575,6 +536,32 @@ class Board extends React.Component {
             this.failedSocialImg = new Image();
             this.failedSocialImg.src = 'board-failed-social.png';
         };
+
+        this.logTry = () => {
+            if (
+                typeof this.props.currentUser !== 'undefined'
+                && this.props.currentUser !== null
+                && Object.keys(this.props.currentUser).length
+                && this.props.boardValue.length > 0
+            ) {
+                if (
+                    specialOrRandomPunishmentIsActive(this.props.activePunishment)
+                    && typeof this.props.activePunishment.type === 'undefined'
+                ) {
+                    return this.props.randomPunishmentTry(this.props.activePunishment.uid, this.props.boardValue.length);
+                } else if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+                    return this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
+                }
+            } else if ( // guest user
+                this.props.guestPunishment !== null
+                && Object.keys(this.props.guestPunishment).length
+                && typeof this.props.guestPunishment.uid !== 'undefined'
+                && this.props.guestPunishment.uid === this.props.activePunishment.uid
+                && this.props.boardValue.length > 0
+            ) {
+                return this.props.logPunishmentGuestTry(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
+            }
+        }
     }
 
     componentDidMount() {
@@ -606,7 +593,7 @@ class Board extends React.Component {
             // ako je trenutna kazna bila u tijeku, logiraj ju
             if (specialOrRandomPunishmentIsActive(prevProps.activePunishment)
                 && prevProps.gameInProgress
-                && prevProps.progress !== 0
+                && prevProps.boardValue.length > 0
                 && prevProps.progress !== 100
                 && typeof this.props.currentUser !== 'undefined'
                 && this.props.currentUser !== null
@@ -616,7 +603,7 @@ class Board extends React.Component {
                 this.props.randomPunishmentTry(prevProps.activePunishment.uid, prevProps.boardValue.length);
             } else if (
                 prevProps.gameInProgress
-                && prevProps.progress !== 0
+                && prevProps.boardValue.length > 0
                 && prevProps.progress !== 100
                 && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)
             ) {

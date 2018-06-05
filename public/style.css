@@ -245,6 +245,7 @@ textarea {
 	color: #FFFFFF;
 	letter-spacing: 5px;	
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .link:hover {

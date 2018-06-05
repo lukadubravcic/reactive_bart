@@ -183,7 +183,7 @@ class Top extends React.Component {
 
     render() {
         return (
-            <div className={this.props.common.policyAgreementStatus !== true ? 'greyscale-filter' : ''}>
+            <div id="top" className={this.props.common.policyAgreementStatus !== true ? 'greyscale-filter' : ''}>
                 {this.props.common.policyAgreementStatus !== true ? <div id="form-overlay"></div> : null}
                 {this.getElementToDisplay()}
             </div>

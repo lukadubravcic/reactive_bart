@@ -402,6 +402,27 @@ class PunishmentSelectorTable extends React.Component {
                     </div>
                 </div>
             )
+        } else if (!userLoggedIn) {
+            const tableTabNamesElement = this.setHeaderTabsElement('acceptedTab');
+            return (
+                <div className={selectorParentCSS}>
+                    <div className="container">
+                        <label className="heading picker-heading">Pick your punishment</label>
+
+                        <div id="punishment-picker" className="pun-picker-component">
+
+                            {tableTabNamesElement}
+                            <AcceptedTab />
+
+                        </div>
+
+                        <div id="picker-bottom-image-container">
+                            {componentBottomImage}
+                        </div>
+
+                    </div>
+                </div>
+            )
 
         } else return null; // no data
     }

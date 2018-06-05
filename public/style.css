@@ -2834,3 +2834,48 @@ td.skoldboard-table-punish-field {
 
 	cursor: pointer;
 }
+
+
+/* Locker component */
+.locker-component-container {
+	background: #FFBC24;
+}
+
+.locker-content-container:after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.padlock-container {
+	display: inline-block;
+	position: relative;
+	float: left;
+	height: 230px;
+	padding-top: 68px;
+	padding-right: 70px; 
+	padding-left: 100px;
+}
+
+.locker-msg-container {
+	display: inline-block;
+	position: relative;
+	float: left;
+	width: 885px;
+
+	font-family: 'Love Ya Like A Sister';
+	font-size: 50px;
+	color: #FEFEFE;
+	letter-spacing: 0;
+	line-height: 50px;
+	padding-top: 60px;
+	padding-bottom: 70px;
+}
+
+.login-link {
+	cursor: pointer;
+}
+
+.login-link:hover {
+	text-decoration: underline;
+}

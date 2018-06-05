@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import MobileSplashScreen from './components/MobileSplashScreen';
 import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
 import GoodiesStore from './components/GoodiesStore';
+import Locker from './components/Locker';
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
@@ -116,7 +117,6 @@ class App extends React.Component {
         super();
     }
 
-
     componentDidMount() {
 
         // hendlaj invited usera kao guesta
@@ -186,6 +186,7 @@ class App extends React.Component {
                 <div>
                     <Top />
                     <Game />
+                    <Locker />
                     <PunishmentCreator />
                     <PunishmentSelectorTable />
                     <Stats />

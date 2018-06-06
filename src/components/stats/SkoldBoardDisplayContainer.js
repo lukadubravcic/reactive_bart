@@ -10,13 +10,16 @@ class SkoldBoardDisplayContainer extends React.Component {
         }
     }
 
-    componentDidMount() {
-        // let dataArray = tranformAndSortData(this.props.data);
+   /*  componentDidMount() {
         if (this.props.data.length) this.setState({ data: this.props.data });
     }
 
+    componentDidUpdate(prevProps) {
+        // if (this.props.data) this.setState({ data: this.props.data });
+    } */
+
     render() {
-        if (!this.state.data) return null;
+        if (!this.props.data) return null;
 
         return (
             <div className="skoldboard-table-container">
@@ -29,33 +32,10 @@ class SkoldBoardDisplayContainer extends React.Component {
                         </button>
                     </nav>
                 </div>
-                <SkoldBoardTable data={this.state.data} currentUser={this.props.currentUser} />
+                <SkoldBoardTable data={this.props.data} currentUser={this.props.currentUser} />
             </div>
         )
     }
 }
 
 export default SkoldBoardDisplayContainer;
-
-
-/* function tranformAndSortData(data) {
-    let dataArray = [];
-
-    for (let key in data) {
-        dataArray.push({ ...data[key], email: key });
-    }
-
-    return sortDataByRank(dataArray, 1);
-}
-
-function sortDataByRank(data, order) {
-    let tmp = [...data];
-
-    tmp.sort((a, b) => {
-        if ((typeof b.rank === 'undefined' || b.rank === null) && (typeof a.rank !== 'undefined' || a.rank !== 'null')) return -1;
-        else if ((typeof a.rank === 'undefined' || a.rank === null) && (typeof b.rank !== 'undefined' || b.rank !== 'null')) return 1;
-        return ((a.rank - b.rank) * order);
-    });
-
-    return tmp;
-}; */

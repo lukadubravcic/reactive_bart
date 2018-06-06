@@ -17,6 +17,12 @@
 	overflow-x: hidden;
 } */
 
+.clear-fix::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
 #board-textarea {
 	scrollbar-base-color: #000;
 	scrollbar-face-color: #000;

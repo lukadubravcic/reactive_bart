@@ -91,56 +91,11 @@ class AcceptedTabRow extends React.Component {
                     HTMLHoverElement: null,
                 }
             }
-            // if (typeof string !== 'string'
-            //     || string.length === 0
-            //     || typeof len !== 'number'
-            //     || len === 0) {
-
-            //     return null;
-            // } else if (string.length <= len) return {
-            //     content: string,
-            //     HTMLHoverElement: null
-            // }
-
-            // let content = `${string.substr(0, len - 3)}...`;
-            // let elementLen = Math.floor(CHAR_SPACING * string.length) + 35;
-
-            // let elementPlacingStyle = {
-            //     width: "calc(100% + 35px)",
-            //     bottom: "55px",
-            //     left: `-17.5px`
-            // };
-
-            // let wordBreakStyling = {
-            //     wordBreak: "break-word",
-            //     whiteSpace: "normal"
-            // };
-
-            // let HTMLHoverElement = (
-            //     <div
-            //         className="hover-dialog"
-            //         style={elementPlacingStyle}
-            //     >
-            //         <label
-            //             className="hover-dialog-text"
-            //             style={wordBreakStyling}>
-            //             {string}
-            //         </label>
-            //         <div className="triangle-hover-box-container">
-            //             {triangleSVG}
-            //         </div>
-            //     </div>
-            // )
-
-            // return {
-            //     content,
-            //     HTMLHoverElement
-            // }
-
         }
     }
 
     render() {
+        if (typeof this.props.punishment !== 'object') return null;
 
         const tableRowClass = 'picker-table-row ' + this.props.style;
         const isPunSelected = typeof this.props.style !== 'undefined';
@@ -150,6 +105,7 @@ class AcceptedTabRow extends React.Component {
             ? this.getTableFieldData(moment(this.props.punishment.deadline).fromNow(), this.deadlineFieldRef)
             : { content: 'no deadline', HTMLHoverElement: null }
         let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, this.whatFieldRef);
+
 
         return (
             <tr className={tableRowClass}>

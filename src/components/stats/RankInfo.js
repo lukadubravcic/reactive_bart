@@ -1,6 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import SkoldBoard from './SkoldBoard';
 
+const mapStateToProps = state => ({
+    currentUser: state.common.currentUser,
+    rank: state.common.rank,
+});
 
 class RankInfo extends React.Component {
 
@@ -10,13 +15,17 @@ class RankInfo extends React.Component {
 
     render() {
         let rank = typeof this.props.rank === 'undefined' || this.props.rank === null || this.props.rank === 'unknown' ? 'unranked' : ('#' + this.props.rank);
+        let userLoggedIn =
+            typeof this.props.currentUser !== 'undefined'
+            && this.props.currentUser !== null
+            && Object.keys(this.props.currentUser).length > 0;
 
         return (
 
-            <div className="parent-component rank-component-container">
+            <div className={`parent-component rank-component-container${userLoggedIn ? "" : " greyscale-filter"}`}>
+                {userLoggedIn ? null : <div id="form-overlay"></div>}
 
                 <div className="container">
-
                     <label id="rank-heading" className="heading">Your rank is&nbsp;</label>
                     <label id="user-rank">{rank}</label>
 
@@ -40,7 +49,7 @@ class RankInfo extends React.Component {
 }
 
 
-export default RankInfo;
+export default connect(mapStateToProps, () => ({}))(RankInfo);
 
 
 const componentSVG = (

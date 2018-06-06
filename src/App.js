@@ -6,6 +6,7 @@ import PunishmentCreator from './components/punishment/PunishmentCreator';
 import PunishmentSelectorTable from './components/selector/PunishmentSelectorTable';
 import Prefs from './components/prefs/Prefs';
 import Stats from './components/stats/Stats';
+import RankInfo from './components/stats/RankInfo';
 import Footer from './components/Footer';
 import MobileSplashScreen from './components/MobileSplashScreen';
 import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
@@ -190,6 +191,7 @@ class App extends React.Component {
                     <PunishmentCreator />
                     <PunishmentSelectorTable />
                     <Stats />
+                    <RankInfo />
                     <GoodiesStore />
                     <Prefs />
                     <Footer

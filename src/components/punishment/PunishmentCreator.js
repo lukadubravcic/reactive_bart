@@ -6,6 +6,7 @@ import moment from 'moment';
 import { trimExcessSpaces } from '../../helpers/helpers';
 
 import DateElement from './DateElement';
+import ShareAnonCheckbox from './ShareAnonCheckbox';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -43,6 +44,11 @@ const mapDispatchToProps = dispatch => ({
     onChangeDeadlineCheckbox: value => dispatch({
         type: 'UPDATE_FIELD_PUNISH_CREATE',
         key: 'deadlineChecked',
+        value,
+    }),
+    onChangeAnonShareCheckbox: value => dispatch({
+        type: 'UPDATE_FIELD_PUNISH_CREATE',
+        key: 'anonShare',
         value,
     }),
     setErrMsg: msg => dispatch({ type: 'SHOW_ERR_MESSAGE', msg }),
@@ -180,6 +186,10 @@ class PunishmentCreator extends React.Component {
             }
         }
 
+        this.toggleAnonShareCheckbox = ev => {
+            this.props.onChangeAnonShareCheckbox(!this.props.anonShare);
+        }
+
         this.submitForm = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField) => ev => {
             ev.preventDefault();
 
@@ -256,6 +266,7 @@ class PunishmentCreator extends React.Component {
         const whyField = this.props.why;
         const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
+        const anonShare = this.props.anonShare;
         const validDeadline = deadlineChecked
             ? (this.props.deadlineValid
                 && this.props.yearField !== ''
@@ -267,6 +278,7 @@ class PunishmentCreator extends React.Component {
             || this.state.showTryMailTooltip
             || this.state.showMasochistTooltip
             || !validDeadline
+            || whatToWriteField === ''
             || !this.state.whatToWriteFieldValid
             || !this.state.whyFieldValid
             || this.state.showFormMsg;
@@ -312,6 +324,10 @@ class PunishmentCreator extends React.Component {
                             />
                             {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label> : null}
                             {this.state.showMasochistTooltip ? <label id="whom-feedback" className="float-left form-feedback">MASOCHIST?</label> : null}
+                            {!this.state.showTryMailTooltip && !this.state.showMasochistTooltip
+                                ? <label id="form-submit-feedback" className="float-left form-feedback">LEAVE EMPTY TO<br /> SHARE A PUNISHMENT</label>
+                                : null
+                            }
                         </fieldset>
 
                         <fieldset
@@ -429,6 +445,19 @@ class PunishmentCreator extends React.Component {
                         </fieldset>
 
                         <fieldset
+                            style={{}}
+                            className="form-row"
+                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+
+                            <ShareAnonCheckbox
+                                show={whomField === ''}
+                                usrLoggedIn={usrLoggedIn}
+                                value={anonShare}
+                                toggle={this.toggleAnonShareCheckbox} />
+
+                        </fieldset>
+
+                        <fieldset
                             className="form-row"
                             disabled={!(usrLoggedIn /* && window.canRunAds */) || this.state.showFormMsg}>
 
@@ -439,7 +468,7 @@ class PunishmentCreator extends React.Component {
                                 ref="submitPunishmentBtn"
                                 type="submit"
                                 disabled={submitDisabled}>
-                                PUNISH
+                                {whomField === '' ? 'SHARE' : 'PUNISH'}
                             </button>
 
                             {this.state.showFormMsg && this.props._errMsg !== null

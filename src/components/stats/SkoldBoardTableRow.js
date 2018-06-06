@@ -96,18 +96,26 @@ class SkoldBoardTableRow extends React.Component {
         const isCurrentUser = this.props.item.self === 0
             ? <button
                 className="skoldboard-btn-punish"
+                disabled={this.props.disabled}
                 onClick={this.punishHandler}>
                 PUNISH
             </button>
-            : <a
-                href="https://skolded.threadless.com"
-                target="_blank"
-                rel="noopener noreferrer">
-                <button
-                    className="skoldboard-btn-punish">
-                    TREAT
-                </button>
-            </a>;
+            : this.props.disabled
+                ? <a>
+                    <button
+                        className="skoldboard-btn-punish">
+                        TREAT
+                    </button>
+                </a>
+                : <a
+                    href="https://skolded.threadless.com"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    <button
+                        className="skoldboard-btn-punish">
+                        TREAT
+                    </button>
+                </a>;
 
         return (
             <tr className={`skoldboard-row ${this.props.item.self === 1 ? "picker-selected-row" : ""}`}>

@@ -211,6 +211,23 @@ class Stats extends React.Component {
                         )
                   });
             }
+
+            this.clearPastPunishmentsResortedFlag = () => {
+                  if (this.props.pastPunishmentsResorted) this.props.clearPastPunishmentsResortedFlag();
+            }
+
+            this.setDummyData = () => {
+                  requestAnimationFrame(() => {
+                        this.setState((prevState, props) => {
+                              return {
+                                    orderedFirstGraphData: dummyOrderedOne,
+                                    orderedSecondGraphData: dummyOrderedTwo,
+                                    punishedFirstGraphData: dummyPunishedOne,
+                                    punishedSecondGraphData: dummyPunishedTwo,
+                              };
+                        });
+                  });
+            }
       }
 
 
@@ -285,8 +302,41 @@ class Stats extends React.Component {
        }
   */
 
+      componentDidMount() {
+            // pokazi dummy grafove
+            this.setDummyData();
+      }
 
       componentDidUpdate(prevProps) {
+
+            const userJustLoggedOut =
+                  (
+                        typeof prevProps.currentUser !== 'undefined'
+                        && prevProps.currentUser !== null
+                        && Object.keys(prevProps.currentUser).length > 0
+                  )
+                  && (
+                        typeof this.props.currentUser === 'undefined'
+                        || this.props.currentUser === null
+                        || Object.keys(this.props.currentUser).length === 0
+                  );
+
+            if (userJustLoggedOut) {
+                  requestAnimationFrame(() => {
+                        this.setState((prevState, props) => {
+                              return {
+                                    orderedFirstGraphData: 'waitHack',
+                                    orderedSecondGraphData: 'waitHack',
+                                    punishedFirstGraphData: 'waitHack',
+                                    punishedSecondGraphData: 'waitHack',
+                              };
+                        });
+                  });
+
+                  setTimeout(() => {
+                        this.setDummyData();
+                  }, 0);
+            }
 
             if (this.props.orderedPunishments !== 'empty' && this.props.orderedPunishments.length > 0) { // classify ordered punishments
                   if (prevProps.orderedPunishments.length !== this.props.orderedPunishments.length) {
@@ -347,15 +397,11 @@ class Stats extends React.Component {
                   }
             }
 
-            this.clearPastPunishmentsResortedFlag = () => {
-                  if (this.props.pastPunishmentsResorted) this.props.clearPastPunishmentsResortedFlag();
-            }
+
       }
 
       render() {
-            const usrLoggedIn = Object.keys(this.props.currentUser).length;
-
-            if (!usrLoggedIn) return null;
+            const userLoggedIn = Object.keys(this.props.currentUser).length;
 
             const orderedFirstGraphData = this.state.orderedFirstGraphData;
             const orderedSecondGraphData = this.state.orderedSecondGraphData;
@@ -390,7 +436,8 @@ class Stats extends React.Component {
 
             return (
                   <div>
-                        <div className="parent-component statz-component-container">
+                        <div className={`parent-component statz-component-container${userLoggedIn ? "" : " greyscale-filter"}`}>
+                              {userLoggedIn ? null : <div id="form-overlay"></div>}
                               <div className="container">
 
                                     <label id="statz-heading" className="heading">Statz</label>
@@ -490,7 +537,7 @@ class Stats extends React.Component {
                               </div>
                         </div>
 
-                        <RankInfo rank={this.props.rank} />
+                        {/*  <RankInfo rank={this.props.rank} /> */}
 
                   </div>
             )
@@ -748,3 +795,89 @@ const getQuardrant = radianAngle => {
                   return null;
       }
 }
+
+
+const dummyOrderedOne = [
+      {
+            color: "#FFA623",
+            key: 1,
+            name: "accepted",
+            value: 4,
+      },
+      {
+            color: "#EA411E",
+            key: 2,
+            name: "rejected",
+            value: 3,
+      },
+      {
+            color: "#00BBD6",
+            key: 3,
+            name: "ignored",
+            value: 2,
+      },
+];
+
+const dummyOrderedTwo = [
+      {
+            value: 3,
+            key: 1,
+            color: "#00BBD6",
+            name: "givenUp"
+      },
+      {
+            value: 2,
+            key: 2,
+            color: "#FFA623",
+            name: "completed"
+      },
+      {
+            value: 1,
+            key: 3,
+            color: "#EA411E",
+            name: "failed"
+      },
+];
+
+
+const dummyPunishedOne = [
+      {
+            value: 1,
+            key: 1,
+            color: "#FFA623",
+            name: "accepted"
+      },
+      {
+            value: 1,
+            key: 2,
+            color: "#EA411E",
+            name: "rejected"
+      },
+      {
+            value: 1,
+            key: 3,
+            color: "#00BBD6",
+            name: "ignored"
+      },
+];
+
+const dummyPunishedTwo = [
+      {
+            value: 1,
+            key: 1,
+            color: "#00BBD6",
+            name: "givenUp"
+      },
+      {
+            value: 1,
+            key: 2,
+            color: "#FFA623",
+            name: "completed"
+      },
+      {
+            value: 1,
+            key: 3,
+            color: "#EA411E",
+            name: "failed"
+      },
+];

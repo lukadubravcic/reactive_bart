@@ -13,6 +13,7 @@ import { ITEMS_PER_PAGE } from '../../../constants/constants';
 
 
 const mapStateToProps = state => ({
+    currentUser: state.common.currentUser,
     acceptedPunishments: state.punishment.acceptedPunishments,
     pastPunishments: state.punishment.pastPunishments,
     shownAcceptedPunishments: state.punishment.shownAcceptedPunishments,
@@ -258,14 +259,16 @@ class AcceptedTab extends React.Component {
     }
 
     render() {
-
         const currentPage = this.props.currentPage;
         const shownPunishments = this.props.shownAcceptedPunishments;
         const activePunishment = this.props.activePunishment;
         const columns = this.columns;
+        const loggedInUser =
+            typeof this.props.currentUser !== 'undefined'
+            && this.props.currentUser !== null
+            && Object.keys(this.props.currentUser).length > 0;
 
         const selectedStyle = 'picker-selected-row';
-
 
         if (shownPunishments !== 'empty') {
             return (
@@ -280,18 +283,26 @@ class AcceptedTab extends React.Component {
                             <tbody>
                                 {
                                     shownPunishments.map(punishment => {
-
-                                        if (punishment.uid === activePunishment.uid) {
+                                        if (typeof punishment !== 'object') return null;
+                                        else if (punishment.uid === activePunishment.uid) {
                                             return (
-                                                <AcceptedTabRow punishment={punishment} style={selectedStyle} key={punishment.uid}
-                                                    id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                                <AcceptedTabRow
+                                                    punishment={punishment}
+                                                    style={selectedStyle}
+                                                    key={punishment.uid}
+                                                    id={punishment.uid}
+                                                    onGoClick={loggedInUser ? this.handleGoPunishment : () => { }}
+                                                    onGiveUpClick={loggedInUser ? this.giveUpPunishment : () => { }}
                                                     disabledGo={true} />
                                             )
-                                        }
-                                        else {
+                                        } else {
                                             return (
-                                                <AcceptedTabRow punishment={punishment} key={punishment.uid}
-                                                    id={punishment.uid} onGoClick={this.handleGoPunishment} onGiveUpClick={this.giveUpPunishment}
+                                                <AcceptedTabRow
+                                                    punishment={punishment}
+                                                    key={punishment.uid}
+                                                    id={punishment.uid}
+                                                    onGoClick={loggedInUser ? this.handleGoPunishment : () => { }}
+                                                    onGiveUpClick={loggedInUser ? this.giveUpPunishment : () => { }}
                                                     disabledGo={false} />
                                             )
                                         }
@@ -305,7 +316,7 @@ class AcceptedTab extends React.Component {
 
             )
         } else return null;
-        
+
     }
 }
 

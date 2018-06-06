@@ -221,30 +221,33 @@ class PunishmentSelectorTable extends React.Component {
                 </div>
             );
         }
+
+        this.setDummyData = () => {
+            this.props.setAcceptedPunishments(dummyAcceptedPunishments);
+            this.props.setNewHeaderVisibility(true);
+            this.props.setAcceptedHeaderVisibility(true);
+            this.props.setPastHeaderVisibility(true);
+            this.props.setOrderedHeaderVisibility(true);
+            this.selectTab('acceptedTab');
+        }
     }
 
     componentDidUpdate(prevProps) {
 
-        if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvacanja userdata
+        if (!prevProps.user._id && this.props.user._id) { // detektiranje dohvacanja userdata (tj.login usera)
+            // hide tabova - razlog: guest useru se prikazuju svi tabovi
+            this.props.setNewHeaderVisibility(false);
+            this.props.setAcceptedHeaderVisibility(false);
+            this.props.setPastHeaderVisibility(false);
+            this.props.setOrderedHeaderVisibility(false);
 
-            agent.Punishment.getNew().then(payload => {
-                this._handleNewPunFromAgent(payload);
-            });
+            agent.Punishment.getNew().then(payload => this._handleNewPunFromAgent(payload));
+            agent.Punishment.getAccepted().then(payload => this._handleAcceptedPunFromAgent(payload));
+            agent.Punishment.getPast().then(payload => this._handlePastPunFromAgent(payload));
+            agent.Punishment.getOrdered().then(payload => this._handleOrderedPunFromAgent(payload));
 
-            agent.Punishment.getAccepted().then(payload => {
-                // console.log('accepted answer')
-                this._handleAcceptedPunFromAgent(payload);
-            });
-
-            agent.Punishment.getPast().then(payload => {
-                // console.log('past answer')
-                this._handlePastPunFromAgent(payload);
-            });
-
-            agent.Punishment.getOrdered().then(payload => {
-                // console.log('ordered answer')
-                this._handleOrderedPunFromAgent(payload);
-            });
+        } else if (prevProps.user._id && !this.props.user._id) {
+            this.setDummyData();
         }
 
         const activePunishmentJustSet = !Object.keys(prevProps.activePunishment).length && Object.keys(this.props.activePunishment).length > 0;
@@ -321,7 +324,11 @@ class PunishmentSelectorTable extends React.Component {
 
             this.props.setPastPunishments(nextProps.pastPunishments);
         }
+    }
 
+    componentDidMount() {
+        // postavljanje dummy podataka dok se ne desi login
+        this.setDummyData();
     }
 
     render() {
@@ -398,14 +405,15 @@ class PunishmentSelectorTable extends React.Component {
                         <div id="picker-bottom-image-container">
                             {componentBottomImage}
                         </div>
-
                     </div>
                 </div>
             )
         } else if (!userLoggedIn) {
             const tableTabNamesElement = this.setHeaderTabsElement('acceptedTab');
+
             return (
-                <div className={selectorParentCSS}>
+                <div className={selectorParentCSS + ' picker-accepted-color greyscale-filter'}>
+                    <div id="form-overlay"></div>
                     <div className="container">
                         <label className="heading picker-heading">Pick your punishment</label>
 
@@ -492,3 +500,198 @@ function addPropertyToObjectArray(arrayToTraverse, propName = null, propValue = 
         arrayToTraverse[i][propName] = propValue;
     }
 }
+
+
+const dummyAcceptedPunishments = [
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "123",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "How you doin?",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "234",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 2",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "345",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 3",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "456",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 4",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "567",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 5",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "678",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 6",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "789",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 7",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "890",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 8",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "901",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 9",
+        why: "It's funny.",
+    },
+    {
+        accepted: "2018-05-28T00:00:00.000Z",
+        created: "2018-05-28T00:00:00.000Z",
+        deadline: null,
+        done: null,
+        failed: null,
+        fk_user_email_taking_punishment: "lukadubravcic@yahoo.com",
+        // fk_user_uid_ordering_punishment: 76,
+        given_up: null,
+        how_many_times: 10,
+        ignored: null,
+        rejected: null,
+        // total_time_spent: 25,
+        // tries: 12,
+        uid: "101",
+        user_ordering_punishment: "McLovin",
+        what_to_write: "Dummy 10",
+        why: "It's funny.",
+    }
+];
+

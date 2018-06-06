@@ -84,6 +84,20 @@ class SkoldBoardTable extends React.Component {
                 });
             }, 500);
         }
+
+        this.changeSkoldboard = () => {
+            let shownRows = getFirstPage(this.props.data);
+
+            this.setState({
+                currentPage: 1,
+                shownRows: [...shownRows],
+            });
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    this.changeTableContainerHeight(shownRows.length);
+                });
+            });
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -91,20 +105,18 @@ class SkoldBoardTable extends React.Component {
             || (prevState.shownRows !== null && prevState.shownRows.length !== this.state.shownRows.length)) {
             this.changeTableContainerHeight();
         }
+
+        if (
+            prevProps.data.length !== this.props.data.length
+            || prevProps.data[0].rank !== this.props.data[0].rank
+            || prevProps.data[0].whom !== this.props.data[0].whom
+        ) {
+            this.changeSkoldboard();
+        }
     }
 
     componentDidMount() {
-        let shownRows = getFirstPage(this.props.data);
-
-        this.setState({
-            currentPage: 1,
-            shownRows: [...shownRows],
-        });
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                this.changeTableContainerHeight(shownRows.length);
-            });
-        });
+        this.changeSkoldboard();
     }
 
     componentWillUnmount() {
@@ -113,9 +125,13 @@ class SkoldBoardTable extends React.Component {
 
     render() {
         if (this.state.shownRows === null || this.state.shownRows.length === 0) return null;
+        const disabledForm =
+            typeof this.props.currentUser === 'undefined'
+            || this.props.currentUser === null
+            || Object.keys(this.props.currentUser).length === 0;
         // if (Object.keys(this.props.data).length === 0) return null;
         const rowsToDisplay = this.state.shownRows.map((item, index) => {
-            return (<SkoldBoardTableRow item={item} key={index}/>)
+            return (<SkoldBoardTableRow item={item} key={index} disabled={disabledForm} />)
         });
 
         return (

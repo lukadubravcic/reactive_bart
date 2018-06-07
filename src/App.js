@@ -12,6 +12,7 @@ import MobileSplashScreen from './components/MobileSplashScreen';
 import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
 import GoodiesStore from './components/GoodiesStore';
 import Locker from './components/Locker';
+import SharePunishmentDialog from './components/SharePunishmentDialog';
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
@@ -116,6 +117,14 @@ class App extends React.Component {
 
     constructor() {
         super();
+
+        this.state = {
+            showShareDialog: false,
+        }
+
+        this.shareDialogVisibilityHandler = value => {
+            this.setState({ showShareDialog: value });
+        }
     }
 
     componentDidMount() {
@@ -178,17 +187,22 @@ class App extends React.Component {
 
         if (isMobile) {
             return (
-                <div style={{ width: 100 + "vw", height: 100 + "vh", background: "#2B5D64" }}>
+                <div style={{
+                    width: 100 + "vw",
+                    height: 100 + "vh",
+                    background: "#2B5D64"
+                }}>
                     <MobileSplashScreen />
                 </div>
             )
         } else {
             return (
                 <div>
+                    {this.state.showShareDialog ? <SharePunishmentDialog shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} /> : null}
                     <Top />
                     <Game />
                     <Locker />
-                    <PunishmentCreator />
+                    <PunishmentCreator shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
                     <PunishmentSelectorTable />
                     <Stats />
                     <RankInfo />

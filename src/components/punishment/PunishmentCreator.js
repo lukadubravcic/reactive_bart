@@ -7,6 +7,7 @@ import { trimExcessSpaces } from '../../helpers/helpers';
 
 import DateElement from './DateElement';
 import ShareAnonCheckbox from './ShareAnonCheckbox';
+import SharePunishmentDialog from '../SharePunishmentDialog';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -72,8 +73,23 @@ const mapDispatchToProps = dispatch => ({
             dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: 'Ouch! Something went wrong.' });
         });
     },
+    submitSharedPunishment: async (submitData, enableSubmit) => {
+        dispatch({ type: 'SUBMITING_NEW_PUNISHMENT' });
+
+        let res = await agent.Punishment.createdSharedPunishment(submitData);
+
+        if (typeof res.err !== 'undefined') dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: res.err });
+        else if (typeof res.msg === 'undefined') dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: 'SOMETHING WENT WRONG' });
+
+        // sve je proslo okej
+        // ako shared kazna nije anon -> update ordered kazni
+
+        enableSubmit();
+        console.log(res);
+    },
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_DISPLAY_MSG' }),
     clearPunishingUser: () => dispatch({ type: 'CLEAR_PUNISHING_USER' }),
+    updateOrderedPunishments: newOrderedPunishments => dispatch({}),
 });
 
 const animationDuration = 500; // 0.5s
@@ -190,24 +206,46 @@ class PunishmentCreator extends React.Component {
             this.props.onChangeAnonShareCheckbox(!this.props.anonShare);
         }
 
-        this.submitForm = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField) => ev => {
+        this.submitForm = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare) => ev => {
             ev.preventDefault();
 
-            if (deadlineChecked && !this.props.deadlineValid) {
-                this.props.setErrMsg('Invalid deadline.');
-                return;
-            }
+            if (deadlineChecked && !this.props.deadlineValid) return this.props.setErrMsg('Invalid deadline.');
+            if (whomField === '') return this.createSharedPunishment(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare);
 
             this.refs.submitPunishmentBtn.setAttribute('disabled', 'true');
+
             let submitData = {};
-            isMail(whomField) ? submitData.whomEmail = whomField : submitData.whomUsername = whomField;
+            isMail(whomField)
+                ? submitData.whomEmail = whomField
+                : submitData.whomUsername = whomField;
             submitData.howManyTimes = howManyTimesField;
             submitData.deadlineDate = deadlineChecked
                 ? new Date(this.props.yearField, this.props.monthField - 1, this.props.dayField, 12, 0, 0, 0).toString()
                 : null;
             submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
             submitData.why = trimExcessSpaces(whyField);
+
             this.props.onSubmit(submitData, this.props.orderedPunishments, this.enableSubmit);
+        }
+
+        this.createSharedPunishment = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare) => {
+            // napravi punishment object i salji ga send funkciji
+            this.refs.submitPunishmentBtn.setAttribute('disabled', 'true');
+            // TODO disable submit btna dok traje slanje 
+
+            let submitData = {};
+
+            isMail(whomField)
+                ? submitData.whomEmail = whomField
+                : submitData.whomUsername = whomField;
+            submitData.howManyTimes = howManyTimesField;
+            submitData.deadlineDate = deadlineChecked
+                ? new Date(this.props.yearField, this.props.monthField - 1, this.props.dayField, 12, 0, 0, 0).toString()
+                : null;
+            submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
+            submitData.why = trimExcessSpaces(whyField);
+
+            this.props.submitSharedPunishment(submitData, this.enableSubmit);
         }
 
         this.enableSubmit = () => {
@@ -274,8 +312,7 @@ class PunishmentCreator extends React.Component {
                 && this.props.dayField !== '')
             : true;
         const submitDisabled =
-            this.props.whom.length === 0
-            || this.state.showTryMailTooltip
+            this.state.showTryMailTooltip
             || this.state.showMasochistTooltip
             || !validDeadline
             || whatToWriteField === ''
@@ -294,6 +331,7 @@ class PunishmentCreator extends React.Component {
                 {usrLoggedIn /* && window.canRunAds */ ? null : <div id="form-overlay"></div>}
 
                 <div
+                    style={{ paddingBottom: 105 + "px" }}
                     ref={elem => this.formContainerRef = elem}
                     className="container">
 
@@ -304,7 +342,7 @@ class PunishmentCreator extends React.Component {
                     <form
                         id="pun-creation-form"
                         disabled={!(usrLoggedIn /* && window.canRunAds */)}
-                        onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField)}>
+                        onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare)}>
 
                         <fieldset
                             className="form-row"
@@ -320,7 +358,6 @@ class PunishmentCreator extends React.Component {
                                 onChange={this.changeWhom}
                                 onBlur={this.onWhomBlur}
                                 spellCheck="false"
-                                required
                             />
                             {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label> : null}
                             {this.state.showMasochistTooltip ? <label id="whom-feedback" className="float-left form-feedback">MASOCHIST?</label> : null}
@@ -445,12 +482,13 @@ class PunishmentCreator extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            style={{}}
-                            className="form-row"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                            style={{ height: whomField === '' ? 66 + "px" : 0 }}
+                            className="form-row height-tran"
+                            disabled={!(usrLoggedIn /* && window.canRunAds */) || whomField !== ''}>
 
                             <ShareAnonCheckbox
                                 show={whomField === ''}
+                                currentUser={this.props.currentUser}
                                 usrLoggedIn={usrLoggedIn}
                                 value={anonShare}
                                 toggle={this.toggleAnonShareCheckbox} />

@@ -11,6 +11,7 @@ const defaultState = {
     monthField: '',
     yearField: '',
     deadlineValid: false,
+    anonShare: false,
     _errMsg: null,
     punishingUserSetFromOuterComponent: null,
 };

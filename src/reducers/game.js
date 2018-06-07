@@ -62,13 +62,13 @@ export default (state = defaultState, action) => {
             return { ...state, progress: action.updatedProgress };
         case 'PUNISHMENT_TRY_LOGGED':
             return {
-                ...state,
+                ...state,/* 
                 progress: defaultState.progress,
                 boardValue: defaultState.boardValue,
                 timeSpent: defaultState.timeSpent,
                 timerValue: defaultState.timerValue,
                 gameInProgress: defaultState.gameInProgress,
-                boardTextMistake: defaultState.boardTextMistake
+                boardTextMistake: defaultState.boardTextMistake */
             }
         case 'PUNISHMENT_DONE':
             return { ...state, boardFocused: false };

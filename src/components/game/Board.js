@@ -350,7 +350,9 @@ class Board extends React.Component {
                 if (!this.validateKey(key, transformedBoardText)) {
                     this.props.updateBoardValue(transformedBoardText)
                     this.incorrectBoardEntry();
-                    return this.logTry();
+
+                    this.logTry();
+                    return;
                 }
 
                 this.props.updateBoardValue(transformedBoardText);
@@ -589,7 +591,6 @@ class Board extends React.Component {
                 && (this.props.activePunishment.uid === prevProps.activePunishment.uid)
                 && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write))) { // postavljena nova kazna
             // console.log('%cTRUE', 'background: yellow; color: green')
-
             // ako je trenutna kazna bila u tijeku, logiraj ju
             if (specialOrRandomPunishmentIsActive(prevProps.activePunishment)
                 && prevProps.gameInProgress
@@ -624,6 +625,7 @@ class Board extends React.Component {
             }
             if (this.props.firstTimePlaying === true && !specialOrRandomPunishmentIsActive(prevProps.activePunishment)) this.props.updateUserHasTriedPunishments(false);
             else if (this.props.firstTimePlaying === null) this.usersFirstPunishment(this.props.currentUser, this.props.activePunishment, this.props.pastPunishments);
+
             this.stopBoardCursorToggling();
             this.activePunishmentChanged();
         }

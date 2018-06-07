@@ -55,6 +55,10 @@
 	cursor: pointer;
 }
 
+.underline-on-hover:hover {
+	text-decoration: underline;
+}
+
 .def-cursor {
 	cursor: default;
 }
@@ -1091,7 +1095,7 @@ fieldset + fieldset {
 /* Punishment creator */
 
 #creator-component-container {
-	height: 1030px;
+	/* height: 1030px; */
 	background-color: #EA411E;		
 }
 
@@ -2869,7 +2873,7 @@ td.skoldboard-table-punish-field {
 	float: left;
 	width: 885px;
 
-	font-family: 'Love Ya Like A Sister';
+	font-family: 'Love Ya Like A Sister', cursive;
 	font-size: 50px;
 	color: #FEFEFE;
 	letter-spacing: 0;
@@ -2884,4 +2888,94 @@ td.skoldboard-table-punish-field {
 
 .login-link:hover {
 	text-decoration: underline;
+}
+
+
+/* SHARE PUN DIALOG */
+
+.share-dialog-component {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+
+	background: rgb(80, 80, 80, 0.85);
+	z-index: 150;
+}
+
+.share-pun-dialog-container {
+	background: #EB411E;
+	width: 580px;
+	position: fixed;
+	z-index: 200;
+	right: calc(50% - 290px);
+	top: 200px;
+}
+
+.share-dialog-title-container {
+	display: block;
+	position: relative;
+	padding-top: 40px;
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+.share-dialog-title {
+	font-family: 'Love Ya Like A Sister', cursive;
+	font-size: 56px;
+	color: #FEFEFE;
+	letter-spacing: 0;
+	line-height: 40px;
+}
+
+.btn-close-share-dialog {
+	display: inline;
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	background: transparent;
+}
+
+.share-dialog-social-container {
+	padding-top: 20px;
+	padding-bottom: 20px;
+	text-align: center;
+	background: #323232;
+}
+
+.share-dialog-icon-btns {
+	margin-right: 25px;
+	margin-left: 25px;
+	background: transparent;
+}
+
+.share-dialog-link-container{
+	padding: 40px 30px 40px 30px;
+}
+
+.share-dialog-link-label {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 12.8px;
+	color: #FFFFFF;
+	letter-spacing: 2.4px;
+}
+
+.share-dialog-link-input {
+	height: 48px;
+	width: 330px;
+	border-radius: 4px;
+
+	margin-left: 12px;
+}
+
+.share-dialog-copy-btn {
+	width: 117px;
+	height: 48px;
+	margin-left: 20px;
+	padding: 0;
+
+	font-family: 'Montserrat', sans-serif;
+	font-size: 19.2px;
+	color: #FEFEFE;
+	letter-spacing: 4px;
+	font-weight: 300;
 }

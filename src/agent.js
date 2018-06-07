@@ -44,12 +44,13 @@ const Auth = {
 };
 
 const Punishment = {
-	createPunishment: (punishmentData) => requests.post('/punishment/create', punishmentData),
+	createPunishment: punishmentData => requests.post('/punishment/create', punishmentData),
+	createdSharedPunishment: punishmentData => requests.post('/punishment/createshared', punishmentData),
 	getNew: () => requests.get('/punishment/new'),
 	getAccepted: () => requests.get('/punishment/accepted'),
 	getPast: () => requests.get('/punishment/past'),
 	getOrdered: () => requests.get('/punishment/ordered'),
-	giveUp: (punishmentId) => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
+	giveUp: punishmentId => requests.post('/punishment/giveup', { punishmentId: punishmentId }),
 	done: (id, timeSpent) => requests.post('/punishment/done', { id, timeSpent }),
 	guestDone: (userId, punishmentId, timeSpent) => requests.post('/punishment/guestDone', { userId, punishmentId, timeSpent }),
 	logTry: (id, timeSpent, typedCharsNum) => requests.post('/punishment/log', { id, timeSpent, typedCharsNum }),

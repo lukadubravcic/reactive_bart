@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => ({
                     console.log('set username: payload === null');
                 }
             }, err => {
-                dispatch({ type: 'SET_USERNAME_ERROR', errMsg: 'Username not set. Try again.' });
+                dispatch({ type: 'SET_USERNAME_ERROR', errMsg: 'Username not set.' });
             });
     },
     onGuestSubmit: (username, email, punishment) => {
@@ -52,7 +52,7 @@ const mapDispatchToProps = dispatch => ({
                     console.log('set username: payload === null');
                 }
             }, err => {
-                dispatch({ type: 'SET_USERNAME_ERROR', errMsg: 'Username not set. Try again.' });
+                dispatch({ type: 'SET_USERNAME_ERROR', errMsg: 'Username not set.' });
             });
     }
 });

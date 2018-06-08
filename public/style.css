@@ -2909,6 +2909,8 @@ td.skoldboard-table-punish-field {
 	z-index: 200;
 	right: calc(50% - 290px);
 	top: 200px;
+	box-shadow: 0 0 20px 10px #343434;
+	border-radius: 5px;
 }
 
 .share-dialog-title-container {
@@ -2965,6 +2967,7 @@ td.skoldboard-table-punish-field {
 	border-radius: 4px;
 
 	margin-left: 12px;
+	font-size: 12px;
 }
 
 .share-dialog-copy-btn {
@@ -2978,4 +2981,17 @@ td.skoldboard-table-punish-field {
 	color: #FEFEFE;
 	letter-spacing: 4px;
 	font-weight: 300;
+}
+
+.share-dialog-bottom-msg-container {
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+.share-dialog-bottom-msg {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 16px;
+	color: #323232;
+	letter-spacing: 0;
+	line-height: 20.8px;
 }

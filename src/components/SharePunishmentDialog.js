@@ -1,19 +1,54 @@
 import React from 'react';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
+
+// const mapStateToProps = state => ({
+
+// });
 
 class SharePunishmentDialog extends React.Component {
     constructor(props) {
         super(props);
 
         this.hideDialog = ev => {
-            ev.preventDefault();
+            ev && ev.preventDefault();
             this.props.shareDialogVisibilityHandler(false);
+        }
+
+        this.closeShareDialog = ev => {
+            if (ev.target.id === "share-dialog-outside") this.hideDialog();
+            return;
+        }
+
+        this.copyClick = ev => {
+            ev.preventDefault();
+            if (
+                typeof this.props.data !== 'undefined'
+                && this.props.data !== null
+                && typeof this.props.data.shareLink !== 'undefined'
+                && this.props.data.shareLink !== null
+            ) {
+                copyTextToClipboard(this.props.data.shareLink);
+            }
         }
     }
 
     render() {
+        const shareLink = typeof this.props.data !== 'undefined'
+            && this.props.data !== null
+            && typeof this.props.data.shareLink !== 'undefined'
+            && this.props.data.shareLink !== null
+            ? this.props.data.shareLink : 'Sorry, try again.';
+        const anon = typeof this.props.data !== 'undefined'
+            && this.props.data !== null
+            && this.props.data.anon
+            ? this.props.data.anon : true;
+
         return (
-            <div className="share-dialog-component">
+            <div
+                id="share-dialog-outside"
+                className="share-dialog-component"
+                onClick={this.closeShareDialog}>
+
                 <div className="share-pun-dialog-container">
                     <div className="share-dialog-title-container">
                         <label className="share-dialog-title">
@@ -43,13 +78,22 @@ class SharePunishmentDialog extends React.Component {
                         <input
                             className="text-input share-dialog-link-input"
                             type="text"
-                            value={null}>
+                            value={shareLink}>
 
                         </input>
-                        <button className="btn-submit share-dialog-copy-btn">
+                        <button
+                            className="btn-submit share-dialog-copy-btn"
+                            onClick={this.copyClick}>
                             COPY
-                    </button>
+                        </button>
                     </div>
+                    {!anon
+                        ? null
+                        :
+                        <div className="share-dialog-bottom-msg-container">
+                            <label className="share-dialog-bottom-msg">Share link is permanently available in ORDERED tab</label>
+                        </div>
+                    }
                 </div>
             </div>
         )
@@ -110,3 +154,30 @@ const shareViaMailSVG = (
         </g>
     </svg>
 );
+
+
+function fallbackCopyTextToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+        var successful = document.execCommand('copy');
+        // var msg = successful ? 'successful' : 'unsuccessful';
+        // console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+    }
+
+    document.body.removeChild(textArea);
+}
+
+function copyTextToClipboard(text) {
+    if (!navigator.clipboard) {
+        fallbackCopyTextToClipboard(text);
+        return;
+    }
+    navigator.clipboard.writeText(text);
+}

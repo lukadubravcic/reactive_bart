@@ -119,10 +119,13 @@ class App extends React.Component {
         super();
 
         this.state = {
-            showShareDialog: false,
+            showShareDialog: !false,
         }
 
-        this.shareDialogVisibilityHandler = value => {
+        this.shareData = null;
+
+        this.shareDialogVisibilityHandler = (value, shareData) => {
+            this.shareData = shareData;
             this.setState({ showShareDialog: value });
         }
     }
@@ -198,11 +201,17 @@ class App extends React.Component {
         } else {
             return (
                 <div>
-                    {this.state.showShareDialog ? <SharePunishmentDialog shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} /> : null}
+                    {this.state.showShareDialog
+                        ? <SharePunishmentDialog
+                            data={this.shareData}
+                            shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
+                        : null}
                     <Top />
                     <Game />
                     <Locker />
-                    <PunishmentCreator shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
+                    <PunishmentCreator
+                        data={this.shareData}
+                        shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
                     <PunishmentSelectorTable />
                     <Stats />
                     <RankInfo />

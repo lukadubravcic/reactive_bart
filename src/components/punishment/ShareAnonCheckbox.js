@@ -99,7 +99,7 @@ class ShareAnonCheckbox extends React.Component {
                 {
                     this.state.showNoUsernameMsg
                         ? <label
-                            style={{ opacity: 1 }}
+                            style={{ opacity: this.props.show ? 1 : 0 }}
                             id="form-submit-feedback"
                             className="float-left form-feedback">
                             SIGNED PUNISHMENTS REQUIRE USERNAME,<br /> WHY DON'T YOU&nbsp;

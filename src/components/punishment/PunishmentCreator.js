@@ -75,25 +75,34 @@ const mapDispatchToProps = dispatch => ({
     },
     submitSharedPunishment: async (submitData, enableSubmit) => {
         dispatch({ type: 'SUBMITING_NEW_PUNISHMENT' });
+        let res = null;
 
-        let res = await agent.Punishment.createdSharedPunishment(submitData);
+        try {
+            res = await agent.Punishment.createdSharedPunishment(submitData);
+        } catch (err) {
+            dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: 'SOMETHING WENT WRONG' });
+            return false;
+        }
 
-        if (typeof res.err !== 'undefined') dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: res.err });
-        else if (typeof res.msg === 'undefined') dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: 'SOMETHING WENT WRONG' });
-
-        // sve je proslo okej
-        // ako shared kazna nije anon -> update ordered kazni
+        if (typeof res.err !== 'undefined') {
+            dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: res.err });
+            return false;
+        }
+        else if (typeof res.msg === 'undefined') {
+            dispatch({ type: 'PUNISHMENT_CREATED_ERROR', msg: 'SOMETHING WENT WRONG' });
+            return false;
+        }
 
         enableSubmit();
-        console.log(res);
+        return res;
     },
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_DISPLAY_MSG' }),
     clearPunishingUser: () => dispatch({ type: 'CLEAR_PUNISHING_USER' }),
-    updateOrderedPunishments: newOrderedPunishments => dispatch({}),
+    updateOrderedPunishments: (newOrderedPunishments, msg) => dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg }),
 });
 
 const animationDuration = 500; // 0.5s
-const formMsgDuration = 5000; // 10s
+const formMsgDuration = 5000; // 5s
 
 const animStyles = {
     shownDateComponent: { opacity: 1 },
@@ -120,6 +129,7 @@ class PunishmentCreator extends React.Component {
             showMasochistTooltip: false,
 
             showFormMsg: false,
+            submitDisabled: false,
         }
 
         this.onWhomBlur = async ev => {
@@ -228,10 +238,10 @@ class PunishmentCreator extends React.Component {
             this.props.onSubmit(submitData, this.props.orderedPunishments, this.enableSubmit);
         }
 
-        this.createSharedPunishment = (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare) => {
+        this.createSharedPunishment = async (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare) => {
             // napravi punishment object i salji ga send funkciji
-            this.refs.submitPunishmentBtn.setAttribute('disabled', 'true');
-            // TODO disable submit btna dok traje slanje 
+
+            this.disableSubmit();
 
             let submitData = {};
 
@@ -244,12 +254,34 @@ class PunishmentCreator extends React.Component {
                 : null;
             submitData.whatToWrite = trimExcessSpaces(whatToWriteField);
             submitData.why = trimExcessSpaces(whyField);
+            submitData.anon = anonShare;
 
-            this.props.submitSharedPunishment(submitData, this.enableSubmit);
+            let result = await this.props.submitSharedPunishment(submitData, this.enableSubmit);
+
+            if (result === false) return this.enableSubmit();
+
+            // update ordered kazni 
+            let newOrderedPunishments = [...this.props.orderedPunishments];
+            newOrderedPunishments.unshift(result.punishment);
+            this.props.updateOrderedPunishments(newOrderedPunishments, result.msg)
+
+            // otvaranje share prozora
+            let shareData = {
+                shareLink: result.shareLink,
+                anon: anonShare,
+            };
+
+            this.props.shareDialogVisibilityHandler(true, shareData);
+        }
+
+        this.disableSubmit = () => {
+            this.refs.submitPunishmentBtn.setAttribute('disabled', 'true');
+            this.setState({ submitDisabled: true });
         }
 
         this.enableSubmit = () => {
             this.refs.submitPunishmentBtn.removeAttribute('disabled');
+            this.setState({ submitDisabled: false });
         }
 
         this.animateDateFadeIn = () => {
@@ -273,6 +305,9 @@ class PunishmentCreator extends React.Component {
             this.formMsgTimeout = setTimeout(() => {
                 this.setState({ showFormMsg: false });
                 this.props.clearDisplayMessage();
+
+
+                // pot
             }, formMsgDuration)
         }
     }
@@ -318,7 +353,8 @@ class PunishmentCreator extends React.Component {
             || whatToWriteField === ''
             || !this.state.whatToWriteFieldValid
             || !this.state.whyFieldValid
-            || this.state.showFormMsg;
+            || this.state.showFormMsg
+            || this.state.submitDisabled;
         const submitBtnStyle = this.state.showFormMsg || submitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };

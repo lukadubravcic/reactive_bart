@@ -179,9 +179,11 @@ class OrderedTabRow extends React.Component {
 
         let whenUserField = this.getTableFieldData(moment(this.props.punishment.created).fromNow(), this.whenUserFieldRef);
 
-        let toWhomData = this.props.punishment.user_taking_punishment
+        let toWhomData = this.props.punishment.fk_user_email_taking_punishment
             ? this.props.punishment.user_taking_punishment
-            : this.props.punishment.fk_user_email_taking_punishment;
+                ? this.props.punishment.user_taking_punishment
+                : this.props.punishment.fk_user_email_taking_punishment
+            : 'everyone';
 
         let toWhomUserField = this.getTableFieldData(toWhomData, this.toWhomUserFieldRef);
         // let orderedUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 10);

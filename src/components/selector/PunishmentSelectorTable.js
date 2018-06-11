@@ -384,7 +384,7 @@ class PunishmentSelectorTable extends React.Component {
                     selectorParentCSS += ' picker-ordered-color';
                     this.props.showOrderedTab ? shownTab = (
 
-                        <OrderedTab />
+                        <OrderedTab shareDialogVisibilityHandler={this.props.shareDialogVisibilityHandler} />
 
                     ) : null;
                     break;

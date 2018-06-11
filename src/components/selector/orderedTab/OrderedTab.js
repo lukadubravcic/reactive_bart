@@ -278,7 +278,8 @@ class OrderedTab extends React.Component {
                                                 punishment={punishment}
                                                 key={punishment.uid || index}
                                                 id={punishment.uid}
-                                                updatePokedPunishment={this.updatePokedPunishment} />
+                                                updatePokedPunishment={this.updatePokedPunishment}
+                                                shareDialogVisibilityHandler={this.props.shareDialogVisibilityHandler} />
                                         )
                                     })
                                 }

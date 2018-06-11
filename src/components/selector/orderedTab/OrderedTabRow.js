@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/helpers';
 import agent from '../../../agent';
+import { API_ROOT } from '../../../constants/constants';
 
 
 class OrderedTabRow extends React.Component {
@@ -24,7 +25,6 @@ class OrderedTabRow extends React.Component {
         this.whatFieldRef = null;
 
         this.elementHovering = ev => {
-
             switch (ev.target.id) {
                 case 'when-field':
                     this.setState({ showWhenTooltip: true });
@@ -41,7 +41,6 @@ class OrderedTabRow extends React.Component {
         }
 
         this.elementHoverOut = ev => {
-
             switch (ev.target.id) {
                 case 'when-field':
                     this.setState({ showWhenTooltip: false });
@@ -58,7 +57,6 @@ class OrderedTabRow extends React.Component {
         }
 
         this.getCssClassForStatusField = punishmentStatus => {
-
             switch (punishmentStatus) {
                 case 'GIVEN UP':
                     return 'givenup-status';
@@ -80,12 +78,9 @@ class OrderedTabRow extends React.Component {
         }
 
         this.getTableFieldData = (string, elementRef) => {
-            if (typeof string !== 'string'
-                || string.length === 0
-            ) {
+            if (typeof string !== 'string' || string.length === 0) {
                 return null;
             } else if (elementRef && isEllipsisActive(elementRef)) {
-
                 let elementPlacingStyle = {
                     width: "calc(100% + 35px)",
                     bottom: "55px",
@@ -123,57 +118,64 @@ class OrderedTabRow extends React.Component {
                     HTMLHoverElement: null,
                 }
             }
-
-            /* let content = `${string.substr(0, len - 3)}...`;
-            let elementLen = Math.floor(CHAR_SPACING * string.length) + 35; */
-
-            // let elementPlacingStyle = {
-            //     width: "calc(100% + 35px)",
-            //     bottom: "55px",
-            //     left: `-17.5px`
-            // };
-
-            // let wordBreakStyling = {
-            //     wordBreak: "break-word",
-            //     whiteSpace: "normal"
-            // };
-
-
-            // let HTMLHoverElement = (
-            //     <div
-            //         className="hover-dialog"
-            //         style={elementPlacingStyle}
-            //     >
-            //         <label
-            //             className="hover-dialog-text"
-            //             style={wordBreakStyling}>
-            //             {string}
-            //         </label>
-            //         <div className="triangle-hover-box-container">
-            //             {triangleSVG}
-            //         </div>
-            //     </div>
-            // )
-
-            // return {
-            //     string,
-            //     HTMLHoverElement
-            // }
         }
 
         this.statusHoverIn = ev => this.setState({ hoveringStatus: true });
         this.statusHoverOut = ev => this.setState({ hoveringStatus: false });
-
         this.pokeUser = async ev => {
             agent.Punishment.poke(this.props.punishment.uid);
             this.props.updatePokedPunishment(this.props.punishment.uid);
         }
+
+        this.getStatusElement = punishmentStatus => {
+            const statusFieldCssClass = `ordered-status-field ${this.getCssClassForStatusField(punishmentStatus)}`;
+            let style = null;
+            let label = null;
+
+            if (punishmentStatus === 'PENDING') {
+                style = this.state.hoveringStatus && this.props.punishment.poked !== true
+                    ? { textDecoration: 'underline' }
+                    : {};
+                let hoveringLabel = this.state.hoveringStatus
+                    ? <u
+                        onClick={this.pokeUser}
+                        style={{ cursor: 'pointer' }}>
+                        POKE
+                    </u>
+                    : punishmentStatus;
+                label = this.props.punishment.poked === true ? 'POKED' : hoveringLabel;
+            } else if (punishmentStatus === 'SHARED') {
+                style = this.state.hoveringStatus ? { textDecoration: 'underline' } : {};
+                label = this.state.hoveringStatus
+                    ? <u
+                        onClick={this.openShareDialog}
+                        style={{ cursor: 'pointer' }}>
+                        SHARE
+                    </u>
+                    : punishmentStatus;
+            } else {
+                style = {};
+                label = punishmentStatus;
+            }
+
+            return (
+                <td className={statusFieldCssClass}
+                    onMouseEnter={this.statusHoverIn}
+                    onMouseLeave={this.statusHoverOut}
+                    style={style}>
+
+                    {label}
+                </td>
+            )
+        }
+
+        this.openShareDialog = ev => {
+            this.props.shareDialogVisibilityHandler(true, { anon: true, shareLink: `${API_ROOT}/accept?id=${this.props.punishment.uid}` });
+        }
     }
 
     render() {
-
         let punishmentStatus = getPunishmentStatus(this.props.punishment);
-        const statusFieldCssClass = `ordered-status-field ${this.getCssClassForStatusField(punishmentStatus)}`;
 
         const tableRowClass = 'picker-table-row';
 
@@ -191,6 +193,8 @@ class OrderedTabRow extends React.Component {
             ? this.getTableFieldData(moment(this.props.punishment.deadline).fromNow(), this.deadlineUserFieldRef)
             : { content: 'no deadline', HTMLHoverElement: null }
         let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, this.whatFieldRef);
+
+        let punishmentStatusElement = this.getStatusElement(punishmentStatus);
 
         return (
             <tr className={tableRowClass}>
@@ -254,26 +258,7 @@ class OrderedTabRow extends React.Component {
                     </span>
                 </td>
 
-                <td className={statusFieldCssClass}
-                    onMouseEnter={this.statusHoverIn}
-                    onMouseLeave={this.statusHoverOut}
-                    style={punishmentStatus === 'PENDING' && this.state.hoveringStatus && this.props.punishment.poked !== true
-                        ? { textDecoration: 'underline' }
-                        : {}}>
-
-                    {this.props.punishment.poked === true
-                        ? 'POKED'
-                        : punishmentStatus === 'PENDING'
-                            ? this.state.hoveringStatus
-                                ? <u
-                                    onClick={this.pokeUser}
-                                    style={{ cursor: 'pointer' }}>
-                                    POKE
-                            </u>
-                                : punishmentStatus
-                            : punishmentStatus
-                    }
-                </td>
+                {punishmentStatusElement}
 
                 <td className="empty-field"></td>
             </tr >

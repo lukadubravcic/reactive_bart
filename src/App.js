@@ -119,7 +119,7 @@ class App extends React.Component {
         super();
 
         this.state = {
-            showShareDialog: !false,
+            showShareDialog: false,
         }
 
         this.shareData = null;
@@ -212,7 +212,7 @@ class App extends React.Component {
                     <PunishmentCreator
                         data={this.shareData}
                         shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
-                    <PunishmentSelectorTable />
+                    <PunishmentSelectorTable shareDialogVisibilityHandler={this.shareDialogVisibilityHandler}/>
                     <Stats />
                     <RankInfo />
                     <GoodiesStore />

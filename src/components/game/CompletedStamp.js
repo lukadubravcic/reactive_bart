@@ -2,10 +2,10 @@ import React from 'react';
 
 const CompletedStamp = props => {
 
-    let stringToShare = `I've just written ${props.punishment.how_many_times}x "${props.punishment.what_to_write.trim()}" on Skolded.com! I rock! #Skolded`;
+    let stringToShare = `I've just written ${props.punishment.how_many_times}x "${props.punishment.what_to_write.trim()}" on Skolded.com! I rock!`;
 
     const handleTwitterClick = ev => {
-        ev.preventDefault(); 
+        ev.preventDefault();
 
         let width = 600,
             height = 500,
@@ -18,7 +18,7 @@ const CompletedStamp = props => {
                 ',top=' + ((window.screen.availHeight - height) / 2) +
                 ',left=' + ((window.screen.availWidth - width) / 2);
 
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(stringToShare)}`, 'targetWindow', opts);
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(stringToShare) + " #skolded"}`, 'targetWindow', opts);
     }
 
     const handleFbClick = ev => {

@@ -99,6 +99,7 @@ const mapDispatchToProps = dispatch => ({
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_DISPLAY_MSG' }),
     clearPunishingUser: () => dispatch({ type: 'CLEAR_PUNISHING_USER' }),
     updateOrderedPunishments: (newOrderedPunishments, msg) => dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg }),
+    showLoginForm: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
 });
 
 const animationDuration = 500; // 0.5s
@@ -116,6 +117,7 @@ class PunishmentCreator extends React.Component {
         super();
         this.formMsgTimeout = null;
         this.formContainerRef = null;
+        this.topElement = null;
 
         this.state = {
             dateElementStyle: {
@@ -240,7 +242,6 @@ class PunishmentCreator extends React.Component {
 
         this.createSharedPunishment = async (whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare) => {
             // napravi punishment object i salji ga send funkciji
-
             this.disableSubmit();
 
             let submitData = {};
@@ -305,10 +306,12 @@ class PunishmentCreator extends React.Component {
             this.formMsgTimeout = setTimeout(() => {
                 this.setState({ showFormMsg: false });
                 this.props.clearDisplayMessage();
-
-
-                // pot
             }, formMsgDuration)
+        }
+
+        this.goToLoginForm = () => {
+            this.props.showLoginForm();
+            if (this.topElement) this.topElement.scrollIntoView({ behavior: "smooth" });
         }
     }
 
@@ -325,6 +328,10 @@ class PunishmentCreator extends React.Component {
             if (this.formContainerRef !== null) this.formContainerRef.scrollIntoView({ behavior: 'smooth' });
             this.props.clearPunishingUser();
         }
+    }
+
+    componentDidMount() {
+        this.topElement = document.getElementById("top");
     }
 
     componentWillUnmount() {
@@ -358,13 +365,15 @@ class PunishmentCreator extends React.Component {
         const submitBtnStyle = this.state.showFormMsg || submitDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
-        const heading = usrLoggedIn /* && window.canRunAds */ ? 'Your turn to punish someone!' : 'Log in to start punishing!';
+        const heading = usrLoggedIn /* && window.canRunAds */ ? 'Your turn to punish someone!' : 'Punish them all!';
 
         return (
 
-            <div id="creator-component-container" className={usrLoggedIn /* && window.canRunAds */ ? 'parent-component' : 'parent-component greyscale-filter'}>
+            <div id="creator-component-container" className={ /* && window.canRunAds */ 'parent-component' /* : 'parent-component greyscale-filter' */}>
 
-                {usrLoggedIn /* && window.canRunAds */ ? null : <div id="form-overlay"></div>}
+                {// usrLoggedIn /* && window.canRunAds */
+                    /* ? null
+                    : <div id="form-overlay"></div> */}
 
                 <div
                     style={{ paddingBottom: 105 + "px" }}
@@ -377,12 +386,13 @@ class PunishmentCreator extends React.Component {
 
                     <form
                         id="pun-creation-form"
-                        disabled={!(usrLoggedIn /* && window.canRunAds */)}
+                        disabled={false/* !window.canRunAds */}
                         onSubmit={this.submitForm(whomField, howManyTimesField, deadlineChecked, whatToWriteField, whyField, anonShare)}>
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                            style={usrLoggedIn ? {} : { opacity: 0.6 }}
+                            disabled={!usrLoggedIn/* !window.canRunAds */}>
 
                             <label className="float-left input-field-name">WHOM</label>
                             <input
@@ -397,15 +407,22 @@ class PunishmentCreator extends React.Component {
                             />
                             {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label> : null}
                             {this.state.showMasochistTooltip ? <label id="whom-feedback" className="float-left form-feedback">MASOCHIST?</label> : null}
-                            {!this.state.showTryMailTooltip && !this.state.showMasochistTooltip
+                            {!this.state.showTryMailTooltip && !this.state.showMasochistTooltip && usrLoggedIn
                                 ? <label id="form-submit-feedback" className="float-left form-feedback">LEAVE EMPTY TO<br /> SHARE A PUNISHMENT</label>
-                                : null
+                                : !this.state.showTryMailTooltip && !this.state.showMasochistTooltip && !usrLoggedIn
+                                    ? <label id="form-submit-feedback" className="float-left form-feedback">
+                                        <a
+                                            className="login-link"
+                                            onClick={this.goToLoginForm}>
+                                            LOG IN</a>&nbsp;
+                                            TO ENABLE<br />PERSONAL PUNISHMENTS</label>
+                                    : null
                             }
                         </fieldset>
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                            disabled={false/* !window.canRunAds */}>
 
                             <label className="float-left input-field-name">HOW MANY TIMES</label>
                             <button
@@ -442,7 +459,7 @@ class PunishmentCreator extends React.Component {
                         {deadlineChecked ?
                             <fieldset
                                 className="form-row"
-                                disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                                disabled={false/* !window.canRunAds */}>
 
                                 <label className="float-left input-field-name">DEADLINE</label>
 
@@ -461,7 +478,7 @@ class PunishmentCreator extends React.Component {
 
                             : <fieldset
                                 className="form-row"
-                                disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                                disabled={false/* !window.canRunAds */}>
 
                                 <label
                                     className="float-left input-field-name"
@@ -482,7 +499,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                            disabled={false/* !window.canRunAds */}>
 
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input
@@ -501,7 +518,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset id="why-form-row"
                             className="form-row"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */)}>
+                            disabled={false/* !window.canRunAds */}>
 
                             <label className="float-left input-field-name">WHY</label>
                             <textarea
@@ -518,12 +535,12 @@ class PunishmentCreator extends React.Component {
                         </fieldset>
 
                         <fieldset
-                            style={{ height: whomField === '' ? 66 + "px" : 0 }}
+                            style={{ height: whomField === '' && usrLoggedIn ? 66 + "px" : 0 }}
                             className="form-row height-tran"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */) || whomField !== ''}>
+                            disabled={(false/* !window.canRunAds */) || whomField !== ''}>
 
                             <ShareAnonCheckbox
-                                show={whomField === ''}
+                                show={usrLoggedIn && whomField === ''}
                                 currentUser={this.props.currentUser}
                                 usrLoggedIn={usrLoggedIn}
                                 value={anonShare}
@@ -533,7 +550,7 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            disabled={!(usrLoggedIn /* && window.canRunAds */) || this.state.showFormMsg}>
+                            disabled={false/* !window.canRunAds */ || this.state.showFormMsg}>
 
                             <button
                                 style={submitBtnStyle}

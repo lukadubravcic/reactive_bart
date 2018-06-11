@@ -37,9 +37,7 @@ export function getQueryStringData() {
 }
 
 export function getPunishmentStatus(punishment) {
-
-    let punishmentStatus = 'UNKNOWN';
-
+    const sharedPunishment = punishment.fk_user_email_taking_punishment === null;
     const acceptedTimeDefined = typeof punishment.accepted !== 'undefined' && punishment.accepted !== null;
     const givenUpTimeDefined = typeof punishment.given_up !== 'undefined' && punishment.given_up !== null;
     const deadlinePassed = typeof punishment.deadline !== 'undefined' && punishment.deadline !== null && hasPunishmentDeadlinePassed(punishment.deadline);
@@ -52,28 +50,30 @@ export function getPunishmentStatus(punishment) {
     if (acceptedTimeDefined) {
         // ako je kazna acceptana, moze biti inprogress (accepted), givenup, done, failed
         if (givenUpTimeDefined) {
-            punishmentStatus = 'GIVEN UP';
+            return 'GIVEN UP';
         } else if (failedTimeDefined || (deadlinePassed && !doneTimeDefined)) {
-            punishmentStatus = 'FAILED';
+            return 'FAILED';
         } else if (doneTimeDefined) {
-            punishmentStatus = 'DONE';
+            return 'DONE';
         } else {
-            punishmentStatus = 'ACCEPTED';
+            return 'ACCEPTED';
         }
     } else {
-        // ignored, rejected, pending, failed (nije acceptano, deadline je prosao)
-        if (rejectedTimeDefined) {
-            punishmentStatus = 'REJECTED';
+        // shared, ignored, rejected, pending, failed (nije acceptano, deadline je prosao)
+        if (sharedPunishment) {
+            return 'SHARED';
+        } else if (rejectedTimeDefined) {
+            return 'REJECTED';
         } else if (punishmentIgnored) {
-            punishmentStatus = 'IGNORED';
+            return 'IGNORED';
         } else if (waitingForAccept) {
-            punishmentStatus = 'PENDING';
+            return 'PENDING';
         } else if (deadlinePassed) {
-            punishmentStatus = 'FAILED';
+            return 'FAILED';
         }
     }
 
-    return punishmentStatus;
+    return 'UNKNOWN';
 }
 
 export function hasPunishmentDeadlinePassed(deadline) {

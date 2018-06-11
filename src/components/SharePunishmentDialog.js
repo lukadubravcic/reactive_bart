@@ -9,6 +9,8 @@ class SharePunishmentDialog extends React.Component {
     constructor(props) {
         super(props);
 
+        this.stringToShare = `text to share`;
+
         this.changeBtnStringTimeout = null;
 
         this.state = {
@@ -45,6 +47,34 @@ class SharePunishmentDialog extends React.Component {
                 this.setState({ copyBtnString: 'COPY' });
             }, 1000);
         }
+
+        this.twitterShare = () => {
+            let width = 600,
+                height = 500,
+                left = 200,
+                top = 200,
+                url = 'http://twitter.com/share',
+                opts = 'status=1' +
+                    ',width=' + width +
+                    ',height=' + height +
+                    ',top=' + ((window.screen.availHeight - height) / 2) +
+                    ',left=' + ((window.screen.availWidth - width) / 2);
+
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(this.stringToShare + " #Skolded")}`, 'targetWindow', opts);
+        }
+
+        this.fbShare = () => {
+            window.FB.ui({
+                method: 'share',
+                href: 'https://www.skolded.com',
+                quote: this.stringToShare,
+                hashtag: '#skolded',
+            }, function (response) { });
+        }
+
+        this.mailShare = () => {
+
+        }
     }
 
     componentWillUnmount() {
@@ -59,8 +89,10 @@ class SharePunishmentDialog extends React.Component {
             ? this.props.data.shareLink : 'Sorry, try again.';
         const anon = typeof this.props.data !== 'undefined'
             && this.props.data !== null
-            && this.props.data.anon
+            && typeof this.props.data.anon !== 'undefined'
             ? this.props.data.anon : true;
+        const mailSubject = encodeURIComponent('Skolded punishment');
+        const mailBody = encodeURIComponent('Here you go: ' + shareLink);
 
         return (
             <div
@@ -80,15 +112,22 @@ class SharePunishmentDialog extends React.Component {
                         </button>
                     </div>
                     <div className="share-dialog-social-container">
-                        <button className="share-dialog-icon-btns">
+                        <button
+                            className="share-dialog-icon-btns"
+                            onClick={this.twitterShare}>
                             {twitterSVG}
                         </button>
-                        <button className="share-dialog-icon-btns">
+                        <button
+                            className="share-dialog-icon-btns"
+                            onClick={this.fbShare}>
                             {fbSVG}
                         </button>
-                        <button className="share-dialog-icon-btns">
+                        <a
+                            className="share-dialog-icon-btns"
+                            href={`mailto:?subject=${mailSubject}&body=${mailBody}`}
+                            onClick={this.mailShare}>
                             {shareViaMailSVG}
-                        </button>
+                        </a>
                     </div>
                     <div className="share-dialog-link-container">
                         <label className="share-dialog-link-label">
@@ -97,8 +136,8 @@ class SharePunishmentDialog extends React.Component {
                         <input
                             className="text-input share-dialog-link-input"
                             type="text"
-                            value={shareLink}>
-
+                            value={shareLink}
+                            readOnly>
                         </input>
                         <button
                             className="btn-submit share-dialog-copy-btn"
@@ -106,10 +145,9 @@ class SharePunishmentDialog extends React.Component {
                             {this.state.copyBtnString}
                         </button>
                     </div>
-                    {!anon
+                    {anon
                         ? null
-                        :
-                        <div className="share-dialog-bottom-msg-container">
+                        : <div className="share-dialog-bottom-msg-container">
                             <label className="share-dialog-bottom-msg">Share link is permanently available in ORDERED tab</label>
                         </div>
                     }

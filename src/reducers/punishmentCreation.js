@@ -11,13 +11,17 @@ const defaultState = {
     monthField: '',
     yearField: '',
     deadlineValid: false,
-    anonShare: false,
+    anonShare: true,
     _errMsg: null,
     punishingUserSetFromOuterComponent: null,
 };
 
 export default (state = defaultState, action) => {
     switch (action.type) {
+        case 'APP_LOAD':
+            return { ...state, anonShare: false };
+        case 'LOGIN':
+            return { ...state, anonShare: false };
         case 'UPDATE_FIELD_PUNISH_CREATE':
             return { ...state, [action.key]: action.value };
         case 'TOGGLE_PUNISHMENT_DEADLINE_CKECKBOX':
@@ -27,7 +31,7 @@ export default (state = defaultState, action) => {
         case 'UPDATE_DEADLINE_VALIDITY':
             return { ...state, deadlineValid: action.value };
         case 'PUNISHMENT_CREATED':
-            return { ...defaultState, _errMsg: action.msg };
+            return { ...defaultState, anonShare: state.anonShare, _errMsg: action.msg };
         case 'PUNISHMENT_CREATED_ERROR':
             return { ...state, _errMsg: action.msg };
         case 'SUBMITING_NEW_PUNISHMENT':

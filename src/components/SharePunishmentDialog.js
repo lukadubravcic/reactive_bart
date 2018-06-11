@@ -9,6 +9,12 @@ class SharePunishmentDialog extends React.Component {
     constructor(props) {
         super(props);
 
+        this.changeBtnStringTimeout = null;
+
+        this.state = {
+            copyBtnString: 'COPY',
+        }
+
         this.hideDialog = ev => {
             ev && ev.preventDefault();
             this.props.shareDialogVisibilityHandler(false);
@@ -29,7 +35,20 @@ class SharePunishmentDialog extends React.Component {
             ) {
                 copyTextToClipboard(this.props.data.shareLink);
             }
+
+            this.animateCopyClick();
         }
+
+        this.animateCopyClick = ev => {
+            this.setState({ copyBtnString: 'COPIED' });
+            this.changeBtnStringTimeout = setTimeout(() => {
+                this.setState({ copyBtnString: 'COPY' });
+            }, 1000);
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.changeBtnStringTimeout);
     }
 
     render() {
@@ -84,7 +103,7 @@ class SharePunishmentDialog extends React.Component {
                         <button
                             className="btn-submit share-dialog-copy-btn"
                             onClick={this.copyClick}>
-                            COPY
+                            {this.state.copyBtnString}
                         </button>
                     </div>
                     {!anon

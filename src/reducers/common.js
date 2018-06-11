@@ -34,6 +34,7 @@ export default (state = defaultState, action) => {
         case 'GUEST_PUNISHMENT_LOADING':
             return { ...state, guestDataLoadingInProgress: true }
         case 'GUEST_PUNISHMENT_INVALID':
+            console.log(action.msg)
             return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestAccessMsg: action.msg, msgDuration: action.msgDuration };
         case 'UPDATE_SET_USERNAME_FIELD':
             return { ...state, usernameSet: action.value };
@@ -45,8 +46,8 @@ export default (state = defaultState, action) => {
             return { ...state, loadInProgress: true };
         case 'SET_USERNAME_ERROR':
             return { ...state, _errMsg: action.errMsg };
-       /*  case 'PUNISHMENT_MARKED_DONE':
-            return { ...state, rank: action.newRank }; */
+        /*  case 'PUNISHMENT_MARKED_DONE':
+             return { ...state, rank: action.newRank }; */
         case 'REMOVE_GUEST_ACCESS_MSG':
             return { ...state, guestAccessMsg: defaultState.guestAccessMsg, msgDuration: defaultState.msgDuration };
         case 'POLICY_AGREEMENT_STATUS_UPDATE':

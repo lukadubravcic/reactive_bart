@@ -64,6 +64,7 @@ const Punishment = {
 	poke: punId => requests.post('/punishment/poke', { punId: encodeURIComponent(punId) }),
 	randomPunDone: (randomPunId, timeSpent) => requests.post('/punishment/randomdone', { randomPunId, timeSpent }),
 	randomPunTry: (randomPunId, typedCharsNum) => requests.post('/punishment/randomlog', { randomPunId, typedCharsNum }),
+	getSharedPunishment: sid => requests.post('/punishment/shared', { sid }),
 };
 
 const Pref = {

@@ -22,7 +22,7 @@ class InformationFlasher extends React.Component {
 
         this.state = {
             parentContainerStyle: {
-                height: 170 + "px",
+                // height: 170 + "px",
                 backgroundColor: "#f44242"
             },
             textContainerStyle: {
@@ -52,6 +52,12 @@ class InformationFlasher extends React.Component {
     }
 
     componentDidMount() {
+        this.setState({
+            parentContainerStyle: {
+                ...this.state.parentContainerStyle,
+                height: this.parentContainerRef.clientHeight,
+            }
+        })
         this.dismountAnimationTimeout = setTimeout(this.animateDismount, this.props.displayTime);
     }
 

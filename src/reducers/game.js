@@ -25,6 +25,7 @@ const defaultState = {
     startingSentenceThirdPart: '',
     cheating: false,
     guestPunishment: null,
+    sharedPunishment: null,
     startSentenceBeingWritten: false,
     showToS: false,
     showPrivacyPolicy: false,
@@ -139,6 +140,9 @@ export default (state = defaultState, action) => {
             return { ...state, showPrivacyPolicy: true, showToS: defaultState.showToS, boardFocused: false };
         case 'REMOVE_PRIVACY_POLICY':
             return { ...state, showPrivacyPolicy: defaultState.showPrivacyPolicy };
+
+        case 'SHARED_PUNISHMENT_LOADED':
+            return { sharedPunishment: action.punishment };
 
         default:
             return state;

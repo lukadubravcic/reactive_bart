@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/helpers';
 import agent from '../../../agent';
-import { API_ROOT } from '../../../constants/constants';
+import { APP_LINK } from '../../../constants/constants';
 
 
 class OrderedTabRow extends React.Component {
@@ -170,7 +170,7 @@ class OrderedTabRow extends React.Component {
         }
 
         this.openShareDialog = ev => {
-            this.props.shareDialogVisibilityHandler(true, { anon: true, shareLink: `${API_ROOT}/accept?id=${this.props.punishment.uid}` });
+            this.props.shareDialogVisibilityHandler(true, { anon: true, shareLink: `${APP_LINK}?sid=${this.props.punishment.uid}` });
         }
     }
 

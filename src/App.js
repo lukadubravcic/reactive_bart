@@ -13,6 +13,8 @@ import EULawAbidingCitizen from './components/EUlawAbidingCitizen';
 import GoodiesStore from './components/GoodiesStore';
 import Locker from './components/Locker';
 import SharePunishmentDialog from './components/SharePunishmentDialog';
+import SharedPunishmentPopUp from './components/SharedPunishmentPopUp';
+
 import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
@@ -30,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
     onLoad: token => { // ako je postavljen token u localstrageu, ulogiraj usera
         if (token) {
             agent.setToken(token);
-            dispatch({ type: 'LOADING_IN_PROGRESS' })
+            dispatch({ type: 'LOADING_IN_PROGRESS' });
             agent.Auth.current().then(payload => {
                 if (payload !== null) {
                     dispatch({
@@ -111,6 +113,55 @@ const mapDispatchToProps = dispatch => ({
     showTermsOfService: () => dispatch({ type: 'SHOW_TERMS_OF_SERVICE' }),
     showPrivacyPolicy: () => dispatch({ type: 'SHOW_PRIVACY_POLICY' }),
     showPrefs: () => dispatch({ type: 'SHOW_PREFS' }),
+    handleSharedPunishment: async sid => {
+        // dohvati shared kaznu
+        const errMsgDisplayDuration = 5000;
+
+        try {
+            let res = await agent.Punishment.getSharedPunishment(sid);
+
+            if (typeof res.err_code !== 'undefined') {
+                let msg = null;
+
+                switch (res.err_code) {
+                    case 1:
+                        msg = 'Invalid punishment. Let\'s create a new one!';
+                        break;
+                    case 2:
+                        msg = 'Too late! Punishment expired. Time for a new one?';
+                        break;
+                    case 3:
+                        msg = 'C\'mon! Let THEM punish you.';
+                        break;
+                }
+
+                dispatch({
+                    type: 'GUEST_PUNISHMENT_INVALID',
+                    msg,
+                    msgDuration: errMsgDisplayDuration,
+                });
+            } else if (typeof res.punishment !== 'undefined') {
+                // response sadrzi kaznu, update state sa tom share-anom kaznom i prikazi pop-up
+                dispatch({
+                    type: 'SHARED_PUNISHMENT_LOADED',
+                    punishment: res.punishment,
+                });
+            } else {
+                dispatch({
+                    type: 'GUEST_PUNISHMENT_INVALID',
+                    msg: 'Invalid punishment. Let\'s create a new one!',
+                    msgDuration: errMsgDisplayDuration,
+                });
+            }
+        } catch (err) {
+            console.log(err)
+            dispatch({
+                type: 'GUEST_PUNISHMENT_INVALID',
+                msg: 'Invalid punishment. Let\'s create a new one!',
+                msgDuration: errMsgDisplayDuration,
+            });
+        }
+    },
 });
 
 class App extends React.Component {
@@ -154,7 +205,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        prettyURL();
+        // prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {
@@ -181,6 +232,13 @@ class App extends React.Component {
                 this.props.handleGuest(nextProps.userIdFromURL, nextProps.punishmentIdFromURL);
             }
         }
+
+        if (typeof this.queryStringData.sid !== 'undefined' && this.queryStringData.sid !== null) {
+            // detekcija shared kazne
+            // requestaj tu kaznu 
+            this.props.handleSharedPunishment(this.queryStringData.sid);
+            this.queryStringData.sid = null;
+        }
     }
 
     render() {
@@ -201,6 +259,7 @@ class App extends React.Component {
         } else {
             return (
                 <div>
+                    <SharedPunishmentPopUp />
                     {this.state.showShareDialog
                         ? <SharePunishmentDialog
                             data={this.shareData}
@@ -212,7 +271,7 @@ class App extends React.Component {
                     <PunishmentCreator
                         data={this.shareData}
                         shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
-                    <PunishmentSelectorTable shareDialogVisibilityHandler={this.shareDialogVisibilityHandler}/>
+                    <PunishmentSelectorTable shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
                     <Stats />
                     <RankInfo />
                     <GoodiesStore />

@@ -88,6 +88,7 @@ class Top extends React.Component {
             let message = this.props.common.guestAccessMsg;
             let messageComponent = null;
 
+            console.log(this.props.common.guestAccessMsg)
             if (message !== null) {
                 messageComponent = <InformationFlasher message={message} removeMsg={this.props.removeMsg} displayTime={this.props.common.msgDuration} />
             }

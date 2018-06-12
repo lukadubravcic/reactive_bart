@@ -2893,6 +2893,10 @@ td.skoldboard-table-punish-field {
 
 /* SHARE PUN DIALOG */
 
+.align-center {
+	text-align: center;
+}
+
 .popup-component {
 	position: fixed;
 	width: 100%;
@@ -3011,5 +3015,116 @@ td.skoldboard-table-punish-field {
 
 .shared-popup-header-container {
 	padding: 30px 0 20px 0;
+}
 
+.shared-popup-title {
+	font-family: 'Love Ya Like A Sister', cursive;
+	font-size: 55px;
+	color: #FEFEFE;
+	letter-spacing: 0;
+	line-height: 55px;
+}
+
+.shared-popup-pad-top {
+	padding-top: 8px;
+}
+
+.shared-popup-ordered-by {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	line-height: 12px;
+}
+
+.shared-popup-ordering-name {
+	font-size: 16px;
+	color: #464646;
+	letter-spacing: 0;
+	line-height: 16px;
+	font-weight: 300;
+}
+
+.shared-popup-content-container {
+	padding-top: 30px;
+	padding-right: 30px;
+	padding-left: 30px;
+	background: #2B5D64;
+
+	font-family: 'Pangolin', cursive;
+	font-size: 28px;
+	color: #FFE597;
+	letter-spacing: 0;
+	line-height: 30px;
+}
+
+.shared-popup-pun-text {
+	color: #FFFFFF;
+}
+
+.pad-bot-30 {
+	padding-bottom: 30px;
+}
+
+.shared-popup-deadline-container {
+	padding: 25px 0 20px 0;
+}
+
+.shared-popup-deadline-element {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	line-height: 12px;
+}
+
+.shared-popup-deadline {
+	font-size: 16px;
+	color: #FFE597;
+	letter-spacing: 0;
+	line-height: 16px;
+	font-weight: 300;
+}
+
+.shared-popup-btn-container {
+	padding: 40px 0 60px 0;
+}
+
+.shared-popup-btns {
+	margin: 0 20px 0 20px;
+	font-size: 19px;
+	color: #FEFEFE;
+	letter-spacing: 3.96px;
+}
+
+.shared-popup-pun-info-container {
+	padding-bottom: 20px;
+}
+
+.shared-popup-pun-info {
+	font-family: 'Montserrat', sans-serif;
+	font-size: 16px;
+	color: #464646;
+	letter-spacing: 0;
+	line-height: 16px;
+}
+
+.btn-container {
+	display: inline-block;
+	position: relative;
+}
+
+.login-to-claim-link {
+	position: absolute;
+	left: 17px;
+    top: 63px;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 12px;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	line-height: 12px;
+}
+
+#claim-btn {
+	display: block;
 }

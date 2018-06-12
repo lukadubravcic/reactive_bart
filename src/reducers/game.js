@@ -29,10 +29,10 @@ const defaultState = {
     startSentenceBeingWritten: false,
     showToS: false,
     showPrivacyPolicy: false,
+    claimFlag: false,
 };
 
 export default (state = defaultState, action) => {
-
     switch (action.type) {
         case 'STARTING_SENTANCE_CHANGED':
             return {
@@ -109,7 +109,7 @@ export default (state = defaultState, action) => {
         case 'PUNISHMENT_IN_URL':
             return { ...state, punishmentIdFromURL: action.id };
         case 'LOGIN':
-            return { ...defaultState, punishmentIdFromURL: state.punishmentIdFromURL };
+            return { ...defaultState, punishmentIdFromURL: state.punishmentIdFromURL, sharedPunishment: state.sharedPunishment };
         case 'GAME_UNMOUNT':
             return defaultState;
         case 'SPECIAL_LOGOUT':
@@ -142,7 +142,7 @@ export default (state = defaultState, action) => {
             return { ...state, showPrivacyPolicy: defaultState.showPrivacyPolicy };
 
         case 'SHARED_PUNISHMENT_LOADED':
-            return { sharedPunishment: action.punishment };
+            return { ...state, sharedPunishment: action.punishment };
 
         default:
             return state;

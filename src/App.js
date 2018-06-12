@@ -133,30 +133,33 @@ const mapDispatchToProps = dispatch => ({
                     case 3:
                         msg = 'C\'mon! Let THEM punish you.';
                         break;
+                    default:
+                        msg = 'Invalid punishment. Let\'s create a new one!';
+                        break;
                 }
 
-                dispatch({
-                    type: 'GUEST_PUNISHMENT_INVALID',
+                return dispatch({
+                    type: 'SHARED_PUNISHMENT_INVALID',
                     msg,
-                    msgDuration: errMsgDisplayDuration,
+                    msgDuration: res.time || errMsgDisplayDuration,
                 });
             } else if (typeof res.punishment !== 'undefined') {
                 // response sadrzi kaznu, update state sa tom share-anom kaznom i prikazi pop-up
-                dispatch({
+                return dispatch({
                     type: 'SHARED_PUNISHMENT_LOADED',
-                    punishment: res.punishment,
+                    punishment: res.time || res.punishment,
                 });
             } else {
-                dispatch({
-                    type: 'GUEST_PUNISHMENT_INVALID',
+                return dispatch({
+                    type: 'SHARED_PUNISHMENT_INVALID',
                     msg: 'Invalid punishment. Let\'s create a new one!',
-                    msgDuration: errMsgDisplayDuration,
+                    msgDuration: res.time || errMsgDisplayDuration,
                 });
             }
         } catch (err) {
             console.log(err)
-            dispatch({
-                type: 'GUEST_PUNISHMENT_INVALID',
+            return dispatch({
+                type: 'SHARED_PUNISHMENT_INVALID',
                 msg: 'Invalid punishment. Let\'s create a new one!',
                 msgDuration: errMsgDisplayDuration,
             });

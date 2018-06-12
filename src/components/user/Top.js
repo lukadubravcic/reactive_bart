@@ -40,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-/* pageTop komponenta koja se brije o switchanju viewova:
+/* pageTop komponenta koja se brine o switchanju viewova:
 
     - user nije logiran:
         - login (samo traka sa btnom):
@@ -88,7 +88,6 @@ class Top extends React.Component {
             let message = this.props.common.guestAccessMsg;
             let messageComponent = null;
 
-            console.log(this.props.common.guestAccessMsg)
             if (message !== null) {
                 messageComponent = <InformationFlasher message={message} removeMsg={this.props.removeMsg} displayTime={this.props.common.msgDuration} />
             }
@@ -196,5 +195,5 @@ export default connect(mapStateToProps, mapDispatchToProps)(Top);
 
 
 function specialOrRandomPunishmentIsActive(punishment) { // specijalne kazne nemaju created property
-    return punishment.created ? false : true;
+    return typeof punishment.created !== 'undefined' ? false : true;
 }

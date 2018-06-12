@@ -34,8 +34,9 @@ export default (state = defaultState, action) => {
         case 'GUEST_PUNISHMENT_LOADING':
             return { ...state, guestDataLoadingInProgress: true }
         case 'GUEST_PUNISHMENT_INVALID':
-            console.log(action.msg)
             return { ...state, guestDataLoadingInProgress: defaultState.guestDataLoadingInProgress, guestAccessMsg: action.msg, msgDuration: action.msgDuration };
+        case 'SHARED_PUNISHMENT_INVALID':
+            return { ...state, guestAccessMsg: action.msg, msgDuration: action.msgDuration };
         case 'UPDATE_SET_USERNAME_FIELD':
             return { ...state, usernameSet: action.value };
         case 'USERNAME_SET':

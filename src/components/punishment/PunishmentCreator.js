@@ -263,6 +263,7 @@ class PunishmentCreator extends React.Component {
 
             // update ordered kazni 
             let newOrderedPunishments = [...this.props.orderedPunishments];
+
             newOrderedPunishments.unshift(result.punishment);
             this.props.updateOrderedPunishments(newOrderedPunishments, result.msg)
 

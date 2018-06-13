@@ -349,7 +349,7 @@ function getPunishmentById(id, punishments) {
 }
 
 
-const descendingSVG = (
+/* const descendingSVG = (
     <svg style={{ marginLeft: "10px" }} width="17px" height="13px" viewBox="0 0 17 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-507.000000, -2786.000000)">
             <g id="Group" transform="translate(0.000000, 2508.000000)" fill="#FFD75F">
@@ -369,4 +369,4 @@ const ascendingSVG = (
             </g>
         </g>
     </svg>
-)
+) */

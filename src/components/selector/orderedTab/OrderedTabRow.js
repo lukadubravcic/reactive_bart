@@ -144,7 +144,7 @@ class OrderedTabRow extends React.Component {
                     </u>
                     : punishmentStatus;
                 label = this.props.punishment.poked === true ? 'POKED' : hoveringLabel;
-            } else if (punishmentStatus === 'SHARED') {
+            } else if (punishmentStatus === 'SHARED' && checkIfDeadlineRespected(this.props.punishment.deadline)) {
                 style = this.state.hoveringStatus ? { textDecoration: 'underline' } : {};
                 label = this.state.hoveringStatus
                     ? <u
@@ -306,4 +306,14 @@ const triangleSVG = (
 
 function isEllipsisActive(e) {
     return (e.offsetWidth < e.scrollWidth);
+}
+
+function checkIfDeadlineRespected(deadline) {
+    // vrati true ako je okey kazna (deadline jos nije prosao)
+    if (deadline === null) return true;
+
+    const deadlineTimestamp = new Date(deadline).getTime();
+    const nowTime = Date.now();
+
+    return deadlineTimestamp > nowTime;
 }

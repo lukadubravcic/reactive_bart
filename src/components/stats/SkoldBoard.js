@@ -6,6 +6,7 @@ import SkoldBoardDisplayContainer from './SkoldBoardDisplayContainer';
 const mapStateToProps = state => ({
     currentUser: state.common.currentUser,
     acceptedPunishments: state.punishment.acceptedPunishments,
+    claimSuccessfulFlag: state.game.claimSuccessfulFlag,
 });
 
 class SkoldBoard extends React.Component {
@@ -27,6 +28,7 @@ class SkoldBoard extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+       
         const userJustLoggedIn =
             (
                 typeof prevProps.currentUser === 'undefined'
@@ -56,6 +58,10 @@ class SkoldBoard extends React.Component {
         } else if (userJustLoggedOut) {
             this.setDummySkoldboardData();
         }
+
+        if (prevProps.claimSuccessfulFlag === null && this.props.claimSuccessfulFlag === true) {
+            this.getSkoldboardData();
+        }
     }
 
     componentDidMount() {
@@ -80,7 +86,7 @@ class SkoldBoard extends React.Component {
     }
 }
 
-export default connect(mapStateToProps)(SkoldBoard);
+export default connect(mapStateToProps, () => ({}))(SkoldBoard);
 
 
 const dummySkoldboardData = [

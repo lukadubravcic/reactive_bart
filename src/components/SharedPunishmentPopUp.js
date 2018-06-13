@@ -6,26 +6,56 @@ import agent from '../agent';
 const mapStateToProps = state => ({
     sharedPunishment: state.game.sharedPunishment,
     currentUser: state.common.currentUser,
+    claimFlag: state.game.claimFlag,
+    claimSuccessfulFlag: state.game.claimSuccessfulFlag,
+    acceptedPunishments: state.punishment.acceptedPunishments,
 });
 
 const mapDispatchToProps = dispatch => ({
-    ignoreSharedPunishment: () => dispatch({ type: 'SHARED_PUNISHMNET_IGNORED' }),
-    claimPunishment: id => {
-        agent.Punishment.claimPunishment();
+    claimPunishment: async (id) => {
+        let res = null;
+
+        try {
+            res = await agent.Punishment.claimPunishment(id);
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
+
+        if (
+            res !== null
+            && res && typeof res.msg !== 'undefined'
+            && res.msg === 'OK'
+            && typeof res.punishment !== 'undefined'
+            && res.punishment.uid
+        ) {
+            return res.punishment;
+        } else return false;
     },
     trySharedPunishment: id => {
-        agent.Punishment.trySharedPunishment();
+        agent.Punishment.trySharedPunishment(id);
     },
     setActivePunishment: punishment => dispatch({ type: 'SET_ACTIVE_PUNISHMENT', punishment }),
     setClaimFlag: () => dispatch({ type: 'SET_CLAIM_FLAG' }),
+    setClaimSuccessfulFlag: value => {
+
+        dispatch({ type: 'SET_CLAIM_SUCCESSFUL_FLAG', value })
+    },
+    updateAcceptedPunishments: punishments => dispatch({ type: 'ACCEPTED_PUNISHMENTS_CHANGED', punishments }),
+    removeSharedPunishment: () => dispatch({ type: 'REMOVE_SHARED_PUNISHMENT' }),
 });
 
 class SharedPunishmentPopUp extends React.Component {
     constructor(props) {
         super(props);
 
+        this.claimBtnRef = null;
+        this.tryBtnRef = null;
+
         this.state = {
             showComponent: false,
+            claimBtnDisabled: false,
+            tryBtnDisabled: false,
         }
 
         this.hidePopup = ev => {
@@ -33,14 +63,22 @@ class SharedPunishmentPopUp extends React.Component {
             this.setState({ showComponent: false });
         }
 
-        this.closeShareDialog = ev => {
-            if (ev.target.id === "shared-popup-outside") // this.hideDialog();
-                return;
+        this.outsideElementClick = ev => {
+            if (ev.target.id !== 'claim-popup-outside') return;
+
+            this.removeSharedPunishment();
+            this.hidePopup();
+        }
+
+        this.btnCloseClick = ev => {
+            ev && ev.preventDefault();
+            this.removeSharedPunishment();
+            this.hidePopup();
         }
 
         this.ignoreClick = ev => {
             ev.preventDefault();
-            this.props.ignoreSharedPunishment();
+            this.removeSharedPunishment();
             this.hidePopup();
         }
 
@@ -49,11 +87,15 @@ class SharedPunishmentPopUp extends React.Component {
             if (this.props.sharedPunishment === null) return;
             // tryShared be req
             // postaviti kaznu kao aktivnu
-            this.props.claimPunishment(this.props.sharedPunishment.uid);
+
+            this.setState({ tryBtnDisabled: true })
+            this.props.trySharedPunishment(this.props.sharedPunishment.uid);
             this.props.setActivePunishment(this.props.sharedPunishment);
+            this.removeSharedPunishment();
+            this.hidePopup();
         }
 
-        this.claimClick = ev => {
+        this.claimClick = async ev => {
             ev.preventDefault();
             if (this.props.sharedPunishment === null) return;
             // claim be request
@@ -62,13 +104,28 @@ class SharedPunishmentPopUp extends React.Component {
                 Object.keys(this.props.currentUser).length > 0
                 && this.props.currentUser._id !== null
             ) {
-                this.props.trySharedPunishment(this.props.sharedPunishment.uid);
-                this.props.setActivePunishment(this.props.sharedPunishment);
-                // dodati u picker (accepted?) kazne i u skoldboard
+                this.setState({ claimBtnDisabled: true });
+                this.claimPunishment();
             } else {
                 this.props.setClaimFlag();
             }
-        };
+
+            return this.hidePopup();
+        }
+
+        this.claimPunishment = async () => {
+            if (this.props.sharedPunishment === null) throw new Error('No shared punishment to claim');
+            let claimedPunishment = await this.props.claimPunishment(this.props.sharedPunishment.uid);
+            this.props.setClaimSuccessfulFlag(!!claimedPunishment);
+
+            if (!!claimedPunishment === false) return;
+
+            this.props.setActivePunishment(claimedPunishment);
+        }
+
+        this.removeSharedPunishment = () => {
+            this.props.removeSharedPunishment();
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -79,12 +136,23 @@ class SharedPunishmentPopUp extends React.Component {
         ) {
             this.setState({ showComponent: true });
         }
+
+        const userJustLoggedIn = Object.keys(prevProps.currentUser).length === 0 && Object.keys(this.props.currentUser).length;
+
+        if (
+            userJustLoggedIn
+            && this.props.claimFlag === true
+        ) {
+            this.claimPunishment();
+        }
     }
 
     render() {
-        if (this.state.showComponent !== true) return null;
+        if (this.state.showComponent !== true || this.props.sharedPunishment === null) return null;
 
-        const orderedBy = this.props.sharedPunishment.ordering_username !== null ? this.props.sharedPunishment.ordering_username : null;
+        const orderedBy = typeof this.props.sharedPunishment.ordering_username !== 'undefined' && this.props.sharedPunishment.ordering_username !== null
+            ? this.props.sharedPunishment.ordering_username
+            : null;
         const howManyTimes = this.props.sharedPunishment.how_many_times;
         const whatToWrite = this.props.sharedPunishment.what_to_write;
         const deadline = getDeadlineString(this.props.sharedPunishment.deadline);
@@ -94,9 +162,9 @@ class SharedPunishmentPopUp extends React.Component {
 
         return (
             <div
-                id="shared-popup-outside"
+                id="claim-popup-outside"
                 className="popup-component"
-                onClick={this.closeShareDialog}>
+                onClick={this.outsideElementClick}>
 
                 <div className="shared-popup-container">
 
@@ -115,8 +183,9 @@ class SharedPunishmentPopUp extends React.Component {
                             </div>
                             : null}
                         <button
+                            id="claim-close-btn"
                             className="btn-close-share-dialog"
-                            onClick={this.hidePopup}>
+                            onClick={this.btnCloseClick}>
                             {closeBtnSVG}
                         </button>
                     </div>
@@ -141,7 +210,12 @@ class SharedPunishmentPopUp extends React.Component {
                     <div className="align-center shared-popup-footer-container">
                         <div className="shared-popup-btn-container">
                             <div className="btn-container">
-                                <button id="claim-btn" className="btn-submit shared-popup-btns">
+                                <button
+                                    ref={elem => this.claimBtnRef = elem}
+                                    id="claim-btn"
+                                    className="btn-submit shared-popup-btns"
+                                    disabled={this.state.claimBtnDisabled}
+                                    onClick={this.claimClick}>
                                     CLAIM
                                 </button>
 
@@ -154,8 +228,10 @@ class SharedPunishmentPopUp extends React.Component {
                             </div>
                             <div className="btn-container">
                                 <button
+                                    ref={elem => this.tryBtnRef = elem}
                                     className="btn-submit shared-popup-btns"
-                                    onClick={this.tryClick}>
+                                    onClick={this.tryClick}
+                                    disabled={this.state.tryBtnDisabled}>
                                     TRY
                                 </button>
                             </div>
@@ -185,7 +261,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(SharedPunishmentPopU
 
 
 const closeBtnSVG = (
-    <svg width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+    <svg id="claim-close-btn" width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g id="Welcome" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="square">
             <g id="Share" transform="translate(-541.000000, -20.000000)" stroke="#FFFFFF">
                 <g id="Line-+-Line-Copy" transform="translate(541.000000, 20.000000)">

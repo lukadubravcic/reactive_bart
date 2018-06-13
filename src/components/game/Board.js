@@ -93,11 +93,11 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'GAME_RESETED' });
     },
     logPunishmentTry: (id, timeSpent, typedCharsNum = 0) => {
-        agent.Punishment.logTry(id, timeSpent, typedCharsNum - 1).then(() => { console.log('Try logged') });
+        agent.Punishment.logTry(id, timeSpent, typedCharsNum).then(() => { console.log('Try logged') });
         dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
     },
     logPunishmentGuestTry: (userId, punishmentId, timeSpent, typedCharsNum = 0) => {
-        agent.Punishment.guestLogTry(userId, punishmentId, timeSpent, typedCharsNum - 1).then(() => { console.log('Try logged') });
+        agent.Punishment.guestLogTry(userId, punishmentId, timeSpent, typedCharsNum).then(() => { console.log('Try logged') });
     },
     cheatingDetected: () => {
         dispatch({ type: 'CHEATING_DETECTED' });
@@ -276,8 +276,14 @@ class Board extends React.Component {
                 && this.props.guestPunishment.uid === this.props.activePunishment.uid
             ) {
                 this.props.setActivePunishmentGuestDone(this.props.guestUserId, this.props.activePunishment.uid, this.props.timeSpent);
-            } else if (!specialOrRandomPunishmentIsActive(this.props.activePunishment)) {
+            } else if (
+                !specialOrRandomPunishmentIsActive(this.props.activePunishment)
+                && Object.keys(this.props.currentUser).length > 0
+            ) {
                 this.props.setActivePunishmentDone(this.props.activePunishment.uid, this.props.timeSpent);
+
+                if (this.props.activePunishment.fk_user_email_taking_punishment === null) return;
+
                 this.updatePastPunishments(this.props.activePunishment);
                 this.removeActivePunishmentFromAccepted();
             }
@@ -403,7 +409,7 @@ class Board extends React.Component {
                     xhttp.send();
 
                 } else {
-                    this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length);
+                    this.props.logPunishmentTry(this.props.activePunishment.uid, this.props.timeSpent, this.props.boardValue.length - 1);
                 }
             }
         };

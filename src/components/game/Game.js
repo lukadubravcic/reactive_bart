@@ -22,6 +22,7 @@ const mapStateToProps = state => ({
     punishmentProgress: state.game.progress,
     showToS: state.game.showToS,
     showPrivacyPolicy: state.game.showPrivacyPolicy,
+    claimSuccessfulFlag: state.game.claimSuccessfulFlag,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -175,8 +176,11 @@ class Game extends React.Component {
         const guestPunAvail = this.props.guestPunishment !== null && Object.keys(this.props.guestPunishment).length > 0;
         // detektiraj ako je aktivna kazna givenupana te postavi na random kaznu
         const activePunishmentGivenUpWhileNotDone = typeof this.props.activePunishment.created !== 'undefined' && (!!getByValue(prevProps.acceptedPunishments, prevProps.activePunishment.uid) && !getByValue(this.props.acceptedPunishments, this.props.activePunishment.uid)) && this.props.punishmentProgress < 100;
+        const claimUnsuccessful = prevProps.claimSuccessfulFlag === null && this.props.claimSuccessfulFlag === false;
+
 
         if (cheating) this.setCheatingPunishment();
+
         // slucaj kada user nije logan a setupana je guest kazna
         if (
             !userLoggedIn
@@ -192,6 +196,7 @@ class Game extends React.Component {
                 && randomAndSpecialPunishmentsLoaded
                 && activePunishmentNotSet)
             || userJustLoggedOut
+            || claimUnsuccessful
         ) {
             this.changeActivePunishmentNotLoggedIn();
             // ima usera
@@ -202,8 +207,11 @@ class Game extends React.Component {
                 && activePunishmentNotSet)
             || (userLoggedIn
                 && activePunishmentGivenUpWhileNotDone)
+            || claimUnsuccessful
         ) {
             this.changeActivePunishmentLoggedIn();
+
+            // claimUnsuccessful -> postavi poruku
         }
 
         if (
@@ -220,6 +228,7 @@ class Game extends React.Component {
         ) {
             this.setBoardInViewport(100);
         }
+
     }
 
     render() {
@@ -311,7 +320,7 @@ class Game extends React.Component {
                         </div>
 
                         <div id="rollup-container">
-                            <Ads currentUser={this.props.currentUser}/>
+                            <Ads currentUser={this.props.currentUser} />
                         </div>
 
                     </div>

@@ -46,7 +46,7 @@ export function getPunishmentStatus(punishment) {
     const punishmentIgnored = checkIfIgnoredPunishment(punishment);
     const rejectedTimeDefined = typeof punishment.rejected !== 'undefined' && punishment.rejected !== null;
     const waitingForAccept = !punishmentIgnored && !deadlinePassed;
-
+    
     if (acceptedTimeDefined) {
         // ako je kazna acceptana, moze biti inprogress (accepted), givenup, done, failed
         if (givenUpTimeDefined) {

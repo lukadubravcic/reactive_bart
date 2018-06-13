@@ -97,7 +97,7 @@ class SharePunishmentDialog extends React.Component {
         return (
             <div
                 id="share-dialog-outside"
-                className="share-dialog-component"
+                className="popup-component"
                 onClick={this.closeShareDialog}>
 
                 <div className="share-pun-dialog-container">

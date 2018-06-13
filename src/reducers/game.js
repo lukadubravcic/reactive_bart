@@ -30,6 +30,7 @@ const defaultState = {
     showToS: false,
     showPrivacyPolicy: false,
     claimFlag: false,
+    claimSuccessfulFlag: null,
 };
 
 export default (state = defaultState, action) => {
@@ -109,7 +110,13 @@ export default (state = defaultState, action) => {
         case 'PUNISHMENT_IN_URL':
             return { ...state, punishmentIdFromURL: action.id };
         case 'LOGIN':
-            return { ...defaultState, punishmentIdFromURL: state.punishmentIdFromURL, sharedPunishment: state.sharedPunishment };
+            return {
+                ...defaultState,
+                punishmentIdFromURL: state.punishmentIdFromURL,
+                sharedPunishment: state.sharedPunishment,
+                claimFlag: state.claimFlag,
+                claimSuccessfulFlag: state.claimSuccessfulFlag,
+            };
         case 'GAME_UNMOUNT':
             return defaultState;
         case 'SPECIAL_LOGOUT':
@@ -143,6 +150,14 @@ export default (state = defaultState, action) => {
 
         case 'SHARED_PUNISHMENT_LOADED':
             return { ...state, sharedPunishment: action.punishment };
+        case 'SET_CLAIM_FLAG':
+            return { ...state, claimFlag: true };
+        case 'CLEAR_CLAIM_FLAG':
+            return { ...state, claimFlag: false };
+        case 'SET_CLAIM_SUCCESSFUL_FLAG':
+            return { ...state, claimSuccessfulFlag: action.value, sharedPunishment: defaultState.sharedPunishment };
+        case 'REMOVE_SHARED_PUNISHMENT':
+            return { ...state, sharedPunishment: defaultState.sharedPunishment };
 
         default:
             return state;

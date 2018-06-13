@@ -65,6 +65,8 @@ const Punishment = {
 	randomPunDone: (randomPunId, timeSpent) => requests.post('/punishment/randomdone', { randomPunId, timeSpent }),
 	randomPunTry: (randomPunId, typedCharsNum) => requests.post('/punishment/randomlog', { randomPunId, typedCharsNum }),
 	getSharedPunishment: sid => requests.post('/punishment/shared', { sid }),
+	claimPunishment: uid => requests.post('/punishment/claim', { uid }),
+	trySharedPunishment: uid => requests.post('/punishment/sharedtry', { uid }),
 };
 
 const Pref = {

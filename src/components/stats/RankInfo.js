@@ -14,7 +14,7 @@ class RankInfo extends React.Component {
     }
 
     render() {
-        let rank = typeof this.props.rank === 'undefined' || this.props.rank === null || this.props.rank === 'unknown' ? 'unranked' : ('#' + this.props.rank);
+        let rank = typeof this.props.rank === 'undefined' || this.props.rank === null || this.props.rank === 'unknown' ? '123' : ('#' + this.props.rank);
         let userLoggedIn =
             typeof this.props.currentUser !== 'undefined'
             && this.props.currentUser !== null

@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
     user: state.common.currentUser,
     acceptedPunishments: state.punishment.acceptedPunishments,
     activePunishment: state.game.activePunishment,
-    cheating: state.game.cheating
+    cheating: state.game.cheating,
+    claimSuccessfulFlag: state.game.claimSuccessfulFlag,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -43,6 +44,7 @@ const mapDispatchToProps = dispatch => ({
     setOrderedHeaderVisibility: value => {
         dispatch({ type: 'ORDERED_TAB_HEADER_VISIBILITY_CHANGED', value });
     },
+    changeClaimSuccessfulFlag: value => dispatch({ type: 'SET_CLAIM_SUCCESSFUL_FLAG', value }),
 });
 
 class PunishmentSelectorTable extends React.Component {
@@ -269,6 +271,14 @@ class PunishmentSelectorTable extends React.Component {
         if (prevProps.pastPunishments.length === 0 && this.props.pastPunishments.length > 0) {
             this.props.setPastHeaderVisibility(true);
             if (this.props.selectedTab === null) this.selectTab('pastTab');
+        }
+
+        // claimana je kazna, reloadaj accepted tab
+        if (prevProps.claimSuccessfulFlag === null && this.props.claimSuccessfulFlag === true) {
+            agent.Punishment.getAccepted().then(payload => {
+                this._handleAcceptedPunFromAgent(payload)
+                this.props.changeClaimSuccessfulFlag(null);
+            });
         }
 
     }

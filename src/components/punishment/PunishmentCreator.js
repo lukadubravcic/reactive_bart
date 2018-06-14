@@ -202,7 +202,6 @@ class PunishmentCreator extends React.Component {
         }
 
         this.toggleDeadlineCheckbox = ev => {
-
             if (!this.props.deadlineChecked) {
                 this.props.onChangeDeadlineCheckbox(!this.props.deadlineChecked);
                 this.animateDateFadeIn();

@@ -34,9 +34,9 @@ class SkoldBoardTable extends React.Component {
                 style: 'float-left def-cursor skoldboard-table-header-rank'
             },
             {
-                name: 'WHOM',
+                name: 'WHO',
                 clickHandler: null,
-                id: 'whom_skoldboard',
+                id: 'who_skoldboard',
                 sortOrder: null,
                 style: 'float-left def-cursor skoldboard-table-header-who'
             },

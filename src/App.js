@@ -19,7 +19,7 @@ import agent from './agent';
 
 import { getQueryStringData } from './helpers/helpers';
 
-const defaultMsgDuration = 5000;
+import { ERR_DISPLAY_TIME } from './constants/constants';
 
 const mapStateToProps = state => ({
     common: state.common,
@@ -57,7 +57,7 @@ const mapDispatchToProps = dispatch => ({
         agent.Auth.getPunishmentAsGuest(encodeURIComponent(userId), encodeURIComponent(punishmentId)).then(payload => {
             if (payload) {
                 if (typeof payload.msg !== 'undefined' && payload.msg !== null) {
-                    const msgDuration = typeof payload.time !== 'undefined' && payload.time !== null ? payload.time : defaultMsgDuration;
+                    const msgDuration = typeof payload.time !== 'undefined' && payload.time !== null ? payload.time : ERR_DISPLAY_TIME;
 
                     dispatch({
                         type: 'GUEST_PUNISHMENT_INVALID',
@@ -125,13 +125,56 @@ const mapDispatchToProps = dispatch => ({
 
                 switch (res.err_code) {
                     case 1:
-                        msg = 'Invalid punishment. Let\'s create a new one!';
+                        msg = (
+                            <span>
+                                Invalid punishment. Let's&nbsp;
+                                <a
+                                    className="underline-on-hover"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={ev => {
+                                        let gotoElement = document.getElementById("creator-component-container");
+                                        gotoElement.scrollIntoView({ behavior: "smooth" })
+                                    }}>
+                                    create a new one
+                                </a>
+                                !
+                        </span>
+                        );
                         break;
-                    case 2:
-                        msg = 'Too late! Punishment expired. Time for a new one?';
+                    case 2: {
+                        msg = (
+                            <span>
+                                Too late! Punishment expired. <br />Time for&nbsp;
+                                <a
+                                    className="underline-on-hover"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={ev => {
+                                        let gotoElement = document.getElementById("creator-component-container");
+                                        gotoElement.scrollIntoView({ behavior: "smooth" })
+                                    }}>
+                                    a new one
+                                </a>
+                                ?
+                            </span>
+                        );
                         break;
+                    }
                     case 3:
-                        msg = 'C\'mon! Let THEM punish you.';
+                        msg = (
+                            <span>
+                                C'mon! Let&nbsp;
+                                <a
+                                    className="underline-on-hover"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={ev => {
+                                        let gotoElement = document.getElementById("skoldboard");
+                                        gotoElement.scrollIntoView({ behavior: "smooth" })
+                                    }}>
+                                    THEM
+                                </a>
+                                &nbsp;punish you.
+                            </span>
+                        );
                         break;
                     default:
                         msg = 'Invalid punishment. Let\'s create a new one!';
@@ -141,19 +184,20 @@ const mapDispatchToProps = dispatch => ({
                 return dispatch({
                     type: 'SHARED_PUNISHMENT_INVALID',
                     msg,
-                    msgDuration: res.time || errMsgDisplayDuration,
+                    msgDuration: res.time || ERR_DISPLAY_TIME,
                 });
             } else if (typeof res.punishment !== 'undefined') {
                 // response sadrzi kaznu, update state sa tom share-anom kaznom i prikazi pop-up
                 return dispatch({
                     type: 'SHARED_PUNISHMENT_LOADED',
-                    punishment: res.time || res.punishment,
+                    punishment: res.punishment,
                 });
             } else {
+                console.log(res)
                 return dispatch({
                     type: 'SHARED_PUNISHMENT_INVALID',
                     msg: 'Invalid punishment. Let\'s create a new one!',
-                    msgDuration: res.time || errMsgDisplayDuration,
+                    msgDuration: res.time || ERR_DISPLAY_TIME,
                 });
             }
         } catch (err) {
@@ -161,7 +205,7 @@ const mapDispatchToProps = dispatch => ({
             return dispatch({
                 type: 'SHARED_PUNISHMENT_INVALID',
                 msg: 'Invalid punishment. Let\'s create a new one!',
-                msgDuration: errMsgDisplayDuration,
+                msgDuration: ERR_DISPLAY_TIME,
             });
         }
     },
@@ -270,10 +314,10 @@ class App extends React.Component {
                         : null}
                     <Top />
                     <Game />
-                    <Locker />
                     <PunishmentCreator
                         data={this.shareData}
                         shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
+                    <Locker />
                     <PunishmentSelectorTable shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
                     <Stats />
                     <RankInfo />

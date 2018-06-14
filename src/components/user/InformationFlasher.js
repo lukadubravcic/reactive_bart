@@ -67,7 +67,6 @@ class InformationFlasher extends React.Component {
     }
 
     render() {
-
         return (
             <div
                 ref={elem => this.parentContainerRef = elem}

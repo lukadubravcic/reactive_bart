@@ -1,8 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 
-const CHAR_SPACING = 16.28;
-
 
 class AcceptedTabRow extends React.Component {
 
@@ -49,7 +47,12 @@ class AcceptedTabRow extends React.Component {
 
         this.getTableFieldData = (string, elementRef) => {
 
-            if (typeof string !== 'string'
+            if (string === null) {
+                return {
+                    content: 'anonymous',
+                    HTMLHoverElement: null,
+                }
+            } else if (typeof string !== 'string'
                 || string.length === 0
             ) {
                 return null;

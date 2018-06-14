@@ -3,6 +3,7 @@ const defaultState = {
     notify_trying: false,
     notify_done: true,
     notify_failed: false,
+    punishment_requested: true,
     punishment_accepted: true,
     punishment_rejected: true,
     punishment_ignored: true,

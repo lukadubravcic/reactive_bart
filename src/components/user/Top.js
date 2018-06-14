@@ -19,6 +19,7 @@ const mapStateToProps = state => ({
     activePunishment: state.game.activePunishment,
     timeSpent: state.game.timeSpent,
     gameInProgress: state.game.gameInProgress,
+    claimFlag: state.game.claimFlag,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -154,7 +155,6 @@ class Top extends React.Component {
                     </div>
                 );
             }
-
             return null;
         }
 
@@ -178,6 +178,10 @@ class Top extends React.Component {
         if (usernameSetPunishmentActive && nextPunNotUsernameSet) {
             // hide thanks section
             this.props.updateElementToDisplay('loggedIn');
+        }
+
+        if (this.props.claimFlag === false && nextProps.claimFlag === true) {
+            this.props.updateElementToDisplay('login');
         }
     }
 

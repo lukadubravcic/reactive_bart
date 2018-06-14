@@ -31,6 +31,7 @@ class Prefs extends React.Component {
         };
 
         this.toggleShowChangePwdForm = ev => {
+            if (Object.keys(this.props.currentUser).length === 0) return;
             ev.preventDefault();
             this.setState({
                 showChangePwdForm: !this.state.showChangePwdForm,
@@ -66,156 +67,166 @@ class Prefs extends React.Component {
         const punishmentGivenUp = this.props.punishment_givenup;
         const sound = this.props.sound;
 
-        if (userLoggedIn) {
-            return (
-                <div>
-                    <div ref={elem => this.prefComponentRef = elem}
-                        id="prefs"
-                        className="parent-component prefs-component-container">
-
-                        <div className="container pref-content-container">
-                            <a
-                                id="change-pwd-link"
-                                onClick={this.toggleShowChangePwdForm}>
-                                CHANGE PASSWORD
+        return (
+            <div>
+                <div
+                    ref={elem => this.prefComponentRef = elem}
+                    id="prefs"
+                    className={`parent-component prefs-component-container${userLoggedIn ? "" : " greyscale-filter"}`}>
+                    
+                    {userLoggedIn ? null : <div id="form-overlay"></div>}
+                    <div className="container pref-content-container">
+                        <a
+                            id="change-pwd-link"
+                            onClick={this.toggleShowChangePwdForm}>
+                            CHANGE PASSWORD
                             </a>
-                            <div className="prefs-left-container float-left">
-                                <label id="prefs-heading" className="heading">Prefs</label>
+                        <div className="prefs-left-container float-left">
+                            <label id="prefs-heading" className="heading">Prefs</label>
+                        </div>
+                        <div className="float-left prefs-container">
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="show_tooltips"
+                                        type="checkbox"
+                                        checked={tooltips}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">Tooltips</label>
                             </div>
-                            <div className="float-left prefs-container">
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="show_tooltips"
-                                            type="checkbox"
-                                            checked={tooltips}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">Tooltips</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="sound"
-                                            type="checkbox"
-                                            checked={sound}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">Sound on/off</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="punishment_requested"
-                                            type="checkbox"
-                                            checked={punishmentRequested}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">Mail me when I receive a new punishment</label>
-                                </div>
-
-                                <div style={{ height: 30 + "px" }} className="prefs-row">
-                                </div>
-
-                                <div className="prefs-row pref-heading-bot-marg">
-                                    <span style={{ right: 2 + "px" }} className="pref-heading">Mail me when my skoldbuddies...</span>
-                                </div>
-
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="punishment_accepted"
-                                            type="checkbox"
-                                            checked={punishmentAccepted}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">accept</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="punishment_rejected"
-                                            type="checkbox"
-                                            checked={punishmentRejected}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">reject</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="punishment_ignored"
-                                            type="checkbox"
-                                            checked={punishmentIgnored}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">ignore</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="notify_trying"
-                                            type="checkbox"
-                                            checked={notifyTrying}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">try to complete</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="notify_done"
-                                            type="checkbox"
-                                            checked={notifyDone}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">complete</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="notify_failed"
-                                            type="checkbox"
-                                            checked={notifyFailed}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">fail</label>
-                                </div>
-                                <div className="prefs-row">
-                                    <label className="float-left pref-chexbox-cont">
-                                        <input
-                                            name="punishment_givenup"
-                                            type="checkbox"
-                                            checked={punishmentGivenUp}
-                                            onChange={this.clickHandler} />
-                                        <span id="pref-checkmark"></span>
-                                    </label>
-                                    <label className="pref-name">give up</label>
-                                </div>
-
-                                <div style={{ paddingTop: 0 }} className="prefs-row">
-                                    <span className="pref-heading">... my punishment.</span>
-                                </div>
-
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="sound"
+                                        type="checkbox"
+                                        checked={sound}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">Sound on/off</label>
                             </div>
-                            <div className="prefs-bottom-image-container">
-                                {bottomSVG}
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="punishment_requested"
+                                        type="checkbox"
+                                        checked={punishmentRequested}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">Mail me when I receive a new punishment</label>
                             </div>
+
+                            <div style={{ height: 30 + "px" }} className="prefs-row">
+                            </div>
+
+                            <div className="prefs-row pref-heading-bot-marg">
+                                <span style={{ right: 2 + "px" }} className="pref-heading">Mail me when my skoldbuddies...</span>
+                            </div>
+
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="punishment_accepted"
+                                        type="checkbox"
+                                        checked={punishmentAccepted}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">accept</label>
+                            </div>
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="punishment_rejected"
+                                        type="checkbox"
+                                        checked={punishmentRejected}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">reject</label>
+                            </div>
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="punishment_ignored"
+                                        type="checkbox"
+                                        checked={punishmentIgnored}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">ignore</label>
+                            </div>
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="notify_trying"
+                                        type="checkbox"
+                                        checked={notifyTrying}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">try to complete</label>
+                            </div>
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="notify_done"
+                                        type="checkbox"
+                                        checked={notifyDone}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">complete</label>
+                            </div>
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="notify_failed"
+                                        type="checkbox"
+                                        checked={notifyFailed}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">fail</label>
+                            </div>
+                            <div className="prefs-row">
+                                <label className="float-left pref-chexbox-cont">
+                                    <input
+                                        name="punishment_givenup"
+                                        type="checkbox"
+                                        checked={punishmentGivenUp}
+                                        onChange={this.clickHandler}
+                                        disabled={!userLoggedIn} />
+                                    <span id="pref-checkmark"></span>
+                                </label>
+                                <label className="pref-name">give up</label>
+                            </div>
+
+                            <div style={{ paddingTop: 0 }} className="prefs-row">
+                                <span className="pref-heading">... my punishment.</span>
+                            </div>
+
+                        </div>
+                        <div className="prefs-bottom-image-container">
+                            {bottomSVG}
                         </div>
                     </div>
-                    <NewPasswordContainer showForm={this.state.showChangePwdForm} hideForm={this.hideChangePwdForm} />
                 </div>
-            );
-        } else return null;
+                <NewPasswordContainer showForm={this.state.showChangePwdForm} hideForm={this.hideChangePwdForm} />
+            </div>
+        );
     }
 }
 

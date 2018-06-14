@@ -42,6 +42,8 @@ export default (state = defaultState, action) => {
             return { ...state, _errMsg: null }
         case 'LOGOUT':
             return defaultState;
+        case 'USERNAME_SET':
+            return { ...state, anonShare: false };
         case 'SEND_PUNISHMENT':
             return { ...state, punishingUserSetFromOuterComponent: action.toWhom, whom: action.toWhom };
         case 'CLEAR_PUNISHING_USER':

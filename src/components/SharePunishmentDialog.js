@@ -37,7 +37,6 @@ class SharePunishmentDialog extends React.Component {
             ) {
                 copyTextToClipboard(this.props.data.shareLink);
             }
-
             this.animateCopyClick();
         }
 
@@ -148,7 +147,7 @@ class SharePunishmentDialog extends React.Component {
                     {anon
                         ? null
                         : <div className="share-dialog-bottom-msg-container">
-                            <label className="share-dialog-bottom-msg">Share link is permanently available in ORDERED tab</label>
+                            <label className="share-dialog-bottom-msg">Share link is permanently available in ORDERED tab.</label>
                         </div>
                     }
                 </div>

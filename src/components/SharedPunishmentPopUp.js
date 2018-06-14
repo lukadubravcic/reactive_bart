@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../agent';
+import { ERR_DISPLAY_TIME } from '../constants/constants';
 
 
 const mapStateToProps = state => ({
@@ -18,8 +19,25 @@ const mapDispatchToProps = dispatch => ({
         try {
             res = await agent.Punishment.claimPunishment(id);
         } catch (err) {
-            console.log(err);
+            dispatch({
+                type: 'SHARED_PUNISHMENT_INVALID',
+                msg: 'Could not claim that punishment!',
+                msgDuration: ERR_DISPLAY_TIME,
+            });
             return false;
+        }
+console.log(res)
+        if (
+            res !== null
+            && typeof res.err_code !== 'undefined'
+            && typeof res.msg !== 'undefined'
+        ) {
+            dispatch({
+                type: 'SHARED_PUNISHMENT_INVALID',
+                msg: res.msg,
+                msgDuration: ERR_DISPLAY_TIME,
+            });
+            return true;
         }
 
         if (
@@ -116,8 +134,13 @@ class SharedPunishmentPopUp extends React.Component {
         this.claimPunishment = async () => {
             if (this.props.sharedPunishment === null) throw new Error('No shared punishment to claim');
             let claimedPunishment = await this.props.claimPunishment(this.props.sharedPunishment.uid);
-            this.props.setClaimSuccessfulFlag(!!claimedPunishment);
 
+            // provjera ako je ta kazna vec u accepted kaznama -> postavi je na plocu
+
+            console.log(getPunishmentByUid(this.props.acceptedPunishments, this.props.sharedPunishment.uid));
+            return;
+
+            this.props.setClaimSuccessfulFlag(!!claimedPunishment);
             if (!!claimedPunishment === false) return;
 
             this.props.setActivePunishment(claimedPunishment);
@@ -278,11 +301,22 @@ function getDeadlineString(deadline) {
     if (deadline === null) return null;
 
     const date = new Date(deadline);
-    let day = date.getDay();
+    let day = date.getDate();
     day = day < 10 ? "0" + day : day;
     let month = date.getMonth() + 1;
     month = month > 9 ? month : "0" + month;
     let year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
+}
+
+
+function getPunishmentByUid(arr, uid) {
+    if (!arr.length) return null;
+
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i].uid === uid) return arr[i];
+    }
+
+    return null;
 }

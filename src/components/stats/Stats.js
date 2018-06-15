@@ -799,40 +799,40 @@ const getQuardrant = radianAngle => {
 
 const dummyOrderedOne = [
       {
-            color: "#FFA623",
+            color: "#FBB",
             key: 1,
             name: "accepted",
-            value: 4,
+            value: 8,
       },
       {
             color: "#EA411E",
             key: 2,
             name: "rejected",
-            value: 3,
+            value: 1,
       },
       {
             color: "#00BBD6",
             key: 3,
             name: "ignored",
-            value: 2,
+            value: 2.5,
       },
 ];
 
 const dummyOrderedTwo = [
       {
-            value: 3,
+            value: 1,
             key: 1,
             color: "#00BBD6",
             name: "givenUp"
       },
       {
-            value: 2,
+            value: 9,
             key: 2,
-            color: "#FFA623",
+            color: "#FBB",
             name: "completed"
       },
       {
-            value: 1,
+            value: 3,
             key: 3,
             color: "#EA411E",
             name: "failed"
@@ -842,19 +842,19 @@ const dummyOrderedTwo = [
 
 const dummyPunishedOne = [
       {
-            value: 1,
+            value: 7,
             key: 1,
-            color: "#FFA623",
+            color: "#FBB",
             name: "accepted"
       },
       {
-            value: 1,
+            value: 3,
             key: 2,
             color: "#EA411E",
             name: "rejected"
       },
       {
-            value: 1,
+            value: 2,
             key: 3,
             color: "#00BBD6",
             name: "ignored"
@@ -863,19 +863,19 @@ const dummyPunishedOne = [
 
 const dummyPunishedTwo = [
       {
-            value: 1,
+            value: 2,
             key: 1,
             color: "#00BBD6",
             name: "givenUp"
       },
       {
-            value: 1,
+            value: 8,
             key: 2,
-            color: "#FFA623",
+            color: "#FBB",
             name: "completed"
       },
       {
-            value: 1,
+            value: 1.5,
             key: 3,
             color: "#EA411E",
             name: "failed"

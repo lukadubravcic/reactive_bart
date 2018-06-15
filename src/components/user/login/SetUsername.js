@@ -23,8 +23,10 @@ const mapDispatchToProps = dispatch => ({
                         typeof payload._id !== 'undefined'
                         && typeof payload.email !== 'undefined'
                         && typeof payload.username !== 'undefined'
+                        && typeof payload.token !== 'undefined'
                     ) {
-                        dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment });
+                        dispatch({ type: 'USERNAME_SET', user: payload, specialPunishment: punishment, token: payload.token });
+                        localStorage.setItem('token', payload.token);
                     }
                 } else {
                     console.log('set username: payload === null');

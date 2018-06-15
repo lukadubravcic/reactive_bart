@@ -101,13 +101,15 @@ class ShareAnonCheckbox extends React.Component {
                         style={{ opacity: this.props.show ? 1 : 0 }}
                         id="form-submit-feedback"
                         className="float-left form-feedback">
-                        SIGNED PUNISHMENTS REQUIRE USERNAME,<br /> WHY DON'T YOU&nbsp;
+                        <span className="form-submit-feedback-content">
+                            SIGNED PUNISHMENTS REQUIRE USERNAME,<br /> WHY DON'T YOU&nbsp;
                         <a
-                            className="cursor-pointer underline-on-hover"
-                            onClick={this.goToSetUsername}>
-                            CREATE ONE
+                                className="cursor-pointer underline-on-hover"
+                                onClick={this.goToSetUsername}>
+                                CREATE ONE
                         </a>
-                        ?
+                            ?
+                        </span>
                     </label>
                     : null}
             </div >

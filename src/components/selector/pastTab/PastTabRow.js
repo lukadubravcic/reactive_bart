@@ -1,8 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/helpers';
-
-const CHAR_SPACING = 16.28;
+import { getPunishmentStatus } from '../../../helpers/helpers';
 
 
 class PastTabRow extends React.Component {
@@ -71,7 +69,12 @@ class PastTabRow extends React.Component {
         }
 
         this.getTableFieldData = (string, elementRef) => {
-            if (typeof string !== 'string'
+            if (string === null) {
+                return {
+                    content: 'Anonymous',
+                    HTMLHoverElement: null,
+                }
+            } else if (typeof string !== 'string'
                 || string.length === 0
             ) {
                 return null;

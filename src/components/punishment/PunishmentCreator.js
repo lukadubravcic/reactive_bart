@@ -369,14 +369,9 @@ class PunishmentCreator extends React.Component {
 
         return (
 
-            <div id="creator-component-container" className={ /* && window.canRunAds */ 'parent-component' /* : 'parent-component greyscale-filter' */}>
-
-                {// usrLoggedIn /* && window.canRunAds */
-                    /* ? null
-                    : <div id="form-overlay"></div> */}
+            <div id="creator-component-container" className="parent-component height-tran">
 
                 <div
-                    style={{ paddingBottom: 105 + "px" }}
                     ref={elem => this.formContainerRef = elem}
                     className="container">
 
@@ -391,11 +386,15 @@ class PunishmentCreator extends React.Component {
 
                         <fieldset
                             className="form-row"
-                            style={usrLoggedIn ? {} : { opacity: 0.6 }}
                             disabled={!usrLoggedIn/* !window.canRunAds */}>
 
-                            <label className="float-left input-field-name">WHOM</label>
+                            <label
+                                style={usrLoggedIn ? {} : { opacity: 0.6 }}
+                                className="float-left input-field-name">
+                                WHOM
+                            </label>
                             <input
+                                style={usrLoggedIn ? {} : { opacity: 0.6 }}
                                 id="whom-input"
                                 className={`float-left text-input ${this.state.showTryMailTooltip || this.state.showMasochistTooltip ? "input-wrong-entry" : ""}`}
                                 type="text"
@@ -405,17 +404,21 @@ class PunishmentCreator extends React.Component {
                                 onBlur={this.onWhomBlur}
                                 spellCheck="false"
                             />
-                            {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback">TRY E-MAIL INSTEAD</label> : null}
-                            {this.state.showMasochistTooltip ? <label id="whom-feedback" className="float-left form-feedback">MASOCHIST?</label> : null}
+                            {this.state.showTryMailTooltip ? <label id="whom-feedback" className="float-left form-feedback"><span className="form-submit-feedback-content">TRY E-MAIL INSTEAD</span></label> : null}
+                            {this.state.showMasochistTooltip ? <label id="whom-feedback" className="float-left form-feedback"><span className="form-submit-feedback-content">MASOCHIST?</span></label> : null}
                             {!this.state.showTryMailTooltip && !this.state.showMasochistTooltip && usrLoggedIn
-                                ? <label id="form-submit-feedback" className="float-left form-feedback">LEAVE EMPTY TO<br /> SHARE A PUNISHMENT</label>
+                                ? <label id="form-submit-feedback" className="float-left form-feedback"><span className="form-submit-feedback-content">LEAVE EMPTY TO<br /> SHARE A PUNISHMENT</span></label>
                                 : !this.state.showTryMailTooltip && !this.state.showMasochistTooltip && !usrLoggedIn
                                     ? <label id="form-submit-feedback" className="float-left form-feedback">
-                                        <a
-                                            className="login-link"
-                                            onClick={this.goToLoginForm}>
-                                            LOG IN</a>&nbsp;
-                                            TO ENABLE<br />PERSONAL PUNISHMENTS</label>
+                                        <span className="form-submit-feedback-content">
+                                            <a
+                                                className="login-link"
+                                                onClick={this.goToLoginForm}>
+
+                                                LOG IN</a>&nbsp;
+                                            TO ENABLE<br />PERSONAL PUNISHMENTS
+                                            </span>
+                                    </label>
                                     : null
                             }
                         </fieldset>
@@ -512,7 +515,11 @@ class PunishmentCreator extends React.Component {
                                 required
                             />
                             {whatToWriteField.length > PUNISHMENT_MAX_LENGTH
-                                ? <label id="form-submit-feedback" className="float-left form-feedback">TOO LONG!</label>
+                                ? <label id="form-submit-feedback" className="float-left form-feedback">
+                                    <span className="form-submit-feedback-content">
+                                        TOO LONG!
+                                    </span>
+                                </label>
                                 : null}
                         </fieldset>
 
@@ -530,7 +537,11 @@ class PunishmentCreator extends React.Component {
                                 onChange={this.changeWhy}>
                             </textarea>
                             {!this.state.whyFieldValid
-                                ? <label id="form-submit-feedback" style={{ marginTop: 160 + "px" }} className="float-left form-feedback">TOO LONG!</label>
+                                ? <label style={{ height: 160 + "px" }} id="form-submit-feedback" className="float-left form-feedback">
+                                    <span className="form-submit-feedback-content">
+                                        TOO LONG!
+                                    </span>
+                                </label>
                                 : null}
                         </fieldset>
 
@@ -563,7 +574,11 @@ class PunishmentCreator extends React.Component {
                             </button>
 
                             {this.state.showFormMsg && this.props._errMsg !== null
-                                ? <label id="form-submit-feedback" className="float-left form-feedback">{this.props._errMsg.toUpperCase()}</label>
+                                ? <label style={{ height: 61 + "px" }} id="form-submit-feedback" className="float-left form-feedback">
+                                    <span className="form-submit-feedback-content">
+                                        {this.props._errMsg.toUpperCase()}
+                                    </span>
+                                </label>
                                 : null}
 
                         </fieldset>

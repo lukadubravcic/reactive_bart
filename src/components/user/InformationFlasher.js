@@ -57,8 +57,9 @@ class InformationFlasher extends React.Component {
                 ...this.state.parentContainerStyle,
                 height: this.parentContainerRef.clientHeight,
             }
-        })
+        });
         this.dismountAnimationTimeout = setTimeout(this.animateDismount, this.props.displayTime);
+        if (this.parentContainerRef) this.parentContainerRef.scrollIntoView({ behavior: "smooth" });
     }
 
     componentWillUnmount() {

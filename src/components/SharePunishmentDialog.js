@@ -74,6 +74,26 @@ class SharePunishmentDialog extends React.Component {
         this.mailShare = () => {
 
         }
+
+        this.getPunishmentInfoElement = () => {
+            if (typeof this.props.data.punishment === 'undefined') return null;
+
+            const claims = this.props.data.punishment.shared_claims || 0;
+            let tries = this.props.data.punishment.shared_tries || 0;
+
+            return (
+                <div
+                    style={{ textAlign: "center" }}
+                    className="shared-popup-pun-info-container">
+
+                    <label
+                        style={{ color: "white" }}
+                        className="shared-popup-pun-info">
+                        {claims} claims and {tries} tries so far.
+                    </label>
+                </div>
+            )
+        }
     }
 
     componentWillUnmount() {
@@ -92,6 +112,7 @@ class SharePunishmentDialog extends React.Component {
             ? this.props.data.anon : true;
         const mailSubject = encodeURIComponent('Skolded punishment');
         const mailBody = encodeURIComponent('Here you go: ' + shareLink);
+        const punishmentInfoElement = this.getPunishmentInfoElement();
 
         return (
             <div
@@ -112,16 +133,19 @@ class SharePunishmentDialog extends React.Component {
                     </div>
                     <div className="share-dialog-social-container">
                         <button
+                            id="twitter-btn-share-pun"
                             className="share-dialog-icon-btns"
                             onClick={this.twitterShare}>
                             {twitterSVG}
                         </button>
                         <button
+                            id="facebook-btn-share-pun"
                             className="share-dialog-icon-btns"
                             onClick={this.fbShare}>
                             {fbSVG}
                         </button>
                         <a
+                            id="mail-btn-share-pun"
                             className="share-dialog-icon-btns"
                             href={`mailto:?subject=${mailSubject}&body=${mailBody}`}
                             onClick={this.mailShare}>
@@ -150,6 +174,7 @@ class SharePunishmentDialog extends React.Component {
                             <label className="share-dialog-bottom-msg">Share link is permanently available in ORDERED tab.</label>
                         </div>
                     }
+                    {punishmentInfoElement}
                 </div>
             </div>
         )
@@ -163,7 +188,7 @@ export default SharePunishmentDialog;
 const closeBtnSVG = (
     <svg width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g id="Welcome" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="square">
-            <g id="Share" transform="translate(-541.000000, -20.000000)" stroke="#FFFFFF">
+            <g id="share-btn-svg" transform="translate(-541.000000, -20.000000)" stroke="#FFFFFF">
                 <g id="Line-+-Line-Copy" transform="translate(541.000000, 20.000000)">
                     <path d="M0.526315789,0.526315789 L18.9548854,18.9548854" id="Line"></path>
                     <path d="M0.526315789,0.526315789 L18.9548854,18.9548854" id="Line-Copy" transform="translate(10.000000, 10.000000) scale(-1, 1) translate(-10.000000, -10.000000) "></path>
@@ -199,7 +224,7 @@ const fbSVG = (
 const shareViaMailSVG = (
     <svg id="mail-share-dialog-icon" className="share-dialog-icon" width="40px" height="40px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g id="Welcome" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-            <g id="Share" transform="translate(-361.000000, -114.000000)" fill="#FFFFFF">
+            <g id="mail-g" transform="translate(-361.000000, -114.000000)" fill="#FFFFFF">
                 <g id="Fill-68-+-Fill-70-+-Path-+-Path" transform="translate(180.000000, 114.000000)">
                     <g id="Path-+-Path" transform="translate(181.000000, 0.000000)">
                         <path d="M40,8.21611407 L40,6.66658201 C40,6.66658201 40,0.0001 33.333518,0.0001 L6.66658201,0.0001 C6.66658201,0.0001 0.0001,0.0001 0.0001,6.66658201 L0.0001,8.21611407 L20.000218,22.04599 L40,8.21611407 Z" id="Path"></path>

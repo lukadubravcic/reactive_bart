@@ -19,9 +19,9 @@ const defaultState = {
 export default (state = defaultState, action) => {
     switch (action.type) {
         case 'APP_LOAD':
-            return { ...state, anonShare: false };
+            return { ...state, anonShare: true };
         case 'LOGIN':
-            return { ...state, anonShare: false };
+            return { ...state, anonShare: true };
         case 'UPDATE_FIELD_PUNISH_CREATE':
             return { ...state, [action.key]: action.value };
         case 'TOGGLE_PUNISHMENT_DEADLINE_CKECKBOX':
@@ -43,7 +43,7 @@ export default (state = defaultState, action) => {
         case 'LOGOUT':
             return defaultState;
         case 'USERNAME_SET':
-            return { ...state, anonShare: false };
+            return { ...state, anonShare: defaultState.anonShare };
         case 'SEND_PUNISHMENT':
             return { ...state, punishingUserSetFromOuterComponent: action.toWhom, whom: action.toWhom };
         case 'CLEAR_PUNISHING_USER':

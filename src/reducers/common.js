@@ -40,7 +40,7 @@ export default (state = defaultState, action) => {
         case 'UPDATE_SET_USERNAME_FIELD':
             return { ...state, usernameSet: action.value };
         case 'USERNAME_SET':
-            return { ...state, currentUser: action.user };
+            return { ...state, currentUser: action.user, token: action.token };
         case 'USERNAME_SET_AS_GUEST':
             return { ...state, guestUser: action.user };
         case 'LOADING_IN_PROGRESS':

@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
             });
             return false;
         }
-console.log(res)
+
         if (
             res !== null
             && typeof res.err_code !== 'undefined'
@@ -37,7 +37,9 @@ console.log(res)
                 msg: res.msg,
                 msgDuration: ERR_DISPLAY_TIME,
             });
-            return true;
+
+            if (typeof res.punishment !== 'undefined') return res.punishment;
+            else return false;
         }
 
         if (
@@ -134,14 +136,16 @@ class SharedPunishmentPopUp extends React.Component {
         this.claimPunishment = async () => {
             if (this.props.sharedPunishment === null) throw new Error('No shared punishment to claim');
             let claimedPunishment = await this.props.claimPunishment(this.props.sharedPunishment.uid);
+            this.props.setClaimSuccessfulFlag(!!claimedPunishment);
 
             // provjera ako je ta kazna vec u accepted kaznama -> postavi je na plocu
-
-            console.log(getPunishmentByUid(this.props.acceptedPunishments, this.props.sharedPunishment.uid));
-            return;
-
-            this.props.setClaimSuccessfulFlag(!!claimedPunishment);
             if (!!claimedPunishment === false) return;
+            else if (!!claimedPunishment) {
+                let alreadyAcceptedPunishment = getPunishmentByUid(this.props.acceptedPunishments, claimedPunishment.uid);
+                if (!!alreadyAcceptedPunishment) {
+                    this.props.setActivePunishment(alreadyAcceptedPunishment);
+                }
+            }
 
             this.props.setActivePunishment(claimedPunishment);
         }
@@ -286,7 +290,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(SharedPunishmentPopU
 const closeBtnSVG = (
     <svg id="claim-close-btn" width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
         <g id="Welcome" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="square">
-            <g id="Share" transform="translate(-541.000000, -20.000000)" stroke="#FFFFFF">
+            <g id="share-btn-svg" transform="translate(-541.000000, -20.000000)" stroke="#FFFFFF">
                 <g id="Line-+-Line-Copy" transform="translate(541.000000, 20.000000)">
                     <path d="M0.526315789,0.526315789 L18.9548854,18.9548854" id="Line"></path>
                     <path d="M0.526315789,0.526315789 L18.9548854,18.9548854" id="Line-Copy" transform="translate(10.000000, 10.000000) scale(-1, 1) translate(-10.000000, -10.000000) "></path>

@@ -170,7 +170,7 @@ class OrderedTabRow extends React.Component {
         }
 
         this.openShareDialog = ev => {
-            this.props.shareDialogVisibilityHandler(true, { anon: true, shareLink: `${APP_LINK}?sid=${this.props.punishment.uid}` });
+            this.props.shareDialogVisibilityHandler(true, { anon: true, shareLink: `${APP_LINK}?sid=${this.props.punishment.uid}`, punishment: this.props.punishment });
         }
     }
 

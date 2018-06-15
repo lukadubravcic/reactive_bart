@@ -1128,6 +1128,7 @@ fieldset + fieldset {
 #pun-creation-form {	
 	position: relative;
 	margin-top: 90px;
+	margin-bottom: 170px;
 	z-index: 2;
 }
 
@@ -1372,8 +1373,14 @@ input[type=number]::-webkit-outer-spin-button {
 
 #form-submit-feedback {
 	position: relative;
-	margin-top: 20px;
+	display: table;
+	height: 70px;
 	margin-left: 32px;
+}
+
+.form-submit-feedback-content {
+	display: table-cell;
+	vertical-align: middle;
 }
 
 #form-bottom-props-container {
@@ -2767,12 +2774,8 @@ td.skoldboard-table-punish-field {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 5;
-
-
 	font-weight: 300;
 }
-
-
 
 .legals {
 	text-align: center;
@@ -2914,7 +2917,6 @@ td.skoldboard-table-punish-field {
 	right: calc(50% - 290px);
 	top: 200px;
 	box-shadow: 0 0 20px 10px #343434;
-	border-radius: 5px;
 }
 
 .share-dialog-title-container {
@@ -2939,6 +2941,25 @@ td.skoldboard-table-punish-field {
 	top: 20px;
 	right: 20px;
 	background: transparent;
+}
+
+.btn-close-share-dialog:hover #share-btn-svg {
+	stroke: #000000;
+}
+
+#claim-close-btn:hover #share-btn-svg {
+	stroke: #000000;
+}
+
+#twitter-btn-share-pun:hover #twitter-g {
+	fill: #FFE597;
+}
+
+#facebook-btn-share-pun:hover #facebook-g {
+	fill: #FFE597;
+}
+#mail-btn-share-pun:hover #mail-g {
+	fill: #FFE597;
 }
 
 .share-dialog-social-container {
@@ -3010,7 +3031,6 @@ td.skoldboard-table-punish-field {
 	right: calc(50% - 290px);
 	top: 200px;
 	box-shadow: 0 0 20px 10px #343434;
-	border-radius: 5px;
 }
 
 .shared-popup-header-container {
@@ -3129,3 +3149,4 @@ td.skoldboard-table-punish-field {
 #claim-btn {
 	display: block;
 }
+

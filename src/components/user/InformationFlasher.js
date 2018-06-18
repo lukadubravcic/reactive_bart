@@ -22,8 +22,7 @@ class InformationFlasher extends React.Component {
 
         this.state = {
             parentContainerStyle: {
-                // height: 170 + "px",
-                backgroundColor: "#f44242"
+                backgroundColor: "#EA411E"
             },
             textContainerStyle: {
                 paddingBottom: "50px",

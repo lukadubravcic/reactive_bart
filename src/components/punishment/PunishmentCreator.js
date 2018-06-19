@@ -270,6 +270,7 @@ class PunishmentCreator extends React.Component {
             let shareData = {
                 shareLink: result.shareLink,
                 anon: anonShare,
+                punishment: { ...result.punishment, why: submitData.why },
             };
 
             this.props.shareDialogVisibilityHandler(true, shareData);

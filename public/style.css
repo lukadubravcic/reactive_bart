@@ -2905,7 +2905,7 @@ td.skoldboard-table-punish-field {
 	width: 100%;
 	height: 100%;
 
-	background: rgb(80, 80, 80, 0.85);
+	background: rgba(80, 80, 80, 0.85);
 	z-index: 150;
 }
 

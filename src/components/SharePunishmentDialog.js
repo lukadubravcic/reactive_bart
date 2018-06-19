@@ -9,8 +9,6 @@ class SharePunishmentDialog extends React.Component {
     constructor(props) {
         super(props);
 
-        this.stringToShare = `text to share`;
-
         this.changeBtnStringTimeout = null;
 
         this.state = {
@@ -41,32 +39,46 @@ class SharePunishmentDialog extends React.Component {
         }
 
         this.animateCopyClick = ev => {
-            this.setState({ copyBtnString: 'COPIED' });
+            this.setState({ copyBtnString: 'DONE' });
             this.changeBtnStringTimeout = setTimeout(() => {
                 this.setState({ copyBtnString: 'COPY' });
             }, 1000);
         }
 
         this.twitterShare = () => {
-            let width = 600,
-                height = 500,
-                left = 200,
-                top = 200,
-                url = 'http://twitter.com/share',
-                opts = 'status=1' +
-                    ',width=' + width +
-                    ',height=' + height +
-                    ',top=' + ((window.screen.availHeight - height) / 2) +
-                    ',left=' + ((window.screen.availWidth - width) / 2);
+            let punishment = this.props.data.punishment;
+            let textToShare = `Write ${punishment.how_many_times}x ${punishment.what_to_write}`
+                + `${punishment.deadline !== null
+                    ? ` before ${this.getFormatedDeadlineString(punishment.deadline)}:`
+                    : ':'}`
+                + ` ${this.props.data.shareLink}`;
+            let width = 600;
+            let height = 500;
+            let left = 200;
+            let top = 200;
+            let url = 'http://twitter.com/share';
+            let opts = 'status=1' +
+                ',width=' + width +
+                ',height=' + height +
+                ',top=' + ((window.screen.availHeight - height) / 2) +
+                ',left=' + ((window.screen.availWidth - width) / 2);
 
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(this.stringToShare + " #Skolded")}`, 'targetWindow', opts);
+            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(textToShare + " #Skolded")}`, 'targetWindow', opts);
         }
 
         this.fbShare = () => {
+            let punishment = this.props.data.punishment;
+            let textToShare = `Write ${punishment.how_many_times}x ${punishment.what_to_write}.`
+                + `${punishment.why !== null && punishment.why !== '' ? ` Why? "${punishment.why}".` : ''}`
+                + ` Here: ${this.props.data.shareLink}`
+                + `${punishment.deadline !== null
+                    ? ` P.S. Make sure to complete it before ${this.getFormatedDeadlineString(punishment.deadline)}!`
+                    : ''}`;
+
             window.FB.ui({
                 method: 'share',
-                href: 'https://www.skolded.com',
-                quote: this.stringToShare,
+                href: this.props.data.shareLink,
+                quote: textToShare,
                 hashtag: '#skolded',
             }, function (response) { });
         }
@@ -74,6 +86,32 @@ class SharePunishmentDialog extends React.Component {
         this.mailShare = () => {
 
         }
+
+        this.getMailContent = (punishment, link) => {
+            let firstPart = `Write ${this.props.data.punishment.how_many_times}x "${this.props.data.punishment.what_to_write}".`;
+            let whyPart = `${this.props.data.punishment.why === null || this.props.data.punishment.why === '' ? '' : ` Why? "${this.props.data.punishment.why}". `}`;
+            let linkPart = `Here: ${link}`;
+            let twoRowsEmpty = `
+
+            
+`;
+            let deadlinePart = `${punishment.deadline !== null ? `${twoRowsEmpty}P.S. Make sure to complete it before ${this.getFormatedDeadlineString(punishment.deadline)}!` : ''}`
+
+            return firstPart + whyPart + linkPart + deadlinePart;
+        }
+
+        this.getFormatedDeadlineString = deadline => {
+            let dateObject = new Date(deadline);
+
+            let date = dateObject.getDate();
+            let month = dateObject.getMonth();
+            let year = dateObject.getFullYear();
+
+            if (date < 10) date = '0' + date;
+            if (month < 10) month = '0' + month;
+
+            return `${date}.${month}.${year}`;
+        };
 
         this.getPunishmentInfoElement = () => {
             if (typeof this.props.data.punishment === 'undefined') return null;
@@ -111,7 +149,7 @@ class SharePunishmentDialog extends React.Component {
             && typeof this.props.data.anon !== 'undefined'
             ? this.props.data.anon : true;
         const mailSubject = encodeURIComponent('Skolded punishment');
-        const mailBody = encodeURIComponent('Here you go: ' + shareLink);
+        const mailBody = encodeURIComponent(this.getMailContent(this.props.data.punishment, shareLink));
         const punishmentInfoElement = this.getPunishmentInfoElement();
 
         return (
@@ -164,6 +202,7 @@ class SharePunishmentDialog extends React.Component {
                         </input>
                         <button
                             className="btn-submit share-dialog-copy-btn"
+                            style={this.state.copyBtnString === 'DONE' ? { cursor: "default" } : {}}
                             onClick={this.copyClick}>
                             {this.state.copyBtnString}
                         </button>

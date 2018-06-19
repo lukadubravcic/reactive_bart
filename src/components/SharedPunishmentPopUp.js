@@ -10,6 +10,7 @@ const mapStateToProps = state => ({
     claimFlag: state.game.claimFlag,
     claimSuccessfulFlag: state.game.claimSuccessfulFlag,
     acceptedPunishments: state.punishment.acceptedPunishments,
+    policyAgreementStatus: state.common.policyAgreementStatus,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -118,6 +119,8 @@ class SharedPunishmentPopUp extends React.Component {
         this.claimClick = async ev => {
             ev.preventDefault();
             if (this.props.sharedPunishment === null) return;
+            else if (this.props.policyAgreementStatus !== true) return;
+
             // claim be request
             // postaviti kaznu kao aktivnu
             if (
@@ -135,6 +138,7 @@ class SharedPunishmentPopUp extends React.Component {
 
         this.claimPunishment = async () => {
             if (this.props.sharedPunishment === null) throw new Error('No shared punishment to claim');
+
             let claimedPunishment = await this.props.claimPunishment(this.props.sharedPunishment.uid);
             this.props.setClaimSuccessfulFlag(!!claimedPunishment);
 
@@ -176,7 +180,6 @@ class SharedPunishmentPopUp extends React.Component {
 
     render() {
         if (this.state.showComponent !== true || this.props.sharedPunishment === null) return null;
-
         const orderedBy = typeof this.props.sharedPunishment.ordering_username !== 'undefined' && this.props.sharedPunishment.ordering_username !== null
             ? this.props.sharedPunishment.ordering_username
             : null;
@@ -186,6 +189,7 @@ class SharedPunishmentPopUp extends React.Component {
         const claims = this.props.sharedPunishment.shared_claims;
         const tries = this.props.sharedPunishment.shared_tries;
         const userLoggedIn = Object.keys(this.props.currentUser).length > 0 && this.props.currentUser._id !== null;
+        const termsAccepted = this.props.policyAgreementStatus === true;
 
         return (
             <div
@@ -239,6 +243,7 @@ class SharedPunishmentPopUp extends React.Component {
                             <div className="btn-container">
                                 <button
                                     ref={elem => this.claimBtnRef = elem}
+                                    style={termsAccepted ? {} : { opacity: 0.7 }}
                                     id="claim-btn"
                                     className="btn-submit shared-popup-btns"
                                     disabled={this.state.claimBtnDisabled}
@@ -248,8 +253,10 @@ class SharedPunishmentPopUp extends React.Component {
 
                                 {userLoggedIn
                                     ? null
-                                    : <a className="login-to-claim-link">
-                                        LOG IN TO CLAIM
+                                    : <a
+                                        style={termsAccepted ? {} : { width: 100 + "%", left: 3 + "px" }}
+                                        className="login-to-claim-link">
+                                        {termsAccepted ? 'LOG IN TO CLAIM' : <span>AGREE TO TERMS <br />& LOG IN TO CLAIM</span>}
                                     </a>
                                 }
                             </div>

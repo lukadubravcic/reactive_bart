@@ -25,7 +25,9 @@ const mapStateToProps = state => ({
     common: state.common,
     userIdFromURL: state.auth.userIdFromURL,
     guestPunishment: state.game.guestPunishment,
-    punishmentIdFromURL: state.game.punishmentIdFromURL
+    punishmentIdFromURL: state.game.punishmentIdFromURL,
+    randomPunishments: state.punishment.randomPunishments,
+    specialPunishments: state.punishment.specialPunishments,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -115,8 +117,6 @@ const mapDispatchToProps = dispatch => ({
     showPrefs: () => dispatch({ type: 'SHOW_PREFS' }),
     handleSharedPunishment: async sid => {
         // dohvati shared kaznu
-        const errMsgDisplayDuration = 5000;
-
         try {
             let res = await agent.Punishment.getSharedPunishment(sid);
 
@@ -252,7 +252,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        // prettyURL();
+        prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

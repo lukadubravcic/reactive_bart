@@ -2887,10 +2887,11 @@ td.skoldboard-table-punish-field {
 
 .login-link {
 	cursor: pointer;
+	text-decoration: underline;
 }
 
 .login-link:hover {
-	text-decoration: underline;
+	color: #323232;
 }
 
 

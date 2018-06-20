@@ -53,6 +53,8 @@ export default (state = defaultState, action) => {
             return { ...state, guestAccessMsg: defaultState.guestAccessMsg, msgDuration: defaultState.msgDuration };
         case 'POLICY_AGREEMENT_STATUS_UPDATE':
             return { ...state, policyAgreementStatus: action.value };
+        case 'UPDATE_RANK_VALUE':
+            return { ...state, rank: action.newRank}
         default:
             return state;
     }

@@ -14,6 +14,7 @@ import GoodiesStore from './components/GoodiesStore';
 import Locker from './components/Locker';
 import SharePunishmentDialog from './components/SharePunishmentDialog';
 import SharedPunishmentPopUp from './components/SharedPunishmentPopUp';
+import SkoldBoard from './components/stats/SkoldBoard';
 
 import agent from './agent';
 
@@ -129,7 +130,7 @@ const mapDispatchToProps = dispatch => ({
                             <span>
                                 Invalid punishment. Let's&nbsp;
                                 <a
-                                    className="underline-on-hover"
+                                    className="underline-on-hover login-link"
                                     style={{ cursor: "pointer" }}
                                     onClick={ev => {
                                         let gotoElement = document.getElementById("creator-component-container");
@@ -146,7 +147,7 @@ const mapDispatchToProps = dispatch => ({
                             <span>
                                 Too late! Punishment expired. <br />Time for&nbsp;
                                 <a
-                                    className="underline-on-hover"
+                                    className="underline-on-hover login-link"
                                     style={{ cursor: "pointer" }}
                                     onClick={ev => {
                                         let gotoElement = document.getElementById("creator-component-container");
@@ -164,7 +165,7 @@ const mapDispatchToProps = dispatch => ({
                             <span>
                                 C'mon! Let&nbsp;
                                 <a
-                                    className="underline-on-hover"
+                                    className="underline-on-hover login-link"
                                     style={{ cursor: "pointer" }}
                                     onClick={ev => {
                                         let gotoElement = document.getElementById("skoldboard");
@@ -252,7 +253,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        prettyURL();
+        // prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {
@@ -320,7 +321,7 @@ class App extends React.Component {
                     <Locker />
                     <PunishmentSelectorTable shareDialogVisibilityHandler={this.shareDialogVisibilityHandler} />
                     <Stats />
-                    <RankInfo />
+                    <SkoldBoard />
                     <GoodiesStore />
                     <Prefs />
                     <Footer

@@ -28,6 +28,34 @@ const mapDispatchToProps = dispatch => ({
             return false;
         }
 
+        // speicjalni slucaj
+        if (
+            res !== null
+            && typeof res.err_code !== 'undefined'
+            && res.err_code === 5
+        ) {
+            dispatch({
+                type: 'SHARED_PUNISHMENT_INVALID',
+                msg: (
+                    <span>
+                        C'mon! Let&nbsp;
+                                <a
+                            className="underline-on-hover"
+                            style={{ cursor: "pointer" }}
+                            onClick={ev => {
+                                let gotoElement = document.getElementById("skoldboard");
+                                gotoElement.scrollIntoView({ behavior: "smooth" })
+                            }}>
+                            THEM
+                                </a>
+                        &nbsp;punish you.
+                            </span>
+                ),
+                msgDuration: ERR_DISPLAY_TIME,
+            });
+            return false;
+        }
+
         if (
             res !== null
             && typeof res.err_code !== 'undefined'

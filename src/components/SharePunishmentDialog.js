@@ -47,11 +47,12 @@ class SharePunishmentDialog extends React.Component {
 
         this.twitterShare = () => {
             let punishment = this.props.data.punishment;
-            let textToShare = `Write ${punishment.how_many_times}x ${punishment.what_to_write}`
+            let textToShare = `Write ${punishment.how_many_times}x "${punishment.what_to_write}"`
                 + `${punishment.deadline !== null
                     ? ` before ${this.getFormatedDeadlineString(punishment.deadline)}:`
                     : ':'}`
                 + ` ${this.props.data.shareLink}`;
+            return console.log(textToShare)
             let width = 600;
             let height = 500;
             let left = 200;
@@ -68,12 +69,12 @@ class SharePunishmentDialog extends React.Component {
 
         this.fbShare = () => {
             let punishment = this.props.data.punishment;
-            let textToShare = `Write ${punishment.how_many_times}x ${punishment.what_to_write}.`
-                + `${punishment.why !== null && punishment.why !== '' ? ` Why? "${punishment.why}".` : ''}`
-                + ` Here: ${this.props.data.shareLink}`
+            let textToShare = `Write ${punishment.how_many_times}x "${punishment.what_to_write}"`
                 + `${punishment.deadline !== null
-                    ? ` P.S. Make sure to complete it before ${this.getFormatedDeadlineString(punishment.deadline)}!`
-                    : ''}`;
+                    ? ` before ${this.getFormatedDeadlineString(punishment.deadline)}.`
+                    : '.'}`
+                + `${punishment.why !== null && punishment.why !== '' ? ` Why? "${punishment.why}".` : ''}`
+                + ` Click below to get skolded!`;
 
             window.FB.ui({
                 method: 'share',
@@ -115,6 +116,7 @@ class SharePunishmentDialog extends React.Component {
 
         this.getPunishmentInfoElement = () => {
             if (typeof this.props.data.punishment === 'undefined') return null;
+            else if (typeof this.props.data.showClaimsTriesInfo === 'undefined' || this.props.data.showClaimsTriesInfo !== true) return null;
 
             const claims = this.props.data.punishment.shared_claims || 0;
             let tries = this.props.data.punishment.shared_tries || 0;
@@ -125,7 +127,7 @@ class SharePunishmentDialog extends React.Component {
                     className="shared-popup-pun-info-container">
 
                     <label
-                        style={{ color: "white" }}
+                        style={{ color: "#FFFFFF" }}
                         className="shared-popup-pun-info">
                         {claims} claims and {tries} tries so far.
                     </label>

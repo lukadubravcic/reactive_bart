@@ -153,6 +153,20 @@ class OrderedTabRow extends React.Component {
                         SHARE
                     </u>
                     : punishmentStatus;
+            } else if (punishmentStatus === 'ACCEPTED' && checkIfDeadlineRespected(this.props.punishment.deadline)) {
+                style = this.state.hoveringStatus && this.props.punishment.poked !== true
+                    ? { textDecoration: 'underline' }
+                    : {};
+                let hoveringLabel = this.state.hoveringStatus
+                    ? this.props.punishment.poked !== true
+                        ? <u
+                            onClick={this.pokeUser}
+                            style={{ cursor: 'pointer', color: "#515151" }}>
+                            POKE
+                        </u>
+                        : <span style={{ color: "#515151" }}>POKED</span>
+                    : punishmentStatus;
+                label = hoveringLabel;
             } else {
                 style = {};
                 label = punishmentStatus;
@@ -170,30 +184,33 @@ class OrderedTabRow extends React.Component {
         }
 
         this.openShareDialog = ev => {
-            this.props.shareDialogVisibilityHandler(true, { anon: true, shareLink: `${APP_LINK}?sid=${this.props.punishment.uid}`, punishment: this.props.punishment });
+            this.props.shareDialogVisibilityHandler(
+                true,
+                {
+                    anon: true,
+                    shareLink: `${APP_LINK}?sid=${this.props.punishment.uid}`,
+                    punishment: this.props.punishment,
+                    showClaimsTriesInfo: true
+                }
+            );
         }
     }
 
     render() {
         let punishmentStatus = getPunishmentStatus(this.props.punishment);
-
         const tableRowClass = 'picker-table-row';
-
         let whenUserField = this.getTableFieldData(moment(this.props.punishment.created).fromNow(), this.whenUserFieldRef);
-
         let toWhomData = this.props.punishment.fk_user_email_taking_punishment
             ? this.props.punishment.user_taking_punishment
                 ? this.props.punishment.user_taking_punishment
                 : this.props.punishment.fk_user_email_taking_punishment
             : 'everyone';
-
         let toWhomUserField = this.getTableFieldData(toWhomData, this.toWhomUserFieldRef);
         // let orderedUserField = this.getTableFieldData(this.props.punishment.user_ordering_punishment, 10);
         let deadlineUserField = this.props.punishment.deadline !== null
             ? this.getTableFieldData(moment(this.props.punishment.deadline).fromNow(), this.deadlineUserFieldRef)
             : { content: 'no deadline', HTMLHoverElement: null }
         let whatToWriteUserField = this.getTableFieldData(this.props.punishment.what_to_write, this.whatFieldRef);
-
         let punishmentStatusElement = this.getStatusElement(punishmentStatus);
 
         return (

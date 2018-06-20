@@ -40,7 +40,7 @@ const mapDispatchToProps = dispatch => ({
                     <span>
                         C'mon! Let&nbsp;
                                 <a
-                            className="underline-on-hover"
+                            className="underline-on-hover login-link"
                             style={{ cursor: "pointer" }}
                             onClick={ev => {
                                 let gotoElement = document.getElementById("skoldboard");

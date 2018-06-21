@@ -2999,7 +2999,7 @@ td.skoldboard-table-punish-field {
 .share-dialog-copy-btn {
 	width: 117px;
 	height: 48px;
-	margin-left: 20px;
+	margin-left: 19px;
 	padding: 0;
 
 	font-family: 'Montserrat', sans-serif;
@@ -3007,6 +3007,8 @@ td.skoldboard-table-punish-field {
 	color: #FEFEFE;
 	letter-spacing: 4px;
 	font-weight: 300;
+
+	top: 2px;
 }
 
 .share-dialog-bottom-msg-container {

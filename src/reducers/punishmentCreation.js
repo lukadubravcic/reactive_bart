@@ -48,6 +48,19 @@ export default (state = defaultState, action) => {
             return { ...state, punishingUserSetFromOuterComponent: action.toWhom, whom: action.toWhom };
         case 'CLEAR_PUNISHING_USER':
             return { ...state, punishingUserSetFromOuterComponent: defaultState.punishingUserSetFromOuterComponent };
+        case 'CLEAR_FORM_ENTRIES':
+            return {
+                ...state,
+                whom: defaultState.whom,
+                howManyTimes: defaultState.howManyTimes,
+                deadlineChecked: defaultState.deadlineChecked,
+                deadlineDate: defaultState.deadlineDate,
+                whatToWrite: defaultState.whatToWrite,
+                why: defaultState.why,
+                dayField: defaultState.dayField,
+                monthField: defaultState.monthField,
+                yearField: defaultState.yearField,
+            };
         default:
             return state;
     }

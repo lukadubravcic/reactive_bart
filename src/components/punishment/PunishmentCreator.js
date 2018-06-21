@@ -100,6 +100,7 @@ const mapDispatchToProps = dispatch => ({
     clearPunishingUser: () => dispatch({ type: 'CLEAR_PUNISHING_USER' }),
     updateOrderedPunishments: (newOrderedPunishments, msg) => dispatch({ type: 'PUNISHMENT_CREATED', newOrderedPunishments, msg }),
     showLoginForm: () => dispatch({ type: 'SHOW_LOGIN_FORM' }),
+    clearFormEntries: () => dispatch({ type: 'CLEAR_FORM_ENTRIES' }),
 });
 
 const animationDuration = 500; // 0.5s
@@ -260,11 +261,12 @@ class PunishmentCreator extends React.Component {
 
             if (result === false) return this.enableSubmit();
 
-            // update ordered kazni 
-            let newOrderedPunishments = [...this.props.orderedPunishments];
-
-            newOrderedPunishments.unshift(result.punishment);
-            this.props.updateOrderedPunishments(newOrderedPunishments, result.msg)
+            // update ordered kazni ako kazna nije anon
+            if (result.punishment.fk_user_uid_ordering_punishment !== null) {
+                let newOrderedPunishments = [...this.props.orderedPunishments];
+                newOrderedPunishments.unshift(result.punishment);
+                this.props.updateOrderedPunishments(newOrderedPunishments, result.msg)
+            }
 
             // otvaranje share prozora
             let shareData = {
@@ -274,6 +276,7 @@ class PunishmentCreator extends React.Component {
             };
 
             this.props.shareDialogVisibilityHandler(true, shareData);
+            this.props.clearFormEntries();
         }
 
         this.disableSubmit = () => {

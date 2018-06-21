@@ -280,6 +280,7 @@ const shareViaMailSVG = (
 
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement("textarea");
+    textArea.style.display = "none";
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.focus();
@@ -301,5 +302,5 @@ function copyTextToClipboard(text) {
         fallbackCopyTextToClipboard(text);
         return;
     }
-    navigator.clipboard.writeText(text);
+    return navigator.clipboard.writeText(text);
 }

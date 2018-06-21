@@ -271,7 +271,7 @@ class SharedPunishmentPopUp extends React.Component {
                             <div className="btn-container">
                                 <button
                                     ref={elem => this.claimBtnRef = elem}
-                                    style={termsAccepted ? {} : { opacity: 0.7 }}
+                                    style={termsAccepted ? {} : { opacity: 0.7, background: "#323232", cursor: "default", color: "#FEFEFE" }}
                                     id="claim-btn"
                                     className="btn-submit shared-popup-btns"
                                     disabled={this.state.claimBtnDisabled}

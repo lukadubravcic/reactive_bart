@@ -52,7 +52,6 @@ class SharePunishmentDialog extends React.Component {
                     ? ` before ${this.getFormatedDeadlineString(punishment.deadline)}:`
                     : ':'}`
                 + ` ${this.props.data.shareLink}`;
-            return console.log(textToShare)
             let width = 600;
             let height = 500;
             let left = 200;
@@ -91,7 +90,7 @@ class SharePunishmentDialog extends React.Component {
         this.getMailContent = (punishment, link) => {
             let firstPart = `Write ${this.props.data.punishment.how_many_times}x "${this.props.data.punishment.what_to_write}".`;
             let whyPart = `${this.props.data.punishment.why === null || this.props.data.punishment.why === '' ? '' : ` Why? "${this.props.data.punishment.why}". `}`;
-            let linkPart = `Here: ${link}`;
+            let linkPart = ` Here: ${link}`;
             let twoRowsEmpty = `
 
             
@@ -280,7 +279,8 @@ const shareViaMailSVG = (
 
 function fallbackCopyTextToClipboard(text) {
     var textArea = document.createElement("textarea");
-    textArea.style.display = "none";
+    textArea.style.position = "fixed";
+    // textArea.style.top = "0px";
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.focus();

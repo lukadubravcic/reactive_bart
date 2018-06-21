@@ -194,7 +194,6 @@ const mapDispatchToProps = dispatch => ({
                     punishment: res.punishment,
                 });
             } else {
-                console.log(res)
                 return dispatch({
                     type: 'SHARED_PUNISHMENT_INVALID',
                     msg: 'Invalid punishment. Let\'s create a new one!',
@@ -253,7 +252,7 @@ class App extends React.Component {
         }
 
         // MICANJE QUERY STRINGA IZ URL-a 
-        // prettyURL();
+        prettyURL();
 
         // dohvati specijalne i random kazne sa be-a.
         agent.Punishment.getRandom().then(payload => {

@@ -2917,7 +2917,7 @@ td.skoldboard-table-punish-field {
 	z-index: 200;
 	right: calc(50% - 290px);
 	top: 200px;
-	box-shadow: 0 0 20px 10px #343434;
+	box-shadow: 0 0 30px 10px #404040;
 }
 
 .share-dialog-title-container {
@@ -2985,6 +2985,7 @@ td.skoldboard-table-punish-field {
 	font-size: 12.8px;
 	color: #FFFFFF;
 	letter-spacing: 2.4px;
+	font-weight: 500;
 }
 
 .share-dialog-link-input {
@@ -3006,7 +3007,7 @@ td.skoldboard-table-punish-field {
 	font-size: 19.2px;
 	color: #FEFEFE;
 	letter-spacing: 4px;
-	font-weight: 300;
+	font-weight: 500;
 
 	top: 2px;
 }
@@ -3033,7 +3034,7 @@ td.skoldboard-table-punish-field {
 	z-index: 200;
 	right: calc(50% - 290px);
 	top: 200px;
-	box-shadow: 0 0 20px 10px #343434;
+	box-shadow: 0 0 30px 10px #404040;
 }
 
 .shared-popup-header-container {
@@ -3055,6 +3056,7 @@ td.skoldboard-table-punish-field {
 .shared-popup-ordered-by {
 	font-family: 'Montserrat', sans-serif;
 	font-size: 12px;
+	font-weight: 500;
 	color: #FFFFFF;
 	letter-spacing: 2px;
 	line-height: 12px;
@@ -3065,7 +3067,7 @@ td.skoldboard-table-punish-field {
 	color: #464646;
 	letter-spacing: 0;
 	line-height: 16px;
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .shared-popup-content-container {
@@ -3100,6 +3102,7 @@ td.skoldboard-table-punish-field {
 	color: #FFFFFF;
 	letter-spacing: 2px;
 	line-height: 12px;
+	font-weight: 500;
 }
 
 .shared-popup-deadline {
@@ -3108,6 +3111,7 @@ td.skoldboard-table-punish-field {
 	letter-spacing: 0;
 	line-height: 16px;
 	font-weight: 300;
+	font-weight: 400;
 }
 
 .shared-popup-btn-container {
@@ -3119,6 +3123,7 @@ td.skoldboard-table-punish-field {
 	font-size: 19px;
 	color: #FEFEFE;
 	letter-spacing: 3.96px;
+	font-weight: 500;
 }
 
 .shared-popup-pun-info-container {
@@ -3147,6 +3152,7 @@ td.skoldboard-table-punish-field {
 	color: #FFFFFF;
 	letter-spacing: 2px;
 	line-height: 12px;
+	font-weight: 500;
 }
 
 #claim-btn {

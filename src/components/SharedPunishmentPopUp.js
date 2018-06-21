@@ -28,7 +28,7 @@ const mapDispatchToProps = dispatch => ({
             return false;
         }
 
-        // speicjalni slucaj
+        // specijalni slucaj
         if (
             res !== null
             && typeof res.err_code !== 'undefined'

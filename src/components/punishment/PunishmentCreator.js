@@ -171,22 +171,19 @@ class PunishmentCreator extends React.Component {
         }
 
         this.changeWhatToWrite = ev => {
-            if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
+            if (ev.target.value.length <= PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
                 this.setState({ whatToWriteFieldValid: true });
             } else if (ev.target.value.length > PUNISHMENT_MAX_LENGTH) {
-                // warning da je text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
-                return this.setState({ whatToWriteFieldValid: false });
+                return; //this.setState({ whatToWriteFieldValid: false });
             }
             this.props.onChangeWhatToWrite(ev.target.value);
         }
 
         this.changeWhy = ev => {
-            if ((ev.target.value.length <= PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0) || ev.target.value.length === 0) {
-                // this.whyErrorText = null;
+            if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length >= 0) {
                 this.setState({ whyFieldValid: true });
-            } else {
-                // this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.';
-                return this.setState({ whyFieldValid: false });
+            } else if (ev.target.value.length > PUNISHMENT_WHY_MAX_LENGTH) {
+                return; //this.setState({ whyFieldValid: false });
             }
             this.props.onChangeWhy(ev.target.value);
         }
@@ -547,7 +544,7 @@ class PunishmentCreator extends React.Component {
                             </textarea>
 
                             {whyField.length >= PUNISHMENT_WHY_MAX_LENGTH - SHOW_ENTRY_LENGTH_MSG_CHAR_LIMIT
-                                ? <label style={{ /* height: 160 + "px"  */}} id="form-submit-feedback" className="float-left form-feedback">
+                                ? <label style={{ /* height: 160 + "px"  */ }} id="form-submit-feedback" className="float-left form-feedback">
                                     <span className="form-submit-feedback-content">
                                         {PUNISHMENT_WHY_MAX_LENGTH - whyField.length > 1
                                             ? (PUNISHMENT_WHY_MAX_LENGTH - whyField.length) + " CHARACTERS LEFT"

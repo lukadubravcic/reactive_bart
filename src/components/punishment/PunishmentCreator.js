@@ -11,6 +11,7 @@ import SharePunishmentDialog from '../SharePunishmentDialog';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
+const SHOW_ENTRY_LENGTH_MSG_CHAR_LIMIT = 20;
 const PUNISHMENT_MAX_LENGTH = 100;
 const PUNISHMENT_WHY_MAX_LENGTH = 500;
 const MAX_HOW_MANY_TIMES_PUNISHMENT = 999;
@@ -171,23 +172,21 @@ class PunishmentCreator extends React.Component {
 
         this.changeWhatToWrite = ev => {
             if (ev.target.value.length < PUNISHMENT_MAX_LENGTH && ev.target.value.length > 0) {
-                // this.whatToWriteErrorText = null;
                 this.setState({ whatToWriteFieldValid: true });
-            } else {
+            } else if (ev.target.value.length > PUNISHMENT_MAX_LENGTH) {
                 // warning da je text predugacak (maks duljina = PUNISHMENT_MAX_LENGTH)
-                // this.whatToWriteErrorText = 'Punishment too long or empty. Maximum is ' + PUNISHMENT_MAX_LENGTH + ' characters.';
-                this.setState({ whatToWriteFieldValid: false });
+                return this.setState({ whatToWriteFieldValid: false });
             }
             this.props.onChangeWhatToWrite(ev.target.value);
         }
 
         this.changeWhy = ev => {
-            if (ev.target.value.length < PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0 || ev.target.value.length === 0) {
+            if ((ev.target.value.length <= PUNISHMENT_WHY_MAX_LENGTH && ev.target.value.length > 0) || ev.target.value.length === 0) {
                 // this.whyErrorText = null;
                 this.setState({ whyFieldValid: true });
             } else {
                 // this.whyErrorText = 'Punishment explanation too long. Maximum is ' + PUNISHMENT_WHY_MAX_LENGTH + ' characters.';
-                this.setState({ whyFieldValid: false });
+                return this.setState({ whyFieldValid: false });
             }
             this.props.onChangeWhy(ev.target.value);
         }
@@ -511,17 +510,23 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHAT TO WRITE</label>
                             <input
                                 id="what-to-write-input"
-                                className={`float-left text-input ${this.state.whatToWriteFieldValid || whatToWriteField.length === 0 ? "" : "input-wrong-entry"}`}
+                                className="float-left text-input"
                                 type="text"
                                 placeholder="One line."
                                 value={whatToWriteField}
                                 onChange={this.changeWhatToWrite}
                                 required
                             />
-                            {whatToWriteField.length > PUNISHMENT_MAX_LENGTH
+
+                            {whatToWriteField.length >= PUNISHMENT_MAX_LENGTH - SHOW_ENTRY_LENGTH_MSG_CHAR_LIMIT
                                 ? <label id="form-submit-feedback" className="float-left form-feedback">
                                     <span className="form-submit-feedback-content">
-                                        TOO LONG!
+                                        {PUNISHMENT_MAX_LENGTH - whatToWriteField.length > 1
+                                            ? (PUNISHMENT_MAX_LENGTH - whatToWriteField.length) + " CHARACTERS LEFT"
+                                            : PUNISHMENT_MAX_LENGTH - whatToWriteField.length === 1
+                                                ? "1 CHARACTER LEFT"
+                                                : "LIMIT REACHED"
+                                        }
                                     </span>
                                 </label>
                                 : null}
@@ -534,16 +539,22 @@ class PunishmentCreator extends React.Component {
                             <label className="float-left input-field-name">WHY</label>
                             <textarea
                                 id="why-input"
-                                className={`float-left text-input ${this.state.whyFieldValid ? "" : "input-wrong-entry"}`}
+                                className="float-left text-input"
                                 type="text"
                                 placeholder="Feel free to explain your reasons."
                                 value={whyField}
                                 onChange={this.changeWhy}>
                             </textarea>
-                            {!this.state.whyFieldValid
-                                ? <label style={{ height: 160 + "px" }} id="form-submit-feedback" className="float-left form-feedback">
+
+                            {whyField.length >= PUNISHMENT_WHY_MAX_LENGTH - SHOW_ENTRY_LENGTH_MSG_CHAR_LIMIT
+                                ? <label style={{ /* height: 160 + "px"  */}} id="form-submit-feedback" className="float-left form-feedback">
                                     <span className="form-submit-feedback-content">
-                                        TOO LONG!
+                                        {PUNISHMENT_WHY_MAX_LENGTH - whyField.length > 1
+                                            ? (PUNISHMENT_WHY_MAX_LENGTH - whyField.length) + " CHARACTERS LEFT"
+                                            : PUNISHMENT_WHY_MAX_LENGTH - whyField.length === 1
+                                                ? "1 CHARACTER LEFT"
+                                                : "LIMIT REACHED"
+                                        }
                                     </span>
                                 </label>
                                 : null}

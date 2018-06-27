@@ -93,7 +93,7 @@ const mapDispatchToProps = dispatch => ({
         dispatch({ type: 'GAME_RESETED' });
     },
     logPunishmentTry: (id, timeSpent, typedCharsNum = 0) => {
-        agent.Punishment.logTry(id, timeSpent, typedCharsNum).then(() => { console.log('Try logged') });
+        agent.Punishment.logTry(id, timeSpent, typedCharsNum);
         dispatch({ type: 'PUNISHMENT_TRY_LOGGED' });
     },
     logPunishmentGuestTry: (userId, punishmentId, timeSpent, typedCharsNum = 0) => {

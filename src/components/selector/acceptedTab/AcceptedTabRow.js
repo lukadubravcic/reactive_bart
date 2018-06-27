@@ -29,6 +29,9 @@ class AcceptedTabRow extends React.Component {
                     break;
                 case 'what-field':
                     this.setState({ showWhatTooltip: true });
+                    break;
+                default:
+                    return;
             }
         }
 
@@ -42,6 +45,9 @@ class AcceptedTabRow extends React.Component {
                     break;
                 case 'what-field':
                     this.setState({ showWhatTooltip: false });
+                    break;
+                default:
+                    return;
             }
         }
 

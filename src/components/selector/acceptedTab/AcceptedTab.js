@@ -88,7 +88,6 @@ class AcceptedTab extends React.Component {
                     givenUpPunishment = punishment;
                     return null;
                 } else return punishment;
-                // return decodeURIComponent(punishment.uid) === decodeURIComponent(id) ? null : punishment;
             });
             this.updatePastPunishments(givenUpPunishment, newPastPunishments);
             this.props.giveUpPunishment(id, filteredPunishments);
@@ -313,10 +312,8 @@ class AcceptedTab extends React.Component {
                     </div>
                     <TableFooter currentPage={currentPage} punishments={this.props.acceptedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
-
             )
         } else return null;
-
     }
 }
 
@@ -324,9 +321,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(AcceptedTab);
 
 
 function getByValue(arr, id) {
-
     for (let i = 0, iLen = arr.length; i < iLen; i++) {
-
         if (arr[i].id === id) return arr[i];
     }
 
@@ -336,7 +331,6 @@ function getByValue(arr, id) {
 
 function getPunishmentById(id, punishments) {
     if (punishments.length === 0) return null;
-
     else if (punishments.length === 1) return punishments[0];
 
     if (id) {
@@ -347,26 +341,3 @@ function getPunishmentById(id, punishments) {
         }
     } else if (!id) console.log('getPunishmentById(): Theres no id');
 }
-
-
-/* const descendingSVG = (
-    <svg style={{ marginLeft: "10px" }} width="17px" height="13px" viewBox="0 0 17 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-        <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-507.000000, -2786.000000)">
-            <g id="Group" transform="translate(0.000000, 2508.000000)" fill="#FFD75F">
-                <polygon id="Triangle-1" transform="translate(515.500000, 284.214000) rotate(-180.000000) translate(-515.500000, -284.214000) "
-                    points="515.5 278.214 524 290.214 507 290.214"></polygon>
-            </g>
-        </g>
-    </svg>
-)
-
-const ascendingSVG = (
-    <svg style={{ marginLeft: "10px" }} width="17px" height="13px" viewBox="0 0 17 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
-        <g id="page-03" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" transform="translate(-507.000000, -2786.000000)">
-            <g id="Group" transform="translate(0.000000, 2508.000000)" fill="#FFD75F">
-                <polygon id="Triangle-1" transform="translate(515.500000, 284.214000) rotate(0) translate(-515.500000, -284.214000) "
-                    points="515.5 278.214 524 290.214 507 290.214"></polygon>
-            </g>
-        </g>
-    </svg>
-) */

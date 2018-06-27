@@ -289,16 +289,7 @@ class OrderedTab extends React.Component {
                     <TableFooter currentPage={currentPage} punishments={this.props.orderedPunishments} changeShownPunishments={this.props.changeShownPunishments} />
                 </div>
             )
-        } else if (shownPunishments === 'empty') {
-            return (
-                <div className="container">
-                    <h3>Loading data...</h3>
-                </div>
-            );
-        }
-        else {
-            return (<h3>No data.</h3>);
-        }
+        } else return null;
     }
 
 }

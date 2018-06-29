@@ -1,6 +1,8 @@
 import { connect } from 'react-redux'
 import React from 'react';
 import agent from '../../../agent';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
 
 // prilikom gubitka fokusa na polje username/mail, ako nije prazno:
 //  - pingaj be api i provjeri jel user postoji:
@@ -306,8 +308,21 @@ class Login extends React.Component {
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
 
-        return (
+        const responseGoogle = (response) => {
+            console.log("google console");
+            // provjeriti jel postoji field
+            // ako postoji slati info na be na odreden api endpoint
+            console.log(response.profileObj.email);
+        }
 
+        const responseFacebook = (response) => {
+            console.log("facebook console");
+            // provjeriti jel postoji field
+            // ako postoji slati info na be na odreden api endpoint
+            console.log(response.email);
+        }
+
+        return (
             <div
                 ref={elem => this.mainDiv = elem}
                 style={this.state.componentStyle}
@@ -378,7 +393,17 @@ class Login extends React.Component {
                                 disabled={this.state.submitBtnDisabled}>
                                 LOG IN
                             </button>
-
+                            <GoogleLogin
+                                clientId="985970123837-7u2ac8drrt2ob005n90e69iskmnn4em3.apps.googleusercontent.com"
+                                buttonText="G Login"
+                                onSuccess={responseGoogle}
+                                onFailure={responseGoogle} />
+                            <FacebookLogin
+                                appId="213586112596663"
+                                textButton="FB Login"
+                                autoLoad={false}
+                                fields="name,email,picture"
+                                callback={responseFacebook} />
                             <a
                                 className="link noselect"
                                 onClick={this.toRegisterForm}>

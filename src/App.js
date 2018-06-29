@@ -293,6 +293,9 @@ class App extends React.Component {
         const md = new window.MobileDetect(window.navigator.userAgent);
         const isMobile = md.mobile();
 
+       
+
+
         if (isMobile) {
             return (
                 <div style={{

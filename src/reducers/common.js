@@ -20,7 +20,7 @@ export default (state = defaultState, action) => {
         case 'REGISTER':
             return { ...state };
         case 'LOGIN':
-            return { ...state, currentUser: action.currentUser, token: action.token, rank: action.rank };
+            return { ...state, currentUser: action.currentUser, token: action.token};
         case 'SPECIAL_LOGOUT':
             return { ...defaultState, guestDataLoadingInProgress: state.guestDataLoadingInProgress, guestAccessMsg: state.guestAccessMsg, guestUser: state.guestUser, policyAgreementStatus: state.policyAgreementStatus };
         case 'LOGOUT':

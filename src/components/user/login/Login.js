@@ -75,7 +75,6 @@ const mapDispatchToProps = dispatch => ({
                     },
                     token: payload.token,
                     prefs: payload.prefs,
-                    rank: payload.rank
                 });
             } else {
                 dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
@@ -308,11 +307,10 @@ class Login extends React.Component {
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
 
-        const responseGoogle = (response) => {
+        const responseGoogle = response => {
             console.log("google console");
-            // provjeriti jel postoji field
-            // ako postoji slati info na be na odreden api endpoint
-            console.log(response.profileObj.email);
+            // poslati access token na api
+            console.log(response.accessToken);
         }
 
         const responseFacebook = (response) => {

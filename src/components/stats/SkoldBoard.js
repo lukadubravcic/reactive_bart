@@ -37,11 +37,13 @@ class SkoldBoard extends React.Component {
         }
 
         this.getRankFromSkoldboardData = skoldboardData => {
+            let rank = null;
+
             skoldboardData.forEach(element => {
-                if (element.self === 1) return element.rank;
+                if (element.self === 1) return rank = element.rank;
             });
 
-            return null;
+            return rank;
         }
 
         this.setDummySkoldboardData = () => {
@@ -118,7 +120,7 @@ class SkoldBoard extends React.Component {
             return (
                 <div className={`parent-component rank-component-container${userLoggedIn ? "" : " greyscale-filter"}`}>
                     {userLoggedIn ? null : <div id="form-overlay"></div>}
-                    
+
                     <RankInfo />
                     <SkoldBoardDisplayContainer data={skoldboardData} currentUser={this.props.currentUser} />
                     <div className="rank-bottom-image-container">

@@ -45,13 +45,9 @@ const mapDispatchToProps = dispatch => ({
         dataToSend.password = password;
 
         agent.Auth.login({ ...dataToSend }).then(payload => {
-
             // enableSubmit();
-
             if (payload === null) {
-                // TODO: alert - neispravan login
-                console.log('Login payload === null');
-                return;
+                return dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
             }
 
             if (typeof payload.message !== "undefined") {
@@ -89,6 +85,62 @@ const mapDispatchToProps = dispatch => ({
     },
     showResetPasswordForm: () => dispatch({ type: 'SHOW_RESET_PASSWORD_FORM' }),
     clearDisplayMessage: () => dispatch({ type: 'CLEAR_FORM_MSG' }),
+    googleLogin: () => dispatch({}),
+    facebookLogin: async fbResponse => {
+        if (typeof fbResponse.accessToken === 'undefined') return dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
+
+        let accessToken = fbResponse.accessToken;
+        let response = null;
+
+        try {
+            response = await agent.Auth.facebookLogin(accessToken);
+        } catch (err) {
+            console.log(err);
+            dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
+        }
+
+        agent.setToken(response.token);
+        localStorage.setItem('token', response.token);
+
+        dispatch({
+            type: 'LOGIN',
+            currentUser: {
+                username: response.username,
+                email: response.email,
+                _id: response._id
+            },
+            token: response.token,
+            prefs: response.prefs,
+        });
+    },
+    googleLogin: async googleResponse => {
+        if (typeof googleResponse.accessToken === 'undefined') return dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
+
+        let accessToken = googleResponse.accessToken;
+        let response = null;
+
+        try {
+            response = await agent.Auth.googleLogin(accessToken);
+        } catch (err) {
+            console.log(err);
+            dispatch({ type: 'LOGIN_FAILED', errMsg: 'Login failed. Try again' });
+        }
+
+        agent.setToken(response.token);
+        localStorage.setItem('token', response.token);
+
+        dispatch({
+            type: 'LOGIN',
+            currentUser: {
+                username: response.username,
+                email: response.email,
+                _id: response._id
+            },
+            token: response.token,
+            prefs: response.prefs,
+        });
+    },
+    failedLogin: msg => dispatch({ type: 'LOGIN_FAILED', errMsg: msg.toUpperCase() }),
 });
 
 const registerElementHeight = 670;
@@ -119,7 +171,7 @@ const animStyles = {
     },
     btnsTopMarginCollapse: {
         marginTop: 0 + 'px'
-    }
+    },
 };
 
 
@@ -271,6 +323,18 @@ class Login extends React.Component {
                 this.props.showRegisterForm('email', '');
             }, animationDuration);
         }
+
+        this.facebookResponseHandler = response => {
+            this.props.facebookLogin(response);
+        }
+
+        this.googleFailureResponseHandler = response => {
+            this.props.failedLogin('COULD NOT LOGIN');
+        }
+
+        this.googleSuccessResponseHandler = response => {
+            this.props.googleLogin(response);
+        }
     }
 
     componentDidMount() {
@@ -306,19 +370,6 @@ class Login extends React.Component {
         const submitBtnStyle = this.state.submitBtnDisabled
             ? { opacity: 0.5, pointerEvents: "none" }
             : { opacity: 1 };
-
-        const responseGoogle = response => {
-            console.log("google console");
-            // poslati access token na api
-            console.log(response.accessToken);
-        }
-
-        const responseFacebook = (response) => {
-            console.log("facebook console");
-            // provjeriti jel postoji field
-            // ako postoji slati info na be na odreden api endpoint
-            console.log(response.email);
-        }
 
         return (
             <div
@@ -394,14 +445,14 @@ class Login extends React.Component {
                             <GoogleLogin
                                 clientId="985970123837-7u2ac8drrt2ob005n90e69iskmnn4em3.apps.googleusercontent.com"
                                 buttonText="G Login"
-                                onSuccess={responseGoogle}
-                                onFailure={responseGoogle} />
+                                onSuccess={this.googleSuccessResponseHandler}
+                                onFailure={this.googleFailureResponseHandler} />
                             <FacebookLogin
                                 appId="213586112596663"
                                 textButton="FB Login"
                                 autoLoad={false}
-                                fields="name,email,picture"
-                                callback={responseFacebook} />
+                                fields="email"
+                                callback={this.facebookResponseHandler} />
                             <a
                                 className="link noselect"
                                 onClick={this.toRegisterForm}>

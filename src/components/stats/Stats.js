@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PieChart from 'react-minimal-pie-chart';
 import { checkIfIgnoredPunishment } from '../../helpers/helpers';
-import RankInfo from './RankInfo';
 
 const circleRadius = 210;
 
@@ -25,10 +24,6 @@ const mapStateToProps = state => ({
       orderedPunishments: state.punishment.orderedPunishments,
       orderedPunishmentsResorted: state.punishment.orderedPunishmentsResorted,
       pastPunishmentsResorted: state.punishment.pastPunishmentsResorted,
-      /* firstGraph: state.graphData.firstGraph,
-      secondGraph: state.graphData.secondGraph,
-      thirdGraph: state.graphData.thirdGraph,
-      fourthGraph: state.graphData.fourthGraph */
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -233,74 +228,6 @@ class Stats extends React.Component {
 
       // TODO: Je li potrebno updateati ordered kazne, tablica nadodaje nove kako se kreiraju no te kazne se ne mogu klasificirati
       // POTENCIJALNI DRUGACIJI PRISTUP: ne provjeravaj promjene na kaznama vec na klasifikacijama
-      // 
-
-
-      /*  componentWillReceiveProps(nextProps) {
-             if (nextProps.orderedPunishments !== 'empty' && nextProps.orderedPunishments.length > 0) { // classify ordered punishments
-                   // console.log(this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments))
-                   if (this.didPunishmentsChange(this.props.orderedPunishments, nextProps.orderedPunishments, nextProps.orderedPunishmentsResorted)) {
- 
-                         let classificationResults = this.clasifyPunishments(nextProps.orderedPunishments);
-                         let graphData1 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
-                         let graphData2 = this.getGraphData(classificationResults, ['givenUp', 'completed', 'failed']);
- 
-                         requestAnimationFrame(() => {
-                               this.setState((prevState, props) => {
-                                     return {
-                                           orderedFirstGraphData: null,
-                                           orderedSecondGraphData: null,
-                                     };
-                               });
-                         });
- 
-                         setTimeout(() => {
-                               requestAnimationFrame(() => {
-                                     this.setState((prevState, props) => {
-                                           return {
-                                                 orderedFirstGraphData: graphData1,
-                                                 orderedSecondGraphData: graphData2,
-                                           };
-                                     });
-                               });
-                         }, 0);
-                   }
-                   if (nextProps.orderedPunishmentsResorted) this.props.clearOrderedPunishmentsResortedFlag();
-             }
- 
-             if (nextProps.pastPunishments !== 'empty' && nextProps.pastPunishments.length > 0) { // classify accepted punishments
- 
-                   console.log(this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments, nextProps.pastPunishmentsResorted))
-                   if (this.didPunishmentsChange(this.props.pastPunishments, nextProps.pastPunishments, nextProps.pastPunishmentsResorted)) {
-                         let classificationResults = this.clasifyPunishments(nextProps.pastPunishments);
- 
-                         let graphData3 = this.getGraphData(classificationResults, ['accepted', 'rejected', 'ignored']);
-                         let graphData4 = this.getGraphData(classificationResults, ['completed', 'givenUp', 'failed']);
- 
-                         requestAnimationFrame(() => {
-                               this.setState((prevState, props) => {
-                                     return {
-                                           punishedFirstGraphData: null,
-                                           punishedSecondGraphData: null,
-                                     };
-                               });
-                         });
- 
-                         setTimeout(() => {
-                               requestAnimationFrame(() => {
-                                     this.setState((prevState, props) => {
-                                           return {
-                                                 punishedFirstGraphData: graphData3,
-                                                 punishedSecondGraphData: graphData4,
-                                           };
-                                     });
-                               });
-                         }, 0);
-                   }
-                   if (nextProps.pastPunishmentsResorted) this.props.clearPastPunishmentsResortedFlag();
-             }
-       }
-  */
 
       componentDidMount() {
             // pokazi dummy grafove
@@ -308,18 +235,34 @@ class Stats extends React.Component {
       }
 
       componentDidUpdate(prevProps) {
+            const userJustLoggedOut = Object.keys(prevProps.currentUser).length > 0 && Object.keys(this.props.currentUser).length === 0;
+            const userJustLoggedIn = !Object.keys(prevProps.currentUser).length && Object.keys(this.props.currentUser).length;
 
-            const userJustLoggedOut =
-                  (
-                        typeof prevProps.currentUser !== 'undefined'
-                        && prevProps.currentUser !== null
-                        && Object.keys(prevProps.currentUser).length > 0
-                  )
-                  && (
-                        typeof this.props.currentUser === 'undefined'
-                        || this.props.currentUser === null
-                        || Object.keys(this.props.currentUser).length === 0
-                  );
+            if (userJustLoggedIn) {
+                  requestAnimationFrame(() => {
+                        this.setState((prevState, props) => {
+                              return {
+                                    orderedFirstGraphData: 'waitHack',
+                                    orderedSecondGraphData: 'waitHack',
+                                    punishedFirstGraphData: 'waitHack',
+                                    punishedSecondGraphData: 'waitHack',
+                              };
+                        });
+                  });
+
+                  setTimeout(() => {
+                        requestAnimationFrame(() => {
+                              this.setState((prevState, props) => {
+                                    return {
+                                          orderedFirstGraphData: [],
+                                          orderedSecondGraphData: [],
+                                          punishedFirstGraphData: [],
+                                          punishedSecondGraphData: [],
+                                    };
+                              });
+                        });
+                  }, 0);
+            }
 
             if (userJustLoggedOut) {
                   requestAnimationFrame(() => {
@@ -537,11 +480,8 @@ class Stats extends React.Component {
                               </div>
                         </div>
 
-                        {/*  <RankInfo rank={this.props.rank} /> */}
-
                   </div>
             )
-
       }
 }
 

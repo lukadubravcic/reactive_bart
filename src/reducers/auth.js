@@ -6,6 +6,7 @@ const defaultState = {
     password: '',
     rePassword: '',
     _errMsg: null,
+    registerUsernameError: null,
     serverAnswer: null,
     // showSetNewPasswordComponent: false,
     showResetPasswordForm: false,
@@ -59,6 +60,10 @@ export default (state = defaultState, action) => {
                 serverAnswer: action.serverAnswer,
                 forceLogin: action.forceLogin
             };
+        case 'REGISTER_USERNAME_ERR':
+            return { ...state, registerUsernameError: action.errMsg, username: defaultState.username };
+        case 'CLEAR_REGISTER_USERNAME_ERR':
+            return { ...state, registerUsernameError: defaultState.registerUsernameError };
         case 'REGISTER_MAIL_INVALID':
             return { ...state, username: state.email, email: defaultState.email, _errMsg: action.errMsg };
         case 'REGISTER_ATTEMPT':
@@ -95,7 +100,7 @@ export default (state = defaultState, action) => {
         case 'USERNAME_SET_AS_GUEST':
             return { ...state, loginWhom: action.user.username };
         case 'CLEAR_FORM_MSG':
-            return { ...state, _errMsg: defaultState._errMsg, serverAnswer: defaultState.serverAnswer };
+            return { ...state, _errMsg: defaultState._errMsg, serverAnswer: defaultState.serverAnswer, registerUsernameError: defaultState.registerUsernameError };
         case 'SPECIAL_LOGOUT':
             return { ...defaultState, userIdFromURL: state.userIdFromURL };
         case 'LOGOUT':

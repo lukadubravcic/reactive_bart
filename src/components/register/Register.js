@@ -25,11 +25,16 @@ const mapDispatchToProps = dispatch => ({
 
         agent.Auth.register(username, email, password).then(payload => {
             // ako je ispravan register onda prikaz login forma, u drugom slucaju prikazi err poruku
-            // enableSubmit();
+            enableSubmit();
             const isMailValid = isMail(email);
 
             if (!isMailValid) {
                 dispatch({ type: 'REGISTER_MAIL_INVALID', errMsg: 'Invalid email.' });
+            } else if (payload.errType !== 'undefined' && payload.errType === 'username') {
+                dispatch({ type: 'REGISTER_USERNAME_ERR', errMsg: payload.errMsg });
+                setTimeout(() => {
+                    dispatch({ type: 'CLEAR_REGISTER_USERNAME_ERR' });
+                }, 2000)
             } else if (payload.errMsg === 'User with that email exists.') {
                 dispatch({ type: 'REGISTER_EXISTING_MAIL', errMsg: 'Existing email. Try logging in.' });
             } else if (payload && payload.hasOwnProperty('errMsg')) {
@@ -405,6 +410,7 @@ class Register extends React.Component {
                                 ref={elem => this.usernameInput = elem} />
                             {this.state.usernameExist ? <label className="form-feedback">ALREADY IN USE</label> : null}
                             {this.state.validUsernameField ? null : <label className="form-feedback">INVALID USERNAME</label>}
+                            {this.props.registerUsernameError ? <label className="form-feedback">{this.props.registerUsernameError.toUpperCase()}</label> : null}
                         </fieldset>
 
                         <fieldset

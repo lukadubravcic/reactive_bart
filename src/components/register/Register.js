@@ -88,12 +88,14 @@ const mapDispatchToProps = dispatch => ({
             }
         });
     },
+    showTopBarElement: () => dispatch({ type: 'CHANGE_SHOWN_TOP_ELEMENT', element: 'start' }),
 });
 
 
 const animationDuration = 500; // ms
 const formMsgDuration = 2000; // 2s
-const loginHeight = 490;
+const loginHeight = 690;
+const topBarElementHeight = 150;
 
 const animStyles = {
     //mount styles
@@ -127,7 +129,12 @@ const animStyles = {
     },
     marginTopCollapse: {
         marginTop: 0
-    }
+    },
+    // tranform to def top bar 
+    topComponentStyle: {
+        height: topBarElementHeight,
+        backgroundColor: "#C4ACE4",
+    },
 };
 
 
@@ -143,6 +150,7 @@ class Register extends React.Component {
         this.emailField = null;
         this.usernameField = null;
         this.rePwdElement = null;
+        this.toTopBarElementTimeout = null;
 
         this.state = {
             parentContainerStyle: { backgroundColor: '#FFA623' },
@@ -152,6 +160,7 @@ class Register extends React.Component {
             pwdFieldsetStyle: {},
             rePwdFieldsetStyle: { opacity: 0, },
             btnFieldsetStyle: { opacity: 0 },
+            btnCloseStyle: { opacity: 1 },
 
             formDisabled: true,
             submitBtnDisabled: false,
@@ -298,6 +307,31 @@ class Register extends React.Component {
                 this.props.login(this.props.email, this.props.password);
             }, formMsgDuration);
         }
+
+        this.closeForm = ev => {
+            ev.preventDefault();
+            // animiraj prema topbar elementu, te na kraju prebaci na njega
+            this.animateToTopBar();
+            this.toTopBarElementTimeout = setTimeout(() => {
+                this.props.showTopBarElement();
+            }, animationDuration);
+        }
+
+        this.animateToTopBar = () => {
+            requestAnimationFrame(() => {
+                this.setState({
+                    parentContainerStyle: { ...this.state.parentContainerStyle, ...animStyles.topComponentStyle },
+                    labelStyle: { ...this.state.labelStyle, opacity: 0 },
+                    btnCloseStyle: { ...this.state.btnCloseStyle, opacity: 0 },
+                    emailFieldsetStyle: { ...this.state.emailFieldsetStyle, opacity: 0 },
+                    usernameFieldsetStyle: { ...this.state.usernameFieldsetStyle, opacity: 0 },
+                    pwdFieldsetStyle: { ...this.state.pwdFieldsetStyle, opacity: 0 },
+                    rePwdFieldsetStyle: { ...this.state.rePwdFieldsetStyle, opacity: 0 },
+                    btnFieldsetStyle: { ...this.state.btnFieldsetStyle, opacity: 0 },
+                    formDisabled: true,
+                });
+            });
+        }
     }
 
     componentDidMount() {
@@ -329,6 +363,7 @@ class Register extends React.Component {
 
     componentWillUnmount() {
         clearTimeout(this.formMsgTimeout);
+        clearTimeout(this.toTopBarElementTimeout);
     }
 
     render() {
@@ -336,8 +371,6 @@ class Register extends React.Component {
         const email = this.props.email;
         const password = this.props.password;
         const rePassword = this.props.rePassword;
-        const _errMsg = this.props._errMsg;
-        const serverAnswer = this.props.serverAnswer;
         const passwordWrongEntryWarning = '3 to 20 characters, contain at least one numeric digit, one uppercase and lowercase letter.';
         const isFormDisabled = this.state.formDisabled || this.props.policyAgreementStatus !== true;
         const isSubmitDisabled =
@@ -361,6 +394,13 @@ class Register extends React.Component {
                 className="parent-component header register-header height-tran backgroundcolor-tran">
 
                 <div className="container">
+
+                    <button
+                        style={this.state.btnCloseStyle}
+                        className="btn-close-share-dialog btn-close-forms"
+                        onClick={this.closeForm}>
+                        {closeBtnSVG}
+                    </button>
 
                     <label
                         style={this.state.labelStyle}
@@ -545,3 +585,16 @@ function validateUsername(username) {
 
     } else return false // '3 to 20 characters (no white-space).';
 }
+
+const closeBtnSVG = (
+    <svg width="20px" height="19px" viewBox="0 0 20 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+        <g id="Welcome" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="square">
+            <g id="share-btn-svg" transform="translate(-541.000000, -20.000000)" stroke="#FFFFFF">
+                <g id="Line-+-Line-Copy" transform="translate(541.000000, 20.000000)">
+                    <path d="M0.526315789,0.526315789 L18.9548854,18.9548854" id="Line"></path>
+                    <path d="M0.526315789,0.526315789 L18.9548854,18.9548854" id="Line-Copy" transform="translate(10.000000, 10.000000) scale(-1, 1) translate(-10.000000, -10.000000) "></path>
+                </g>
+            </g>
+        </g>
+    </svg>
+);

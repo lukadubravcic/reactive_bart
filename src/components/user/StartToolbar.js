@@ -1,11 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 
 const animationDuration = 500;
 const animStyles = {
     opacityDown: { opacity: 0 },
-    heightUp: { height: 490 + 'px' }
+    heightUp: { height: 690 + 'px' }
 };
 const toRegAnimStyle = {
     opacityDown: { opacity: 0 },

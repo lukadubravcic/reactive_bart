@@ -1,9 +1,8 @@
-import { /* applyMiddleware, */ createStore } from 'redux';
+import { createStore } from 'redux';
 import reducer from './reducer'
 
-// const middleware = applyMiddleware(promiseMiddleware);
 
 const store = createStore(reducer);
-window.store = store;  // available from console
+window.store = store;  // available from console - zakomentirati u prod verzijama
 
 export default store;

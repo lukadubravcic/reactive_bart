@@ -725,7 +725,7 @@ class Board extends React.Component {
                             {progress === 100 && !this.props.showToS && !this.props.showPrivacyPolicy ? <CompletedStamp punishment={this.props.activePunishment} /> : null}
                             {isPunishmentFailed && !this.props.showToS && !this.props.showPrivacyPolicy ? <FailedStamp punishment={this.props.activePunishment} /> : null}
 
-                            {this.props.boardHovered && this.props.startSentenceBeingWritten === false ?
+                            {!this.props.gameInProgress && this.props.startSentenceBeingWritten === false ? // prikazi click to start poruku kada igra nije jos pocela i dok se ne ispisuje "zadatak"
                                 <div
                                     id="click-to-start-element"
                                     className="hover-dialog" >

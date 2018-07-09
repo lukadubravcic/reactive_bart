@@ -503,7 +503,7 @@ fieldset + fieldset {
 	position: relative;
 
 	margin-top: 40px;
-	padding-bottom: 80px;
+	/* padding-bottom: 80px; */
 }
 
 .change-pwd-form {
@@ -568,8 +568,19 @@ fieldset + fieldset {
 	margin-left: 22px;
 }
 
-.header-form-row .text-input, .btn-submit {
+.header-form-row .text-input, .btn-submit, .social-login-fieldset {
 	margin-left: 365px;
+}
+
+.header-form-row:last-child{
+	margin-bottom: 80px;
+}
+
+.login-fieldset-or-row {
+	font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #323232;
+	letter-spacing: 5px;	
 }
 
 #login-form .form-feedback, .link {
@@ -586,8 +597,49 @@ fieldset + fieldset {
 
 #login-form .btn-submit {
 	margin-left: 365px;
-	margin-bottom: 80px;
+	/* margin-bottom: 80px; */
 }
+
+.facebook-login-button {
+	background: #3C5A95;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 24px;
+	color: #FEFEFE;
+	letter-spacing: 5px;
+	height: 60px;
+	width: 550px;
+	text-align: left;
+}
+
+.facebook-login-button:hover {
+	background: #FFFFFF;
+	color: #323232;
+}
+
+.facebook-login-button:hover #facebook-login-btn-g {
+	fill: #323232;
+}
+
+.google-login-button {
+	background: #DB4C3F;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 24px;
+	color: #FEFEFE;
+	letter-spacing: 5px;
+	height: 60px;
+	width: 550px;
+	text-align: left;
+}
+
+.google-login-button:hover {
+	background: #FFFFFF;
+	color: #323232;
+}
+
+.google-login-button:hover #google-login-btn-g {
+	fill: #323232;
+}
+
 
 /* logged in top container (username/email + logout) */
 .user-loggedin-top-component {
@@ -2942,6 +2994,11 @@ td.skoldboard-table-punish-field {
 	top: 20px;
 	right: 20px;
 	background: transparent;
+}
+
+.btn-close-forms {
+	top: 50px;
+	right: 50px;
 }
 
 .btn-close-share-dialog:hover #share-btn-svg {

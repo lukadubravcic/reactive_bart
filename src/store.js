@@ -3,6 +3,6 @@ import reducer from './reducer'
 
 
 const store = createStore(reducer);
-window.store = store;  // available from console - zakomentirati u prod verzijama
+// window.store = store;  // available from console - zakomentirati u prod verzijama
 
 export default store;

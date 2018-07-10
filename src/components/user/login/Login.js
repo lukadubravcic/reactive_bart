@@ -3,6 +3,9 @@ import React from 'react';
 import agent from '../../../agent';
 import GoogleLogin from 'react-google-login';
 import FacebookLogin from 'react-facebook-login';
+import { FACEBOOK_APP_ID, GOOGLE_CLIENT_ID } from '../../../constants/constants';
+
+
 
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;
@@ -491,9 +494,10 @@ class Login extends React.Component {
                             style={{ ...this.state.opacityStyle, ...this.state.fieldsetStyle }}
                             className="header-form-row opacity-delay-tran social-login-fieldset"
                             disabled={isFormDisabled}>
+
                             <FacebookLogin
-                                appId="213586112596663"
-                                textButton="LOG IN WITH FACEBOOK"
+                                appId={FACEBOOK_APP_ID}
+                                textButton={<span>LOG IN WITH FACEBOOK</span>}
                                 autoLoad={false}
                                 fields="email"
                                 callback={this.facebookResponseHandler}
@@ -505,8 +509,9 @@ class Login extends React.Component {
                             style={{ ...this.state.opacityStyle, ...this.state.fieldsetStyle }}
                             className="header-form-row opacity-delay-tran social-login-fieldset"
                             disabled={isFormDisabled}>
+
                             <GoogleLogin
-                                clientId="985970123837-7u2ac8drrt2ob005n90e69iskmnn4em3.apps.googleusercontent.com"
+                                clientId={GOOGLE_CLIENT_ID}
                                 buttonText={<span>{gIconSVG}LOG IN WITH GOOGLE+</span>}
                                 onSuccess={this.googleSuccessResponseHandler}
                                 onFailure={this.googleFailureResponseHandler}
@@ -531,11 +536,9 @@ function isMail(email) {
 }
 
 
-
-
 const fbIconSVG = (
     <svg style={{
-        top: "3px",
+        top: "5px",
         position: "relative",
         marginRight: "25px",
         marginLeft: "25px",

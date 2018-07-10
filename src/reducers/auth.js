@@ -34,9 +34,8 @@ export default (state = defaultState, action) => {
                 elementToDisplay: 'resetPassword',
                 email: state.loginWhom
             };
-        case 'CHANGE_SHOWN_TOP_ELEMENT':
+        case 'CHANGE_SHOWN_TOP_ELEMENT': 
             return { ...state, elementToDisplay: action.element };
-
         case 'UPDATE_FIELD_AUTH':
             return { ...state, [action.key]: action.value };
         case 'DIRECT_SHOW_REGISTER_FORM':

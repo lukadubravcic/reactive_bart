@@ -609,6 +609,7 @@ fieldset + fieldset {
 	height: 60px;
 	width: 550px;
 	text-align: left;
+	line-height: 60px;
 }
 
 .facebook-login-button:hover {
@@ -1448,6 +1449,13 @@ input[type=number]::-webkit-outer-spin-button {
 	position: absolute;
 	bottom: 0px;
 	left: 100px;
+}
+
+#cat-svg {
+	position: absolute;
+	display: inline-block;
+	left: 893px;
+    bottom: -104px;
 }
 
 /* Footer */

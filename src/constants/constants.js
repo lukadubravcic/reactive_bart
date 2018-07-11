@@ -10,5 +10,5 @@ export const GOOGLE_CLIENT_ID = '71416882589-ni8ud01tgjdv4cc4sh9qbrfjggtjg58b.ap
 
 export const APP_LINK = 'http://localhost:3000';
 // export const APP_LINK = 'https://www.skolded.com'; 
-export const API_ROOT = 'http://localhost:8001';   
+export const API_ROOT = 'http://localhost:8001';
 // export const API_ROOT = 'https://www.skolded.com/api';

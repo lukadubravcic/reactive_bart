@@ -212,14 +212,15 @@ const mapDispatchToProps = dispatch => ({
 
 class App extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             showShareDialog: false,
         }
 
         this.shareData = null;
+        this.md = new window.MobileDetect(window.navigator.userAgent);
 
         this.shareDialogVisibilityHandler = (value, shareData) => {
             this.shareData = shareData;
@@ -288,9 +289,7 @@ class App extends React.Component {
     }
 
     render() {
-
-        const md = new window.MobileDetect(window.navigator.userAgent);
-        const isMobile = md.mobile();
+        const isMobile = this.md.mobile();
 
         if (isMobile) {
             return (

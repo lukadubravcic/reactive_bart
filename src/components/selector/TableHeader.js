@@ -1,6 +1,6 @@
 import React from 'react';
 
-const OrderedTabRow = props => {
+const TableHeader = props => {
 
     return (
         <div className="picker-table-header">
@@ -29,7 +29,7 @@ const OrderedTabRow = props => {
     )
 }
 
-export default OrderedTabRow;
+export default TableHeader;
 
 const descendingSVG = (
     <svg style={{ marginLeft: "10px" }} width="17px" height="13px" viewBox="0 0 17 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">

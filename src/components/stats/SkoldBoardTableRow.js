@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-const CHAR_SPACING = 16.28;
 
 const mapDispatchToProps = dispatch => ({
     sendPunishment: toWhom => dispatch({ type: 'SEND_PUNISHMENT', toWhom }),

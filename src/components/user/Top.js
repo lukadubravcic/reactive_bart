@@ -8,7 +8,7 @@ import LoggedInToolbar from './LoggedInToolbar';
 import NewPassword from './newPassword/NewPassword';
 import SetUsername from './login/SetUsername';
 import UsernameThanks from './UsernameThanks';
-import AdblockerDisabled from './AdblockerDisabled';
+// import AdblockerDisabled from './AdblockerDisabled'; // privremeno iskljucen adblocker detektor
 import ResetPassword from './login/ResetPassword';
 import Register from '../register/Register';
 import InformationFlasher from './InformationFlasher';
@@ -84,7 +84,6 @@ class Top extends React.Component {
             let elementToDisplay = this.props.auth.elementToDisplay;
 
             let element = null;
-            let key = 1;
 
             let message = this.props.common.guestAccessMsg;
             let messageComponent = null;
@@ -103,7 +102,6 @@ class Top extends React.Component {
                     || this.props.common.currentUser.username === '';
 
                 let header = null;
-                let content = null;
 
                 header = <LoggedInToolbar username={username} handleLogout={this.handleLogout} btnShowForm={this.showChangePassword} />;
 
@@ -120,6 +118,9 @@ class Top extends React.Component {
                         element = <UsernameThanks unmountCallback={this.props.updateElementToDisplay} />;
                         break;
                     case 'loggedIn':
+                        element = null;
+                        break;
+                    default:
                         element = null;
                 }
 
@@ -155,7 +156,6 @@ class Top extends React.Component {
                     </div>
                 );
             }
-            return null;
         }
 
         this.handleLogout = ev => {

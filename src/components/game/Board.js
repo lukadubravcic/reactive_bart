@@ -11,7 +11,6 @@ import PrivacyPolicy from './PrivacyPolicy';
 import cheatingCheck from '../../helpers/cheatingCheck';
 import keysound from '../../helpers///keysound';
 import { API_ROOT } from '../../constants/constants';
-import cheatingDetector from '../../helpers/cheatingCheck';
 
 const UPPERCASE = false; // uppercase flag - kontrolira ako se kazna ispisuje u uppercase-u te da igra zanemaruje case slova (tretira ih isto)
 

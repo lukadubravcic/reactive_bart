@@ -1,13 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import agent from '../../agent';
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
 import { trimExcessSpaces } from '../../helpers/helpers';
 
 import DateElement from './DateElement';
 import ShareAnonCheckbox from './ShareAnonCheckbox';
-import SharePunishmentDialog from '../SharePunishmentDialog';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -190,7 +187,7 @@ class PunishmentCreator extends React.Component {
 
         this.incrementHowManyTimes = ev => {
             ev.preventDefault();
-            if (this.props.howManyTimes < MAX_HOW_MANY_TIMES_PUNISHMENT) this.props.onChangeHowManyTimes(parseInt(this.props.howManyTimes) + 1, 10);
+            if (this.props.howManyTimes < MAX_HOW_MANY_TIMES_PUNISHMENT) this.props.onChangeHowManyTimes(parseInt(this.props.howManyTimes, 10) + 1, 10);
         }
 
         this.decrementHowManyTimes = ev => {
@@ -344,7 +341,6 @@ class PunishmentCreator extends React.Component {
         const howManyTimesField = this.props.howManyTimes;
         const whatToWriteField = this.props.whatToWrite;
         const whyField = this.props.why;
-        const deadlineDate = this.props.deadlineDate;
         const deadlineChecked = this.props.deadlineChecked;
         const anonShare = this.props.anonShare;
         const validDeadline = deadlineChecked

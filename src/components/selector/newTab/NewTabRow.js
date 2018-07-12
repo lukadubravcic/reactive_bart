@@ -1,8 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 
-const CHAR_SPACING = 16.28;
-
 
 class NewTabRow extends React.Component {
 

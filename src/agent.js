@@ -2,8 +2,6 @@ import superagent from 'superagent';
 
 import { API_ROOT } from './constants/constants';
 
-const encode = encodeURIComponent;
-
 const responseBody = res => {
 	return res.body;
 }

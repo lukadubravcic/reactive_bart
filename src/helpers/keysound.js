@@ -1,6 +1,5 @@
 const TIME_BETWEEN_KEYS_THRESHOLD = 200;
 
-let keysound = null;
 let audioElement = null;
 let chalkboardDownAudioElement = null;
 let timeoutID = null;

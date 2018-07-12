@@ -9,14 +9,6 @@ class SkoldBoardDisplayContainer extends React.Component {
         }
     }
 
-    /*  componentDidMount() {
-         if (this.props.data.length) this.setState({ data: this.props.data });
-     }
- 
-     componentDidUpdate(prevProps) {
-         // if (this.props.data) this.setState({ data: this.props.data });
-     } */
-
     render() {
         if (!this.props.data) return null;
 

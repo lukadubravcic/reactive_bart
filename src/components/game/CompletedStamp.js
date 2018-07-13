@@ -9,9 +9,6 @@ const CompletedStamp = props => {
 
         let width = 600,
             height = 500,
-            left = 200,
-            top = 200,
-            url = 'http://twitter.com/share',
             opts = 'status=1' +
                 ',width=' + width +
                 ',height=' + height +

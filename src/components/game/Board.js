@@ -573,7 +573,6 @@ class Board extends React.Component {
 
     componentDidMount() {
         // special snowflake - zahtjeva sinkroni ajax request
-        // window.onunload = window.onbeforeunload
         window.addEventListener("beforeunload", this.handleBeforeunload);
         window.addEventListener('keydown', function (e) {
             if (e.keyCode == 32 && e.target == document.body) {
@@ -595,7 +594,6 @@ class Board extends React.Component {
             || (Object.keys(this.props.activePunishment).length
                 && (this.props.activePunishment.uid === prevProps.activePunishment.uid)
                 && (prevProps.activePunishment.what_to_write !== this.props.activePunishment.what_to_write))) { // postavljena nova kazna
-            // console.log('%cTRUE', 'background: yellow; color: green')
             // ako je trenutna kazna bila u tijeku, logiraj ju
             if (specialOrRandomPunishmentIsActive(prevProps.activePunishment)
                 && prevProps.gameInProgress

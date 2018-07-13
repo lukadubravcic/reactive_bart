@@ -37,14 +37,6 @@ class LoggedInToolbar extends React.Component {
                             className="user-identity noselect"
                             onClick={this.usernameClick} >
                             {this.props.username}
-
-                            {/* <div id="password-change-btn-container">
-                            <button
-                            id="password-change-btn"
-                            onClick={this.props.btnShowForm}>
-                            Change password
-                            </button>
-                        </div> */}
                         </button>
 
                         <NotificationCount />

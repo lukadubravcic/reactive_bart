@@ -1,5 +1,4 @@
 import React from 'react';
-import agent from '../../agent';
 import { connect } from 'react-redux';
 
 import Stopwatch from './Stopwatch';
@@ -122,38 +121,6 @@ class Timer extends React.Component {
 
         const clockValue = this.props.clockValue;
 
-        const style = {
-            width: "400px",
-            height: "50px",
-            marginBottom: "50px"
-        };
-
-        const flexContainer = {
-            padding: "0",
-            margin: "0",
-
-            display: "-webkit-box",
-            display: "-moz-box",
-            display: "-ms-flexbox",
-            display: "-webkit-flex",
-            display: "flex",
-
-            WebkitFlexFlow: "row wrap",
-            justifyContent: "center",
-        }
-
-        const flexItem = {
-            background: "tomato",
-            padding: "5px",
-            width: "200px",
-            height: "150px",
-            marginTop: "10px",
-
-            lineHeight: "150px",
-            color: "white",
-            fontWeight: "bold",
-            textAlign: "center"
-        }
         // igra nije u tijeku i hover event
         if ((this.props.boardHovered && !this.props.gameInProgress) || this.props.gameInProgress || this.props.boardFocused) {
             // treba pokazati i tooltip

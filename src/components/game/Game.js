@@ -179,7 +179,7 @@ class Game extends React.Component {
 
         if (cheating) this.setCheatingPunishment();
 
-        // slucaj kada user nije logan a setupana je guest kazna
+        // slucaj kada user nije logan a setupana je guest kazna (link na kaznu u mailu)
         if (
             !userLoggedIn
             && guestPunishmentLoaded

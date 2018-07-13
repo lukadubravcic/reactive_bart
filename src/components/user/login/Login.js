@@ -6,7 +6,6 @@ import FacebookLogin from 'react-facebook-login';
 import { FACEBOOK_APP_ID, GOOGLE_CLIENT_ID } from '../../../constants/constants';
 
 
-
 const PASSWORD_MAX_LEN = 20;
 const PASSWORD_MIN_LEN = 3;
 const PASSWORD_VALIDATION_ERROR_TEXT = 'Password must be between ' + PASSWORD_MIN_LEN + ' and ' + PASSWORD_MAX_LEN + ' characters long.';

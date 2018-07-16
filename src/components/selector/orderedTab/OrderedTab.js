@@ -11,7 +11,6 @@ import {
     sortPunishmentsByStatus
 } from '../../../helpers/sortingPunishments';
 
-import agent from '../../../agent';
 
 import { ITEMS_PER_PAGE } from '../../../constants/constants';
 

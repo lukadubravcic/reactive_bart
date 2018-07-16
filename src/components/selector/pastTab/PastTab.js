@@ -6,13 +6,10 @@ import TableHeader from '../TableHeader'
 
 import {
     sortPunishmentsByDate,
-    sortPunishmentsByNumber,
     sortPunishmentsByString,
     sortPunishmentsByStatus
 } from '../../../helpers/sortingPunishments';
 import { getElementById } from '../../../helpers/helpers';
-
-import agent from '../../../agent';
 
 import { ITEMS_PER_PAGE } from '../../../constants/constants';
 

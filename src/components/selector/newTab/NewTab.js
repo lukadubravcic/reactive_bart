@@ -84,10 +84,8 @@ class NewTab extends React.Component {
                 if (newActivePunishment.what_to_write[newActivePunishment.what_to_write.length - 1] !== ' ') {
                     newActivePunishment.what_to_write += ' ';  // dodaj razmak na kraju ako ga nema
                 }
-
+                
                 // filtracija trenutnih new kazni, update novih, postavljanje aktivne kazne i prebacivanje na accepted tab
-                let updatedNewPunishments = [...this.props.newPunishments];
-
                 let filteredPunishments = this.props.newPunishments.filter(punishment => {
                     if (decodeURIComponent(punishment.uid) !== decodeURIComponent(newActivePunishment.uid)) {
                         return { ...punishment };

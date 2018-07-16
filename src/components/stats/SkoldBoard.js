@@ -81,7 +81,7 @@ class SkoldBoard extends React.Component {
         } else if (userJustLoggedOut) {
             this.setDummySkoldboardData();
         }
-
+        // app prepozna da se user logginao nakon claim zahtjeva, nakon logina povuci nove skoldboard podatke (da ukljuci i nove podatke poslije claim-a)
         if (prevProps.claimSuccessfulFlag === null && this.props.claimSuccessfulFlag === true) {
             this.getSkoldboardData();
         }

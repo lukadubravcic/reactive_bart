@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { getPunishmentStatus, capitalizeFirstLetter } from '../../../helpers/helpers';
+import { getPunishmentStatus } from '../../../helpers/helpers';
 import agent from '../../../agent';
 import { APP_LINK } from '../../../constants/constants';
 
